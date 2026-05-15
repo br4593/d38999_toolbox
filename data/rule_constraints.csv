@@ -1,0 +1,15 @@
+rule_id,manufacturer,product_line,supported_contacts,supported_keys,allowed_shell_size_codes
+1,Amphenol,TV Series III aluminum commercial,PSABHJ,NABCDE,
+2,Conesys,Aero-Electric AE3 Series III environmental,PSAB,NABCDE,
+3,Conesys,Aero-Electric AE3 Series III hermetic,PXC,NABCDE,
+4,Conesys,Aero-Electric AE4 Series IV hermetic,PXC,NABCDEKLMRU,BCDEFGHJ
+5,Eaton,Breech-Lok Series IV general purpose,PSAB,NABCDEKLMRU,
+6,Eaton,Breech-Lok Series IV hermetic,CPX,NABCDEKLMRU,BCDEFGHJ
+7,Glenair,233-105 Series III environmental,PS,NABCDE,
+8,Glenair,233-100 Series III hermetic,PXCSZD,NABCDE,
+9,Glenair,234-100 Series IV hermetic,PXCSZD,NABCDEKLMRU,BCDEFGHJ
+10,ITT Cannon,KJA Series III aluminum/stainless D38999-style,PSAB,NABCDE,
+11,ITT Cannon,KJB Series III composite D38999-style,PSABHJ,NABCDE,
+12,Souriau,8D Series III aluminum/composite/stainless,PSABHJ,NABCDE,
+13,TE Deutsch,DTS Series III aluminum/stainless,PSABHJCDXZ,NABCDE,
+14,TE Deutsch,ACT Series III composite,PSABHJ,NABCDE,

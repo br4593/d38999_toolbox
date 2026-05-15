@@ -1,0 +1,22 @@
+# Source datasheets - large, redistributed under upstream terms.
+# Consider tracking with Git LFS:
+#   git lfs install
+#   git lfs track "docs/pdfs/*.pdf"
+#   git lfs track "data/reference/*.pdf"
+docs/pdfs/*.pdf    binary
+data/reference/*.pdf binary
+
+# Generated SVG arrangement crops - text but lots of them.
+app/assets/svg/*.svg text eol=lf
+data/svg/*.svg       text eol=lf
+
+# Keep web assets LF on all OSes.
+*.html text eol=lf
+*.css  text eol=lf
+*.js   text eol=lf
+*.json text eol=lf
+*.py   text eol=lf
+*.md   text eol=lf
+
+# SQLite is binary.
+*.sqlite binary

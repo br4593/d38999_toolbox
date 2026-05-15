@@ -1,0 +1,9337 @@
+
+
+===== PAGE 1 =====
+61
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+II  
+Dualok  
+III
+SJT  
+38999    
+I 
+HD  
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High  
+Speed
+26482
+Matrix 2  
+83723 III
+Matrix|Pyle
+5015
+Crimp Rear
+Release 
+Matrix
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+PCB 
+Accessories
+Aquacon
+Herm/Seal
+Amphenol
+Aerospace
+Amphenol® LJT and JT Series subminiature cylindrical  
+connectors are qualified to MIL-DTL-38999*, Series I 
+and II respectively. These con­nectors were developed 
+to meet the needs of the aerospace industry, and  
+provided the impetus for development of the  
+MIL-C-38999 specifications, which has been  
+superseded by MIL-DTL-38999. Meeting or exceeding  
+MIL-DTL-38999 requirements, Amphenol® JT/LJT  
+connectors feature:
+MIL-DTL-38999, Series II JT 
+MIL-DTL-38999, Series I LJT  
+Components
+Shell components are impact extruded or machined bar stock  
+aluminum. Standard plating on shell com­ponents is cadmium over  
+nickel. Many finishes are optional (see “Specifications” page 19). 
+Hermetic seal receptacles are available in carbon steel or stainless 
+steel shells. Dependable 5 key/keyway polarization with bayonet lock 
+coupling is incorpo­rated to aid and assure positive mating.
+Insert material is a rigid dielectric with excellent electrical character-
+istics, providing durable protec­tion for molded-in solder type contacts. 
+Contrasting letter or number designations are used on insert faces.
+A fluorinated silicone interfacial seal wafer is fea­tured on the mating 
+face of “crimp type pin” inserts. This assures complete electrical  
+isolation of pins when connector halves are mated. In addition, a main 
+joint gasket is installed in the receptacle for moisture sealing between 
+connector halves. Both features are also available for hermetic  
+receptacles.
+Contacts
+Maximum design flexibility is built into the JT/LJT Series, with a mini-
+mum of 2 to a maximum of 128 circuits per connector in a wide variety 
+of contact arrangements. Contacts are available in sizes 8, 10, 12, 16, 
+20, 22, 22D and 22M with standard 50 micro inch minimum gold plating 
+(100 micro inches optional). All socket contacts are probe proof. Crimp 
+type rear removable contacts are featured in JT-R and LJT-R  
+connectors. Solder termination contacts are also available, as well as 
+PCB, wire wrap, thermocouple, fiber optic, coaxial, triaxial and twinax  
+contact options.
+Optional Features
+High temperature capability of 392°F is available only in JTS or LJTS 
+crimp type connectors. High temperature versions feature gold plated 
+contacts, high temperature shell plating, stainless steel cou­pling nut 
+spring, and epoxy inserts/fluorinated sili­cone grommet combination. 
+Standard temperature capability for both solder and crimp is 302°F.
+The JTN or LJTN type connectors are available for N2O4resistance 
+provided they are mated, and un-grommeted rear faces are  
+suitably protected.
+For complete listing and definition of connector types, shell styles and 
+service classes, see How to Order, pages 62 & 63. For information on 
+Fail-Safe Lanyard Release style plugs, see pages 94–96.
+Features & Benefits
+•	
+Lightweight, Space Saving Design
+•	
+Contact Protection - 100% scoop-proof LJT design prevents 
+ 	
+bent pins and short circuits dur­ing mating
+•	
+Quick Positive Coupling - 3 point bayonet lock system
+•	
+Mismating Eliminated - with 5 key/keyway design
+•	
+Error Proof Alternate Positioning - insured by different key/	
+	
+keyway locations
+•	
+EMI Shielding - grounding fingers standard in LJT Series; 	
+	
+optional in JT Series
+•	
+Nine Shell Sizes and a Variety of Shell Styles
+•	
+Contact Options - size 8, 10, 12, 16, 20, 22M and 22D Crimp, 	
+	
+Solder, PCB, Wire wrap, Coax, Twinax, Triax, Thermocouple, 	
+	
+Fiber Optic and Fil­ter
+•	
+Fixed Solder Contacts - Amphenol MIL-DTL-38999 Series I 	
+	
+LJT and II JT, are available in solder versions as both  
+	
+Commercial and Military qualified to MIL-DTL-27599  
+•	
+Hermetic - air leakage limited to 1 X 10-7 cm3 per second  
+	
+optional
+•	
+“Breakaway” Lanyard Release Style - available in LJT plugs. 	
+	
+Provides quick disconnect of the connector plug and receptacle 	
+	
+with axial pull on the lanyard. See pages 94-96.
+•	
+Inventory Support Commonality - uses stan­dard  
+	
+MIL-DTL-38999 contacts, insert arrangements and  
+	
+application tools.
+•	
+RoHS Compliant Product Available - 
+	
+Consult Amphenol Aerospace Operations.
+Where proof of high reliability and lot control is required, MS approved  
+equivalents to most propri­etary JT and LJT connectors are available.
+*	 MIL-DTL-38999 Series I supersedes MIL-C-38999 Series I. 
+ 	 MIL-DTL-38999 Series II supersedes MIL-C-38999 Series II.
+MIL-DTL-38999
+Series I LJT
+MIL-DTL-38999 
+Series II JT 
+
+
+===== PAGE 2 =====
+62
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Dualok 
+III
+SJT 
+38999 
+PCB 
+HD 
+I 
+II 
+Aquacon
+Accessories
+Herm/Seal
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High 
+Speed
+26482
+Matrix 2  
+83723 III
+5015
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+Crimp Rear
+Release 
+Matrix
+Matrix|Pyle
+Amphenol
+Aerospace
+Connector  Type 
+Series I        II
+Shell Style
+Service Class
+Shell Size- 
+ Insert Arrangement
+Contact  
+Type
+Alternate  
+Position
+Strain Relief/Finish 
+Variation Suffix
+LJT
+JT
+00
+RT
+9-35
+P
+B
+SR
+(014)
+Series I
+Series II
+Designates
+JT
+Standard Junior Tri-Lock
+LJT
+	
+Long Junior Tri-Lock
+LJTS
+JTS
+High temperature connector
+LJTN
+JTN
+Chemical and fuel resistant
+JTL
+Miniature mounting dimensions
+JTLN
+Miniature mounting dimensions–Chemical resistant
+JTLS
+Miniature mounting dimensions– High temperature
+LJTPQ
+JTPQ
+Back panel mounted wall mounting receptacle
+LJTP
+JTP
+Back panel mounted box mounting receptacle
+LJTPN
+JTPN
+Back panel mounted–Chemical resistant
+LJTPS
+JTPS
+Back panel mounted–High temperature
+JTG
+Plug with grounding fingers*
+JTNG
+Plug with grounding fingers* –Chemical resistant
+Easy Steps to build a commercial part number... Series I and II
+	
+1. 	
+2. 	
+3. 	
+ 4. 	
+5. 	
+6. 	
+  7.
+Step 1. Select a Connector Type
+Connector   
+Type
+Shell Style
+Service Class
+Shell Size- 
+ Insert Arrg.
+Contact Type
+Alternate 
+Position
+Special  
+Variations
+JT
+	
+1. 	
+  2. 	
+   3. 	
+    4. 	     5. 	      6. 	      7.
+Commercial
+JT
+JTS
+JTN
+LJT
+LJTS 
+LJTN
+JTL 
+JTLN 
+JTLS 
+JTPQ 
+JTP 
+JTPN 
+JTPS 
+LJTPQ 
+LJTP 
+LJTPN 
+LJTPS
+JTG 
+JTNG
+Designates
+00
+00
+Wall mount receptacle (Hermetic option)
+01
+Line mount receptacle  
+(Non-hermetic)
+02
+02
+Box mount receptacle  
+(Hermetic Option except for LJT)
+06
+06
+Straight plug (Non-hermetic)
+07
+07
+Jam nut receptacle (Hermetic Option)
+08
+08
+90 degree plug (Non-hermetic)
+I
+Solder mount receptacle (hermetic)
+Step 2. Select a Shell Style
+Connector Type
+Shell Style
+Service Class
+Shell Size-
+Insert Arrg.
+Contact Type
+Alternate 
+Position
+Special  
+Variations
+00
+	
+1. 	
+2. 	
+3. 	
+4. 	
+5. 	
+6. 	
+7.
+Wall 
+Mounting 
+Receptacle
+Line 
+Receptacle
+Jam 
+Nut 
+Receptacle
+Straight 
+Plug
+Solder 
+Mounting 
+Receptacle
+Lanyard 
+Release 
+Plug
+Wall 
+Mounting 
+Receptacle
+Box 
+Mounting 
+Receptacle
+Straight 
+Plug
+Jam Nut 
+Receptacle
+90° Plug
+Solder 
+Mounting 
+Receptacle
+Series I LJT
+Series II JT
+MIL-DTL-38999/ 27599, Series II JT 
+MIL-DTL-38999/ 27599, Series I LJT
+*Grounding fingers standard on all LJT plugs
+How to Order (Commercial)
+(See pages  
+94-96 for 
+ordering)
+
+
+===== PAGE 3 =====
+63
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+II  
+Dualok  
+III
+SJT  
+38999    
+I 
+HD  
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High  
+Speed
+26482
+Matrix 2  
+83723 III
+Matrix|Pyle
+5015
+Crimp Rear
+Release 
+Matrix
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+PCB 
+Accessories
+Aquacon
+Herm/Seal
+Amphenol
+Aerospace
+Series I LJT
+Series II JT
+Step 3. Select a Service Class
+JT
+JTS
+JTN
+JTG 
+JTNG
+LJTS 
+LJT
+Solder Contacts/Connectors
+P
+P
+P
+Potting applications: These connectors are supplied with a potting boot. All shells 
+are designed with integral features to retain potting boots. 
+A 
+A
+A
+General Applications (JT only molded in solder type contacts)
+A (SR)
+Threaded rear design with strain relief†
+C
+C
+Pressurized applications
+C (SR)
+Threaded rear design with strain relief.†
+H
+H
+H
+Hermetic applications- Fused compression glass sealed inserts. Leakage rate less 
+than .01 micron cu. ft./hr. (1 x 10-7 cc/sec.) at 15 psi differential.
+Y
+Y
+Y
+Y
+Same as “H” with interfacial seal.
+T
+T
+MIL-DTL-27599 applications-general duty, pressurized (receptacle only) (LJT only 
+molded in solder type contacts)
+JT 
+JTN 
+JTG  
+JTNG 
+JTPQ 
+LJT 
+JTPQ  
+LJTPQ
+JTS
+JTLS 
+JTL 
+JTLN 
+LJTP
+LJTS
+JTPS 
+LJTPS
+Crimp Contacts/Connectors
+RP
+RP
+RP
+RP
+Potting crimp applications. Supplied with spacer grommet and potting boot.††
+RE
+RE
+RE
+RE
+RE
+RE
+Environmental crimp applications. Supplied with a grommet and compression nut.† 
+Can be supplied with strain relief integral with compression nut “RE(SR)”. 
+RT
+RT
+RT
+RT
+RT
+Environmental applications. Supplied without rear accessories. Design provides  
+serrations on rear threads of shells.
+Connector   
+Type
+Shell Style
+Service 
+Class
+ Shell Size-
+Insert Arrg.
+Contact Type
+Alternate 
+Position
+Special  
+Variations
+RX
+	
+1. 	
+2. 	
+3. 	
+4. 	
+5. 	
+6. 	
+7.
+Step 4. Select a Shell Size &  
+Insert Arrangement see page 6-9
+Connector   
+Type
+Shell Style
+Service Class
+Shell Size-
+Insert Arrg.
+Contact Type
+Alternate 
+Position
+Special  
+Variations
+22-2
+	
+1. 	
+2. 	
+3. 	
+4. 	
+5. 	
+6. 	
+7.
+Step 5. Select a Contact Type
+Designates
+P
+Pin Contacts
+S
+Socket Contacts
+Connector   
+Type
+Shell Style
+Service Class
+Shell Size- 
+Insert Arrg.
+Contact 
+Type
+Alternate 
+Position
+Special  
+Variations
+P
+	
+1. 	
+2. 	
+3. 	
+4. 	
+5. 	
+6. 	
+7.
+MIL-DTL-38999/ 27599, Series II JT  
+MIL-DTL-38999/ 27599, Series I LJT  
+First number represents Shell Size,  
+second number is the Insert Arrangement. 
+†	
+	Not applicable to box mounting style or LJT Series I.  
+††  	Not applicable to box mounting style.
+How to Order (Commercial)
+
+
+===== PAGE 4 =====
+64
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Dualok 
+III
+SJT 
+38999 
+PCB 
+HD 
+I 
+II 
+Aquacon
+Accessories
+Herm/Seal
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High 
+Speed
+26482
+Matrix 2  
+83723 III
+5015
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+Crimp Rear
+Release 
+Matrix
+Matrix|Pyle
+Amphenol
+Aerospace
+ROTATION
+LETTERS
+NORMAL
+B
+A
+D
+C
+AB
+5° LJT REF
+RELATIVE POSSIBLE POSITION
+OF ROTATED MASTER KEYWAY
+ (front face of receptacle shown)
+ROTATION
+LETTERS
+NORMAL
+B
+A
+D
+C
+AB
+10˚ JT REF
+RELATIVE POSSIBLE POSITION
+OF ROTATED MASTER KEYWAY
+ (front face of receptacle shown)
+“A” designates Alternate keying 
+connector assembly. Other basic 
+alternate keys are “B”, “C” and “D”. 
+No letter required for normal rotation 
+(no rotation) position.
+A plug with a given rotation letter 
+will mate with a receptacle with the 
+same rotation letter. The AB angle 
+for a given connec­tor is the same 
+whether it contains pins or sockets. 
+Only the master key/keyway rotates 
+in the shell, and the minor keys are 
+fixed.
+AB angles shown are viewed from 
+the front face of the connec­tor, a 
+receptacle is shown below. The 
+angles for the plug are exactly the 
+same except the direction of rotation 
+is opposite of that shown for the 
+receptacle.
+The “N” designation is not referenced in 
+part number, it is omitted.
+Step 6. Select an 
+Alternate Keying Position
+Connector Type
+Shell Style
+Service Class
+Shell Size 
+Insert Arrg.
+Contact Type
+ Alternate 
+Position
+Special  
+Variations
+A
+	
+1. 	
+2. 	
+3. 	
+4. 	
+5. 	
+6. 	
+7.
+Step 7. Select a Strain  
+Relief Option or Finish  
+Variation Suffix
+Connector  
+Type
+Shell Style
+Service Class
+Shell Size- 
+Insert Arrg.
+Contact Type
+Alternate 
+Position
+Special  
+Variations
+(  )
+	
+1. 	
+2. 	
+3. 	
+4. 	
+5. 	
+6. 	
+7.
+Strain Relief Options: “SR” designates a strain 
+relief clamp. Strain reliefs are available only on 
+Service Class “A”, “C” and “RE” (see step 3. 
+Service Class)
+Finish Variation Suffix: See finish variations  
+available in table to your right.
+Finish
+Military  
+Finish Data
+Finish 
+Suffix
+Finish Plus 
+“SR” Suffix
+Cadmium plated nickel base 
+175°C
+A
+(SR)
+Olive drab cadmium plate 
+nickel base 175°C
+B
+(014)
+(386)
+Electroless nickel 200°C
+F
+(023)
+(424)
+Electroless nickel, space 
+compatible 200°C
+(453)
+(467)
+Anodic coating (Alumilite) 
+200°C
+C
+(005)
+(300)
+Chromate treated (Iridite 
+14-2) 125°C
+(011)
+(344)
+Passivated steel 200°C
+E
+-
+-
+Nickel-PTFE 175°C
+(038)
+AB ANGLE OF ROTATION (Degrees)
+Shell Size
+Normal
+A
+B
+C
+D
+9
+95°
+77°
+-
+-
+113°
+11
+95°
+81°
+67°
+123°
+109°
+13
+95°
+75°
+63°
+127°
+115°
+15
+95°
+74°
+61°
+129°
+116°
+17
+95°
+77°
+65°
+125°
+113°
+19
+95°
+77°
+65°
+125°
+113°
+21
+95°
+77°
+65°
+125°
+113°
+23
+95°
+80°
+69°
+121°
+110°
+25
+95°
+80°
+69°
+121°
+110°
+LJT Key/Keyway Rotation
+AB ANGLE OF ROTATION (Degrees)
+Shell Size
+Normal
+A
+B
+C
+D
+8
+100°
+82°
+-
+-
+118°
+10
+100°
+86°
+72°
+128°
+114°
+12
+100°
+80°
+68°
+132°
+120°
+14
+100°
+79°
+66°
+134°
+121°
+16
+100°
+82°
+70°
+130°
+118°
+18
+100°
+82°
+70°
+130°
+118°
+20
+100°
+82°
+70°
+130°
+118°
+22
+100°
+85°
+74°
+126°
+115°
+24
+100°
+85°
+74°
+126°
+115°
+JT Key/Keyway Rotation
+MIL-DTL-38999/ 27599, Series II JT 
+MIL-DTL-38999/ 27599, Series I LJT 
+How to Order (Commercial)
+
+
+===== PAGE 5 =====
+65
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+II  
+Dualok  
+III
+SJT  
+38999    
+I 
+HD  
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High  
+Speed
+26482
+Matrix 2  
+83723 III
+Matrix|Pyle
+5015
+Crimp Rear
+Release 
+Matrix
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+PCB 
+Accessories
+Aquacon
+Herm/Seal
+Amphenol
+Aerospace
+MIL-DTL-38999
+MS27472
+Crimp Wall Mount Receptacle
+MS27497
+Crimp Wall Mount Receptacle (Back Panel 
+Mounting)
+MS27499
+Crimp Box Mounting Receptacle
+MS27513
+Crimp Box Mounting Receptacle with grommet
+MS27508
+Crimp Box Mounting Receptacle (Back Panel 
+Mounting)
+MS27473
+Crimp Straight Plug
+MS27484
+Crimp Straight Plug with Grounding Fingers
+MS27474
+Crimp Jam Nut Receptacle
+MS27500
+Crimp 90° plug
+MS27475
+Hermetic Wall Mounting Receptacle 
+MS27476
+Hermetic Box Mounting Receptacle
+MS27477
+Hermetic Jam Nut Receptacle
+MS27478
+Hermetic Solder Mounting Receptacle
+MIL-DTL-27599
+MS27334
+Solder Wall Mount Receptacle
+MS27335
+Solder Box Mounting Receptacle
+MS27336
+Solder Straight Plug
+MS27337
+Solder Jam Mounting Receptacle
+MIL-DTL-38999
+MS27466
+Crimp Wall Mount Receptacle
+MS27656
+Crimp Wall Mount Receptacle (Back Panel 
+Mounting)
+MS27496
+Crimp Box Mounting Receptacle
+MS27505
+Crimp Box Mounting Receptacle (Back Panel 
+Mounting)
+MS27467
+Crimp Straight Plug
+MS27468
+Crimp Jam Nut Receptacle
+MS27469
+Hermetic Wall Mounting Receptacle 
+MS27470
+Hermetic Jam Nut Receptacle
+MS27471
+Hermetic Solder Mounting Receptacle
+MIL-DTL-27599
+MS20026
+Solder Wall Mounting Receptacle
+MS20027
+Solder Line Receptacle
+MS20028
+Solder Straight Plug
+MS20029
+Solder Jam Nut Receptacle
+MS Number
+Service Class
+Shell Size
+Finish
+Insert  
+Arrangement
+Contact Style  
+(P or S)
+Alternate Keying 
+Position
+MS27473
+E
+14
+A
+18
+P
+A
+Easy Steps to build a Military part number... Series I and II
+	
+1. 	
+2. 	
+3. 	
+4. 	
+5. 	
+6. 	
+  7.
+Step 1. Choose your Military Connector Type
+Military
+	
+1. 	
+2. 	
+3. 	
+4. 	
+5. 	
+6. 	
+  7.
+MS Number
+Service Class
+Shell Size
+Finish
+Insert  
+Arrangement
+Contact Style 
+(P or S)
+Alternate  
+Position
+MS27473
+Series II JT
+Series I LJT
+Step 2. Select a Military Service Class
+Military
+Service Class
+E
+Environmental crimp applications. Supplied with a grommet and compression nut.† Can be supplied with strain relief integral 
+with compression nut “RE(SR)”. (JT Series only). Box Mount versions using spacer grommets are not environmental.
+P
+Potting crimp applications. Supplied with spacer grommet and potting boot.††
+T
+Environmental applications. Supplied without rear accessories. Design provides serrations on rear threads of shells.  
+(Not applicable to solder type or hermetics)
+Y
+Hermetically interfacial seal
+	
+1. 	
+2. 	
+3. 	
+4. 	
+5. 	
+6. 	
+  7.
+MS Number
+Service 
+Class
+Shell Size
+Finish
+Insert  
+Arrangement
+Contact Style 
+(P or S)
+Alternate  
+Position
+E
+MIL-DTL-38999/ 27599, Series II JT 
+MIL-DTL-38999/ 27599, Series I LJT 
+How to Order (Military)
+†	
+	Not applicable to box mounting style or LJT Series I.  
+††  	Not applicable to box mounting style.
+
+
+===== PAGE 6 =====
+66
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Dualok 
+III
+SJT 
+38999 
+PCB 
+HD 
+I 
+II 
+Aquacon
+Accessories
+Herm/Seal
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High 
+Speed
+26482
+Matrix 2  
+83723 III
+5015
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+Crimp Rear
+Release 
+Matrix
+Matrix|Pyle
+Amphenol
+Aerospace
+Finish
+Military  
+Finish Data
+Finish 
+Suffix
+Finish Plus 
+“SR” Suffix
+Cadmium plated nickel 
+base 175°C
+A
+(SR)
+Olive drab cadmium plate 
+nickel base 175°C
+B
+(014)
+(386)
+Electroless nickel 200°C
+F
+(023)
+(424)
+Electroless nickel, space 
+compatible 200°C
+(453)
+(467)
+Anodic coating (Alumilite) 
+200°C
+C
+(005)
+(300)
+Chromate treated (Iridite 
+14-2) 125°C
+(011)
+(344)
+Passivated steel 200°C
+E
+-
+-
+Nickel-PTFE 175°C
+(038)
+Step 3 & 5. Select a  
+Shell Size and Insert  
+Arrangement from  
+Pages 6-9
+	
+1. 	
+2. 	
+3. 	
+4. 	
+5. 	
+      6. 	        7.
+MS Number
+Service Class Shell Size
+4. Finish
+ Insert  
+Arrangement
+Contact Style 
+(P or S)
+Alternate  
+Position
+14
+18
+Shell Size & Insert Arrangement are on pages 6-9. First number 
+represents Shell Size, second number is the Insert Arrangement. Place  
+Shell Size in box 3 and Insert Arrangement in box 5.
+Step 4. Select a Military Finish
+	
+1. 	
+2. 	
+3. 	
+4. 	
+5. 	
+6. 	
+  7.
+MS Number
+Service Class
+Shell Size
+Finish
+ Insert  
+Arrangement
+Contact Style 
+(P or S)
+Alternate  
+Position
+A
+Step 6. Select a Military Contact Type
+Designates
+P
+Pin Contacts
+S
+Socket Contacts
+	
+1. 	
+2. 	
+3. 	
+4. 	
+5. 	
+6. 	
+     7.
+MS Number
+Service Class
+Shell Size
+ Finish
+Insert  
+Arrangement
+Contact Style 
+(P or S)
+Alternate  
+Position
+P
+Step 7. Select an  
+Alternate Keying Position
+See page 64 for information, No letter required  
+for normal position
+	
+1. 	
+2. 	
+3. 	
+4. 	
+5. 	
+6. 	
+  7.
+MS Number
+Service Class
+Shell Size
+Finish
+ Insert  
+Arrangement
+Contact Style 
+(P or S)
+ Alternate  
+Position
+A
+MIL-DTL-38999/ 27599, Series II JT 
+MIL-DTL-38999/ 27599, Series I LJT 
+How to Order (Military)
+
+
+===== PAGE 7 =====
+67
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Amphenol
+Aerospace
+Amphenol
+MIL-DTL-38999, Series II, JT
+TABLE OF CONTENTS
+Combined MIL-DTL-38999 Series I, II, III
+•	 Shell Size & Insert Arrangement Availability .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .  6-9
+•	 Insert Arrangement Drawings.  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   . 10-15
+•	 Contact - Ratings, Service Ratings, Finish Data.   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . 18, 19
+•	 Sealing Plugs.   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . 19
+MIL-DTL-38999, Series II JT and Series I LJT
+•	 Features and Benefits.   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . 61
+•	 How to Order (Commercial).   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   . 62-64
+•	 How to Order (Military).   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . 65, 66
+JT Shell Styles:
+•	 Crimp Wall Mounting Receptacle JT00R (MS27472) .   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . 68
+•	 Crimp Wall Mounting Receptacle for Back Panel Mounting JTPQ00R (MS27497).   .    .    .    .    . 69
+•	 Crimp Line Receptacle JT01R.   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . 70
+•	 Crimp Box Mounting Receptacles JT02RE (MS27499), JT02RE(053) (MS27513).   .    .    .    .    .    . 71
+•	 Crimp Box Mounting Receptacle for Back Panel Mounting JTP02R (MS27508) .   .  .  .  . 72
+•	 Crimp Straight Plug JT06R (MS27473).   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . 73
+•	 Crimp Straight Plug with Grounding Fingers JTG06R (MS27484).   .   .   .   .   .   .   .   .   .   .   74
+•	 Crimp Jam Nut Receptacle JT07R (MS27474) .   .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .  75
+•	 Crimp Jam Nut Receptacle (Miniature Jam Nut Mounting Dimensions) JTL07R .  .   .   .   76
+•	 Crimp 90° Plug JT08R (MS27500).   .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .  77
+•	 Hermetic Wall Mounting Receptacle JT00 (MS27475), 
+Hermetic Box Mounting Receptacle JT02 (MS27476).  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   78
+•	 Hermetic Jam Nut Receptacle JT07 (MS27477), 
+Hermetic Solder Mounting Receptacle JTI (MS27478).   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . 79
+•	 Solder Wall Mounting Receptacle JT00 (MS27334), 
+Solder Box Mounting Receptacle JT02 (MS27335).   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . 80
+•	 Solder Straight Plug JT06 (MS27336), 
+Solder Straight Plug with Grounding Ring JTG06A .  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   81
+•	 Solder Jam Nut Receptacle JT07 (MS27337), 
+Solder 90° Plug JT08.   .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .  82
+•	 Accessories and Tools see 38999 Accessories Section.   .    .    .    .    .    .    .    .    .    .    .    .    .   112-114
+•	 Accessories continue on .   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . 120-124
+MIL-DTL-38999 Series II Typical Markets:
+•	 Military & Commercial Aviation
+•	 Military Vehicles
+•	 Missiles & Ordnance
+•	 C4ISR
+Amphenol
+Aerospace
+
+
+===== PAGE 8 =====
+68
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Dualok 
+III
+SJT 
+38999 
+PCB 
+HD 
+I 
+II 
+Aquacon
+Accessories
+Herm/Seal
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High 
+Speed
+26482
+Matrix 2  
+83723 III
+5015
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+Crimp Rear
+Release 
+Matrix
+Matrix|Pyle
+Amphenol
+Aerospace
+R
+(TP)S
+T
+(4 HOLES)
+R (TP)
+S
+
+
+L
+
+
+
+
+
+
+
+L
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+L
+
+
+
+
+L
+
+
+
+
+
+
+
+
+	
+*	 JT00RT-XX-XXX(MS27472T) 
+	 **	 JTS00RT-XX-XXX(MS27479T) 
+	 ***	 JTN00RT-XX-XXX
+	
+*	 JT00RE-XX-XXX (MS27472E) 
+	 **	 JTS00RE-XX-XXX(MS27479E) 
+	 ***	 JTN00RE-XX-XXX
+	
+*	 JT00RP-XX-XXX(MS27472P) 
+	 **	 JTS00RP-XX-XXX 
+	 ***	 JTN00RP-XX-XXX
+	
+*	 JT00RE-XX-XXX (SR) 
+	 **	 JTS00RE-XX-XXX (SR) 
+	 ***	 JTN00RE-XX-XXX (SR)
+	 *	 Standard Junior Tri-Lock 
+	**	 High temperature version 
+	***	Clear iridite finish (gold color), N2O4 resistant
+All dimensions for reference only.
+Shell 
+Size
+F Dia. 
++.010 
+–.025 
+F
+1  Dia. 
+±.010
+L Max.
+L1 
+Max.
+L2 Max. L
+3 Max.
+N 
++.001 
+–.005
+R (TP)
+S 
+±.016
+T 
+±.005
+V Thread 
+UNEF 
+Class 2A 
+(Plated)
+KK 
+Max.
+KK
+1 
+Dia. 
+Max.
+KK
+2 Dia. 
+Max.
+8
+.125
+  .444
+1.094
+.609
+.547
+.500
+  .473
+  .594
+  .812
+.120
+  .4375-28
+  .812
+  .625
+  .578
+10
+.188
+  .558
+1.094
+.609
+.547
+.500
+  .590
+  .719
+  .938
+.120
+  .5625-24
+  .875
+  .750
+  .703
+12
+.312
+  .683
+1.094
+.609
+.547
+.500
+  .750
+  .812
+1.031
+.120
+  .6875-24
+1.000
+  .875
+  .828
+14
+.375
+  .808
+1.344
+.609
+.547
+.500
+  .875
+  .906
+1.125
+.120
+  .8125-20
+1.125
+1.000
+  .953
+16
+.500
+  .909
+1.344
+.609
+.547
+.500
+1.000
+  .969
+1.219
+.120
+  .9375-20
+1.188
+1.125
+1.078
+18
+.625
+1.034
+1.344
+.609
+.547
+.500
+1.125
+1.062
+1.312
+.120
+1.0625-18
+1.438
+1.250
+1.203
+20
+.625
+1.159
+1.344
+.609
+.547
+.500
+1.250
+1.156
+1.438
+.120
+1.1875-18
+1.438
+1.375
+1.328
+22
+.750
+1.284
+1.469
+.609
+.547
+.500
+1.375
+1.250
+1.562
+.120
+1.3125-18
+1.625
+1.500
+1.453
+24
+.800
+1.409
+1.469
+.688
+.547
+.500
+1.500
+1.375
+1.688
+.147
+1.4375-18
+1.719
+1.625
+1.578
+JT00R (MS27472) Series II – Crimp 
+Wall Mounting Receptacle
+	
+	
+.005 DIA	
+M
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+JT/JTS/JTN
+00
+RT
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27472
+E
+14
+A
+18
+P
+A
+MS27479
+E
+14
+A
+18
+P
+A
+Military
+Commercial
+
+
+===== PAGE 9 =====
+69
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+II  
+Dualok  
+III
+SJT  
+38999    
+I 
+HD  
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High  
+Speed
+26482
+Matrix 2  
+83723 III
+Matrix|Pyle
+5015
+Crimp Rear
+Release 
+Matrix
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+PCB 
+Accessories
+Aquacon
+Herm/Seal
+Amphenol
+Aerospace
+S
+R (TP)
+R
+(TP)
+S
+T
+(4 HOLES)
+SS
+
+
+44
+4
+
+P
+
+
+
+
+
+ 
+
+
+
+
+
+
+ 
+
+
+
+
+44
+
+
+P
+
+
+
+ 
+
+
+
+ 
+P
+L
+
+
+ 
+
+L
+44
+
+
+P
+
+
+
+
+
+
+
+44
+
+
+	
+*	 JTPQ00RT-XX-XXX(MS27497T) 
+	 **	 JTPSQ00RT-XX-XXX
+	
+*	 JTPQ00RE-XX-XXX (MS27497E)
+	
+*	 JTPQ00RP-XX-XXX(MS27497P)
+*	JTPQ00RE-XX-XXX (SR)
+	 *	 Standard Junior Tri-Lock 
+	**	 High temperature version
+All dimensions for reference only.
+Shell 
+Size
+F Dia. 
++.010 
+–.025 
+F
+1  Dia. 
+±.010
+L 
+Max.
+L1 
+Max.
+N 
++.001 
+–.005
+P Max. 
+Panel 
+Thick-
+ness
+R (TP)
+S 
+±.016
+T 
+±.005
+V Thread 
+UNEF Class 
+2A (Plated)
+AD 
+Dia. 
+±.005 
+KK 
+Max.
+KK
+1 
+Dia. 
+Max.
+KK
+2 
+Dia. 
+Max.
+SS Dia. 
++.000 
+–.016
+ 8
+.125
+  .444
+1.140
+.468
+  .473
+.142
+  .594
+  .812
+.120
+  .4375-28
+  .516
+  .781
+  .625
+  .578
+  .563
+10
+.188
+  .558
+1.140
+.468
+  .590
+.142
+  .719
+  .938
+.120
+  .5625-24
+  .633
+  .844
+  .750
+  .703
+  .680
+12
+.312
+  .683
+1.140
+.468
+  .750
+.142
+  .812
+1.031
+.120
+  .6875-24
+  .802
+  .969
+  .875
+  .828
+  .859
+14
+.375
+  .808
+1.375
+.468
+  .875
+.142
+  .906
+1.125
+.120
+  .8125-20
+  .927
+1.094
+1.000
+  .953
+  .984
+16
+.500
+  .909
+1.375
+.468
+1.000
+.142
+  .969
+1.219
+.120
+  .9375-20
+1.052
+1.154
+1.125
+1.078
+1.108
+18
+.625
+1.034
+1.375
+.468
+1.125
+.142
+1.062
+1.312
+.120
+1.0625-18
+1.177
+1.406
+1.250
+1.203
+1.233
+20
+.625
+1.159
+1.375
+.468
+1.250
+.142
+1.156
+1.438
+.120
+1.1875-18
+1.302
+1.406
+1.375
+1.328
+1.358
+22
+.750
+1.284
+1.516
+.468
+1.375
+.142
+1.250
+1.562
+.120
+1.3125-18
+1.427
+1.594
+1.500
+1.453
+1.483
+24
+.800
+1.409
+1.500
+.540
+1.500
+.142
+1.375
+1.688
+.147
+1.4375-18
+1.552
+1.688
+1.625
+1.578
+1.610
+JTPQ00R (MS27497) Series II – Crimp 
+Wall Mounting Receptacle 
+(Back Panel Mounting)
+	
+	
+.005 DIA	
+M
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+JTPQ/JTPSQ
+00
+RT
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27497
+E
+14
+A
+18
+P
+A
+Military
+
+
+===== PAGE 10 =====
+70
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Dualok 
+III
+SJT 
+38999 
+PCB 
+HD 
+I 
+II 
+Aquacon
+Accessories
+Herm/Seal
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High 
+Speed
+26482
+Matrix 2  
+83723 III
+5015
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+Crimp Rear
+Release 
+Matrix
+Matrix|Pyle
+Amphenol
+Aerospace
+C
+S
+S
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+ 
+
+
+
+	
+*	 JT01RT-XX-XXX 
+	 **	 JTS01RT-XX-XXX 
+	 ***	 JTN01RT-XX-XXX
+	
+*	 JT01RE-XX-XXX 
+	 **	 JTS01RE-XX-XXX 
+	 ***	 JTN01RE-XX-XXX
+	
+*	 JT01RP-XX-XXX
+	 **	 JTS01RP-XX-XXX
+	 ***	 JTN01RP-XX-XXX
+	
+*	 JT01RE-XX-XXX (SR)
+	 **	 JTS01RE-XX-XXX (SR)
+	 ***	 JTN01RE-XX-XXX (SR) 
+	 *	 Standard Junior Tri-Lock 
+	**	 High temperature version 
+	***	Clear iridite finish (gold color), N2O4 resistant
+All dimensions for reference only.
+JT01R Series II – Crimp 
+Line Receptacle
+Shell 
+Size
+C Max.
+F Dia. 
++.010 
+F1 Dia. 
++.010 
+–.025
+L Max.
+L1 
+Max.
+N Dia. 
++.001 
+–.005
+S +.017 
+–.016
+V  Thread 
+UNEF Class 
+2A (Plated)
+KK 
+Dia. Max.
+KK1 Dia. 
+Max.
+KK2 Max.
+  8
+  .965
+  .444
+.125
+1.031
+1.562
+  .473
+  .812
+  .4375-28
+  .578
+  .625
+  .812
+10
+1.089
+  .558
+.188
+1.031
+1.562
+  .590
+  .938
+  .5625-24
+  .703
+  .750
+  .875
+12
+1.183
+  .683
+.312
+1.031
+1.562
+  .750
+1.031
+  .6875-24
+  .828
+  .875
+1.000
+14
+1.277
+  .808
+.375
+1.031
+1.812
+  .875
+1.125
+  .8125-20
+  .953
+1.000
+1.125
+16
+1.371
+  .909
+.500
+1.031
+1.812
+1.000
+1.219
+  .9375-20
+1.078
+1.125
+1.188
+18
+1.465
+1.034
+.625
+1.031
+1.812
+1.125
+1.312
+1.0625-18
+1.203
+1.250
+1.438
+20
+1.589
+1.159
+.625
+1.031
+1.812
+1.250
+1.438
+1.1875-18
+1.328
+1.375
+1.438
+22
+1.715
+1.284
+.750
+1.031
+1.938
+1.375
+1.562
+1.3125-18
+1.453
+1.500
+1.625
+24
+1.838
+1.409
+.800
+1.109
+1.938
+1.500
+1.688
+1.4375-18
+1.578
+1.625
+1.719
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+JT/JTS/JTN
+01
+RT
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+Commercial
+
+
+===== PAGE 11 =====
+71
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+II  
+Dualok  
+III
+SJT  
+38999    
+I 
+HD  
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High  
+Speed
+26482
+Matrix 2  
+83723 III
+Matrix|Pyle
+5015
+Crimp Rear
+Release 
+Matrix
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+PCB 
+Accessories
+Aquacon
+Herm/Seal
+Amphenol
+Aerospace
+	
+*	 JT02RE-XX-XXX (MS27499) 
+	 **	 JTS02RE-XX-XXX 
+	 ***	 JTN02RE-XX-XXX
+	 *	 Standard Junior Tri-Lock 
+	**	 High temperature version 
+	***	Clear iridite finish (gold color), N2O4 resistant
+All dimensions for reference only. 
+NOTE: For applications requiring an environmental seal, please refer to JT00R, page 63.
+	
+	
+.005 DIA	
+M
+S
+R (TP)
+R
+(TP)
+S
+T
+(4 HOLES)
+
+
+
+
+
+
+
+
+
+L
+
+	
+*	 JT02RE-XX-XXX (053) (MS27513) 
+	 **	 JTS02RE-XX-XXX (053) 
+	 ***	 JTN02RE-XX-XXX (053)
++.006
+–.000
+.380
++.000
+–.005
+.322
+±.031
+.200
+.516 MAX.
+KK
+L
+N
+JT02RE (MS27499) Series II – Crimp 
+JT02RE (053) (MS27513) 
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+JT/JTS/JTN
+02
+RE
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27499
+E
+14
+A
+18
+P
+A
+MS27513
+E
+14
+A
+18
+P
+A
+Military
+Commercial
+Box Mounting Receptacle
+
+
+===== PAGE 12 =====
+72
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Dualok 
+III
+SJT 
+38999 
+PCB 
+HD 
+I 
+II 
+Aquacon
+Accessories
+Herm/Seal
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High 
+Speed
+26482
+Matrix 2  
+83723 III
+5015
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+Crimp Rear
+Release 
+Matrix
+Matrix|Pyle
+Amphenol
+Aerospace
+	
+*  	JTP02RE-XX-XXX (MS27508E) 
+	 **	 JTPS02RE-XX-XXX 
+***	JTPN02RE-XX-XXX
+	 *	 Standard Junior Tri-Lock 
+	**	 High temperature version 
+	***	Clear iridite finish (gold color), N2O4  resistant
+S
+R (TP)
+R
+(TP)
+S
+T
+(4 HOLES)
+
+
+
+
+
+44
+P
+ 
+
+L
+
+
+
+
+
+
+JTP02R (MS27508) Series II – Crimp
+Box Mounting Receptacle 
+Back Panel Mounting
+Shell 
+Size
+L Max. 
+N +.001 
+–.005
+P Max. 
+Panel 
+Thickness
+R (TP)
+S ±.016
+T Dia. 
+±.005
+AD Dia. 
+±.005
+KK Dia. 
+Max.
+ 8
+.225
+  .473
+.147
+   .594
+  .812
+.120
+  .516
+  .531
+10
+.225
+  .590
+.152
+  .719
+  .938
+.120
+  .633
+  .656
+12
+.225
+  .750
+.152
+  .812
+1.031
+.120
+  .802
+  .828
+14
+.225
+  .875
+.152
+  .906
+1.125
+.120
+  .927
+  .953
+16
+.225
+1.000
+.152
+  .969
+1.219
+.120
+1.052
+1.078
+18
+.225
+1.125
+.152
+1.062
+1.312
+.120
+1.177
+1.203
+20
+.225
+1.250
+.179
+1.156
+1.438
+.120
+1.302
+1.328
+22
+.225
+1.375
+.179
+1.250
+1.562
+.120
+1.427
+1.453
+24
+.225
+1.500
+.169
+1.375
+1.688
+.147
+1.552
+1.578
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+JT/JTPS/JTPN
+02
+RE
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27508
+E
+14
+A
+18
+P
+A
+Military
+Commercial
+	
+	
+.005 DIA	
+M
+
+
+===== PAGE 13 =====
+73
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+II  
+Dualok  
+III
+SJT  
+38999    
+I 
+HD  
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High  
+Speed
+26482
+Matrix 2  
+83723 III
+Matrix|Pyle
+5015
+Crimp Rear
+Release 
+Matrix
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+PCB 
+Accessories
+Aquacon
+Herm/Seal
+Amphenol
+Aerospace
+Q
+KK 1
+1
+F
+.325 ±.025
+.257 +.003
+–.002
+L
+.325 ±.025
+.257 +.003
+–.002
+L
+KK
+2
+2
+.325 ±.025
+F KK
+L1
+.257 +.003
+–.002
+L
+
+.325 ±.025
+.257 +.003
+–.002
+3
+	
+*	 JT06RE-XX-XXX (SR)
+	 **	 JTS06RE-XX-XXX (SR)
+***	JTN06RE-XX-XXX(SR)	
+	
+*	 JT06RE-XX-XXX (MS27473E) 
+	 **	 JTS06RE-XX-XXX 
+***	JTN06RE-XX-XXX
+	
+*	 JT06RP-XX-XXX (MS27473P)
+	 **	 JTS06RP-XX-XXX
+***	JTN06RP-XX-XXX
+	
+*	 JT06RT-XX-XXX (MS27473T) 
+	 **	 JTS06RT-XX-XXX 
+***	JTN06RT-XX-XXX
+	 *	 Standard Junior Tri-Lock 
+	**	 High temperature version 
+	***	Clear iridite finish (gold color), N2O4 resistant
+All dimensions for reference only.
+JT06R (MS27473) Series II – Crimp
+Straight Plug
+Shell 
+Size
+F Dia. 
+F1 Dia. 
++.001 
+–.025
+L  
+Max.
+L1  
+Max.
+L2 
+Max.
+L3  
+Max.
+Q Dia 
+Max.
+	
+V Thread Modified
+KK Dia. 
+Max.
+KK1 
+Max.
+KK2 
+Dia. 
+Max.
+Class 2A 
+UNEF
+Modified Major 
+Dia.
+8
+  .444
+.125
+1.562
+1.000
+.938
+.891
+  .734
+  .4375-28
+  .421 –  .417
+  .625
+  .812
+  .578
+10
+  .558
+.188
+1.562
+1.000
+.938
+.891
+  .844
+  .5625-24
+  .542 –  .538
+  .750
+  .875
+  .703
+12
+  .683
+.312
+1.562
+1.000
+.938
+.891
+1.016
+  .6875-24
+  .667 –  .663
+  .875
+1.000
+  .828
+14
+  .808
+.375
+1.812
+1.000
+.938
+.891
+1.141
+  .8125-20
+  .791 –  .787
+1.000
+1.125
+  .953
+16
+  .909
+.500
+1.812
+1.000
+.938
+.891
+1.265
+  .9375-20
+  .916 –  .912
+1.125
+1.188
+1.078
+18
+1.034
+.625
+1.812
+1.000
+.938
+.891
+1.391
+1.0625-18
+1.034 – 1.030
+1.250
+1.438
+1.203
+20
+1.159
+.625
+1.812
+1.000
+.938
+.891
+1.500
+1.1875-18
+1.158 – 1.154
+1.375
+1.438
+1.328
+22
+1.284
+.750
+1.938
+1.000
+.938
+.891
+1.625
+1.3125-18
+1.283 – 1.279
+1.500
+1.625
+1.453
+24
+1.409
+.800
+1.938
+1.062
+.938
+.891
+1.750
+1.4375-18
+1.408 – 1.404
+1.625
+1.719
+1.578
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+JT/JTS/JTN
+06
+RE
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27473
+E
+14
+A
+18
+P
+A
+Military
+Commercial
+
+
+===== PAGE 14 =====
+74
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Dualok 
+III
+SJT 
+38999 
+PCB 
+HD 
+I 
+II 
+Aquacon
+Accessories
+Herm/Seal
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High 
+Speed
+26482
+Matrix 2  
+83723 III
+5015
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+Crimp Rear
+Release 
+Matrix
+Matrix|Pyle
+Amphenol
+Aerospace
+GROUNDING
+FINGERS
+L1
+F
+KK
+GROUNDING
+FINGERS
+.257
++.003
+–.002
+±.025
+.325
+KK1
+.938 MAX.
+Q
+V
+GROUNDING
+FINGERS
+L
+.257
++.003
+–.002
+±.025
+.325
+.257
++.003
+–.002
+±.025
+.325
+	
+*	 JTG06RE-XX-XXX (MS27484E)
+	 **	 JTNG06RE-XX-XXX
+	
+*	 JTG06RP-XX-XXX (MS27484P)
+	 **	 JTNG06RP-XX-XXX
+	
+*	 JTG06RT-XX-XXX (MS27484T)
+	 **	 JTNG06RT-XX-XXX
+	 *	 Plug with grounding fingers 
+	**	 Clear iridite finish (gold color), N2O4 resistant
+All dimensions for reference only.
+JTG06R (MS27484) Series II – Crimp
+Straight Plug (With Grounding Fingers)
+Shell 
+Size
+F Dia. L Max.
+L1 
+Max.
+Q 
+Dia 
+Max.
+V Thread Modified
+KK Dia. 
+Max.
+KK1 Dia. 
+Max.
+Class 2A 
+UNEF
+Modified Major 
+Dia.
+8
+  .444
+.891
+1.000
+  .734
+  .4375-28
+  .421 –  .417
+  .625
+  .578
+10
+  .558
+.891
+1.000
+  .844
+  .5625-24
+  .542 –  .538
+  .750
+  .703
+12
+  .683
+.891
+1.000
+1.016
+  .6875-24
+  .667 –  .663
+  .875
+  .828
+14
+  .808
+.891
+1.000
+1.141
+  .8125-20
+  .791 –  .787
+1.000
+  .953
+16
+  .909
+.891
+1.000
+1.265
+  .9375-20
+  .916 –  .912
+1.125
+1.078
+18
+1.034
+.891
+1.000
+1.391
+1.0625-18
+1.034 – 1.030
+1.250
+1.203
+20
+1.159
+.891
+1.000
+1.500
+1.1875-18
+1.158 – 1.154
+1.375
+1.328
+22
+1.284
+.891
+1.000
+1.625
+1.3125-18
+1.283 – 1.279
+1.500
+1.453
+24
+1.409
+.891
+1.062
+1.750
+1.4375-18
+1.408 – 1.404
+1.625
+1.578
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+JTG/JTNG
+06
+RE
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27484
+E
+14
+A
+18
+P
+A
+Military
+Commercial
+
+
+===== PAGE 15 =====
+75
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+II  
+Dualok  
+III
+SJT  
+38999    
+I 
+HD  
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High  
+Speed
+26482
+Matrix 2  
+83723 III
+Matrix|Pyle
+5015
+Crimp Rear
+Release 
+Matrix
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+PCB 
+Accessories
+Aquacon
+Herm/Seal
+Amphenol
+Aerospace
+C
+S (2 PLACES)
+H
+A
+T
+
+
+2 
+ A
+ 
+ 
+ 
+
+
+
+
+
+
+
+L
+
+
+2 
+ A
+ 
+ 
+
+
+
+
+2 
+ A
+ 
+ 
+
+
+
+2 
+ A
+
+
+
+L
+
+
+
+
+2
+
+
+L
+
+
+ 
+2
+
+
+
+
+L
+
+	
+*	 JT07RE-XX-XXX (SR) 
+	 ***	 JTS07RE-XX-XXX (SR) 
+	****	 JTN07RE-XX-XXX (SR)
+	 ★	 .059 Dia. Min. 3 lockwire holes. 
+	
+	 Formed lockwire hole design (6 holes) is optional. 
+	 •	 “D” shaped mounting hole dimensions. 
+	 *	 Standard Junior Tri-Lock 
+	**	 Panel Thickness 
+	***	High temperature version 
+	****Clear iridite finish (gold color), N2O4 resistant
+All dimensions for reference only.
+	
+*	 JT07RE-XX-XXX (MS27474E) 
+	 ***	 JTS07RE-XX-XXX 
+	****	 JTN07RE-XX-XXX
+	
+*	 JT07RP-XX-XXX (MS27474P) 
+	 ***	 JTS07RP-XX-XXX 
+	****	 JTN07RP-XX-XXX
+	
+*	 JT07RT-XX-XXX (MS27474T) 
+	 ***	 JTS07RT-XX-XXX 
+	****	 JTN07RT-XX-XXX
+JT07R (MS27474) Series II – Crimp
+Jam Nut Receptacle 
+Shell 
+Size
+A• 
++.000 
+–.010
+C 
+Max.
+F Dia. 
++.010 
+–.025
+F1 
+Dia.
+H Hex 
++.017 
+–.016
+L 
+Max.
+L1 
+Max.
+L2 
+Max.
+L3 
+Max.
+M 
+±.005
+N Dia. 
++.001 
+–.005
+S 
+±.016
+T• 
++.010 
+–.000
+V  Thread 
+UNEF 
+Class 2A
+Z 
+±.031
+KK 
+Max.
+KK1 
+Dia. 
+Max.
+KK2 
+Max.
+RR Thread 
+(Plated)  
+Class 2A
+8
+  .830
+1.390
+.125
+  .444
+1.062
+.484
+.453
+.563
+1.047
+.438
+.473
+1.250
+  .884
+  .4375-28
+.144
+  .812
+  .625
+  .578
+  .8750-20UNEF
+10
+  .955
+1.515
+.188
+  .558
+1.188
+.484
+.453
+.563
+1.047
+.438
+  .590
+1.375
+1.007
+  .5625-24
+.144
+  .875
+  .750
+  .703
+1.0000-20UNEF
+12
+1.084
+1.640
+.312
+  .683
+1.312
+.484
+.453
+.563
+1.047
+.438
+  .750
+1.500
+1.134
+  .6875-24
+.144
+1.000
+  .875
+  .828
+1.1250-18UNEF
+14
+1.208
+1.765
+.375
+  .808
+1.438
+.484
+.453
+.563
+1.297
+.438
+  .875
+1.625
+1.259
+  .8125-20
+.144
+1.125
+1.000
+  .953
+1.2500-18UNEF
+16
+1.333
+1.953
+.500
+  .909
+1.562
+.484
+.453
+.563
+1.297
+.438
+1.000
+1.781
+1.384
+  .9375-20
+.144
+1.188
+1.125
+1.078
+1.3750-18UNEF
+18
+1.459
+2.031
+.625
+1.034
+1.688
+.484
+.453
+.563
+1.297
+.438
+1.125
+1.890
+1.507
+1.0625-18
+.144
+1.438
+1.250
+1.203
+1.5000-18UNEF
+20
+1.576
+2.156
+.625
+1.159
+1.812
+.453
+.422
+.531
+1.266
+.464
+1.250
+2.016
+1.634
+1.1875-18
+.188
+1.438
+1.375
+1.328
+1.6250-18UNEF
+22
+1.701
+2.280
+.750
+1.284
+2.000
+.453
+.422
+.531
+1.391
+.464
+1.375
+2.140
+1.759
+1.3125-18
+.188
+1.625
+1.500
+1.453
+1.7500-18UNS
+24
+1.826
+2.405
+.800
+1.409
+2.125
+.375
+.422
+.609
+1.391
+.464
+1.500
+2.265
+1.884
+1.4375-18
+.188
+1.719
+1.625
+1.578
+1.8750-16UN
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+JT/JTS/JTN
+07
+RE
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27474
+E
+14
+A
+18
+P
+A
+Military
+Commercial
+
+
+===== PAGE 16 =====
+76
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Dualok 
+III
+SJT 
+38999 
+PCB 
+HD 
+I 
+II 
+Aquacon
+Accessories
+Herm/Seal
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High 
+Speed
+26482
+Matrix 2  
+83723 III
+5015
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+Crimp Rear
+Release 
+Matrix
+Matrix|Pyle
+Amphenol
+Aerospace
+	 ★	 .059 Dia. Min. 3 lockwire holes. 
+	
+	 Formed lockwire hole design  
+	
+	 (6 holes) is optional. 
+	 •	 “D” shaped mounting hole dimensions. 
+	 *	 Miniature mounting dimensions 
+	***	High temperature version 
+	****Clear iridite finish (gold color), N2O4 resistant
+S
+H
+S
+A
+T
+C
+M
+P
+K
+O RING
+KK
+RR
+Z
+L2
+N
+RR
+Z
+L
+N
+KK1
+F
+M
+P
+K
+O RING
+KK
+RR
+Z
+L
+N
+1
+M
+P
+K
+O RING
+	
+*	 JTL07RP-XX-XXX 
+	 ***	 JTLS07RP-XX-XXX 
+	****	 JTLN07RP-XX-XXX
+	
+*	 JTL07RE-XX-XXX (SR) 
+	 ***	 JTLS07RE-XX-XXX (SR) 
+	****	 JTLN07RE-XX-XXX (SR)
+	
+*	 JTL07RE-XX-XXX
+	 ***	 JTLS07RE-XX-XXX 
+	****	 JTLN07RE-XX-XXX
+All dimensions for reference only.
+JTL07R Series II – Crimp 
+Jam Nut Receptacle
+Shell 
+Size
+A• 
++.000 
+–.010
+C 
+Max.
+F Dia. 
++.010 
+–.025
+H Hex 
++.017 
+–.016
+K 
++.011 
+–.010
+L 
+Max.
+L1 
+Max.
+L2 
+Max.
+M 
+±.005
+N Dia. 
++.001 
+–.005
+P Panel 
+Thickness
+S 
+±.016
+T• 
++.010 
+–.000
+Z 
+±.026
+KK Dia. 
+Max.
+KK1   
+Max.
+RR Thread 
+Class 2A
+Min.
+Max.
+8
+  .542
+1.077
+.125
+  .750
+.125
+1.062
+.641
+.375
+.630
+  .473
+.062
+.125
+  .938
+  .572
+.047
+  .688
+  .812
+ .5625-24UNEF
+10
+  .669
+1.203
+.188
+  .875
+.125
+1.062
+.641
+.375
+.630
+  .590
+.062
+.125
+1.062
+  .697
+.047
+  .812
+  .875
+ .6875-24UNEF
+12
+  .830
+1.390
+.312
+1.062
+.125
+1.062
+.641
+.375
+.630
+  .750
+.062
+.125
+1.250
+  .844
+.047
+  .938
+1.000
+.8750-20UNEF
+14
+  .955
+1.515
+.375
+1.188
+.125
+1.062
+.641
+.375
+.630
+  .875
+.062
+.125
+1.375
+1.007
+.047
+1.062
+1.125
+1.0000-20UNEF
+16
+1.084
+1.640
+.500
+1.312
+.125
+1.062
+.641
+.375
+.630
+1.000
+.062
+.125
+1.500
+1.134
+.047
+1.188
+1.188
+1.1250-18UNEF
+18
+1.208
+1.765
+.625
+1.438
+.125
+1.062
+.641
+.375
+.630
+1.125
+.062
+.125
+1.625
+1.259
+.047
+1.312
+1.438
+1.2500-18UNEF
+20
+1.333
+1.953
+.625
+1.562
+.156
+1.062
+.703
+.328
+.755
+1.250
+.062
+.250
+1.812
+1.384
+.172
+1.469
+1.438
+1.3750-18UNEF
+22
+1.459
+2.075
+.750
+1.688
+.156
+1.062
+.703
+.328
+.755
+1.375
+.062
+.250
+1.938
+1.507
+.172
+1.594
+1.625
+1.5000-18UNEF
+24
+1.575
+2.203
+.800
+1.812
+.156
+1.062
+.703
+.328
+.755
+1.500
+.062
+.250
+2.062
+1.634
+.172
+1.719
+1.719
+1.6250-18UNEF
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+JTL/JTLS/JTLN
+07
+RP
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+Commercial
+
+
+===== PAGE 17 =====
+77
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+II  
+Dualok  
+III
+SJT  
+38999    
+I 
+HD  
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High  
+Speed
+26482
+Matrix 2  
+83723 III
+Matrix|Pyle
+5015
+Crimp Rear
+Release 
+Matrix
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+PCB 
+Accessories
+Aquacon
+Herm/Seal
+Amphenol
+Aerospace
+Q
+.257
++.003
+–.002
++.003
+–.002
+L1
+.325
+±.025
+FF
+H
+K
+L****
+FF
+1
+.257
+.325
+±.025
+KK
+X
+X1
+****
+-BB-
+	
+*	 JT08RP-XX-XXX 
+	 **	 JTS08RP-XX-XXX 
+	 ***	 JTN08RP-XX-XXX
+	 *	 Standard Junior Tri-Lock 
+	**	 High temperature version 
+	***	Clear iridite finish (gold color), N2O4 resistant 
+	****Dimensions L and X1 are applicable when the end of the screw is flush with the surface BB.
+All dimensions for reference only.
+	
+*	 JT08RE-XX-XXX (MS27500E) 
+	 **	 JTS08RE-XX-XXX 
+	 ***	 JTN08RE-XX-XXX
+JT08R (MS27500) Series II – Crimp
+90° Plug 
+Shell 
+Size
+H 
+±.010
+K 
+±.010
+L Max.
+L1  
+Max.
+Q Dia. 
+Max.
+X Min. 
+Cable
+X1 Max. 
+Cable
+FF Max.
+FF1 
+Max.
+KK 
+Max.
+ 8
+  .547
+.156
+1.578
+1.125
+  .734
+.082
+.234
+.438
+  .984
+  .755
+10
+  .709
+.188
+1.578
+1.156
+  .844
+.082
+.234
+.516
+1.016
+  .755
+12
+  .829
+.281
+1.656
+1.250
+1.016
+.114
+.328
+.594
+1.078
+  .817
+14
+1.000
+.438
+1.844
+1.406
+1.141
+.176
+.457
+.656
+1.203
+  .943
+16
+1.021
+.500
+2.000
+1.469
+1.265
+.238
+.634
+.719
+1.265
+1.067
+18
+1.145
+.562
+2.046
+1.531
+1.391
+.208
+.614
+.781
+1.328
+1.149
+20
+1.270
+.625
+2.125
+1.594
+1.500
+.302
+.608
+.844
+1.359
+1.399
+22
+1.395
+.688
+2.250
+1.656
+1.625
+.302
+.823
+.906
+1.421
+1.399
+24
+1.520
+.750
+2.422
+1.797
+1.750
+.332
+.853
+.969
+1.703
+1.587
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+JT/JTS/JTN
+08
+RP
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27500
+E
+14
+A
+18
+P
+A
+Military
+Commercial
+
+
+===== PAGE 18 =====
+78
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Dualok 
+III
+SJT 
+38999 
+PCB 
+HD 
+I 
+II 
+Aquacon
+Accessories
+Herm/Seal
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High 
+Speed
+26482
+Matrix 2  
+83723 III
+5015
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+Crimp Rear
+Release 
+Matrix
+Matrix|Pyle
+Amphenol
+Aerospace
+	
+*	 JT02H-XX-XXX 
+	 **	 JT02Y-XX-XXX (MS27476YXXDXXX) 
+	 ***	 JTS02Y-XX-XXX (MS27476YXXEXXX)
+	 *	 Standard Junior Tri-Lock 
+	**	 Interfacial seal wafer 
+	***	High temperature version, interfacial seal 
+	
+	 wafer with stainless steel shell
+All dimensions for reference only.
+	
+	
+.005 DIA	
+M
+S
+R (TP)
+R
+(TP)
+S
+T
+(4 HOLES)
++.016
+–.005
+.375
+L
+N
+.317
+±.005
+.308 MAX
+KK
+	
+*	 JT00H-XX-XXX 
+	 **	 JT00Y-XX-XXX (MS27475YXXDXXX) 
+	 ***	 JTS00Y-XX-XXX (MS27482YXXEXXX)
+	 *	 Standard Junior Tri-Lock 
+	**	 Interfacial seal wafer 
+	***	High temperature version, interfacial seal wafer 	
+	
+	 with stainless steel shell
+	
+	
+.005 DIA	
+M
+S
+R (TP)
+R
+(TP)
+S
+T
+(4 HOLES)
+JT00 (MS27475) Series II – Hermetic 
+Wall Mounting Receptacle
+Shell 
+Size
+L 
++.006 
+–.015
+N 
++.001 
+–.005
+R (TP)
+S 
+±.016
+T 
+ ±.005
+KK 
++.001 
+–.005
+8
+.051
+  .473
+  .594
+  .812
+.120
+  .562
+10
+.051
+  .590
+  .719
+  .938
+.120
+  .672
+12
+.051
+  .750
+  .812
+1.031
+.120
+  .781
+14
+.051
+  .875
+  .906
+1.125
+.120
+  .906
+16
+.051
+1.000
+  .969
+1.219
+.120
+1.031
+18
+.051
+1.125
+1.062
+1.312
+.120
+1.156
+20
+.051
+1.250
+1.156
+1.438
+.120
+1.250
+22
+.080
+1.375
+1.250
+1.562
+.120
+1.375
+24
+.080
+1.500
+1.375
+1.688
+.147
+1.500
+Shell 
+Size
+L 
+Max.
+N 
++.001 
+–.005
+R (TP) S ±.016
+T 
+ ±.005
+V Thread Class 
+2A
+8
+.234
+  .473
+  .594
+  .812
+.120
+  .5625-24UNEF
+10
+.234
+  .590
+  .719
+  .938
+.120
+  .6875-24UNEF
+12
+.234
+  .750
+  .812
+1.031
+.120
+  .8125-20UNEF
+14
+.234
+  .875
+  .906
+1.125
+.120
+  .9375-20UNEF
+16
+.234
+1.000
+  .969
+1.219
+.120
+1.0625-18UNEF
+18
+.234
+1.125
+1.062
+1.312
+.120
+1.1875-18UNEF
+20
+.234
+1.250
+1.156
+1.438
+.120
+1.3125-18UNEF
+22
+.234
+1.375
+1.250
+1.562
+.120
+1.4375-18UNEF
+24
+.313
+1.500
+1.375
+1.688
+.147
+1.5625-18UNEF
+JT02 (MS27476) Series II – Hermetic
+Box Mounting Receptacle
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+JT/JTS
+00
+H
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27475
+Y
+14
+A
+18
+P
+A
+MS27482
+Y
+14
+A
+18
+P
+A
+MS27476
+Y
+14
+A
+18
+P
+A
+Military
+Commercial
++.016
+–.005
+.375
+±.005
+.317
+.308 MAX
+V
+L
+
+
+===== PAGE 19 =====
+79
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+II  
+Dualok  
+III
+SJT  
+38999    
+I 
+HD  
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High  
+Speed
+26482
+Matrix 2  
+83723 III
+Matrix|Pyle
+5015
+Crimp Rear
+Release 
+Matrix
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+PCB 
+Accessories
+Aquacon
+Herm/Seal
+Amphenol
+Aerospace
+ S (2 PLACES)
+H
+A
+T
+C
+	
+*	 JT07H-XX-XXX 
+	 ***	 JT07Y-XX-XX (MS27477YXXDXXX) 
+	****	 JTS07Y-XX-XXX (MS27483YXXEXXX)
+	 *	 Standard Junior Tri-Lock 
+★	.059 Dia. Min. 3 lockwire holes. Formed lockwire hole design (6 holes) is optional. 
+	 •	 “D” shaped mounting hole dimensions. 
+	**	 Panel Thickness 
+	***	Interfacial seal wafer 
+	****High temperature version, interfacial seal wafer with stainless steel shell
+All dimensions for reference only.
+	
+*	 JTIH-XX-XXX 
+	 **	 JTIY-XX-XX (MS27478YXXDXXX) 
+	 ***	 JTSIY-XX-XXX (MS27503YXXEXXX)
+	 *	 Standard Junior Tri-Lock 
+	**	 Interfacial seal wafer 
+	***	High temperature version, interfacial seal wafer with stainless steel shell
+All dimensions for reference only. 
+Weld mounting hermetic receptacle also available.  
+Consult Amphenol Aerospace for availability and dimensions.
+GG
+.348
+N
+L
+KK
+.317
+.340 MAX
++.011
+–.010
+±.005
+JT07 (MS27477) Series II – Hermetic
+Jam Nut Receptacle
+Shell 
+Size
+L 
++.011 
+–.010
+N 
++.001 
+–.005
+GG 
++.011 
+–.010
+KK 
++.001 
+–.005
+8
+.078
+  .473
+  .687
+  .562
+10
+.078
+  .590
+  .797
+  .672
+12
+.078
+  .750
+  .906
+  .781
+14
+.078
+  .875
+1.031
+  .906
+16
+.078
+1.000
+1.156
+1.031
+18
+.078
+1.125
+1.281
+1.156
+20
+.078
+1.250
+1.375
+1.250
+22
+.107
+1.375
+1.500
+1.375
+24
+.107
+1.500
+1.625
+1.500
+Shell 
+Size
+A• 
++.000 
+–.010
+C 
+Max.
+H 
++.017 
+–.016
+M 
+±.005
+N 
++.001 
+–.005
+S 
+±.016
+T• 
++.010 
+–.000
+Z Max.
+RR Thread 
+Class 2A
+  8
+  .830
+1.390
+1.062
+.438
+  .473
+1.250
+  .884
+.244
+  .8750-20UNEF
+10
+  .955
+1.515
+1.188
+.438
+  .590
+1.375
+1.007
+.244
+1.0000-20UNEF
+12
+1.084
+1.640
+1.312
+.438
+  .750
+1.500
+1.134
+.244
+1.1250-18UNEF
+14
+1.208
+1.765
+1.438
+.438
+  .875
+1.625
+1.259
+.244
+1.2500-18UNEF
+16
+1.333
+1.953
+1.562
+.438
+1.000
+1.781
+1.384
+.244
+1.3750-18UNEF
+18
+1.459
+2.031
+1.688
+.438
+1.125
+1.890
+1.507
+.244
+1.5000-18UNEF
+20
+1.576
+2.156
+1.812
+.464
+1.250
+2.016
+1.634
+.218
+1.6250-18UNEF
+22
+1.701
+2.280
+2.000
+.464
+1.375
+2.140
+1.759
+.218
+1.7500-18UNS
+24
+1.826
+2.405
+2.125
+.464
+1.500
+2.265
+1.884
+.218
+1.8750-16UN
+JTI (MS27478) Series II – Hermetic
+Solder Mounting Receptacle
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+JT/JTS
+07
+H
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27477
+Y
+14
+A
+18
+P
+A
+MS27483
+Y
+14
+A
+18
+P
+A
+MS27478
+Y
+14
+A
+18
+P
+A
+MS27503
+Y
+14
+A
+18
+P
+A
+Military
+Commercial
+M
+Z
+.062 MIN.**
+.109 MAX
+O  RING
+N
+RR
+
+
+===== PAGE 20 =====
+80
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Dualok 
+III
+SJT 
+38999 
+PCB 
+HD 
+I 
+II 
+Aquacon
+Accessories
+Herm/Seal
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High 
+Speed
+26482
+Matrix 2  
+83723 III
+5015
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+Crimp Rear
+Release 
+Matrix
+Matrix|Pyle
+Amphenol
+Aerospace
+* Standard Junior Tri-Lock
+NOTE: For availability of back panel mounting types, consult Amphenol Aerospace.
+Shell 
+Size
+F 
+Dia. 
+Min.
+F1 
++.010 
+–.025
+L1 
+Max.
+L2 
+Max.
+L3 
+Max.
+N 
++.001 
+–.005
+R 
+(TP)
+S 
+±.016
+T 
+±.005
+V Thread Modified
+KK
+Dia. 
+Max.
+KK1 
+Max.
+Size 
+Class 2A
+Modified 
+Major Dia.
+8
+.312
+.125
+.422
+.734
+.234
+.473
+.594
+  .812
+.120
+  .4375-28UNEF 
+  .421 -   .417
+.500
+.812
+10
+.429
+.188
+.422
+.734
+.234
+.590
+.719
+  .938
+.120
+  .5625-24UNEF
+  .542 -   .538
+.625
+.875
+12
+.543
+.312
+.422
+.734
+.234
+.750
+.812
+1.031
+.120
+  .6875-24UNEF
+  .667 -   .663
+.750
+1.000
+14
+.668
+.375
+.422
+.797
+.234
+.875
+.906
+1.125
+.120
+  .8125-20UNEF
+  .791 -   .787
+.875
+1.125
+16
+.793
+.500
+.422
+.797
+.234
+1.000
+.969
+1.219
+.120
+  .9375-20UNEF
+  .916 -   .912
+1.000
+1.188
+18
+.894
+.625
+.422
+.797
+.234
+1.125
+1.062
+1.312
+.120
+1.0625-18UNEF
+1.034 - 1.030
+1.109
+1.438
+20
+1.019
+.625
+.422
+.859
+.234
+1.250
+1.156
+1.438
+.120
+1.1875-18UNEF
+1.158 - 1.154
+1.234
+1.438
+22
+1.144
+.750
+.422
+.859
+.234
+1.375
+1.250
+1.562
+.120
+1.3125-18UNEF
+1.283 - 1.279
+1.359
+1.625
+24
+1.269
+.800
+.422
+.922
+.313
+1.500
+1.375
+1.688
+.147
+1.4375-18UNEF
+1.408 - 1.404
+1.484
+1.719
+JT02 (MS27335) Series II – Solder
+Box Mounting Receptacle
+*JT00P-XX-XXX  (MS27334P)
+*JTN00P-XX-XXX
+*JT00A-XX-XXX 
+*JT00C-XX-XXX  (MS27334T)
+*JTN00A-XX-XXX
+*JTN00C-XX-XXX
+*JT00A-XX-XXX(SR)
+*JTN00A-XX-XXX(SR)  
+*JTN00C-XX-XXX(SR)
+* Standard Junior Tri-Lock
+NOTE: For availability of back panel mounting types, consult Amphenol 
+Aerospace.
+Shell 
+Size
+N
++.001
+–.005
+R
+(TP)
+S
+± .016
+T
+± .005
+KK
+Max.
+  8
+.473
+.594
+.812
+.120
+.391
+10
+.590
+.719
+.938
+.120
+.508
+12
+.750
+.812
+1.031
+.120
+.622
+14
+.875
+.906
+1.125
+.120
+.749
+16
+1.000
+.969
+1.219
+.120
+.872
+18
+1.125
+1.062
+1.312
+.120
+.976
+20
+1.250
+1.156
+1.438
+.120
+1.101
+22
+1.375
+1.250
+1.562
+.120
+1.226
+24
+1.500
+1.375
+1.688
+.147
+1.351
+All dimensions for reference only.
+*JT02P-XX-XXX 
+*JT02A-XX-XXX  
+*JT02C-XX-XXX  (MS27335T)
+*JTN02P-XX-XXX
+*JTN02A-XX-XXX
+*JTN02C-XX-XXX
+	
++   .005 DIA  M
+	
++   .005 DIA  M
+JT00 (MS27334) Series II – Solder
+Wall Mounting Receptacle
+Military qualified to MIL-DTL-27599
+Military qualified to MIL-DTL-27599
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+JT/JTN
+00
+P
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27334
+P
+14
+A
+18
+P
+A
+MS27335
+T
+14
+A
+18
+P
+A
+Military
+Commercial
+
+
+===== PAGE 21 =====
+81
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+II  
+Dualok  
+III
+SJT  
+38999    
+I 
+HD  
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High  
+Speed
+26482
+Matrix 2  
+83723 III
+Matrix|Pyle
+5015
+Crimp Rear
+Release 
+Matrix
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+PCB 
+Accessories
+Aquacon
+Herm/Seal
+Amphenol
+Aerospace
+*Standard Junior Tri-Lock
+Shell 
+Size
+F 
+Min.
+F1 
++.010 
+–.025
+H 
++.010 
+–.001
+L 
+Max.
+L1 
+Max.
+L2 
+Max.
+Q 
+Max.
+V Thread Modified
+KK 
+Max.
+Size 
+Class 2A
+Modified 
+Major Dia.
+8
+  .312
+.125
+  .635
+.812
+.625
+1.109
+  .734
+  .4375-28UNEF 
+  .421 -   .417
+.812
+10
+  .429
+.188
+  .734
+.812
+.625
+1.109
+  .844
+  .5625-24UNEF
+  .542 -   .538
+.875
+12
+  .543
+.312
+  .870
+.812
+.625
+1.109
+1.016
+  .6875-24UNEF
+  .667 -   .663
+1.000
+14
+  .668
+.375
+  .996
+.812
+.625
+1.172
+1.141
+  .8125-20UNEF
+  .791 -   .787
+1.125
+16
+  .793
+.500
+1.122
+.828
+.625
+1.172
+1.265
+  .9375-20UNEF
+  .916 -   .912
+1.188
+18
+  .894
+.625
+1.246
+.828
+.625
+1.172
+1.391
+1.0625-18UNEF
+1.034 - 1.030
+1.438
+20
+1.019
+.625
+1.372
+.828
+.625
+1.234
+1.500
+1.1875-18UNEF
+1.158 - 1.154
+1.438
+22
+1.144
+.750
+1.496
+.828
+.625
+1.234
+1.625
+1.3125-18UNEF
+1.283 - 1.279
+1.625
+24
+1.269
+.800
+1.622
+.906
+.688
+1.297
+1.750
+1.4375-18UNEF
+1.408 - 1.404
+1.719
+JTG06A Series II – Solder
+Straight Plug (With Grounding Ring)
+*JT06P-XX-XXX  (MS27336P)
+*JTN06P-XX-XXX
+*JT06A-XX-XXX  (MS27336T)
+*JTN06A-XX-XXX
+*JT06A-XX-XXX(SR)
+*JTN06A-XX-XXX(SR)  
+  *	Plug with grounding fingers
+**	 Coupling nut is clear iridite finish (gold color), shell and grounding fingers 
+are gold plated N2O4 resistant.
+Shell 
+Size
+H Dia. 
++.010 
+–.001
+L 
+Max.
+Q 
+Dia. 
+Max.
+V Thread Modified
+Size 
+Class 2A
+Modified 
+Major Dia.
+  8
+  .635
+.625
+  .734
+  .4375-28UNEF 
+  .421 -   .417
+10
+  .734
+.625
+  .844
+  .5625-24UNEF
+  .542 -   .538
+12
+  .870
+.625
+1.016
+  .6875-24UNEF
+  .667 -   .663
+14
+  .996
+.625
+1.141
+  .8125-20UNEF
+  .791 -   .787
+16
+1.122
+.625
+1.265
+  .9375-20UNEF
+  .916 -   .912
+18
+1.246
+.625
+1.391
+1.0625-18UNEF
+1.034 - 1.030
+20
+1.372
+.625
+1.500
+1.1875-18UNEF
+1.158 - 1.154
+22
+1.496
+.625
+1.625
+1.3125-18UNEF
+1.283 - 1.279
+24
+1.622
+.688
+1.750
+1.4375-18UNEF
+1.408 - 1.404
+All dimensions for reference only.
+ *JTG06A-XX-XXX  
+**JTNG06A-XX-XXX
+JT06 (MS27336) Series II – Solder
+Straight Plug
+Military qualified to MIL-DTL-27599
+Military qualified to MIL-DTL-27599
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+JT/JTN/JTG/JTNG
+06
+A
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27336
+P
+14
+A
+18
+P
+A
+Military
+Commercial
+
+
+===== PAGE 22 =====
+82
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Dualok 
+III
+SJT 
+38999 
+PCB 
+HD 
+I 
+II 
+Aquacon
+Accessories
+Herm/Seal
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High 
+Speed
+26482
+Matrix 2  
+83723 III
+5015
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+Crimp Rear
+Release 
+Matrix
+Matrix|Pyle
+Amphenol
+Aerospace
+H	 .059 dia. min. 3 lockwire holes
+•	 “D” shaped mounting hole dimensions.
+  *	Standard Junior Tri-Lock 
+**	 Panel thickness 
+†	 O Ring not furnished with MS27337
+Shell 
+Size
+A• 
++.000 
+–.010
+C 
+Max.
+F 
+Min.
+F1 
++.010 
+–.025
+H 
++.017 
+–.016
+L 
+Max.
+M 
+±.005
+N 
++.001 
+–.005
+S 
+±.016
+T • 
++.010 
+–.000
+KK 
+Max.
+RR 
+Thread 
+Class 2A
+8
+  .830
+1.390
+  .312
+.125
+1.062
+.666
+.438
+  .473
+1.250
+  .884
+  .812
+  .8750-20UNEF
+10
+  .955
+1.515
+  .429
+.188
+1.188
+.666
+.438
+  .590
+1.375
+1.007
+  .875
+1.0000-20UNEF
+12
+1.084
+1.640
+  .543
+.312
+1.312
+.666
+.438
+  .750
+1.500
+1.134
+1.000
+1.1250-18UNEF
+14
+1.208
+1.765
+  .668
+.375
+1.438
+.729
+.438
+  .875
+1.625
+1.259
+1.125
+1.2500-18UNEF
+16
+1.333
+1.953
+  .793
+.500
+1.562
+.729
+.438
+1.000
+1.781
+1.384
+1.188
+1.3750-18UNEF
+18
+1.459
+2.031
+  .894
+.625
+1.688
+.729
+.438
+1.125
+1.890
+1.507
+1.438
+1.5000-18UNEF
+20
+1.576
+2.156
+1.019
+.625
+1.812
+.765
+.464
+1.250
+2.016
+1.634
+1.438
+1.6250-18UNEF
+22
+1.701
+2.280
+1.144
+.750
+2.000
+.765
+.464
+1.375
+2.140
+1.759
+1.625
+1.7500-18UNS
+24
+1.826
+2.405
+1.269
+.800
+2.125
+.828
+.464
+1.500
+2.265
+1.884
+1.719
+1.8750-16UN
+JT08 Series II – Solder
+90° Plug
+*JT07P-XX-XXX  (MS27337P)
+*JTN07P-XX-XXX
+*JT07A-XX-XXX 
+*JT07C-XX-XXX
+*JTN07A-XX-XXX
+*JTN07C-XX-XXX
+*JT07A-XX-XXX(SR)
+*JTN07A-XX-XXX(SR)  
+*JTN07C-XX-XXX(SR)
+* To complete order number see page 62.
+Shell 
+Size
+H 
+Min.
+K 
+Min.
+L 
+Max.
+Q 
+Max.
+FF 
+Max.
+  8
+  .396
+.126
+  .891
+  .734
+.391
+10
+  .532
+.141
+  .906
+  .844
+.438
+12
+  .694
+.173
+  .938
+1.016
+.516
+14
+  .814
+.266
+1.031
+1.141
+.594
+16
+  .985
+.423
+1.188
+1.265
+.656
+18
+1.006
+.485
+1.250
+1.391
+.719
+20
+1.130
+.547
+1.312
+1.500
+.781
+22
+1.255
+.610
+1.375
+1.625
+.844
+24
+1.380
+.673
+1.516
+1.750
+.906
+All dimensions for reference only.
+*JT08P-XX-XXX 
+*JTN08P-XX-XXX  
+JT07 (MS27337) Series II – Solder 
+Jam Mounting Receptacle
+Military qualified to MIL-DTL-27599
+Military qualified to MIL-DTL-27599
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+JT/JTN
+07
+A
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+Commercial
+
+
+===== PAGE 23 =====
+83
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Amphenol
+MIL-DTL-38999, Series I, LJT
+TABLE OF CONTENTS
+Combined MIL-DTL-38999 Series I, II, III
+•	 Shell Size & Insert Arrangement Availability .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .  6-9
+•	 Insert Arrangement Drawings.  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   . 10-17
+•	 Contact -Ratings, Service Ratings, Finish Data.   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . 18, 19
+•	 Sealing Plugs.   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . 19
+MIL-DTL-38999, Series II JT and Series I LJT
+•	 Features and Benefits.   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . 61
+•	 How to Order (Commercial).   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   . 62-64
+•	 How to Order (Military).   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . 65, 66
+LJT Shell Styles:
+•	 Crimp Wall Mounting Receptacle LJT00R (MS27466).  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   84
+•	 Crimp Wall Mount Recept. for Back Panel Mounting LJTPQ00R (MS27656).   .    .    .    .    .    .    .    . 85
+•	 Crimp Line Receptacle LJT01R.  .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   86
+•	 Crimp Box Mounting Receptacle LJT02R (MS27496), 
+Crimp Box Mounting Receptacle for Back Panel Mounting LJTP02R (MS27505).  .   .   .   87
+•	 Crimp Straight Plug LJT06R (MS27467).   .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .  88
+•	 Crimp Jam Nut Receptacle LJT07R (MS27468).   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . 89
+•	 Hermetic Wall Mounting Receptacle LJT00 (MS27469).   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   90
+•	 Hermetic Jam Nut Receptacle LJT07 (MS27470), 
+Hermetic Solder Mounting Receptacle LJTL (MS27471).   .    .    .    .    .    .    .    .    .    .    .    .    .    .    .  91
+•	 Solder Wall Mounting Receptacle LJT00 (MS20026), 
+Solder Line Receptacle LJT01 (MS20027).   .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .  92
+•	 Solder Straight Plug LJT06 (MS20028), 
+Solder Jam Nut Receptacle LJT07 (MS20029).   .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .  93
+•	 Breakaway Fail-Safe Insert Availability Chart.   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . 94
+•	 Breakaway Fail-Safe How to Order (Military /Commercial).   .  .  .  .  .  .  .  .  .  .  .  .  .  . 95
+•	 Breakaway Fail-Safe Overview/Information .   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . 96
+•	 Accessories, Contacts, and Tools see Accessories Section.  .   .   .   .   .   .   .   .   .   .   .   114-117
+•	 Accessories continue.   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  . 120-124
+MIL-DTL-38999 Series I Typical Markets:
+•	 Military & Commercial Aviation
+•	 Military Vehicles
+•	 Missiles & Ordnance
+•	 C4ISR
+Amphenol
+Aerospace
+
+
+===== PAGE 24 =====
+84
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Dualok 
+III
+SJT 
+38999 
+PCB 
+HD 
+I 
+II 
+Aquacon
+Accessories
+Herm/Seal
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High 
+Speed
+26482
+Matrix 2  
+83723 III
+5015
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+Crimp Rear
+Release 
+Matrix
+Matrix|Pyle
+Amphenol
+Aerospace
+VIEW D ENLARGED
+   FOR COAXIAL USE ONLY
+1.656 MAX
+S
+R
+(TP)
+S
+R
+(TP)
+T          
+(4 HOLES)
+M
+L
+.717
++.006
+–.000
+.200
+F
+KK
+N
+.496
+MAX
+±.031
+.200
+V
+N
+±.031
+D
+M
+.717
++.006
+–.000
+LJT00RE-XX-XXX (MS27466E) 
+LJT00RT-XX-XXX (MS27466T)
+LJT00RP-XX-XXX (MS27466P)
+All dimensions for reference only.
+	
+	
+.005 DIA	
+M
+LJT00R (MS27466) Series I – Crimp
+Wall Mounting Receptacle 
+Shell 
+Size
+F Dia. 
+±.010 
+L Max.
+M 
++.000 
+–.005
+N 
++.001 
+–.005
+R (TP)
+S ±.016
+T Dia. 
+±.005
+V Thread Class 
+2A (Plated)
+KK Dia. 
+Max
+ 9
+  .444
+.813
+.632
+  .572
+  .719
+  .938
+.128
+  .4375-28 UNEF
+  .608
+11
+  .558
+.813
+.632
+  .700
+  .812
+1.031
+.128
+  .5625-24 UNEF
+  .734
+13
+  .683
+.813
+.632
+  .850
+  .906
+1.125
+.128
+  .6875-24 UNEF
+  .858
+15
+  .808
+.813
+.632
+  .975
+  .969
+1.219
+.128
+  .8125-20 UNEF
+  .984
+17
+  .909
+.813
+.632
+1.100
+1.062
+1.312
+.128
+  .9375-20 UNEF
+1.110
+19
+1.034
+.813
+.632
+1.207
+1.156
+1.438
+.128
+1.0625-18 UNEF
+1.234
+21
+1.159
+.906
+.602
+1.332
+1.250
+1.562
+.128
+1.1875-18 UNEF
+1.360
+23
+1.284
+.906
+.602
+1.457
+1.375
+1.688
+.147
+1.3125-18 UNEF
+1.484
+25
+1.409
+.906
+.602
+1.582
+1.500
+1.812
+.147
+1.4375-18 UNEF
+1.610
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+LJT
+00
+RE
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27466
+E
+14
+A
+18
+P
+A
+Military
+Commercial
+
+
+===== PAGE 25 =====
+85
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+II  
+Dualok  
+III
+SJT  
+38999    
+I 
+HD  
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High  
+Speed
+26482
+Matrix 2  
+83723 III
+Matrix|Pyle
+5015
+Crimp Rear
+Release 
+Matrix
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+PCB 
+Accessories
+Aquacon
+Herm/Seal
+Amphenol
+Aerospace
+VIEW D ENLARGED
+   FOR COAXIAL USE ONLY
+.844 MAX
+L MAX
+Z
+V
+N
+N
+P
+M
+.905
++.006
+–.000
+L   MAX
+F
+KK
+S
+R
+(TP)
+SS
+R
+(TP)
+T          
+(4 HOLES)
+P
+M
+.905
++.006
+–.000
+D
+Z
+1
+S
+	LJTPQ00RE-XX-XXX (MS27656E) 
+	LJTPQ00RT-XX-XXX (MS27656T)
+	LJTPQ00RP-XX-XXX (MS27656P)
+	
+All dimensions for reference only. 
+Note:  MS27656 superseded MS 27515.
+	
+	
+.005 DIA	
+M
+LJTPQ00R (MS27656) Series I – Crimp 
+Wall Mounting Receptacle 
+(Back Panel Mounting)
+Shell 
+Size
+F Dia. 
+±.010 
+L Max.
+L1 
+Max.
+M 
++.000 
+–.005
+N Dia.
+P Max. Panel 
+Thickness
+R (TP)
+S +.011 
+–.010
+T Dia. 
+±.005
+V Thread Class 
+2A (Plated)
+Z Max
+KK Dia.  
+Max
+SS Dia.  
++.000 
+–.016
+ 9
+  .444
+.453
+.641
+.820
+  .572
+.234
+  .719
+  .938
+.128
+  .4375-28 UNEF
+.138
+  .625
+  .662
+11
+  .558
+.453
+.641
+.820
+  .700
+.234
+  .812
+1.031
+.128
+  .5625-24 UNEF
+.138
+  .750
+  .810
+13
+  .683
+.453
+.641
+.820
+  .850
+.234
+  .906
+1.125
+.128
+  .6875-24 UNEF
+.138
+  .875
+  .960
+15
+  .808
+.453
+.641
+.820
+  .975
+.234
+  .969
+1.219
+.128
+  .8125-20 UNEF
+.138
+1.000
+1.085
+17
+  .909
+.453
+.641
+.820
+1.100
+.234
+1.062
+1.312
+.128
+  .9375-20 UNEF
+.138
+1.125
+1.210
+19
+1.034
+.453
+.641
+.820
+1.207
+.234
+1.156
+1.438
+.128
+1.0625-18 UNEF
+.138
+1.250
+1.317
+21
+1.159
+.484
+.672
+.790
+1.332
+.204
+1.250
+1.562
+.128
+1.1875-18 UNEF
+.168
+1.375
+1.442
+23
+1.284
+.484
+.672
+.790
+1.457
+.204
+1.375
+1.688
+.147
+1.3125-18 UNEF
+.168
+1.500
+1.567
+25
+1.409
+.484
+.672
+.790
+1.582
+.193
+1.500
+1.812
+.147
+1.4375-18 UNEF
+.168
+1.625
+1.692
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+LJTPQ
+00
+RE
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27656
+E
+14
+A
+18
+P
+A
+Military
+Commercial
+
+
+===== PAGE 26 =====
+86
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Dualok 
+III
+SJT 
+38999 
+PCB 
+HD 
+I 
+II 
+Aquacon
+Accessories
+Herm/Seal
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High 
+Speed
+26482
+Matrix 2  
+83723 III
+5015
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+Crimp Rear
+Release 
+Matrix
+Matrix|Pyle
+Amphenol
+Aerospace
+VIEW D ENLARGED
+   FOR COAXIAL USE ONLY
+1.656 MAX
+V
+.918 ±.031
+N
+M
+.717
++.006
+–.000
+1.219 MAX
+C
+S
+S
+D
+	LJT01RE-XX-XXX 
+	LJT01RT-XX-XXX
+	
+All dimensions for reference only.
+LJT01R Series I – Crimp
+Line Receptacle 
+Shell 
+Size
+C 
+Max.
+M +.000 
+–.005
+N 
++.001 
+–.005
+S 
+±.016
+V Thread Class 2A 
+(Plated)
+9
+1.094
+.632
+  .572
+  .938
+  .4375-28 UNEF
+11
+1.188
+.632
+  .700
+1.031
+  .5625-24 UNEF
+13
+1.281
+.632
+  .850
+1.125
+  .6875-24 UNEF
+15
+1.375
+.632
+  .975
+1.219
+  .8125-20 UNEF
+17
+1.469
+.632
+1.100
+1.312
+  .9375-20 UNEF
+19
+1.594
+.632
+1.207
+1.438
+1.0625-18 UNEF
+21
+1.719
+.602
+1.332
+1.562
+1.1875-18 UNEF
+23
+1.844
+.602
+1.457
+1.688
+1.3125-18 UNEF
+25
+1.969
+.602
+1.582
+1.812
+1.4375-18 UNEF
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+LJT
+01
+RE
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+Commercial
+
+
+===== PAGE 27 =====
+87
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+II  
+Dualok  
+III
+SJT  
+38999    
+I 
+HD  
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High  
+Speed
+26482
+Matrix 2  
+83723 III
+Matrix|Pyle
+5015
+Crimp Rear
+Release 
+Matrix
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+PCB 
+Accessories
+Aquacon
+Herm/Seal
+Amphenol
+Aerospace
+.717
++.006
+–.000
+.297 MAX.
+.200
+M
+KK
+±.031
+N
+.905
++.006
+–.000
+M
+KK
+N
+Z
+L MAX
+P
+S
+R
+(TP)
+S
+R
+(TP)
+T          
+(4 HOLES)
+1
+SS
+	LJT02RE-XX-XXX (MS27496E)
+	LJTP02RE-XX-XXX (MS27505E)
+	
+  
+All dimensions for reference only.
+	
+	
+.005 DIA	
+M
+LJT02R (MS27496) – Crimp (Box Mount Recept.) 
+LJTP02R (MS27505) – Crimp
+Box Mounting Receptacle (Back Panel Mounting)  
+Shell 
+Size
+L Max.
+M +.000 
+–.005
+M1 
++.001 
+–.005
+N Dia 
++.001 
+–.005
+P Max. 
+Panel 
+Thickness
+R (TP)
+S 
++.011 
+–.010
+T Dia. 
+±.005
+Z 
+±.031
+KK Dia. 
++.006 
+–.005
+SS Dia.  
++.000 
+–.016
+ 9
+.203
+.632
+.820
+  .572
+.234
+  .719
+  .938
+.128
+.107
+  .433
+  .662
+11
+.203
+.632
+.820
+  .700
+.234
+  .812
+1.031
+.128
+.107
+  .557
+  .810
+13
+.203
+.632
+.820
+  .850
+.234
+  .906
+1.125
+.128
+.107
+  .676
+  .960
+15
+.203
+.632
+.820
+  .975
+.234
+  .969
+1.219
+.128
+.107
+  .801
+1.085
+17
+.203
+.632
+.820
+1.100
+.234
+1.062
+1.312
+.128
+.107
+  .926
+1.210
+19
+.203
+.632
+.820
+1.207
+.234
+1.156
+1.438
+.128
+.107
+1.032
+1.317
+21
+.234
+.602
+.790
+1.332
+.204
+1.250
+1.562
+.128
+.137
+1.157
+1.442
+23
+.234
+.602
+.790
+1.457
+.204
+1.375
+1.688
+.147
+.137
+1.282
+1.567
+25
+.234
+.602
+.790
+1.582
+.193
+1.500
+1.812
+.147
+.137
+1.407
+1.692
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+LJT/LJTP
+02
+RE
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27496
+E
+14
+A
+18
+P
+A
+MS27505
+E
+14
+A
+18
+P
+A
+Military
+Commercial
+
+
+===== PAGE 28 =====
+88
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Dualok 
+III
+SJT 
+38999 
+PCB 
+HD 
+I 
+II 
+Aquacon
+Accessories
+Herm/Seal
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High 
+Speed
+26482
+Matrix 2  
+83723 III
+5015
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+Crimp Rear
+Release 
+Matrix
+Matrix|Pyle
+Amphenol
+Aerospace
+VIEW D ENLARGED
+   FOR COAXIAL USE ONLY
+1.656 MAX
+V
+.594
+.325
++.003
+–.002
+±.025
+1.219
+MAX
+GROUNDING RING
+GROUNDING RING
+F
+KK
+Q
+L
+D
+.594
+.325
++.003
+–.002
+±.025
+	LJT06RE-XX-XXX (MS27467E) 
+	LJT06RT-XX-XXX (MS27467T)
+	LJT06RP-XX-XXX (MS27467P)
+All dimensions for reference only.
+LJT06R (MS27467) Series I – Crimp
+Straight Plug 
+Shell 
+Size
+F Dia. 
+±.010
+L Max.
+Q 
+Max.
+V Thread Class 2A 
+(Plated)
+KK Dia. 
+Max.
+9
+  .444
+1.531
+  .844
+  .4375-28 UNEF
+  .608
+11
+  .528
+1.531
+  .969
+  .5625-24 UNEF
+  .734
+13
+  .683
+1.531
+1.141
+  .6875-24 UNEF
+  .858
+15
+  .808
+1.531
+1.266
+  .8125-20 UNEF
+  .984
+17
+  .909
+1.531
+1.391
+  .9375-20 UNEF
+1.110
+19
+1.034
+1.531
+1.500
+1.0625-18 UNEF
+1.234
+21
+1.159
+1.625
+1.625
+1.1875-18 UNEF
+1.360
+23
+1.284
+1.625
+1.750
+1.3125-18 UNEF
+1.484
+25
+1.409
+1.625
+1.875
+1.4375-18 UNEF
+1.610
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+LJT
+06
+RE
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27467
+E
+14
+A
+18
+P
+A
+Military
+Commercial
+
+
+===== PAGE 29 =====
+89
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+II  
+Dualok  
+III
+SJT  
+38999    
+I 
+HD  
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High  
+Speed
+26482
+Matrix 2  
+83723 III
+Matrix|Pyle
+5015
+Crimp Rear
+Release 
+Matrix
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+PCB 
+Accessories
+Aquacon
+Herm/Seal
+Amphenol
+Aerospace
+VIEW D ENLARGED
+   FOR COAXIAL USE ONLY
+.750 MAX.
+.328 MAX.
+RR
+.915
+.010
+.062 MIN.
+.125 MAX.
+V
+N
+RR
+L MAX.
+F
+KK
+C
+H
+S
+T
+A
+N
+A
+±.005
+PANEL THICKNESS
+±.020
+.915
+.010
+.062 MIN.
+.125 MAX.
+±.005
+PANEL THICKNESS
+±.020
+D
+	LJT07RE-XX-XXX (MS27468E) 
+	LJT07RT-XX-XXX (MS27468T)
+	LJT07RP-XX-XXX (MS27468P)
+	 ★	 .059 Dia. Min. 3 lockwire holes. 
+	
+	 Formed lockwire hole design (6 holes) is optional. 
+	 •	 “D” shaped mounting hole dimensions.
+All dimensions for reference only.
+LJT07R (MS27468) Series I – Crimp
+Jam Nut Receptacle  
+Shell 
+Size
+A• 
++.000 
+–.010
+C Max.
+F Dia. 
+±.010
+H Hex 
++.017 
+–.016
+L 
+Max.
+N 
++.001 
+–.005
+S ±.016
+T• 
++.010 
+–.000
+V Thread Class 2A 
+(Plated)
+KK Dia. 
+Max.
+RR Thread 
+Class 2A (Plated)
+ 9
+  .669
+1.199
+  .444
+  .875
+.625
+  .572
+1.062
+  .697
+  .4375-28 UNEF
+  .608
+  .6875-24 UNEF
+11
+  .769
+1.386
+  .558
+1.000
+.625
+  .700
+1.250
+  .822
+  .5625-24 UNEF
+  .734
+  .8125-20 UNEF
+13
+  .955
+1.511
+  .683
+1.188
+.625
+  .850
+1.375
+1.007
+  .6875-24 UNEF
+  .858
+1.0000-20 UNEF
+15
+1.084
+1.636
+  .808
+1.312
+.625
+  .975
+1.500
+1.134
+  .8125-20 UNEF
+  .984
+1.1250-18 UNEF
+17
+1.208
+1.761
+  .909
+1.438
+.625
+1.100
+1.625
+1.259
+  .9375-20 UNEF
+1.110
+1.2500-18 UNEF
+19
+1.333
+1.949
+1.034
+1.562
+.656
+1.207
+1.812
+1.384
+1.0625-18 UNEF
+1.234
+1.3750-18 UNEF
+21
+1.459
+2.073
+1.159
+1.688
+.750
+1.332
+1.938
+1.507
+1.1875-18 UNEF
+1.360
+1.5000-18 UNEF
+23
+1.580
+2.199
+1.284
+1.812
+.750
+1.457
+2.062
+1.634
+1.3125-18 UNEF
+1.484
+1.6250-18 UNEF
+25
+1.709
+2.323
+1.409
+2.000
+.750
+1.582
+2.188
+1.759
+1.4375-18 UNEF
+1.610
+1.7500-18 UNS
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+LJT
+07
+RE
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27498
+E
+14
+A
+18
+P
+A
+Military
+Commercial
+
+
+===== PAGE 30 =====
+90
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Dualok 
+III
+SJT 
+38999 
+PCB 
+HD 
+I 
+II 
+Aquacon
+Accessories
+Herm/Seal
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High 
+Speed
+26482
+Matrix 2  
+83723 III
+5015
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+Crimp Rear
+Release 
+Matrix
+Matrix|Pyle
+Amphenol
+Aerospace
+	
+*	 LJT00H-XX-XXX 
+	 **	 LJT00Y-XX-XXX (MS27469YXXD) 
+	 ***	 LJTS00Y-XX-XXX (MS27469YXXE)
+	 *	 Long Junior Tri-Lock 
+	**	 Interfacial seal wafer 
+	***	High temperature version, interfacial seal wafer with stainless steel shell
+All dimensions for reference only.
+N
+RR
+1.047±.005
+.741
++.010
+–.000
+±.025
+.659
+.258
+±.005
+S
+R
+(TP)
+S
+R
+(TP)
+T          
+(4 HOLES)
+	
+	
+.005 DIA	
+M
+LJT00 (MS27469) Series I – Hermetic
+Wall Mounting Receptacle 
+Shell 
+Size
+N Dia. +.001 
+–.005
+R 
+(TP)
+S 
+±.016
+T Dia. 
+±.005
+RR Thread  
+Class 2A
+  9
+  .572
+  .719
+  .938
+.128
+  .6875-24 UNEF
+11
+  .700
+  .812
+1.031
+.128
+  .8125-20 UNEF
+13
+  .850
+  .906
+1.125
+.128
+  .9375-20 UNEF
+15
+  .975
+  .969
+1.219
+.128
+1.0625-18 UNEF
+17
+1.100
+1.062
+1.312
+.128
+1.1875-18 UNEF
+19
+1.207
+1.156
+1.438
+.128
+1.3125-18 UNEF
+21
+1.332
+1.250
+1.562
+.128
+1.4375-18 UNEF
+23
+1.457
+1.375
+1.688
+.147
+1.5625-18 UNEF
+25
+1.582
+1.500
+1.812
+.147
+1.6875-18 UNEF
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+LJT/LJTS
+00
+Y
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27469
+Y
+14
+D
+18
+P
+A
+Military
+Commercial
+
+
+===== PAGE 31 =====
+91
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+II  
+Dualok  
+III
+SJT  
+38999    
+I 
+HD  
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High  
+Speed
+26482
+Matrix 2  
+83723 III
+Matrix|Pyle
+5015
+Crimp Rear
+Release 
+Matrix
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+PCB 
+Accessories
+Aquacon
+Herm/Seal
+Amphenol
+Aerospace
+LJT07 (MS27470) Series I – Hermetic 
+Jam Nut Receptacle 
+	
+*	 LJTIH-XX-XXX 
+	 **	 LJTIY-XX-XXX (MS27471YXXD) 
+	 ***	 LJTSIY-XX-XXX (MS27471YXXE)
+	 *	 Long Junior Tri-Lock 
+	**	 Interfacial seal wafer 
+	***	High temperature version, interfacial seal wafer with stainless steel shell
+All dimensions for reference only. 
+Weld mounting hermetic receptacle also available.  
+Consult Amphenol Aerospace for availability and dimensions.
+L
+M
+.031
++.006
+–.005
+.304
++.030
+–.040
+KK
+N
+	
+*	 LJT07H-XX-XXX 
+	 **	 LJT07Y-XX-XXX (MS27470YXXD) 
+	 ***	 LJTS07Y-XX-XXX (MS27470YXXE)
+	 ★	 .059 Dia. Min. 3 lockwire holes. 
+	
+	 Formed lockwire hole design  
+	
+	 (6 holes) is optional. 
+	 •	 “D” shaped mounting hole dimensions. 
+	 *	 *Long Junior Tri-Lock 
+	**	 Interfacial seal wafer 
+	***	High temperature version, interfacial seal 	
+	
+	
+	
+	 wafer with stainless steel shell
+All dimensions for reference only.
+N
+RR
+KK
+L
+.084
+A
+.915
+.062 MIN.
+.125 MAX.
+±.005
+PANEL THICKNESS
+±.025
+SS
+GG
+C
+H
+S
+T
+Shell 
+Size
+N Dia. 
++.001 
+–.005
+SS Dia. 
++.000 –.016
+L +.011 
+–.000
+M  
++.006 
+–.005
+GG Dia. 
++.011 
+–.010
+KK Dia. 
++.001 
+–.005
+9
+  .572
+  .662
+.789
+.125
+  .750
+  .672
+11
+  .700
+  .810
+.789
+.125
+  .844
+  .781
+13
+  .850
+  .960
+.789
+.125
+  .969
+  .906
+15
+  .975
+1.085
+.789
+.125
+1.094
+1.031
+17
+1.100
+1.210
+.789
+.125
+1.218
+1.156
+19
+1.207
+1.317
+.789
+.125
+1.312
+1.250
+21
+1.332
+1.442
+.789
+.125
+1.438
+1.375
+23
+1.457
+1.567
+.821
+.156
+1.563
+1.500
+25
+1.582
+1.692
+.821
+.156
+1.688
+1.625
+Shell 
+Size
+A• 
++.000 
+–.010
+C Max.
+H Hex 
++.017 
+–.016
+L Max.
+N 
++.000 
+–.005
+S 
+±.016
+T• 
++.010 
+–.000
+KK 
++.011 
+–.000
+RR Thread 
+Class 2A (Plated)
+  9
+  .669
+1.199
+  .875
+.297
+  .572
+1.062
+  .697
+  .642
+  .6875-24 UNEF
+11
+  .769
+1.386
+1.000
+.297
+  .700
+1.250
+  .822
+  .766
+  .8125-20 UNEF
+13
+  .955
+1.511
+1.188
+.297
+  .850
+1.375
+1.007
+  .892
+1.0000-20 UNEF
+15
+1.084
+1.636
+1.312
+.297
+  .975
+1.500
+1.134
+1.018
+1.1250-18 UNEF
+17
+1.208
+1.761
+1.438
+.297
+1.100
+1.625
+1.259
+1.142
+1.2500-18 UNEF
+19
+1.333
+1.949
+1.562
+.328
+1.207
+1.812
+1.384
+1.268
+1.3750-18 UNEF
+21
+1.459
+2.073
+1.688
+.328
+1.332
+1.938
+1.507
+1.392
+1.5000-18 UNEF
+23
+1.580
+2.199
+1.812
+.328
+1.457
+2.062
+1.634
+1.518
+1.6250-18 UNEF
+25
+1.709
+2.328
+2.000
+.328
+1.582
+2.188
+1.759
+1.642
+1.7500-18 UNS
+LJTI (MS27471) Series I
+– Hermetic Solder 
+Mounting Receptacle
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+LJT/LJTS
+H
+RE
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27470
+Y
+14
+A
+18
+P
+A
+MS27471
+Y
+14
+A
+18
+P
+A
+Military
+Commercial
+
+
+===== PAGE 32 =====
+92
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Dualok 
+III
+SJT 
+38999 
+PCB 
+HD 
+I 
+II 
+Aquacon
+Accessories
+Herm/Seal
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High 
+Speed
+26482
+Matrix 2  
+83723 III
+5015
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+Crimp Rear
+Release 
+Matrix
+Matrix|Pyle
+Amphenol
+Aerospace
+ 
+NOTE: For availability of back panel mounting types, check with nearest sales office or call Amphenol Aerospace.
+Shell 
+Size
+F 
+Dia.
+L 
+Max.
+M 
++.000 
+–.005
+N 
++.001 
+–.005
+R 
+(TP)
+S 
+±.016
+T 
+Dia. 
+±.005
+V Thread 
+Class 2A 
+UNEF (Plated)
+KK 
+Dia. 
+Max.
+  9
+  .327
+.625
+.632
+  .572
+  .719
+  .938
+.128
+  .4375-28 
+  .608
+11
+  .444
+.625
+.632
+  .700
+  .812
+1.031
+.128
+  .5625-24
+  .734
+13
+  .558
+.625
+.632
+  .850
+  .906
+1.125
+.128
+  .6875-24
+.858
+15
+  .683
+.625
+.632
+  .975
+  .969
+1.219
+.128
+  .8125-20
+.984
+17
+  .808
+.625
+.632
+1.100
+1.062
+1.312
+.128
+  .9375-20
+1.110
+19
+  .909
+.625
+.632
+1.207
+1.156
+1.438
+.128
+1.0625-18
+1.234
+21
+1.034
+.703
+.602
+1.332
+1.250
+1.562
+.128
+1.1875-18
+1.360
+23
+1.159
+.703
+.602
+1.457
+1.375
+1.688
+.147
+1.3125-18
+1.484
+25
+1.284
+.703
+.602
+1.582
+1.500
+1.812
+.147
+1.4375-18
+1.610
+LJT00T-XX-XXX  (MS20026T)
+LJT00 (MS20026) Series I – Solder
+Wall Mounting Receptacle
+LJT01 (MS20027) Series I – Solder 
+Line Receptacle
+LJT01P-XX-XXX
+LJT01T-XX-XXX  (MS20027T)
+Military qualified to MIL-DTL-27599
+Military qualified to MIL-DTL-27599
+Military
++   .005 DIA  M
+LJT00P-XX-XXX
+Shell 
+Size
+C 
+Max.
+F 
+Dia.
+L 
+Max.
+M 
++.000 
+–.005
+N 
++.001 
+–.005
+S 
+±.016
+V Thread 
+Class 2A 
+UNEF (Plated)
+KK 
+Dia. 
+Max.
+  9
+1.094
+  .327
+.625
+.632
+  .572
+  .938
+  .4375-28 
+  .608
+11
+1.188
+  .444
+.625
+.632
+  .700
+1.031
+  .5625-24
+  .734
+13
+1.281
+  .558
+.625
+.632
+  .850
+1.125
+  .6875-24
+  .858
+15
+1.375
+  .683
+.625
+.632
+  .975
+1.219
+  .8125-20
+  .984
+17
+1.469
+  .808
+.625
+.632
+1.100
+1.312
+  .9375-20
+1.110
+19
+1.594
+  .909
+.625
+.632
+1.207
+1.438
+1.0625-18
+1.234
+21
+1.719
+1.034
+.703
+.602
+1.332
+1.562
+1.1875-18
+1.360
+23
+1.844
+1.159
+.703
+.602
+1.457
+1.688
+1.3125-18
+1.484
+25
+1.969
+1.284
+.703
+.602
+1.582
+1.812
+1.4375-18
+1.610
+All dimensions for reference only.
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+LJT
+00
+P
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS20026
+T
+14
+A
+18
+P
+A
+MS20027
+T
+14
+A
+18
+P
+A
+PART #
+Commercial
+
+
+===== PAGE 33 =====
+93
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+II  
+Dualok  
+III
+SJT  
+38999    
+I 
+HD  
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High  
+Speed
+26482
+Matrix 2  
+83723 III
+Matrix|Pyle
+5015
+Crimp Rear
+Release 
+Matrix
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+PCB 
+Accessories
+Aquacon
+Herm/Seal
+Amphenol
+Aerospace
+Shell 
+Size
+F 
+Dia.
+L 
+Max.
+L1 
+Max.
+Q 
+Max.
+V Thread 
+Class 2A 
+UNEF (Plated)
+KK 
+Dia. 
+Max.
+  9
+  .327
+1.128
+1.488
+  .844
+  .4375-28 
+  .608
+11
+  .444
+1.128
+1.488
+  .969
+  .5625-24
+  .734
+13
+  .558
+1.128
+1.488
+1.141
+  .6875-24
+.858
+15
+  .683
+1.128
+1.488
+1.266
+  .8125-20
+.984
+17
+  .808
+1.128
+1.488
+1.391
+  .9375-20
+1.110
+19
+  .909
+1.128
+1.488
+1.500
+1.0625-18
+1.234
+21
+1.034
+1.128
+1.566
+1.625
+1.1875-18
+1.360
+23
+1.159
+1.128
+1.566
+1.750
+1.3125-18
+1.484
+25
+1.284
+1.191
+1.644
+1.875
+1.4375-18
+1.610
+LJT07 (MS20029) Series I – Solder
+Jam Nut Receptacle
+•	 “D” shaped mounting hole dimensions
+Shell 
+Size
+A• 
++.000 
+–.010
+C 
+Max.
+F 
+Dia.
+H Hex 
++.017 
+–.016
+L 
+Max.
+L1 
+Max.
+N 
++.001 
+–.005
+S 
+±.016
+T• 
++.010 
+–.000
+KK 
++.011 
+–.000
+KK1 
+Dia. 
+Max.
+RR Thread 
+Class 2A 
+(Plated)
+  9
+  .669
+1.199
+  .327
+  .875
+.234
+.625
+  .572
+1.062
+  .697
+  .516
+  .608
+  .6875-24UNEF
+11
+  .769
+1.386
+  .444
+1.000
+.234
+.625
+  .700
+1.250
+  .822
+  .642
+  .734
+  .8125-20UNEF
+13
+  .955
+1.511
+  .558
+1.188
+.234
+.625
+  .850
+1.375
+1.007
+  .766
+  .858
+1.0000-20UNEF
+15
+1.084
+1.636
+  .683
+1.312
+.234
+.625
+  .975
+1.500
+1.134
+  .892
+  .984
+1.1250-18UNEF
+17
+1.208
+1.761
+  .808
+1.438
+.234
+.625
+1.100
+1.625
+1.259
+1.018
+1.110
+1.2500-18UNEF
+19
+1.333
+1.949
+  .909
+1.562
+.266
+.625
+1.207
+1.812
+1.384
+1.142
+1.234
+1.3750-18UNEF
+21
+1.459
+2.073
+1.034
+1.688
+.266
+.656
+1.332
+1.938
+1.507
+1.268
+1.360
+1.5000-18UNEF
+23
+1.580
+2.199
+1.159
+1.812
+.266
+.750
+1.457
+2.062
+1.634
+1.392
+1.484
+1.6250-18UNEF
+25
+1.709
+2.323
+1.284
+2.000
+.266
+.750
+1.582
+2.188
+1.759
+1.518
+1.610
+1.7500-18UNS
+All dimensions for reference only.
+LJT07T-XX-XXX  (MS20029T)
+LJT07P-XX-XXX (MS20029P)
+LJT06 (MS20028) Series I – Solder 
+Straight Plug
+LJT06T-XX-XXX  (MS20028T)
+LJT06P-XX-XXX
+Military qualified to MIL-DTL-27599
+Military qualified to MIL-DTL-27599
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+LJT
+06
+T
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 62-66.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS20028
+T
+14
+A
+18
+P
+A
+MS20029
+T
+14
+A
+18
+P
+A
+Military
+Commercial
+
+
+===== PAGE 34 =====
+94
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Dualok 
+III
+SJT 
+38999 
+PCB 
+HD 
+I 
+II 
+Aquacon
+Accessories
+Herm/Seal
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High 
+Speed
+26482
+Matrix 2  
+83723 III
+5015
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+Crimp Rear
+Release 
+Matrix
+Matrix|Pyle
+Amphenol
+Aerospace
+Series I, LJT Breakaway Fail Safe 
+Lanyard Release Plug Insert Availability
+INSERT AVAILABILITY 
+* For RG 180/U and RG 195/U 
+cables only. (Check Amphenol 
+Aerospace, Sidney, NY for other 
+cable  
+applications). For availability of 
+other insert arrangements  and 
+accessories consult Amphenol 
+Aerospace.
+TABLE I 
+INSERT ARRANGEMENT CODE
+Shell Size /
+Insert  
+Arrangement
+Service 
+Rating
+Total 
+Contacts
+Contact Size
+22D
+20
+16
+12
+12 
+Coax
+8 
+Coax*
+8  
+Twinax
+11-2
+I
+2
+2
+11-35
+M
+13
+13
+11-98
+I
+6
+6
+13-4
+I
+4
+4
+13-8
+I
+8
+8
+13-35
+M
+22
+22
+13-98
+I
+10
+10
+15-5
+II
+5
+5
+15-15
+I
+15
+14
+1
+15-18
+I
+18
+18
+15-19
+I
+19
+19
+15-35
+M
+37
+37
+15-97
+I
+12
+8
+4
+17-6
+I
+6
+6
+17-8
+II
+8
+8
+17-26
+I
+26
+26
+17-35
+M
+55
+55
+17-99
+I
+23
+21
+2
+19-11
+II
+11
+11
+19-32
+I
+32
+32
+19-35
+M
+66
+66
+21-11
+I
+11
+11
+21-16
+II
+16
+16
+21-35
+M
+79
+79
+21-39
+I
+39
+37
+2
+21-41
+I
+41
+41
+23-21
+II
+21
+21
+23-35
+M
+100
+100
+23-53
+I
+53
+53
+23-54
+M
+53
+40
+9
+4
+23-55
+I
+55
+55
+25-4
+I
+56
+48
+8
+25-19
+I
+19
+19
+25-20
+N
+30
+10
+13
+4
+3
+25-24
+I
+24
+12
+12
+25-29
+I
+29
+29
+25-35
+M
+128
+128
+25-43
+I
+43
+23
+20
+25-46
+I
+46
+40
+4
+2*
+25-61
+I
+61
+61
+LJT Lanyard Separation Forces
+Shell Size
+Straight Plug 
+(lbs. max.)
+15 Degree 
+Pull (lbs. 
+Max.)
+11
+13
+15
+45
+55
+17
+19
+21
+23
+25
+90
+100
+Lanyard Length 
+(in.) ±.250
+MS
+Commercial 
+Code
+4.000
+40
+4.250
+41
+4.500
+42
+4.750
+43
+5.000
+50
+5.250
+51
+5.500
+52
+5.750
+53
+6.000
+No
+60
+6.250
+Code
+61
+6.500
+62
+6.750
+Std.
+63
+7.000
+Length
+70
+7.250
+6.250
+71
+7.500
+72
+7.750
+73
+8.000
+80
+8.250
+81
+8.500
+82
+8.750
+83
+9.000
+90
+9.250
+91
+9.500
+92
+9.750
+93
+TABLE II 
+LANYARD  
+LENGTH  
+CODES
+Basic Part Number
+MIL-DTL-38999 Insert Arrangement
+88/91-538808
+11-99
+06
+11-35
+07
+11-98
+10
+13-4
+11
+13-8
+13
+13-98
+14
+13-35
+18
+15-5
+22
+15-18
+19
+15-19
+20
+15-35
+27
+17-6
+28
+17-8
+29
+17-26
+30
+17-35
+31
+17-99
+37
+19-11
+39
+19-32
+40
+19-35
+47
+21-11
+48
+21-16
+49
+21-35
+50
+21-41
+51
+21-39
+57
+23-21
+58
+23-35
+59
+23-53
+60
+23-55
+66
+25-19
+74
+25-4
+67
+25-29
+68
+25-35
+69
+25-43
+70
+25-61
+71
+25-46
+72
+25-2
+
+
+===== PAGE 35 =====
+95
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+II  
+Dualok  
+III
+SJT  
+38999    
+I 
+HD  
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High  
+Speed
+26482
+Matrix 2  
+83723 III
+Matrix|Pyle
+5015
+Crimp Rear
+Release 
+Matrix
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+PCB 
+Accessories
+Aquacon
+Herm/Seal
+Amphenol
+Aerospace
+Series I, LJT Breakaway Fail Safe
+Lanyard Release Plug How to Order, cont.  
+1. MS27661 Number 
+MS Number designates MIL-DTL-38999, Series I 
+LJT Lanyard Release Plug
+2. Select a Service Class
+3. Select a Shell Size
+MIL-DTL-38999, sizes 11 through 25, see chart on page 94.
+4. Select a Finish
+ 
+ 
+These are standard finishes. Consult Amphenol Aerospace for 
+variations.
+5. Select an Insert Arrangement
+MIL-DTL-38999, see insert identification chart on page 94.
+6. Select a Contact Style
+7. Alternate Keying  
+Position
+For alternate position of  
+connector (to prevent cross-mating)  
+see LJT key/keyway rotation below. 
+(No letter is required for normal)
+1. Select a Finish
+2. Connector Type Identification
+3. Select a Shell Size and Insert Arrangement
+Shell sizes are MIL-DTL-38999, Series III from sizes 11 thru 25. 
+The basic part number selected specifies the insert arrangement. 
+See Table I (page 94) for coded part number that correlates to 
+insert arrangement.
+4. Select a Lanyard Length Code
+See Table II (page 94) for lanyard length code number.
+5. Select a Contact Type/Alternate Rotation 	
+	 of Insert
+When an alternate position of the connector is required to prevent 
+cross-mating, a different letter (other than P or S) is used. See 
+alternate positioning for LJT (to your left), then convert to Amphenol 
+commercial coding by the following chart below.
+HOW TO ORDER - BY MILITARY PART NUMBER 
+FAIL SAFE MS27661
+HOW TO ORDER - BY COMMERCIAL PART NUMBER 
+FAIL SAFE 88-5388 OR 91-5388
+1.      2.      3.     4.     5.      6.        7. 
+   1.       2.         3.          4.            5.
+Pin Contacts
+Socket Contacts
+MS Letter
+Amphenol 
+Letter
+MS Letter
+Amphenol 
+Letter
+P
+P (normal)
+S
+S (normal)
+PA
+E
+SA
+F
+PB
+R
+SB
+T
+PC
+W
+SC
+X
+PD
+Y
+SD
+Z
+ROTATION
+LETTERS
+NORMAL
+B
+A
+D
+C
+AB
+5° LJT REF
+RELATIVE POSSIBLE POSITION
+OF ROTATED MASTER KEYWAY
+ (front face of receptacle shown)
+AB ANGLE OF ROTATION (Degrees)
+Shell Size
+Normal
+A
+B
+C
+D
+9
+95°
+77°
+-
+-
+113°
+11
+95°
+81°
+67°
+123°
+109°
+13
+95°
+75°
+63°
+127°
+115°
+15
+95°
+74°
+61°
+129°
+116°
+17
+95°
+77°
+65°
+125°
+113°
+19
+95°
+77°
+65°
+125°
+113°
+21
+95°
+77°
+65°
+125°
+113°
+23
+95°
+80°
+69°
+121°
+110°
+25
+95°
+80°
+69°
+121°
+110°
+LJT Key/Keyway Rotation
+E
+For environmental crimp applications  
+(inactive for new design)
+T
+For environmental crimp applications with serra-
+tions on rear threads of shell
+B
+Designates corrosion resistant olive drab cadmium plated 
+aluminum, 500 hour extended salt spray,  
+EMI shielding effectiveness –50dB @ 10 GHz  
+specification min., 175°C
+F
+Designates electroless nickel plated aluminum, 
+48 hour salt spray, EMI shielding effectiveness –65dB @10 
+GHz500 specification min., 200°C
+P
+Designates Lanyard Release plug 
+with pin contacts
+S
+Designates Lanyard Release plug 
+with socket contacts
+88
+Designates corrosion resistant olive drab cadmium plate 
+over nickel, 500 hour extended salt spray, EMI –50dB @ 10 
+GHz specification min., 175°C
+91
+Designates electroless nickel plated aluminum,  
+optimum EMI shielding effectiveness –65dB @ 10 GHz 
+specification min., 48 hour salt spray, 200°C
+5388
+Designates MIL-DTL-38999, Series I LJT Lanyard  
+Release Plug
+P
+Designates Lanyard Release plug with pin contacts
+S
+Designates Lanyard Release plug with socket contacts
+These are standard finishes. Consult Amphenol Aerospace,  
+Sidney, NY for variations.
+Finish
+Connector  
+Type   
+Identification
+Shell Size  
+& Insert  
+Arrangement
+Lanyard 
+Length Code
+Contact Type
+Alternate  
+Rotation of Insert
+88
+5388
+29
+40
+P
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg.
+Contact 
+Style
+Alternate 
+Position
+MS27661
+T
+17
+B
+35
+P
+A
+
+
+===== PAGE 36 =====
+96
+Contact Amphenol Aerospace for more information at 800-678-0141  •  www.amphenol-aerospace.com
+Dualok 
+III
+SJT 
+38999 
+PCB 
+HD 
+I 
+II 
+Aquacon
+Accessories
+Herm/Seal
+Fiber 
+Optics
+Contacts
+Connectors
+Cables
+High 
+Speed
+26482
+Matrix 2  
+83723 III
+5015
+26500 
+Pyle  
+22992 
+Class L  
+Back- 
+Shells
+Options 
+Others
+EMI Filter
+Transient
+Crimp Rear
+Release 
+Matrix
+Matrix|Pyle
+Amphenol
+Aerospace
+Series I, LJT Breakaway Fail Safe 
+Quick-Disconnect with Axial Pull of Lanyard
+Amphenol LJT Breakaway Fail Safe Connectors provide  
+unequaled performance in environments requiring  
+instant disengagement.
+Designed to provide quick disconnect of a connector plug and 
+receptacle with an axial pull on the lanyard, the “Breakaway” 
+Fail Safe connector family offers a wide range of electrical and 
+mechanical features:
+	 •	 Instant decoupling and damage free separation
+	 •	 Completely intermateable with standard LJT receptacles
+	 •	 Inventory support commonality through the use of standard 
+	 	 insert arrangements and contacts
+Breakaway un-mating is initiated by applying a pull force to the lan-
+yard which causes the operating sleeve on the plug to move away 
+from the receptacle. Coupling segments on the plug then move 
+away from the mating receptacle while expanding, thus releasing the 
+receptacle. After completion of the un-mating sequence, spring com-
+pression returns the sleeve and segments to their original positions. 
+Un-mating of the plug may also be accomplished by normal rotation 
+of the coupling ring without affecting the breakaway capability.
+	 *	 To complete order number see page 95.
+All dimensions for reference only.
+Shell 
+Size
+A Dia. 
+Max.
+B Max.
+D Max. 
+Accessory 
+Dia.
+L Max.
+V Thread 
+UNEF 
+Class 2A 
+(Plated)
+11
+1.393
+1.797
+  .740
+1.703
+  .5625-24
+13 
+1.558
+1.969
+  .926
+1.703
+  .6875-24
+15
+1.669
+2.078
+1.051
+1.703
+  .8125-20
+17
+1.797
+2.203
+1.176
+1.703
+  .9375-20
+19
+1.926
+2.323
+1.300
+1.703
+1.0625-18
+21
+2.054
+2.469
+1.426
+1.703
+1.1875-18
+23
+2.183
+2.594
+1.551
+1.703
+1.3125-18
+25
+2.293
+2.703
+1.676
+1.766
+1.4375-18 
+The LJT Breakaway Fail Safe connector features which 
+provide EMI EMP shielding in excess of MIL-DTL-38999  
+Series I requirements:
+	 •	 Solid metal-to-metal coupling
+	 •	 EMI grounding fingers
+	 •	 Conductive finishes
+Contact Amphenol Aerospace for more information on breakaway, 
+quick-disconnect connectors. Other Amphenol cylindrical families 
+(MIL-DTL-38999 Series III, MIL-DTL-26482, MIL-DTL-83723) also 
+offer breakaway quick-disconnect connectors.
+In addition to standard Breakaway connectors, 
+Amphenol also manufactures custom breakaway  
+connectors including those with:
+	
+•	
+Increased pull-force capability
+	
+•	
+Custom lanyard lengths and backshells
+	
+•	
+Low force separation capabilities
+	
+•	
+Low insertion/separation force contacts
+	
+•	
+Non-cadmium finishes
+	
+•	
+Custom JT Series Breakaway designs have 	
+	
+	
+been developed for special applications;  
+	
+	
+however the LJT Series is  
+	
+	
+recommended over the JT Series for the  
+	
+	
+quick-disconnect breakaway style.
+LJT Fail Safe 88-5388/91-5388  
+(MS27661)
+Lanyard Release Plug
+B
+A
+V
+D
+L
+OUTER SLEEVE
+MOVEMENT
+DURING MATING
+.275 MAX.
+LANYARD
+PULLED TAUT
+AGAINST A
+.500 ±.031
+DIA. MANDREL
+MS LANYARD LENGTH
+6.250 STD.
+FOR PROPRIETARY LANYARD LENGTH
+SEE LANYARD LENGTH TABLE
+.575
++.007
+–.003
+SOCKET INSERT
+.019
++.012
+–.003
+PIN INSERT
+.594 +.003
+–.002
+LJT Breakaway Fail Safe
+Connector
+Type
+Shell 
+Style
+Service 
+Class
+Shell Size
+& Insert Arrg
+Contact 
+Type
+Alternate 
+Position
+Special 
+Variations
+88/91
+5388
+T
+22-2
+P
+A
+(XXX)
+Part number reference. To complete,  
+see how to order pages 95.
+PART #
+MS  
+Number
+Service 
+Class
+Shell 
+Size
+Finish
+Insert 
+Arrg
+Contact Style 
+(P or S)
+Alternate 
+Position
+MS27661
+T
+14
+A
+18
+P
+A
+Military
+Commercial

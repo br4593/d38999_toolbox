@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  data-sanity:
+    name: Data sanity (Python)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verify JSON data files parse
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, sys
+          from pathlib import Path
+          required = [
+              "data/insert_arrangements.json",
+              "data/part_number_rules.json",
+              "data/standard_definitions.json",
+              "data/dla_documents.json",
+              "data/review_needed.json",
+              "app/data/insert_arrangements.json",
+              "app/data/part_number_rules.json",
+              "app/data/standard_definitions.json",
+              "app/data/dla_documents.json",
+              "app/data/review_needed.json",
+          ]
+          for rel in required:
+              path = Path(rel)
+              if not path.exists():
+                  print(f"missing {rel}", file=sys.stderr); sys.exit(1)
+              json.loads(path.read_text(encoding="utf-8"))
+              print(f"ok    {rel}")
+          PY
+
+      - name: Verify converter module imports
+        run: |
+          python - <<'PY'
+          import importlib.util, sys
+          spec = importlib.util.spec_from_file_location('d38999_rules', 'scripts/d38999_rules.py')
+          module = importlib.util.module_from_spec(spec)
+          sys.modules['d38999_rules'] = module  # required for @dataclass introspection
+          spec.loader.exec_module(module)
+          assert module.RULES, 'converter rules empty'
+          assert module.SHELL_SIZE_NUMBERS, 'shell-size lookup empty'
+          print(f'rules: {len(module.RULES)} manufacturer rule blocks')
+          PY
+
+      - name: Verify CLI converter runs
+        run: |
+          python scripts/convert_d38999.py D38999/26WD35PN | tee /tmp/out.txt
+          grep -qi "amphenol" /tmp/out.txt
+
+  build-sanity:
+    name: Build sanity check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Re-bundle app from sources
+        run: python scripts/build_app.py
+
+      - name: Verify app entry point exists
+        run: |
+          test -f app/index.html
+          test -f app/app-data.js
+          test -f app/app.js
+          test -f app/converter.js
+          test -f app/styles.css
+          test -d app/assets/svg
+          test -d app/data
+          # at least 50 SVG arrangement crops
+          count=$(ls app/assets/svg/*.svg | wc -l)
+          echo "svg count: $count"
+          test "$count" -ge 50

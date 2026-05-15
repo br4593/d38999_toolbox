@@ -1,0 +1,1164 @@
+
+
+===== PAGE 1 =====
+TE DEUTSCH MIL-DTL-38999  
+SERIES I CONNECTORS
+QUICK REFERENCE GUIDE
+Wide Range 
+• Mil spec and commercial
+• Range of finishes
+High Performance 
+• Environmentally sealed
+AEROSPACE, DEFENSE & MARINE /// DEUTSCH MIL-DTL-38999 SERIES I CONNECTORS QRG
+DEUTSCH 
+DJT SERIES  
+CONNECTORS  
+FOR MIL-DTL-38999  
+SERIES I
+RUGGED, HARSH ENVIRONMENT  
+SUBMINIATURE CONNECTORS
+
+
+===== PAGE 2 =====
+MIL-DTL-38999 Series I Connectors
+Coupling Mechanism 	
+Bayonet, 1/3 Turn
+Shell Materials  	
+Aluminum
+Features 	
+Scoop proof
+	
+Environmentally sealed
+	
+Hermetic versions
+	
+Filter versions
+	
+Plugs with spring fingers for EMI control
+Shell Platings 	
+Olive drab cadmium
+	
+Electroless nickel
+	
+Carbon steel, electrodeposited tin plating
+	
+Stainless steel, passivated
+Contact Sizes 	
+22, 20, 16, 12, 10, 8
+Shell Sizes  	
+9, 11, 13, 15, 17, 19, 21, 23, 25 
+No. of Signal Contacts, Max.  	
+128 
+Contact Type 	
+AS39029
+Contact Styles 	
+Crimp
+	
+Solder cup or eyelet
+	
+PCB tail
+Operating Temperatures 	
+-65°C to +150°C - Electrodeposited tin-plated carbon steel (Class D)
+	
+-65°C to +175°C - Cadmium finish (Class B)
+	
+-65°C to +200°C - Nickel finish (Class F) and stainless steel (Class E)
+Durability (Mating Cycles)  	
+500
+	
+Standard Configurations
+Plugs 	
+Straight, with EMI spring fingers (M27467)
+Receptacles 	
+Front, wall mount (M27466)
+	
+Jam nut (M27468)
+	
+Front, box mount (M27496)
+	
+Rear, box mount (M27505)   
+	
+Rear, wall mount (M27656)
+	
+Jam nut hermetic receptacle (MS27470)
+	
+Solder mount hermetic receptacle (MS27471)
+	
+	
+TE Components . . . TE Technology . . . TE Know-how . . . 
+AMP | Agastat | CII | Hartman | Kilovac | Microdot | Nanonics | Polamco | Raychem | Rochester | DEUTSCH
+SEACON Phoenix | L.L. Rowe | Phoenix Optix | AFP | SEACON
+Get your product to market faster with a smarter, better solution.
+
+
+===== PAGE 3 =====
+	
+MS27466 	 T  	 25	 F  	 35  	S  	 D  	 xxxx
+MIL SPEC NUMBER/SHELL STYLE
+MS27466 	Front, Wall Mount  
+	Receptacle (DJT10)
+MS27467 	Straight Plug with  
+	EMI Fingers (DJT16)
+MS27468 	Jam Nut Receptacle  
+	(DJT14)
+MS27470 	Jam Nut Hermetic  
+	Receptacle (DJT14)
+MS27471 	 Solder Mount Hermetic  
+	 Receptacle (DJT11)
+MS27496 	Front, Box Mount  
+Receptacle (DJT13)
+MS27505 	Rear, Box Mount  
+	Receptacle (DJT12)
+MS27656 	Rear, Wall Mount  
+	Receptacle (DJT19)
+CLASS
+T With Accessory Thread (MS27466,  
+	
+MS27467, M27468, M27656)
+E Same As T, But Not Approved For  
+	
+New Designs (E-Nut Not Included)
+E No Accessory Thread, Box Mount  
+	
+(M27496, M27505)
+G Space-Grade Environment Resisting 
+Y Hermetically Sealed 
+SHELL SIZE
+9, 11, 13, 15, 17, 19, 21, 23, 25
+	
+DJT 	 1  	
+0	
+F  	 25  -  35  	 S	
+D	 xxxx  	
+GENERAL IDENTIFIER
+DJT DEUTSCH MIL-DTL-38999 Series I
+COUPLING SYSTEM
+1  Bayonet
+SHELL STYLE
+0 	Front, Wall Mount Receptacle (M27466)
+6 	Straight Plug with EMI Fingers (M27467)
+4 	Jam Nut Receptacle (M27468)
+4 	Jam Nut Hermetic Receptacle (MS27470)
+1 	Solder Mount Hermetic Receptacle (MS27471)
+3 	Front, Box Mount Receptacle (M27496)
+2 	Rear, Box Mount Receptacle (M27505)
+9 	Rear, Wall Mount Receptacle (M27656)
+CLASS
+E Olive Drab Cadmium
+F Nickel
+G Space Grade
+H Hermetic
+TE DEUTSCH MIL-DTL-38999  
+SERIES I CONNECTORS
+PAGE 3
+AEROSPACE, DEFENSE & MARINE /// DEUTSCH MIL-DTL-38999 SERIES I CONNECTORS QRG
+DEUTSCH 38999 Series I Connectors
+MODIFICATIONS
+L/C Less Contacts 
+POLARIZING POSITIONS
+N Normal (omit from part number) 
+A, B, C, D (B and C not available in shell size 9)
+CONTACTS
+P 500-Cycle Pin	
+S 500-Cycle Socket
+H 1500-Cycle Pin	 J 1500-Cycle Socket
+A Less Pin (with intent to use  
+nonstandard contacts)	
+B Less Socket (with intent to use  
+nonstandard contacts)
+Hermetic Contacts
+P Pin, Solder Cup	
+S Socket, Solder Cup
+X Pin, Eyelet	
+Z Socket, Eyelet
+C Pin, PC Tail	
+D Socket, PC Tail
+INSERT ARRANGEMENT
+See Insert Arrangement Table
+FINISH
+B Olive Drab Cadmium
+F Nickel
+G Space Grade
+D Carbon Steel, Electrodeposited Tin Plating
+E Stainless Steel, Passivated
+MODIFICATIONS
+6149 Less Contacts
+POLARIZING POSITIONS
+N Normal 
+A, B, C, D (B and C not available in shell size 9)
+CONTACTS
+P 500-Cycle Pin	
+S 500-Cycle Socket
+H 1500-Cycle Pin	 J 1500-Cycle Socket
+A Less Pin (with intent to use  
+nonstandard contacts)	
+B Less Socket (with intent to use  
+nonstandard contacts)
+Hermetic Contacts
+P Pin, Solder Cup	
+S Socket, Solder Cup
+X Pin, Eyelet	
+Z Socket, Eyelet
+C Pin, PC Tail	
+D Socket, PC Tail
+INSERT ARRANGEMENT
+See Insert Arrangement Table
+SHELL SIZE
+09, 11, 13, 15, 17, 19, 21, 23, 25
+
+
+===== PAGE 4 =====
+PAGE 4
+AEROSPACE, DEFENSE & MARINE /// DEUTSCH MIL-DTL-38999 SERIES I CONNECTORS QRG
+Insert Arrangements
+Insert
+Contact Size/Quantity
+09-07
+7
+09-35
+6
+4
+4
+09-98
+3
+4
+4
+11-02
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2
+ 
+ 
+4
+4
+ 
+11-04
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+4
+ 
+ 
+4
+ 
+11-05
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+5
+ 
+4
+ 
+11-35
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+13
+4
+4
+ 
+11-98
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+6
+ 
+4
+4
+ 
+11-99
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+7
+ 
+4
+4
+ 
+13-04
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+4
+ 
+ 
+4
+4
+ 
+13-08
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+8
+ 
+4
+4
+ 
+13-35
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+22
+4
+4
+ 
+13-98
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+10
+ 
+4
+4
+ 
+15-05
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+5
+ 
+ 
+4
+4
+ 
+15-15
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+1
+14
+ 
+4
+ 
+15-18
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+18
+ 
+4
+ 
+15-19
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+19
+ 
+4
+4
+ 
+15-26
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2
+ 
+24
+15-35
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+37
+4
+4
+ 
+15-97
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+4
+8
+ 
+4
+4
+ 
+17-02
+1
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+38
+17-03
+17-03
+1
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+38
+4
+17-06
+ 
+ 
+ 
+ 
+ 
+ 
+6
+ 
+ 
+ 
+4
+17-08
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+8
+ 
+ 
+4
+17-11
+ 
+ 
+ 
+2
+1
+ 
+ 
+ 
+8
+ 
+17-19
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+4
+11
+4
+17-20
+ 
+ 
+ 
+ 
+ 
+ 
+4
+ 
+ 
+16
+17-22
+2
+ 
+ 
+ 
+ 
+ 
+2
+ 
+ 
+ 
+17-24
+ 
+ 
+2
+ 
+ 
+ 
+ 
+ 
+ 
+22
+17-26
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+26
+ 
+4
+ 
+17-35
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+55
+4
+ 
+17-99
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2
+21
+ 
+4
+ 
+19-11
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+11
+ 
+ 
+4
+ 
+19-18
+4
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+14
+19-19
+19-19
+4
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+14
+4
+19-28
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2
+26
+ 
+ 
+19-32
+32
+4
+DJT and Military
+8 Twinax
+8 Coax
+8 Power
+12 Twinax
+12 Coax
+10
+12
+16
+20
+22D
+QPL
+QPL Hermetic
+Uses 38999/62-8* Boots
+Inactive: Superseded by
+
+
+===== PAGE 5 =====
+PAGE 5
+AEROSPACE, DEFENSE & MARINE /// DEUTSCH MIL-DTL-38999 SERIES I CONNECTORS QRG
+Insert
+Contact Size/Quantity
+19-35
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+66
+4
+ 
+21-11
+11
+4
+21-16
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+16
+ 
+ 
+4
+ 
+21-20
+2
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+18
+ 
+21-35
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+79
+4
+21-39
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2
+37
+ 
+4
+21-41
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+41
+ 
+4
+ 
+21-48
+ 
+4 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+21-75
+4
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+21-76
+21-76
+4
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+4
+23-06
+6
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+23-21
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+21
+ 
+ 
+4
+23-35
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+100
+4
+23-53
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+53
+ 
+4
+23-54
+ 
+ 
+ 
+ 
+ 
+ 
+4
+9
+ 
+40
+23-55
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+55
+ 
+4
+23-63
+ 
+ 
+ 
+ 
+ 
+ 
+4
+4
+ 
+49
+25-04
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+8
+48
+ 
+4
+4
+25-07
+2
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+97
+25-09
+25-08
+8
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+25-10
+25-09
+2
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+97
+4
+25-10
+8
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+4
+25-17
+6
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+36
+25-19
+ 
+ 
+ 
+ 
+ 
+ 
+19
+ 
+ 
+ 
+4
+4
+25-20
+3
+ 
+ 
+ 
+4
+ 
+ 
+13
+10
+ 
+25-21
+25-21
+3
+ 
+ 
+ 
+4
+ 
+ 
+13
+10
+ 
+4
+25-24
+ 
+ 
+ 
+ 
+ 
+ 
+12
+12
+ 
+ 
+4
+4
+25-29
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+29
+ 
+ 
+4
+4
+25-35
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+128
+4
+4
+25-37
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+37
+ 
+ 
+4
+4
+ 
+25-43
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+20
+23
+ 
+4
+4
+ 
+25-46
+ 
+2
+ 
+ 
+ 
+ 
+ 
+4
+40
+ 
+25-47
+25-47
+ 
+2
+ 
+ 
+ 
+ 
+ 
+4
+40
+ 
+4 
+25-61
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+61
+ 
+4
+4
+ 
+25-90
+2
+ 
+ 
+ 
+ 
+ 
+ 
+4
+40
+ 
+ 
+25-91
+25-91
+2
+ 
+ 
+ 
+ 
+ 
+ 
+4
+40
+ 
+ 
+4 
+Blue shaded entries are not Mil Spec. 
+DJT and Military
+8 Twinax
+8 Coax
+8 Power
+12 Twinax
+12 Coax
+10
+12
+16
+20
+22D
+QPL
+QPL Hermetic
+Uses 38999/62-8* Boots
+Inactive: Superseded by
+
+
+===== PAGE 6 =====
+AEROSPACE, DEFENSE & MARINE /// DEUTSCH MIL-DTL-38999 SERIES I CONNECTORS QRG
+DEUTSCH, TE, TE Connectivity and the TE connectivity (logo) are trademarks of the TE Connectivity Ltd.  
+family of companies. Other products, logos, and company names mentioned herein may be trademarks of their 
+respective owners.
+While TE has made every reasonable effort to ensure the accuracy of the information herein, nothing herein 
+constitutes any guarantee that such information is error-free, or any other representation, warranty or guarantee 
+that the information is accurate, correct, reliable or current. The TE entity issuing this publication reserves the right 
+to make any adjustments to the information contained herein at any time without notice. All implied warranties 
+regarding the information contained herein, including, but not limited to, any implied warranties of merchantability 
+or fitness for a particular purpose are expressly disclaimed. The dimensions herein are for reference purposes only 
+and are subject to change without notice. Specifications are subject to change without notice.
+Consult TE for the latest dimensions and design specifications.  
+© 2016 TE Connectivity Ltd. family of companies All Rights Reserved.
+1-1773870-8  10/16    
+te.com/38999
+LET’S CONNECT
+We make it easy to connect with our experts and are ready to  
+provide all the support you need. Just call your local support number or visit  
+www.te.com/industrial to chat with a Product Information Specialist.
+Technical Support 
+te.com/support-center
+North America 	
++1 800 522 6752
+North America (Toll) 	
++1 717 986 7777
+EMEA/South Africa 	
++800 0440 5100
+EMEA (Toll) 	
++31 73 624 6999
+India (Toll-Free) 	
++800 440 5100
+Asia Pacific 	
++86 400 820 6015
+Japan 	
+044 844 8180
+Australia 	
++61 2 9554 2695
+New Zealand 	
++64 (0) 9 634 4580
+ 

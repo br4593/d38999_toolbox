@@ -1,0 +1,36 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# --- Node / browser-validation artefacts ---
+node_modules/
+package-lock.json
+output/debug/
+output/
+
+# --- IDE / OS ---
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# --- Local-only ---
+*.local
+*.local.*
+.tmp_*.py
+
+# Generated extraction debug images (huge, regenerable)
+**/debug/
+**/chrome-validation-profile-*/
+**/validation-downloads-*/

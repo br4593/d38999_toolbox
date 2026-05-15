@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>D38999 Toolbox</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <h1>D38999 Toolbox</h1>
+      <p>Offline pinout, manufacturer cross-reference, and MIL-DTL-38999 source reference.</p>
+    </div>
+    <div class="header-status">
+      <span id="dataStatus">Loading data</span>
+      <span id="selectedStatus">No arrangement selected</span>
+    </div>
+  </header>
+
+  <nav class="top-tabs" aria-label="Application sections">
+    <button class="tab-button active" type="button" data-tab="pinout">Pinout</button>
+    <button class="tab-button" type="button" data-tab="converter">Converter</button>
+    <button class="tab-button" type="button" data-tab="manual">Manual</button>
+  </nav>
+
+  <div id="pinoutPanel" class="app-shell tab-panel active">
+    <aside class="sidebar panel">
+      <section>
+        <h2>Decode a part number</h2>
+        <label for="partNumberInput">Connector P/N</label>
+        <div class="inline-row">
+          <input id="partNumberInput" class="mono" type="text" value="D38999/" placeholder="D38999/26WE35PN" autocomplete="off">
+          <button id="decodeButton" type="button">Decode</button>
+        </div>
+        <div id="decodeMessage" class="message"></div>
+      </section>
+
+      <section>
+        <h2>Filter arrangements</h2>
+        <label for="slashSheetFilter">Series / slash sheet</label>
+        <select id="slashSheetFilter"></select>
+
+        <label for="shellStyleFilter">Shell style</label>
+        <select id="shellStyleFilter">
+          <option value="">Any</option>
+          <option value="plug">Plug</option>
+          <option value="receptacle">Receptacle</option>
+          <option value="unknown">Unknown</option>
+        </select>
+
+        <label for="shellFilter">Shell size</label>
+        <select id="shellFilter"></select>
+
+        <label for="arrangementFilter">Insert arrangement</label>
+        <input id="arrangementFilter" class="mono" type="text" placeholder="e.g. 17-26 or 35">
+
+        <div class="filter-grid">
+          <div>
+            <label for="countFilter">Contacts</label>
+            <select id="countFilter"></select>
+          </div>
+          <div>
+            <label for="sizeFilter">Size</label>
+            <select id="sizeFilter"></select>
+          </div>
+          <div>
+            <label for="typeFilter">Type</label>
+            <select id="typeFilter"></select>
+          </div>
+          <div>
+            <label for="genderFilter">Pin / socket</label>
+            <select id="genderFilter">
+              <option value="">All</option>
+              <option value="pin">Pin</option>
+              <option value="socket">Socket</option>
+              <option value="unknown">Unknown</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="keyingFilter">Polarization</label>
+        <select id="keyingFilter">
+          <option value="">All</option>
+          <option value="N">N — normal</option>
+          <option value="A">A — alternate</option>
+          <option value="B">B — alternate</option>
+          <option value="C">C — alternate</option>
+          <option value="D">D — alternate</option>
+          <option value="E">E — alternate</option>
+        </select>
+      </section>
+
+      <section>
+        <h2>Matching arrangements</h2>
+        <div id="arrangementCards" class="arrangement-cards"></div>
+      </section>
+
+      <section>
+        <h2>Compare two</h2>
+        <label for="compareA">Arrangement A</label>
+        <select id="compareA"></select>
+        <label for="compareB">Arrangement B</label>
+        <select id="compareB"></select>
+        <div id="comparisonPanel" class="comparison-panel"></div>
+      </section>
+    </aside>
+
+    <main class="main-panel">
+      <section class="viewer-panel panel">
+        <div class="panel-title-row">
+          <div>
+            <h2 id="viewerTitle">Insert arrangement</h2>
+            <div id="sourceInfo" class="source-line"></div>
+          </div>
+          <div class="toolbar">
+            <label class="compact-field" for="labelsToggle">Labels</label>
+            <select id="labelsToggle" class="compact-select">
+              <option value="focus" selected>Selected only</option>
+              <option value="all">Show all</option>
+              <option value="off">Hide all</option>
+            </select>
+            <label class="check"><input id="outlineToggle" type="checkbox" checked> Shell outline</label>
+            <button id="resetViewButton" type="button">Reset view</button>
+          </div>
+        </div>
+        <div class="viewer-search-row">
+          <label for="pinSearchInput">Find pin</label>
+          <input id="pinSearchInput" class="mono" type="text" placeholder="A, 1, AA…">
+          <span id="searchMessage" class="message"></span>
+        </div>
+        <div class="legend">
+          <span><i class="legend-contact gauge-8"></i>#8</span>
+          <span><i class="legend-contact gauge-10"></i>#10</span>
+          <span><i class="legend-contact gauge-12"></i>#12</span>
+          <span><i class="legend-contact gauge-16"></i>#16</span>
+          <span><i class="legend-contact gauge-20"></i>#20</span>
+          <span><i class="legend-contact gauge-22d"></i>#22D</span>
+          <span><i class="legend-pin selected"></i>Selected</span>
+          <span><i class="legend-pin match"></i>Search match</span>
+        </div>
+        <div id="viewerFrame" class="viewer-frame">
+          <svg id="connectorSvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Connector insert arrangement"></svg>
+        </div>
+      </section>
+
+      <section class="table-panel panel">
+        <div class="panel-title-row">
+          <h2>Pin catalog</h2>
+          <div class="toolbar">
+            <button id="exportPinCsvButton" type="button">Export CSV</button>
+            <button id="copyTableButton" type="button">Copy table</button>
+            <button id="printReportButton" type="button">Print</button>
+          </div>
+        </div>
+        <div id="tableMessage" class="message"></div>
+        <div class="table-scroll">
+          <table id="pinTable">
+            <thead>
+              <tr>
+                <th data-sort="label">Pin</th>
+                <th data-sort="size">Size</th>
+                <th data-sort="type">Type</th>
+                <th data-sort="confidence">Confidence</th>
+                <th data-sort="label_confidence">Label source</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <aside class="right-panel panel">
+      <section>
+        <h2>Decoded part number</h2>
+        <div id="decodedPanel" class="details-list"></div>
+      </section>
+
+      <section>
+        <h2>Part-number guide</h2>
+        <div id="partNumberGuidePanel" class="details-list"></div>
+      </section>
+
+      <section>
+        <h2>Pin detail</h2>
+        <div id="pinDetailHeader" class="pin-detail-header">Select a pin to see its details here.</div>
+      </section>
+    </aside>
+  </div>
+
+  <section id="converterPanel" class="converter-tab-panel panel tab-panel" aria-labelledby="converter-title">
+    <main class="converter-shell">
+      <section class="converter-card panel" aria-labelledby="converter-title">
+        <div class="panel-heading">
+          <h2 id="converter-title">Manufacturer cross-reference</h2>
+          <span id="ruleCount" class="count-pill"></span>
+        </div>
+
+        <form id="converterForm" class="entry-row">
+          <label class="field">
+            <span>Enter a D38999 or manufacturer part number</span>
+            <input id="pnInput" type="text" autocomplete="off" spellcheck="false" placeholder="D38999/26WD35PN">
+          </label>
+          <button type="submit" class="primary-action">Convert</button>
+          <button type="button" id="clearBtn" class="secondary-action">Clear</button>
+        </form>
+
+        <div class="sample-row" aria-label="Sample part numbers">
+          <button type="button" data-sample="D38999/26WD35PN">D38999/26WD35PN</button>
+          <button type="button" data-sample="TV06RW-15-35PN">TV06RW-15-35PN</button>
+          <button type="button" data-sample="AE326WD35PN">AE326WD35PN</button>
+          <button type="button" data-sample="233-105-G6NF15-35PN">233-105-G6NF15-35PN</button>
+          <button type="button" data-sample="KJA6T15W35PN">KJA6T15W35PN</button>
+          <button type="button" data-sample="8D5-15W35PN">8D5-15W35PN</button>
+          <button type="button" data-sample="DTS26W1535PN">DTS26W1535PN</button>
+          <button type="button" data-sample="D38999/43NB35PN">D38999/43NB35PN</button>
+        </div>
+      </section>
+
+      <section id="resultPanel" class="result-panel" aria-live="polite"></section>
+    </main>
+
+    <template id="conversionTemplate">
+      <article class="result-block">
+        <div class="result-title-row">
+          <div>
+            <h2 class="normalized"></h2>
+            <p class="source-line"></p>
+          </div>
+          <button type="button" class="copy-d38999">Copy D38999</button>
+        </div>
+        <dl class="decode-grid"></dl>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Manufacturer</th>
+                <th>Product line</th>
+                <th>Candidate PN</th>
+                <th>Confidence</th>
+                <th>Notes</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </article>
+    </template>
+  </section>
+
+  <section id="manualPanel" class="manual-panel panel tab-panel" aria-label="D38999 manual">
+    <div class="panel-title-row">
+      <div>
+        <h2>D38999 reference manual</h2>
+        <div class="source-line">Source-backed summary derived from the supplied MIL-DTL-38999 data.</div>
+      </div>
+    </div>
+    <div id="manualContent" class="manual-content"></div>
+  </section>
+
+  <script src="app-data.js"></script>
+  <script src="app.js"></script>
+  <script src="converter.js"></script>
+</body>
+</html>

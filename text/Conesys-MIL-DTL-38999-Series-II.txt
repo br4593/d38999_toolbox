@@ -1,0 +1,4166 @@
+
+
+===== PAGE 1 =====
+22
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+MIL-DTL-38999
+Features and Application
+Series II
+Features and Application
+MIL-DTL-38999 Series II connectors feature a bayonet  
+coupling mechanism with lower profile design and  
+rear-removable crimp contact retention system.
+These connectors were designed for military and commercial 
+applications where the prime requirements are lower profile 
+and lighter weight. 
+Reduction of both size and weight were achieved through the 
+use of thinner shell walls and length restrictions. These design 
+restrictions reduced the RFI attenuation characteristics and the 
+“scoop” protection, while yielding an excellent general purpose, 
+lightweight connector. Compared to Series I, Series II connec-
+tors achieve up to 20% reduction in mated pair length, up to 
+39% reduction in outside diameter and up to 40% reduction in 
+weight (128 pin mated pair).
+This family of connectors is offered in six receptacle-mounting 
+styles. They include square flange receptacles, for both front 
+and rear panel (wall) mounting; square flange receptacles, for 
+both front and rear panel (box) mounting; square flange recep-
+tacle with extended grommet, for front of panel (box) mount-
+ing; and jam nut receptacles which incorporate  
+“O” ring seals, designed for rear panel “D” hole mounting.
+Plugs are available in two designs, with and without RFI 
+grounding.
+Fifty-two insert arrangement per MIL-STD-1560 are tooled 
+and qualified to MIL-DTL-38999 Series II, utilizing 3 to 128 
+M39029 contacts. Contacts come in sizes 22D, 22M, 22, 20, 16 
+and 12, terminating wire sizes from 28 to 12 gauge.
+These connectors are available in wide range of shell materials 
+and finishes. Aluminum shells are offered in electroless nickel, 
+bright cadmium, anodized, and olive drab cadmium. Other fin-
+ishes such as zinc cobalt are available upon request to commer-
+cial callouts only. In addition, we offer passivated stainless steel 
+shells with standard environment-resisting inserts (commercial 
+callouts only).
+Universal I/R Tool – A single, expendable plastic tool is used 
+for both insertion and removal of contacts. 
+Closed-Entry Socket Insert – Hard dielectric socket face 
+has lead-in chamfers for positive alignment of pins (even 
+partially bent within pre-established limits) with sockets.
+Interfacial Pin Insert Seal – Raised moisture barriers 
+around each pin, which mate into lead-in chamfers of hard 
+face socket insert, provide individual contact sealing.  Inter-
+facial seal is never touched by service tools.
+Elastomer Wire Sealing Grommet – Sealing over a wide 
+range of wire diameters is assured by a triple wire seal in 
+each cavity at the rear of the connector. 
+Superior Contact Stability – Rear release crimp contact 
+system features a stamped beryllium-copper retaining clip 
+captivated by molded-in shoulders of each contact cavity in 
+the insulator. A rear-inserted M81969 plastic tool expands 
+the tines beyond the shoulder, releasing the contact. 
+Shell Polarization – Alternate key/keyway positions prevent 
+cross mating of adjacent connectors having same insert 
+arrangement.
+
+
+===== PAGE 2 =====
+23
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+MIL-DTL-38999
+Performance Specifications
+Series II
+Performance Specifications
+Operating Temperature Range
+Finish B: -65°C to +175°C (-85°F to +347°F)
+Finishes C and F: -65°C to +200°C (-85°F to +392°F)
+Finish A: -65°C to +150°C (-85°F to 302°F)
+Material and Plating Data (Finish)
+B – aluminum shell, olive drab cadmium over nickel base 
+C – aluminum shell, black anodized finish
+F – aluminum shell, electroless nickel finish
+A – aluminum shell, silver to light iridescent yellow color 
+(bright) cadmium over electroless nickel base
+Corrosion Resistance
+Finishes A, B and C withstand 500-hour salt spray.
+Finish F withstands 48-hour salt spray.
+Durability
+Mated connectors withstand a minimum of 250 mating 
+cycles for RFI plug (MS27484) and 500 cycles for MS27473 
+and MS27500 plugs.
+Environmental Seal
+Wired, mated connectors with specified accessories at-
+tached, shall meet the altitude-immersion test specified by 
+MIL-DTL-38999.
+Fluid Resistance
+Connectors resist specified immersions in MIL-PRF-7808, 
+MIL-PRF-23699, MIL-PRF-5606, M2-V Chevron oil, Coolanol 
+25, MIL-DTL-83133 (JP-8), MIL-DTL-5624 (JP-4, JP-5), 
+SAE-AMS1424 Type I, and other solvents and cleaning agents.
+Voltage Rating
+Shell-to-Shell Conductivity
+Maximum potential drop shall not exceed:
+•	 With RFI spring fingers, finish F = 1.0 millivolt, while 
+finishes A and B = 2.5 millivolts.
+•	 Without spring fingers = 200 millivolts.
+•	 Finish C = nonconductive.
+Shielding Effectiveness
+RFI and EMI attenuation at the specified frequencies meet 
+the requirements of MIL-DTL-38999.
+•	 RFI shielding effectiveness of mated connectors with  
+RFI backshells is measured in a triaxial radio frequency 
+leakage fixture.
+•	 EMI shielding effectiveness is measured at the interface 
+of mated connectors and tested by the mode-stirred tech-
+nique specified in method 3008 of MIL-STD-1344.
+Shock and Vibration Requirements
+Wired, mated connectors shall not be damaged, nor shall 
+there be a current interruption longer than one microsecond 
+when subjected to the following:
+Standard Shock
+Mated connectors withstand a pulse of approximate half 
+sine wave of 300 G magnitude with duration of three  
+milliseconds applied in three axes per MIL-STD-1344, 
+method 2004.
+Vibration
+Mated connectors withstand the following vibration levels:
+•	 Random vibration per MIL-STD-1344, method 2005 test 
+condition VI, Letter “J”.
+Service 
+Rating
+Suggested Operating Voltage
+Test Voltage
+Test Voltage
+Test Voltage
+Test Voltage
+(Sea Level)
+Sea Level
+50,000 Ft.
+70,000 Ft.
+100,000 Ft.
+AC (RMS)
+DC
+V RMS
+V RMS
+V RMS
+V RMS
+M
+400
+550
+1300
+550
+350
+200
+N
+300
+450
+1000
+400
+260
+200
+I
+600
+850
+1800
+600
+400
+200
+II
+900
+1250
+2300
+800
+500
+200
+Note: The establishment of electrical safety factors is left 
+entirely to the designer, as he is in the best position to know 
+exactly what peak voltages, switching currents, transients, etc., 
+can be expected in a particular circuit.
+
+
+===== PAGE 3 =====
+24
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+MIL-DTL-38999
+Part Number Development
+Series II
+Military and Aero-Electric Part Number Development
+Mil. Prefix
+MS
+27473
+T
+12
+B
+35
+P
+A
+Aero Prefix
+AE
+273
+T
+12
+B
+35
+P
+A
+-340
+Shell Type
+27472 = Front, wall mount receptacle = 272 (Aero p/n)
+27473 = Straight plug = 273 (Aero p/n)
+27474 = Jam nut receptacle = 274 (Aero p/n)
+27484 = RFI grounding plug = 284 (Aero p/n)
+27497 = Rear, wall mount receptacle = 297 (Aero p/n)
+27499 = Front, box mount receptacle = 299 (Aero p/n)
+27500 = Standard plug with 90Þ backshell = 200 (Aero p/n)
+27508 = Rear, box mount receptacle = 208 (Aero p/n)
+27513 = Front, box mount rec. (long grommet) = 213 (Aero p/n)
+Class
+T = With accessory thread  (MS27472, 27473, 27474, 27484 & 27497)
+E = Same as T in line above except connector is kitted with E-Nut
+   = No accessory thread, box mount (MS27499 &  MS27508)
+   = No accessory thread, box mount, long grommet (MS27513)
+P = Supplied with ring and potting boot (same shell types as “T” class)
+Shell Size
+8, 10, 12, 14, 16, 18, 20, 22 or 24
+Finish (Material & Plating)
+A = Aluminum shell, silver to light iridescent yellow (bright) cadmium over electroless nickel base 
+B = Aluminum shell, olive drab cadmium over electroless nickel base
+C = Aluminum shell, black anodized finish (not available in MS27484)
+F = Aluminum shell, electroless nickel finish
+E = Stainless steel shell, passivated (Aero p/n only, n/a in AE284)
+BN = Aluminum shell, Black Nickel Finish (Aero p/n only)
+Insert Arrangement
+See page 41-43
+Contact Designator
+P = Pin
+A = Pin connector less pins (with intent to use non-std pin contacts)
+S = Socket
+B = Socket connector less sockets (with intent to use non-std socket contacts)
+Polarization (Keying)
+N  = Normal (Omitted in part number)
+A, B, C, or D (B & C keyways are not available in shell size 8)
+Modification (applies to Aero part numbers only)
+01   = Less contacts (is not marked on the part)
+340 = Connector kitted with M85049/27-XXX E-nut
+341 = Connector kitted with M85049/49-2-XXX straight clamp
+342 = Connector kitted with M85049/47XXX right angle clamp
+Consult factory for other modifications
+Note 1: Each connector is furnished with contacts unless 
+ordered less contacts (L/C) as follows: One spare contact 
+for inserts requiring 2 through 26 of each contact and two 
+spares for inserts with 27 or more contacts, and a minimum 
+of one sealing plug up to 10% of the number contacts. One  
+insertion/extraction tool for each contact size is also included.
+Note 2: Proper part number marking has no “0” in front  
+of single digit shell size (8) and no “0” in front of single digit 
+layout. Example of each: J MS27472T8B35S and  
+J MS27472T10B5S. In both “N” for normal is omitted. 
+Please note that JAN or J marking is required immediately 
+in front of MS number.
+
+
+===== PAGE 4 =====
+25
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+MS27497
+Rear, Wall Mount Receptacle
+AE297
+Bayonet Coupling, Crimp Removable, Rear Release, Low Profile/Light Weight
+G NO. OF TEETH 
+F ACCESSORY THREAD
+MASTER KEYWAY
+4x  C
+BLUE COLOR BAND
+ E
+MAX
+ H
+MAX
+GROMMET
+K GROMMET EXTENSION
+.219(5.56)
+MIN FULL THREAD
+B
+A
+MAX
+.447(11.35)
+.442(11.23)
+.069(1.75)
+.058(1.47)
+D
+MAX
+4 MINOR KEYWAYS
+Page 24	
+Completed Part Number
+Page 37	
+Contacts, Sealing Plugs and Tools
+Pages 41–43	
+Insert Arrangements
+Page 23	
+Performance Specifications
+Pages 39, 40	
+Insert Availability and Contact Information
+Page 35	
+Polarization
+Note: See page 36 for panel thickness.
+Shell
+Size
+A
+B
+Ø C
+D
+Ø E
+F
+G
+Ø H
+K
++.010
++.25
+Accessory
+No. of
+Grommet
+Maximum
+(TP)
+-.005
+-.13
+Maximum
+Maximum
+Thread
+Teeth
+Maximum
+Extension
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+UNEF-2A
+inch
+mm
+inch
+mm
+8
+.828
+21.03
+.594
+15.09
+.120
+3.05
+.988
+25.10
+.547
+13.89
+7/16-28
+12
+.299
+7.59
+.150/.090
+3.81/2.29
+10
+.954
+24.23
+.719
+18.26
+.120
+3.05
+.988
+25.10
+.672
+17.07
+9/16-24
+16
+.427
+10.85
+.150/.090
+3.81/2.29
+12
+1.047
+26.59
+.812
+20.62
+.120
+3.05
+.988
+25.10
+.844
+21.44
+11/16-24
+20
+.541
+13.74
+.150/.090
+3.81/2.29
+14
+1.141
+28.98
+.906
+23.01
+.120
+3.05
+.988
+25.10
+.969
+24.61
+13/16-20
+24
+.666
+16.92
+.150/.090
+3.81/2.29
+16
+1.234
+31.34
+.969
+24.61
+.120
+3.05
+.988
+25.10
+1.094
+27.79
+15/16-20
+28
+.791
+20.09
+.150/.090
+3.81/2.29
+18
+1.328
+33.73
+1.062
+26.97
+.120
+3.05
+.988
+25.10
+1.219
+30.96
+1-1/16-18
+32
+.897
+22.78
+.150/.090
+3.81/2.29
+20
+1.453
+36.91
+1.156
+29.36
+.120
+3.05
+.988
+25.10
+1.344
+34.14
+1-3/16-18
+36
+1.022
+25.96
+.150/.090
+3.81/2.29
+22
+1.578
+40.08
+1.250
+31.75
+.120
+3.05
+.988
+25.10
+1.469
+37.31
+1-5/16-18
+40
+1.147
+29.13
+.150/.090
+3.81/2.29
+24
+1.703
+43.26
+1.375
+34.93
+.147
+3.73
+1.056
+26.82
+1.594
+40.49
+1-7/16-18
+44
+1.272
+32.31
+.140/.040
+3.56/1.02
+
+
+===== PAGE 5 =====
+26
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+                   38999 S II
+MS27472
+Front, Wall Mount Receptacle
+AE272
+Bayonet Coupling, Crimp Removable, Rear Release, Low Profile/Light Weight
+G NO. OF TEETH 
+F ACCESSORY THREAD
+4x  C
+MASTER KEYWAY
+BLUE COLOR BAND
+ E
+ H
+MAX
+GROMMET
+K GROMMET EXTENSION
+.219(5.56)
+MIN FULL THREAD
+.322(8.18)
+.317(8.05)
+B
+A
+MAX
+.069(1.75)
+.058(1.47)
+D
+MAX
+4 MINOR KEYWAYS
+Page 24	
+Completed Part Number
+Page 37	
+Contacts, Sealing Plugs and Tools
+Pages 41–43	
+Insert Arrangements
+Page 23	
+Performance Specifications
+Pages 39, 40	
+Insert Availability and Contact Information
+Page 35	
+Polarization
+Shell
+Size
+A
+B
+Ø C
+D
+Ø E
+F
+G
+Ø H
+K
++.010
++.25
+Accessory
+No. of
+Grommet
+Maximum
+(TP)
+-.005
+-.13
+Maximum
+±.003
+±.08
+Thread
+Teeth
+Maximum
+Extension
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+UNEF-2A
+inch
+mm
+inch
+mm
+8
+.828
+21.03
+.594
+15.09
+.120
+3.05
+.932
+23.67
+.471
+11.96
+7/16-28
+12
+.299
+7.59
+.150/.090
+3.81/2.29
+10
+.954
+24.23
+.719
+18.26
+.120
+3.05
+.932
+23.67
+.588
+14.94
+9/16-24
+16
+.427
+10.85
+.150/.090
+3.81/2.29
+12
+1.047
+26.59
+.812
+20.62
+.120
+3.05
+.932
+23.67
+.748
+19.00
+11/16-24
+20
+.541
+13.74
+.150/.090
+3.81/2.29
+14
+1.141
+28.98
+.906
+23.01
+.120
+3.05
+.932
+23.67
+.873
+22.17
+13/16-20
+24
+.666
+16.92
+.150/.090
+3.81/2.29
+16
+1.234
+31.34
+.969
+24.61
+.120
+3.05
+.932
+23.67
+.998
+25.35
+15/16-20
+28
+.791
+20.09
+.150/.090
+3.81/2.29
+18
+1.328
+33.73
+1.062
+26.97
+.120
+3.05
+.932
+23.67
+1.123
+28.52
+1-1/16-18
+32
+.897
+22.78
+.150/.090
+3.81/2.29
+20
+1.453
+36.91
+1.156
+29.36
+.120
+3.05
+.932
+23.67
+1.248
+31.70
+1-3/16-18
+36
+1.022
+25.96
+.150/.090
+3.81/2.29
+22
+1.578
+40.08
+1.250
+31.75
+.120
+3.05
+.932
+23.67
+1.373
+34.87
+1-5/16-18
+40
+1.147
+29.13
+.150/.090
+3.81/2.29
+24
+1.703
+43.26
+1.375
+34.93
+.147
+3.73
+1.000
+25.40
+1.498
+38.05
+1-7/16-18
+44
+1.272
+32.31
+.140/.040
+3.56/1.02
+
+
+===== PAGE 6 =====
+27
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+MS27508
+Rear, Box Mount Receptacle
+AE208
+Bayonet Coupling, Crimp Removable, Rear Release, Low Profile/Light Weight
+Page 24	
+Completed Part Number
+Page 37	
+Contacts, Sealing Plugs and Tools
+Pages 41–43	
+Insert Arrangements
+Page 23	
+Performance Specifications
+Pages 39, 40	
+Insert Availability and Contact Information
+Page 35	
+Polarization
+Note: See page 36 for panel thickness.
+.058(1.47)
+4x  C
+MASTER KEYWAY
+BLUE COLOR BAND
+.317(8.05)
+.322(8.18)
+ F
+MAX
+ F
+MAX
+ E
+ H
+MAX
+GROMMET
+.060(1.52)
+MAX
+GROMMET EXTENSION
+.442(11.23)
+.447(11.35)
+B
+A
+MAX
+.757(19.23)
+MAX
+.250(6.35)
+MAX
+.069(1.75)
+4 MINOR KEYWAYS
+Shell
+Size
+A
+B
+Ø C
+Ø E
+Ø F
+Ø H
++.010
++.25
+Maximum
+(TP)
+-.005
+-.13
+±.003
+±.08
+Maximum
+Maximum
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+8
+.828
+21.03
+.594
+15.09
+.120
+3.05
+.471
+11.96
+.547
+13.89
+.299
+7.59
+10
+.954
+24.23
+.719
+18.26
+.120
+3.05
+.588
+14.94
+.672
+17.07
+.427
+10.85
+12
+1.047
+26.59
+.812
+20.62
+.120
+3.05
+.748
+19.00
+.844
+21.44
+.541
+13.74
+14
+1.141
+28.98
+.906
+23.01
+.120
+3.05
+.873
+22.17
+.969
+24.61
+.666
+16.92
+16
+1.234
+31.34
+.969
+24.61
+.120
+3.05
+.998
+25.35
+1.094
+27.79
+.791
+20.09
+18
+1.328
+33.73
+1.062
+26.97
+.120
+3.05
+1.123
+28.52
+1.219
+30.96
+.897
+22.78
+20
+1.453
+36.91
+1.156
+29.36
+.120
+3.05
+1.248
+31.70
+1.344
+34.14
+1.022
+25.96
+22
+1.578
+40.08
+1.250
+31.75
+.120
+3.05
+1.373
+34.87
+1.469
+37.31
+1.147
+29.13
+24
+1.703
+43.26
+1.375
+34.93
+.147
+3.73
+1.498
+38.05
+1.594
+40.49
+1.272
+32.31
+
+
+===== PAGE 7 =====
+28
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+MS27499
+Front, Box Mount Receptacle
+AE299
+Bayonet Coupling, Crimp Removable, Rear Release, Low Profile/Light Weight
+4x  C
+MASTER KEYWAY
+BLUE COLOR BAND
+ E
+ F
+MAX
+ H
+MAX
+GROMMET
+.060(1.52)
+MAX
+GROMMET EXTENSION
+.312(7.92)
+MAX
+.322(8.18)
+.317(8.05)
+B
+A
+MAX
+.763(19.38)
+MAX
+.069(1.75)
+.058(1.47)
+4 MINOR KEYWAYS
+Page 24	
+Completed Part Number
+Page 37	
+Contacts, Sealing Plugs and Tools
+Pages 41–43	
+Insert Arrangements
+Page 23	
+Performance Specifications
+Pages 39, 40	
+Insert Availability and Contact Information
+Page 35	
+Polarization
+Shell
+Size
+A
+B
+Ø C
+Ø E
+Ø F
+Ø H
++.010
++.25
+Maximum
+(TP)
+-.005
+-.13
+±.003
+±.08
+Maximum
+Maximum
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+8
+.828
+21.03
+.594
+15.09
+.120
+3.05
+.471
+11.96
+.453
+11.51
+.299
+7.59
+10
+.954
+24.23
+.719
+18.26
+.120
+3.05
+.588
+14.94
+.578
+14.68
+.427
+10.85
+12
+1.047
+26.59
+.812
+20.62
+.120
+3.05
+.748
+19.00
+.703
+17.86
+.541
+13.74
+14
+1.141
+28.98
+.906
+23.01
+.120
+3.05
+.873
+22.17
+.828
+21.03
+.666
+16.92
+16
+1.234
+31.34
+.969
+24.61
+.120
+3.05
+.998
+25.35
+.953
+24.21
+.791
+20.09
+18
+1.328
+33.73
+1.062
+26.97
+.120
+3.05
+1.123
+28.52
+1.062
+26.97
+.897
+22.78
+20
+1.453
+36.91
+1.156
+29.36
+.120
+3.05
+1.248
+31.70
+1.188
+30.18
+1.022
+25.96
+22
+1.578
+40.08
+1.250
+31.75
+.120
+3.05
+1.373
+34.87
+1.312
+33.32
+1.147
+29.13
+24
+1.703
+43.26
+1.375
+34.93
+.147
+3.73
+1.498
+38.05
+1.438
+36.53
+1.272
+32.31
+
+
+===== PAGE 8 =====
+29
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+MS27474
+Jam Nut Receptacle
+AE274
+Bayonet Coupling, Crimp Removable, Rear Release, Low Profile/Light Weight
+3 BAYONET PINS
+4 MINOR KEYWAYS
+E THREAD
+BLUE COLOR BAND
+MASTER
+KEYWAY
+HEX NUT
+PER MS3186
+ F
+D
+B
+FLAT
+"O" RING
+A
+G
+MAX.
+M ACCESSORY THREAD 
+H NO. OF TEETH
+ J
+MAX
+GROMMET
+SS 8-22 .150(3.81)
+.090(2.29)
+SS 24 .140(3.56)
+.040(1.02)
+.105(2.67)
+.084(2.13)
+GROMMET
+EXTENSION
+PANEL THICKNESS
+.109(2.77)
+.062(1.57)
+Page 24	
+Completed Part Number
+Page 37	
+Contacts, Sealing Plugs and Tools
+Pages 41–43	
+Insert Arrangements
+Page 23	
+Performance Specifications
+Pages 39, 40	
+Insert Availability and Contact Information
+Page 35	
+Polarization
+Shell
+Size
+A
+B
+D
+E
+Ø F
+G
+H
+Ø J
+M
++.001
++.03
+Jam Nut Thread
+No. of
+Accessory
+±.005
+±.13
+-.006
+-.15
+±.016
+±.41
+Class 2A
+±.003
+±.08
+Maximum
+Teeth
+Maximum
+Thread 
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+UNEF-2A
+8
+.438
+11.13
+.817
+20.75
+1.250
+31.75
+7/8-20UNEF
+.471
+11.96
+.937
+23.80
+12
+.299
+7.59
+7/16-28
+10
+.438
+11.13
+.941
+23.90
+1.375
+34.93
+1-20UNEF
+.588
+14.94
+.937
+23.80
+16
+.427
+10.85
+9/16-24
+12
+.438
+11.13
+1.065
+27.05
+1.500
+38.10
+1-1/8-18UNEF
+.748
+19.00
+.937
+23.80
+20
+.541
+13.74
+11/16-24
+14
+.438
+11.13
+1.190
+30.23
+1.625
+41.28
+1-1/4-18UNEF
+.873
+22.17
+.937
+23.80
+24
+.666
+16.92
+13/16-20
+16
+.438
+11.13
+1.320
+33.53
+1.781
+45.24
+1-3/8-18UNEF
+.998
+25.35
+.937
+23.80
+28
+.791
+20.09
+15/16-20
+18
+.438
+11.13
+1.440
+36.58
+1.890
+48.01
+1-1/2-18UNEF
+1.123
+28.52
+.937
+23.80
+32
+.897
+22.78
+1-1/16-18
+20
+.464
+11.79
+1.565
+39.75
+2.016
+51.21
+1-5/8-18UNEF
+1.248
+31.70
+.931
+23.65
+36
+1.022
+25.96
+1-3/16-18
+22
+.464
+11.79
+1.690
+42.93
+2.140
+54.36
+1-3/4-18UNS
+1.373
+34.87
+.931
+23.65
+40
+1.147
+29.13
+1-5/16-18
+24
+.464
+11.79
+1.815
+46.10
+2.265
+57.53
+1-7/8-16UN
+1.498
+38.05
+.984
+24.99
+44
+1.272
+32.31
+1-7/16-18
+
+
+===== PAGE 9 =====
+30
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+MS27513
+Long Grommet, Front, Box Mount Receptacle
+AE213
+Bayonet Coupling, Crimp Removable, Rear Release, Low Profile/Light Weight
+Page 24	
+Completed Part Number
+Page 37	
+Contacts, Sealing Plugs and Tools
+Pages 41–43	
+Insert Arrangements
+Page 23	
+Performance Specifications
+Pages 39, 40	
+Insert Availability and Contact Information
+Page 35	
+Polarization
+MASTER KEYWAY
+BLUE COLOR BAND
+.322(8.18)
+.317(8.05)
+.312(7.92)
+MAX
+.069(1.75)
+.058(1.47)
+B
+A
+MAX
+.907(23.04)
+MAX
+.516(13.11)
+MAX
+4x  C
+ E
+ F 
+MAX
+ H
+MAX
+GROMMET
+4 MINOR KEYWAYS
+Shell
+Size
+A
+B
+Ø C
+Ø E
+Ø F
+Ø H
++.010
++.25
+Maximum
+(TP)
+-.005
+-.13
+±.003
+±.08
+Maximum
+Maximum
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+8
+.828
+21.03
+.594
+15.09
+.120
+3.05
+.471
+11.96
+.453
+11.51
+.299
+7.59
+10
+.954
+24.23
+.719
+18.26
+.120
+3.05
+.588
+14.94
+.578
+14.68
+.427
+10.85
+12
+1.047
+26.59
+.812
+20.62
+.120
+3.05
+.748
+19.00
+.703
+17.86
+.541
+13.74
+14
+1.141
+28.98
+.906
+23.01
+.120
+3.05
+.873
+22.17
+.828
+21.03
+.666
+16.92
+16
+1.234
+31.34
+.969
+24.61
+.120
+3.05
+.998
+25.35
+.953
+24.21
+.791
+20.09
+18
+1.328
+33.73
+1.062
+26.97
+.120
+3.05
+1.123
+28.52
+1.062
+26.97
+.897
+22.78
+20
+1.453
+36.91
+1.156
+29.36
+.120
+3.05
+1.248
+31.70
+1.188
+30.18
+1.022
+25.96
+22
+1.578
+40.08
+1.250
+31.75
+.120
+3.05
+1.373
+34.87
+1.312
+33.32
+1.147
+29.13
+24
+1.703
+43.26
+1.375
+34.93
+.147
+3.73
+1.498
+38.05
+1.438
+36.53
+1.272
+32.31
+
+
+===== PAGE 10 =====
+31
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+MS27473
+Straight Plug
+AE273
+Bayonet Coupling, Crimp Removable, Rear Release, Low Profile/Light Weight
+Page 24	
+Completed Part Number
+Page 37	
+Contacts, Sealing Plugs and Tools
+Pages 41–43	
+Insert Arrangements
+Page 23	
+Performance Specifications
+Pages 39, 40	
+Insert Availability and Contact Information
+Page 35	
+Polarization
+Shell
+Size
+Ø A
+Ø C
+D
+E
+Ø F
+G
+H
+No of
+Accessory 
+Grommet
+Minimum
+Maximum
+Teeth
+Thread
+Maximum
+Maximum
+Extension
+inch
+mm
+inch
+mm
+UNEF-2A
+inch
+mm
+inch
+mm
+inch
+mm
+8
+.337
+8.56
+.299
+7.59
+12
+7/16-28
+.750
+19.05
+.916
+23.27
+.150/.090
+3.81/2.29
+10
+.465
+11.81
+.427
+10.85
+16
+9/16-24
+.859
+21.82
+.916
+23.27
+.150/.090
+3.81/2.29
+12
+.557
+14.15
+.541
+13.74
+20
+11/16-24
+1.031
+26.19
+.916
+23.27
+.150/.090
+3.81/2.29
+14
+.702
+17.83
+.666
+16.92
+24
+13/16-20
+1.156
+29.36
+.916
+23.27
+.150/.090
+3.81/2.29
+16
+.827
+21.01
+.791
+20.09
+28
+15/16-20
+1.281
+32.54
+.916
+23.27
+.150/.090
+3.81/2.29
+18
+.927
+23.55
+.897
+22.78
+32
+1-1/16-18
+1.406
+35.71
+.916
+23.27
+.150/.090
+3.81/2.29
+20
+1.052
+26.72
+1.022
+25.96
+36
+1-3/16-18
+1.531
+38.89
+.916
+23.27
+.150/.090
+3.81/2.29
+22
+1.177
+29.90
+1.147
+29.13
+40
+1-5/16-18
+1.641
+41.68
+.916
+23.27
+.150/.090
+3.81/2.29
+24
+1.302
+33.07
+1.272
+32.31
+44
+1-7/16-18
+1.766
+44.86
+.984
+24.99
+.140/.040
+3.56/1.02
+
+
+===== PAGE 11 =====
+32
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+MS27484
+RFI Grounding Plug
+AE284
+Bayonet Coupling, Crimp Removable, Rear Release, Low Profile/Light Weight
+Page 24	
+Completed Part Number
+Page 37	
+Contacts, Sealing Plugs and Tools
+Pages 41–43	
+Insert Arrangements
+Page 23	
+Performance Specifications
+Pages 39, 40	
+Insert Availability and Contact Information
+Page 35	
+Polarization
+Shell
+Size
+Ø A
+Ø C
+D
+E
+Ø F
+G
+H
+No of
+Accessory
+Grommet
+Minimum
+Maximum
+Teeth
+Thread
+Maximum
+Maximum
+Extension
+inch
+mm
+inch
+mm
+UNEF-2A
+inch
+mm
+inch
+mm
+inch
+mm
+8
+.337
+8.56
+.299
+7.59
+12
+7/16-28
+.750
+19.05
+.916
+23.27
+.150/.090
+3.81/2.29
+10
+.465
+11.81
+.427
+10.85
+16
+9/16-24
+.859
+21.82
+.916
+23.27
+.150/.090
+3.81/2.29
+12
+.557
+14.15
+.541
+13.74
+20
+11/16-24
+1.031
+26.19
+.916
+23.27
+.150/.090
+3.81/2.29
+14
+.702
+17.83
+.666
+16.92
+24
+13/16-20
+1.156
+29.36
+.916
+23.27
+.150/.090
+3.81/2.29
+16
+.827
+21.01
+.791
+20.09
+28
+15/16-20
+1.281
+32.54
+.916
+23.27
+.150/.090
+3.81/2.29
+18
+.927
+23.55
+.897
+22.78
+32
+1-1/16-18
+1.406
+35.71
+.916
+23.27
+.150/.090
+3.81/2.29
+20
+1.052
+26.72
+1.022
+25.96
+36
+1-3/16-18
+1.531
+38.89
+.916
+23.27
+.150/.090
+3.81/2.29
+22
+1.177
+29.90
+1.147
+29.13
+40
+1-5/16-18
+1.641
+41.68
+.916
+23.27
+.150/.090
+3.81/2.29
+24
+1.302
+33.07
+1.272
+32.31
+44
+1-7/16-18
+1.766
+44.86
+.984
+24.99
+.140/.040
+3.56/1.02
+
+
+===== PAGE 12 =====
+33
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+MS27500
+Plug with 90° Backshell
+AE200
+Bayonet Coupling, Crimp Removable, Rear Release, Low Profile/Light Weight
+W
+MAX
+L MAX 
+Y
+MAX
+4 MINOR KEYS
+MASTER KEY
+BLUE COLOR BAND
+ A
+MIN
+SHELL 
+ F MAX
+COUPLING NUT 
+Page 24	
+Completed Part Number
+Page 37	
+Contacts, Sealing Plugs and Tools
+Pages 41–43	
+Insert Arrangements
+Page 23	
+Performance Specifications
+Pages 39, 40	
+Insert Availability and Contact Information
+Page 35	
+Polarization 
+Shell
+Size
+Ø A
+Ø F
+L
+W
+Y
+Minimum
+Maximum
+Maximum
+Maximum
+Maximum
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+8
+.337
+8.56
+.750
+19.05
+1.859
+47.22
+1.000
+25.40
+.828
+21.03
+10
+.465
+11.81
+.859
+21.82
+1.859
+47.22
+1.032
+26.21
+.891
+22.63
+12
+.557
+14.15
+1.031
+26.19
+1.938
+49.23
+1.094
+27.79
+1.016
+25.81
+14
+.702
+17.83
+1.156
+29.36
+2.125
+53.98
+1.219
+30.96
+1.141
+28.98
+16
+.827
+21.01
+1.281
+32.54
+2.281
+57.94
+1.281
+32.54
+1.255
+31.88
+18
+.927
+23.55
+1.406
+35.71
+2.312
+58.72
+1.344
+34.14
+1.469
+37.31
+20
+1.052
+26.72
+1.531
+38.89
+2.375
+60.33
+1.375
+34.93
+1.550
+39.37
+22
+1.177
+29.90
+1.641
+41.68
+2.531
+64.29
+1.438
+36.53
+1.675
+42.55
+24
+1.302
+33.07
+1.766
+44.86
+2.828
+71.83
+1.719
+43.66
+1.800
+45.72
+
+
+===== PAGE 13 =====
+34
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+M38999/10
+Dummy Stowage Receptacle
+AE210
+Dummy Stowage Receptacle, Bayonet Coupling
+SHELL
+SIZE
+Ø A
++.001
+-.005
+Ø T
++.010
+-.005
+S
+MAX
+8
+.473
+.120
+.828
+10
+.590
+.120
+.954
+12
+.750
+.120
+1.047
+14
+.875
+.120
+1.141
+16
+1.000
+.120
+1.234
+18
+1.125
+.120
+1.328
+20
+1.250
+.120
+1.453
+22
+1.375
+.120
+1.578
+24
+1.500
+.147
+1.703
+MIL. Prefix
+M38999/
+10
+XX
+B
+Aero Prefix
+AE2
+10-
+XX
+B
+Shell Type
+10 = receptacle, dummy stowage, bayonet coupling 
+Shell Size
+8 THRU 24 (Note: single digit for shell size 8)
+ 
+Material Finish
+B = Aluminum, Cadmium Olive Drab
+A = Aluminum,  Bright Cadmium over Nickel base (Aero p/n only)
+F = Aluminum shell, Electroless Nickel finish (Aero p/n only)
+S = Stainless steel shell, passivated (Aero p/n only)
+BN = Aluminum, Black Nickel (Aero p/n only)
+BZ = Bronze (Aero p/n only)
+Part Number Configuration
+
+
+===== PAGE 14 =====
+35
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+MIL-DTL-38999
+Polarization
+Series II
+Keying Positions
+DATUM F
+D°
+N°
+A°
+C°
+B°
+MASTER 
+NORMAL 
+KEYWAY
+10°
+Notes:
+1. Mating face of receptacle shown (plug is opposite).
+2. The master keyway (key) has various positions relative 
+to DATUM F; the minor keyways (keys) remain fixed as 
+shown. In the Normal position, the master keyway (key) 
+is 100° from DATUM F.
+3. The angles for a given connector are the same whether it 
+contains pin or socket inserts.
+4. The insert arrangement does not rotate relative to master 
+keyway (key).
+Shell
+Size
+Keying Positions
+BSC
+N°
+A°
+B° 
+C°
+D°
+8
+100
+82
+-
+-
+118
+10
+100
+86
+72
+128
+114
+12
+100
+80
+68
+132
+120
+14
+100
+79
+66
+134
+121
+16
+100
+82
+70
+130
+118
+18
+100
+82
+70
+130
+118
+20
+100
+82
+70
+130
+118
+22
+100
+85
+74
+126
+115
+24
+100
+85
+74
+126
+115
+
+
+===== PAGE 15 =====
+36
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+MIL-DTL-38999 Series II
+Flange and Jam Nut Receptacle
+Panel Cutouts
+Panel Cutouts
+A
+ E
+4x  C
+FLANGE MOUNT
+ B
+MIN
+D MAX
+PANEL THICKNESS
+.109(2.77)
+.062(1.57)
+PANEL THICKNESS
+JAM NUT
+F
+Note 1: Flange Mounting Dimensions (Ø B cutout and  
+D max) listed only for back of panel mounting (MS27497 
+and MS27508).
+Flange and Jam Nut Mounting Dimensions
+Note 2: D max includes mounting hardware.
+Shell
+Size
+A
+Ø B
+Ø C
+D
+Ø E
+F
++.010
++.25
++.000
++.00
+(TP)
+Minimum
+±.005
+±.13
+Maximum
+-.000
+-.00
+-.010
+-.25
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+inch
+mm
+8
+.594
+15.09
+.557
+14.15
+.128
+3.25
+.146
+3.71
+.885
+22.48
+.830
+21.08
+10
+.719
+18.26
+.682
+17.32
+.128
+3.25
+.146
+3.71
+1.010
+25.65
+.955
+24.26
+12
+.812
+20.62
+.854
+21.69
+.128
+3.25
+.146
+3.71
+1.135
+28.83
+1.085
+27.56
+14
+.906
+23.01
+.979
+24.87
+.128
+3.25
+.146
+3.71
+1.260
+32.01
+1.210
+30.73
+16
+.969
+24.61
+1.104
+28.04
+.128
+3.25
+.146
+3.71
+1.385
+35.18
+1.335
+33.91
+18
+1.062
+26.97
+1.229
+31.22
+.128
+3.25
+.146
+3.71
+1.510
+38.35
+1.460
+37.08
+20
+1.156
+29.36
+1.354
+34.39
+.128
+3.25
+.168
+4.27
+1.635
+41.53
+1.585
+40.26
+22
+1.250
+31.75
+1.479
+37.57
+.128
+3.25
+.168
+4.27
+1.760
+44.70
+1.709
+43.42
+24
+1.375
+34.93
+1.604
+40.74
+.154
+3.91
+.168
+4.27
+1.885
+47.88
+1.835
+46.61
+
+
+===== PAGE 16 =====
+37
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+MIL-DTL-38999
+Contacts, Tools and Seal Plugs
+Series II
+Contacts, Plastic Insertion/Removal Tools and Seal Plugs
+Crimping and Metal Insertion/Extraction Tools
+Contact and Wire Data
+Contact
+Size
+Application
+Pin Contacts
+Socket Contacts
+Seal Plugs
+Insertion/Removal Tools
+Plastic
+Type
+Military No.
+Military No.
+Military No.
+Military No.
+22D
+Power/Signal
+M39029/58-360
+M39029/57-354
+MS27488-22-1
+M81969/14-01
+22M*
+Power/Signal
+M39029/58-361
+M39029/57-355
+22*
+Power/Signal
+M39029/58-362
+M39029/57-356
+—
+20
+Power/Signal
+M39029/58-363
+M39029/57-357
+MS27488-20-1
+M81969/14-10
+16
+Power/Signal
+M39029/58-364
+M39029/57-358
+MS27488-16-1
+M81969/14-03
+16 Coax
+Coax
+M39029/76-424
+M39029/78-432
+12 
+Power/Signal
+M39029/58-365
+M39029/57-359
+MS27488-12-1
+M81969/14-04
+Contact
+Size/Type
+Crimp Tool
+Positioner
+Positioner
+Insertion Tool
+Extraction Tool
+For Pin Contacts
+For Socket Contacts
+Metal
+Metal
+Military No.
+Military No.
+Military No.
+Military No.
+Military No.
+22D, 22M*
+M22520/2-01
+M22520/2-09
+M22520/2-06
+M81969/8-01
+M81969/8-02
+22*
+M22520/2-01
+M22520/2-09
+M22520/2-06
+M81969/8-03
+M81969/8-04
+20
+M22520/1-01
+M22520/1-04
+M22520/1-04
+M81969/8-05
+M81969/8-06
+M22520/2-01
+M22520/2-10
+M22520/2-10
+16
+M22520/1-01
+M22520/1-04
+M22520/1-04
+M81969/8-07
+M81969/8-08
+16 Coax Inner
+M22520/2-01
+M22520/2-35
+M22520/2-35
+16 Coax Outer
+M22520/4-01
+M22520/4-02
+M22520/4-02
+12
+M22520/1-01
+M22520/1-04
+M22520/1-04
+M81969/8-09
+M81969/8-10
+Contact
+Size
+Test Current
+Voltage
+Crimp Well Data
+Wire Range
+Finished Wire Ø Range
+DC Test
+Max. Drop
+Well Dia.
+Minimum Well Dept
+Minimum
+Maximum
+Amps
+Millivolts
+inch
+inch
+mm
+AWG
+mm2
+inch
+mm
+inch
+mm
+22D
+5.0
+73
+.0345 ±.0010
+.141
+3.58
+28-22
+.08-.33
+.030
+.76
+.054
+1.37
+22M*
+3.0
+45
+.028 ±.001
+.141
+3.58
+28-24
+.08-.20
+.030
+.76
+.050
+1.27
+22*
+5.0
+73
+.0365 ±.0010
+.141
+3.58
+26-22
+.13-.33
+.034
+.86
+.060
+1.52
+20
+7.5
+55
+.047 ±.001
+.209
+5.31
+24-20
+.20-.52
+.040
+1.02
+.083
+2.11
+16
+13.0
+49
+.067 ±.001
+.209
+5.31
+20-16
+.52-1.31
+.065
+1.65
+.109
+2.77
+12
+23.0
+42
+.100 ±.002
+.209
+5.31
+14-12
+2.08-3.31
+.097
+2.46
+.142
+3.61
+*   Inactive for new design
+Note 1: Test Current and Maximum Voltage Drop when 
+tested with silver-plated wire at 25°C.
+Note 2: Size 16 coax contacts purchased in bulk.
+
+
+===== PAGE 17 =====
+38
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+MIL-DTL-38999
+Contact Installation Instructions
+Series II
+Contact Installation
+Instructions
+Crimping Contacts 
+1.	 Select the appropriate crimp tool and ensure that the 
+proper crimp head positioner is used.
+2.	 Cycle the tool to be sure the indentors are open.
+3.	 Determine the correct selector setting for the wire size 
+from the data plate on the positioner (turret head  
+assembly) and set the selector knob on the crimp tool  
+to match.
+4.	 Place the contact, mating end first, into the tool.
+5.	 Insert the stripped wire into the hollow end of the  
+contact. Be sure the wire is inserted as far as it will go.
+6.	 Close the tool completely to crimp. Unless the tool is 
+closed completely, the tool will not release the contact.
+7.	 Remove the crimped contact from the tool. Check the 
+inspection hole to verify that the wire is fully inserted.
+Insertion of Contacts
+1.	 Before inserting the contacts, unscrew the accessories 
+(clamps, backshells or adapters) from rear of plug or 
+receptacle. Slide the hardware over the wire bundle in  
+the proper order for reassembly after all the contacts  
+are inserted.
+2.	 To assist insertion of contacts, lubricate insulator  
+(grommet) cavities with isopropyl alcohol. Alcohol will 
+evaporate and will not leave a conductive film. Caution: 
+Never use any lubricant other than isopropyl alcohol.  
+3.	 Place the correct insertion tool on the contact so that the 
+wire runs along the groove in the tool. (Tool tip will butt 
+against the shoulder.) Hold the plug or receptacle body 
+firmly.
+4.	 Beginning with a center cavity, insert the contact into  
+the insulator with a slow, even pressure until the contact 
+snaps into position. Make sure the contact and tool are 
+held perpendicular to the face of the insert during the 
+contact installation or the grommet could be damaged.
+4.1	 If contacts are not inserted all the way prior to 
+removing insertion tool, do not try to reinsert the 
+insertion tool. Instead, remove the contact and try 
+again; otherwise reinserting the insertion tool may 
+damage the inside of the contact cavity.
+5.	 Remove tool and check the face of the connector for 
+proper contact installation. Proper installation may also 
+be checked by pulling back lightly on the wire to make 
+sure the contact is properly seated.
+Completion
+After all the cavities have been filled, slide the hardware back 
+into position on the connector and tighten. 
+ 
+Extraction of Contacts (Rework)
+1.	 Slide the hardware back over the wire bundle.
+2.	 Select the appropriate tool. Place the wire into the ex-
+traction tool of the pin or socket.
+3.	 Slowly slide the extraction tool down wire into the contact 
+cavities until the tool tip bottoms against the contact 
+shoulder, expanding the clip retaining tines. Hold the 
+wire firmly in the tool and pull the wired contact and tool 
+straight out of the rear of the insulator.
+Size
+Pin Contact
+Socket Contact
+Basic Crimp Tool
+Pin Positioner
+Socket Positioner
+Insertion/Removal Tool
+22D
+M39029/58-360
+M39029/57-354
+M22520/2-01
+M22520/2-09
+M22520/2-06
+M81969/14-01
+22M
+M39029/58-361
+M39029/57-355
+M22520/2-01
+M22520/2-09
+M22520/2-06
+M81969/14-01
+22
+M39029/58-362
+M39029/57-356
+M22520/2-01
+M22520/2-09
+M22520/2-06
+M81969/14-01
+20
+M39029/58-363
+M39029/57-357
+M22520/1-01
+M22520/1-04 Red
+M22520/1-04 Red
+M81969/14-10
+M22520/2-01
+M22520/2-10
+M22520/2-10
+16
+M39029/58-364
+M39029/57-358
+M22520/1-01
+M22520/1-04 Blue
+M22520/1-04 Blue
+M81969/14-03
+12
+M39029/58-365
+M39029/57-359
+M22520/1-01
+M22520/1-04 Yellow
+M22520/1-04 Yellow
+M81969/14-04
+For coax contacts refer to instructions supplied with contacts.
+
+
+===== PAGE 18 =====
+39
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+See next page for Shell Sizes 20 thru 24 layouts.
+MIL-DTL-38999 Series  II 
+Insert Availability and Contact Information
+per MIL-STD-1560
+Insert Availability and Contact Information
+Insert 
+Arrangement
+Aero-Electric
+Service
+Total
+Quantity of Contacts
+Status
+No. of
+(by Size)
+Series II
+QPL’d
+Tooled
+Rating
+Contacts
+22D
+22M
+22
+20
+16
+12
+8-6*
+Yes
+Yes
+M
+6
+6
+8-35
+Yes
+Yes
+M
+6
+6
+8-98
+Yes
+Yes
+I
+3
+3
+10-5
+Yes
+Yes
+I
+5
+5
+10-13*
+Yes
+Yes
+M
+13
+13
+10-35
+Yes
+Yes
+M
+13
+13
+10-98
+Yes
+Yes
+I
+6
+6
+10-99
+Yes
+Yes
+I
+7
+7
+12-3
+Yes
+Yes
+II
+3
+3
+12-4
+Yes
+Yes
+I
+4
+4
+12-8
+Yes
+Yes
+I
+8
+8
+12-22*
+Yes
+Yes
+M
+22
+22
+12-35
+Yes
+Yes
+M
+22
+22
+12-98
+Yes
+Yes
+I
+10
+10
+14-5
+Yes
+Yes
+II
+5
+5
+14-15
+Yes
+Yes
+I
+15
+14
+1
+14-18
+Yes
+Yes
+I
+18
+18
+14-35
+Yes
+Yes
+M
+37
+37
+14-37*
+Yes
+Yes
+M
+37
+37
+14-97
+Yes
+Yes
+I
+12
+8
+4
+16-6
+Yes
+Yes
+I
+6
+6
+16-8
+Yes
+Yes
+II
+8
+8
+16-26
+Yes
+Yes
+I
+26
+26
+16-35
+Yes
+Yes
+M
+55
+55
+16-55*
+Yes
+Yes
+M
+55
+55
+16-99
+Yes
+Yes
+I
+23
+21
+2
+18-11
+Yes
+Yes
+II
+11
+11
+18-28
+Yes
+Yes
+I
+28
+26
+2
+18-30
+Yes
+Yes
+I
+30
+29
+1
+18-32
+Yes
+Yes
+I
+32
+32
+18-35
+Yes
+Yes
+M
+66
+66
+18-53**
+Yes
+Yes
+M
+53
+53
+18-66*
+Yes
+Yes
+M
+66
+66
+* Not approved for new design. Tooled and qualified but their 
+separate pictorials are not shown on pages 41 thru 43, as 
+they are the same as corresponding (-35) layouts that take 
+the same quantity of 22D contacts, but are supplied with 
+22M contacts instead.
+** Not approved for new design. Pictorial is shown on page 42.
+
+
+===== PAGE 19 =====
+40
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+MIL-DTL-38999 Series II
+Insert Availability and Contact Information
+per MIL-STD-1560
+Insert Availability and Contact Information (continued)
+Insert Arrangement
+Aero-Electric
+Service
+Total
+Quantity of Contacts
+Status
+No. of
+(by Size)
+Series II
+QPL’d
+Tooled
+Rating
+Contacts
+22D
+22M
+22
+20
+16
+12
+20-1*
+Yes
+Yes
+M
+79
+79
+20-16
+Yes
+Yes
+II
+16
+16
+20-35
+Yes
+Yes
+M
+79
+79
+20-39
+Yes
+Yes
+I
+39
+37
+2
+20-41
+Yes
+Yes
+I
+41
+41
+22-1*
+Yes
+Yes
+M
+100
+100
+22-2***
+Yes
+Yes
+M
+85
+85
+22-21
+Yes
+Yes
+II
+21
+21
+22-32
+Yes
+Yes
+I
+32
+32
+22-35
+Yes
+Yes
+M
+100
+100
+22-53
+Yes
+Yes
+I
+53
+53
+22-55
+Yes
+Yes
+I
+55
+55
+24-1*
+Yes
+Yes
+M
+128
+128
+24-4
+Yes
+Yes
+I
+56
+48
+8
+24-19
+Yes
+Yes
+I
+19
+19
+24-24
+Yes
+Yes
+I
+24
+12
+12
+24-29
+Yes
+Yes
+I
+29
+29
+24-35
+Yes
+Yes
+M
+128
+128
+24-61
+Yes
+Yes
+I
+61
+61
+* Not approved for new design. Tooled and qualified but their separate 
+pictorials are not shown on pages 41 thru 43, as they are same as  
+corresponding (-35) layouts that take the same quantity of 22D con-
+tacts, but are supplied with 22M contacts instead.
+
+
+===== PAGE 20 =====
+41
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+MIL-STD-1560
+Insert Arrangements (Pin Front View)
+for MIL-DTL-38999 Series II Connectors
+Insert Arrangements Views
+1
+2
+3
+4
+5
+6
+8-35
+6 # 22D, M
+A
+B
+C
+8-98
+3 # 20, I
+A
+B
+C
+D
+E
+10-5
+5 # 20, I
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+10-35
+13 # 22D, M
+A
+B
+C
+D
+E
+F
+10-98
+6 # 20, I
+A
+B
+C
+D
+E
+F
+G
+10-99
+7 # 20, I
+A
+B
+C
+12-3
+3 # 16, II
+A
+B
+C
+D
+12-4
+4 # 16, I
+A
+B
+C
+D
+E
+F
+G
+H
+12-8
+8 # 20, I
+12-35
+22 # 22D, M
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+12-98
+10 # 20, I
+A
+B
+C
+D
+E
+14-5
+5 # 16, II
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+L
+M
+R
+N
+14-5
+1 # 16, 14 # 20, I
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+L
+M
+N
+P
+R
+S
+T
+U
+14-18
+18 # 20, I
+14-35
+37 # 22D, M
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+L
+M
+14-97
+4 # 16, 8 # 20, I
+A
+B
+C
+D
+E
+F
+16-6
+6 # 12, I
+A
+B
+C
+D
+E
+F
+G
+H
+16-8
+8 # 16, II
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+L
+M
+N
+P
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+a
+b
+c
+16-26
+26 # 20, I
+16-35
+55 # 22D, M
+P
+1
+3
+4
+9
+10
+16
+17
+24
+25
+31
+32
+39
+40
+46
+47
+52
+53
+55
+1
+15
+22
+21
+14
+21
+1
+31
+16-99
+2 # 16, 21 # 20, I
+18-11
+11 # 16, II
+A
+B
+C
+D
+E
+L
+F
+G
+H
+J
+K
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+L
+M
+N
+P
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+18-28
+2 # 16, 26 # 20, I
+A
+B
+C
+D
+E
+F
+G
+J
+K
+L
+M
+N
+P
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+a
+b
+c
+d
+e
+
+
+===== PAGE 21 =====
+42
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+MIL-STD-1560
+Insert Arrangements (Pin Front View)
+for MIL-DTL-38999 Series II Connectors
+Insert Arrangements Views
+* Inactive for new design.
+** Not MIL-STD-1560 layout (not QPL’d.).
+18-35
+66 #22D, M
+18-53*
+53 #22, M
+20-16
+18-30
+1 # 16, 29 # 20, I
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+L
+M
+N
+P
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+a
+b
+c
+d
+e
+f
+g
+1
+3
+4
+9
+10
+16
+17
+24
+25
+33
+34
+42
+43
+50
+51
+57
+58
+63
+64
+66
+18-32
+32 # 20, I
+A
+B
+C
+D
+E
+F
+G
+J
+H
+K
+L
+M
+N
+P
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+a
+b
+c
+d
+e
+f
+g
+h
+j
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+L
+M
+N
+P
+R
+S
+20-41
+41 # 20, I
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+L
+M
+N
+P
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+a
+b
+c
+d
+e
+f
+g
+h
+i
+j
+k
+m
+t
+n
+p
+q
+r
+s
+20-39
+2 # 16, 37 # 20, I
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+L
+M
+N
+P
+R
+S
+T
+U
+V
+X
+Y
+Z
+W
+a
+b
+c
+d
+e
+f
+g
+h
+i
+j
+k
+m
+n
+p
+q
+r
+22-21
+21 # 16, II
+22-2*
+85 # 22, M
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+L
+M
+N
+P
+R
+S
+T
+U
+V
+W
+X
+20-35
+79 # 22D, M
+1
+11
+71
+21
+31
+41
+51
+61
+79
+1
+11
+21
+31
+52
+51
+53
+1
+4
+5
+11
+12
+19
+20
+28
+29
+38
+39
+47
+48
+57
+58
+66
+67
+74
+75
+81
+82
+85
+22-35
+100 # 22D, M
+1
+2
+3
+5
+6
+8
+7
+15
+16
+24
+25
+34
+35
+45
+46
+55
+4
+56
+66
+67
+76
+77
+85
+86
+93
+94
+95
+96
+97
+98
+99
+100
+22-32
+32 # 20, I
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+L
+M
+N
+P
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+a
+b
+c
+d
+e
+f
+g
+h
+i
+22-53
+53 # 20, I
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+L
+M
+N
+P
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+a
+b
+c
+d
+e
+f
+g
+h
+k
+m
+n
+p
+q
+r
+s
+t
+u
+v
+w
+x
+y
+z
+AA
+BB
+CC
+DD
+EE
+FF
+GG
+HH
+22-55
+55 # 20, I
+a
+b
+c
+d
+e
+f
+g
+H
+i
+j
+k
+m
+n
+p
+q
+r
+s
+t
+u
+v
+w
+x
+y
+z
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+L
+M
+N
+P
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+AA
+BB
+CC
+DD
+EE
+FF
+GG
+HH
+24-4
+8 # 16, 48 # 20, I
+e
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+L
+M
+N
+X
+Y
+Z
+a
+b
+c
+d
+f
+g
+h
+k
+m
+n
+P
+R
+S
+T
+U
+V
+W
+p
+q
+r
+s
+t
+u
+v
+w
+x
+y
+z
+AA
+BB
+CC
+DD
+EE
+FF
+GG
+HH
+JJ
+KK
+LL
+24-19
+19 # 12, I
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+L
+M
+N
+P
+R
+S
+T
+U
+V
+16 # 16, 11
+
+
+===== PAGE 22 =====
+43
+www.conesys.com
+sales@aero-electric.com
+ 38999 S II
+–         –
+MIL-STD-1560
+Insert Arrangements (Pin Front View)
+for MIL-DTL-38999 Series II Connectors
+Insert Arrangements Views
+24-24
+12 # 12, 12 # 16, I
+24-29
+29# 16, I
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+L
+M
+N
+P
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+a
+b
+c
+d
+e
+f
+a
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+L
+M
+N
+P
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+24-61
+61 # 20, I
+A
+B
+C
+D
+E
+F
+G
+H
+J
+K
+L
+M
+N
+P
+R
+S
+T
+U
+V
+W
+X
+Y
+Z
+a
+b
+c
+d
+e
+f
+g
+h
+j
+k
+m
+n
+P
+r
+s
+t
+u
+v
+w
+x
+y
+z
+AA
+BB
+CC
+DD
+EE
+FF
+GG
+HH
+JJ
+KK
+LL
+MM
+NN
+PP
+i
+q
+24-35
+128 # 22D, M
+1
+4
+7
+8
+14
+15
+24
+25
+35
+36
+47
+48
+58
+59
+70
+71
+81
+82
+94
+105
+115
+122
+125
+121
+114
+104
+93

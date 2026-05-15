@@ -1,0 +1,6 @@
+# Runtime: the web app has no runtime dependency - open app/index.html directly.
+#
+# These are only needed to regenerate data from the source PDFs.
+
+pymupdf>=1.24.0
+pillow>=10.0.0

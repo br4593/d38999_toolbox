@@ -1,0 +1,1595 @@
+
+
+===== PAGE 1 =====
+AEROSPACE, DEFENSE & MARINE /// DEUTSCH MIL-DTL-38999 SERIES III CONNECTORS QRG
+TE DEUTSCH MIL-DTL-38999  
+SERIES III CONNECTORS
+QUICK REFERENCE GUIDE
+Wide Range 
+• Mil spec, commercial, and composite
+• Full line of finishes, including black zinc nickel and PTFE nickel
+High Performance 
+• Environmentally sealed
+MIL-DTL-38999  
+SERIES III  
+CONNECTORS
+RUGGED, HARSH ENVIRONMENT  
+SUBMINIATURE CONNECTORS
+DEUTSCH
+Downloaded from Arrow.com.
+
+
+===== PAGE 2 =====
+MIL-DTL-38999 Series III Connectors
+Coupling Mechanism 	
+Threaded, 360° turn
+Shell Materials  	
+Stainless steel 
+	
+Aluminum
+	
+Composite
+Features 	
+Scoop proof
+	
+Environmentally sealed
+	
+Hermetic versions
+	
+Filter versions
+	
+Spring fingers for EMI control
+Shell Platings 	
+Olive drab cadmium
+	
+Passivated
+	
+Electroless nickel
+	
+Electrodeposited nickel
+	
+Nickel PTFE
+	
+Black zinc-nickel
+No. of Contact Sizes, Std. 	
+23, 22, 20, 16, 12, 10, 8
+Shell Sizes  	
+9, 11, 13, 15, 17, 19, 21, 23, 25 
+No. of Signal Contacts, Max.  	
+187 
+Contact Type 	
+AS39029
+Contact Styles 	
+Crimp
+	
+Solder cup or eyelet
+	
+PCB tail
+Operating Temperatures 	
+-65°C to +200°C
+	
+-65°C to +175°C
+	
+-65°C to +150°C
+	
+(Depends on shell finish)
+Durability (Mating Cycles)  	
+500
+	
+(Higher durability versions available)
+Standard Configurations
+Plugs 	
+Straight, with EMI spring fingers
+	
+Lanyard release
+Receptacles 	
+Box mounting, both front and rear panel mounting
+	
+Wall mounting, both front and rear panel mounting
+	
+Jam nut, rear panel mounting
+	
+Solder mount
+	
+Weld mount
+	
+Through-hole bulkhead
+TE Components . . . TE Technology . . . TE Know-how . . . 
+AMP | Agastat | CII | Hartman | Kilovac | Microdot | Nanonics | Polamco | Raychem | Rochester | DEUTSCH
+SEACON Phoenix | L.L. Rowe | Phoenix Optix | SEACON
+Get your product to market faster with a smarter, better solution.
+Downloaded from Arrow.com.
+Downloaded from Arrow.com.
+
+
+===== PAGE 3 =====
+TE DEUTSCH MIL-DTL-38999  
+SERIES III CONNECTORS
+PAGE 3
+AEROSPACE, DEFENSE & MARINE /// DEUTSCH MIL-DTL-38999 SERIES III CONNECTORS QRG
+DEUTSCH 38999 Series III Connectors
+Aluminum • Stainless Steel • Composite
+	
+Commercial Composite  	ACT  	
+26  	
+M  	
+D  	 35  	 P	
+N
+	
+Commercial Al/SS 	
+DTS  	
+26  	
+F  	
+15  	 35  	 P  	
+N
+	
+Military 	
+	
+D38999  	
+/26  	
+F  	
+D  	 35  	 P  	
+N
+Commercial	
+Commercial	
+	
+	
+Composite	
+Alum./Stainless	
+Military	
+Description
+	
+RANGE
+ACT	
+DTS	
+D38999	
+STYLE
+20	
+20	
+/20	
+Square Flange Receptacle 
+24	
+24	
+/24	
+Jam Nut Receptacle 
+26	
+26	
+/26	
+Straight Plug  
+—	
+20	
+/21	
+Hermetic Square Flange Receptacle 
+—	
+24	
+/23	
+Hermetic Jam Nut Receptacle 
+—	
+21	
+/25	
+Hermetic Solder Flange 
+—	
+23	
+/27	
+Hermetic Weld Flange
+FINISH
+ALUMINUM SHELL
+—	
+F	
+F	
+Electroless Nickel Plated (48-hr. Salt Spray) 
+—	
+G	
+G	
+Space-Grade Electroless Nickel (48-hr. Salt Spray) 
+—	
+T	
+T	
+Nickel PTFE (500-hr. Salt Spray) 
+—	
+W	
+W	
+Olive Drab Cadmium (500-hr. Salt Spray) 
+—	
+Z	
+Z	
+Black Zinc Nickel (500-hr. Salt Spray) 
+COMPOSITE SHELL
+M	
+—	
+M	
+Electroless Nickel Plated (2000-hr. Salt Spray) 
+J	
+—	
+J	
+Olive Drab Cadmium (2000-hr. Salt Spray)
+STAINLESS STEEL SHELL
+—	
+K	
+K	
+Corrosion-Resistant S.S. - Firewall (500-hr. Salt Spray)
+—	
+S	
+S	
+Nickel Plated (500-hr. Salt Spray) 
+—	
+L	
+L	
+Electrodeposited Nickel (48-hr. Salt Spray) 
+HERMETIC
+—	
+Y	
+Y	
+Stainless Steel, Passivated
+—	
+N	
+N	
+Stainless Steel, Nickel Plated 
+—	
+H	
+H	
+Space Grade
+SHELL SIZES 
+9 (A), 11 (B), 13 (C), 15 (D), 17 (E),	 	
+Numbers = DTS Commercial; 
+19 (F), 21 (G), 23 (H), 25 (J)    	
+	
+(Letters) = Military/ACT Commercial
+INSERT ARRANGEMENTS 	
+	
+See Insert Arrangements Table
+CONTACTS
+P, A, H, S, B, J	 	
+	
+P = Pin, A = Less Pin, H = 1500-Cycle Pin, 
+	
+	
+	
+S = Socket, B = Less Socket, J = 1500-Cycle Socket 
+CONTACTS FOR HERMETIC CONNECTORS
+C, D, X, Z	
+	
+	
+C = PC Tail Pin, D = PC Tail Socket 
+	
+	
+	
+X = Eyelet Pin, Z = Eyelet Socket	 
+KEYING 
+N, A, B, C, D, E 	
+	
+N = Normal
+Jam Nut
+Square Flange 
+Receptacle
+Plug
+PCB Type
+MIL-SPEC
+Lanyard
+Downloaded from Arrow.com.
+Downloaded from Arrow.com.
+Downloaded from Arrow.com.
+
+
+===== PAGE 4 =====
+Insert
+Contact Size/Quantity
+09-07
+A7 (A07)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+7
+ 
+ 
+ 
+09-23
+A23
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+9
+ 
+ 
+09-35
+A35
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+6
+ 
+ 4
+ 
+09-98
+A98
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+3
+ 
+ 
+ 4
+ 
+11-02
+B2 (B02)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2
+ 
+ 
+ 
+ 
+ 
+11-04
+B4 (B04)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+4
+ 
+ 
+ 
+ 
+11-05
+B5 (B05)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+5
+ 
+ 
+ 
+ 
+11-23
+B23
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+19
+ 
+ 
+11-35
+B35
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+13
+ 
+4
+ 
+11-98
+B98
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+6
+ 
+ 
+4
+ 
+11-99
+B99
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+7
+ 
+ 
+4
+ 
+13-04
+C4 (C04)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+4
+ 
+ 
+ 
+ 
+ 
+13-08
+C8 (C08)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+8
+ 
+ 
+4
+ 
+13-23
+C23
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+32
+ 
+ 
+13-35
+C35
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+22
+ 
+4
+ 
+13-98
+C98
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+10
+ 
+ 
+4
+ 
+15-05
+D5 (D05)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+5
+ 
+ 
+ 
+4
+ 
+15-15
+D15
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+1
+14
+ 
+ 
+ 
+ 
+15-18
+D18
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+18
+ 
+ 
+4
+ 
+15-19
+D19
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+19
+ 
+ 
+4
+ 
+15-23
+D23
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+55
+ 
+ 
+15-26
+D-26
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2
+ 
+24
+ 
+ 
+15-35
+D35
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+37
+ 
+4
+ 
+15-97
+D97
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+4
+8
+ 
+ 
+4
+ 
+17-02
+E2 (E02)
+1
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+38
+ 
+ 
+17-03
+17-03
+E3 (E03)
+1
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+38
+ 
+4
+17-06
+E6 (E06)
+ 
+ 
+ 
+ 
+ 
+ 
+6
+ 
+ 
+ 
+ 
+4
+17-08
+E8 (E08)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+8
+ 
+ 
+ 
+4
+17-11
+E11
+ 
+ 
+ 
+2
+1
+ 
+ 
+ 
+8
+ 
+ 
+ 
+17-19
+E19
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+4
+11
+4
+ 
+ 
+17-20
+E20
+ 
+ 
+ 
+ 
+ 
+ 
+4
+ 
+ 
+16
+ 
+ 
+17-22
+E22
+2
+ 
+ 
+ 
+ 
+ 
+2
+ 
+ 
+ 
+ 
+ 
+17-23
+E23
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+73
+ 
+17-24
+E24
+ 
+ 
+2
+ 
+ 
+ 
+ 
+ 
+ 
+22
+ 
+ 
+17-26
+E26
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+26
+ 
+ 
+4
+ 
+17-35
+E35
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+55
+ 
+4
+ 
+17-99
+E99
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2
+21
+ 
+ 
+4
+ 
+19-11
+F11
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+11
+ 
+ 
+ 
+4
+ 
+19-18
+F18
+4
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+14
+ 
+ 
+19-19
+19-19
+F19
+4
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+14
+ 
+4
+19-23
+E23
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+88
+ 
+ 
+19-28
+F28
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2
+26
+ 
+ 
+ 
+ 
+PAGE 4
+AEROSPACE, DEFENSE & MARINE /// DEUTSCH MIL-DTL-38999 SERIES III CONNECTORS QRG
+Insert Arrangements
+DTS Commercial
+8 Twinax
+8 Coax
+8 Power
+12 Twinax
+12 Coax
+10
+12
+16
+20
+22D
+23
+Includes K Class
+Uses 38999/62-8* Boots
+Inactive: Superseded by
+Military and 
+Commercial ACT 
+Downloaded from Arrow.com.
+Downloaded from Arrow.com.
+Downloaded from Arrow.com.
+Downloaded from Arrow.com.
+
+
+===== PAGE 5 =====
+Insert
+Contact Size/Quantity
+19-32
+F32
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+32
+ 
+ 
+ 4
+ 
+19-35
+F35
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+66
+ 
+4
+ 
+21-11
+G11
+ 
+ 
+ 
+ 
+ 
+ 
+11
+ 
+ 
+ 
+ 
+ 
+ 
+21-16
+G16
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+16
+ 
+ 
+ 
+ 
+ 
+21-20
+G20
+2
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+18
+ 
+ 
+ 
+21-23
+G23
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+121
+ 
+21-35
+G35
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+79
+ 
+4
+21-39
+G39
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+2
+37
+ 
+ 
+4
+21-41
+G41
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+41
+ 
+ 
+4
+ 
+21-48
+G48
+ 
+4 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+21-75
+G75
+4
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+21-76
+21-76
+G76
+4
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+4
+23-06
+H6 (H06)
+6
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+23-21
+H21
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+21
+ 
+ 
+ 
+ 
+23-23
+H23
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+151
+ 
+23-35
+H35
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+100
+ 
+ 
+23-53
+H53
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+53
+ 
+ 
+ 4
+23-54
+H54
+ 
+ 
+ 
+ 
+ 
+ 
+4
+9
+ 
+40
+ 
+ 
+23-55
+H55
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+55
+ 
+ 
+ 
+23-63
+H63
+ 
+ 
+ 
+ 
+ 
+ 
+4
+4
+ 
+49
+ 
+ 
+25-04
+J4 (J04)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+8
+48
+ 
+ 
+4 
+25-07
+J7 (J07)
+2
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+97
+ 
+ 
+25-09
+25-08
+J8 (J08)
+8
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+25-10
+25-09
+J9 (J09)
+2
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+97
+ 
+4
+25-10
+J10
+8
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+4
+25-11
+J11
+ 
+ 
+ 
+ 
+ 
+9
+ 
+ 
+2
+ 
+ 
+ 
+25-17
+J17
+6
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+36
+ 
+ 
+25-19
+J19
+ 
+ 
+ 
+ 
+ 
+ 
+19
+ 
+ 
+ 
+ 
+ 
+25-20
+J20
+3
+ 
+ 
+ 
+4
+ 
+ 
+13
+10
+ 
+ 
+ 
+25-21
+25-21
+J21
+3
+ 
+ 
+ 
+4
+ 
+ 
+13
+10
+ 
+ 
+4
+25-23
+J23
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+187
+ 
+25-24
+J24
+ 
+ 
+ 
+ 
+ 
+ 
+12
+12
+ 
+ 
+ 
+ 
+25-29
+J29
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+29
+ 
+ 
+ 
+ 
+25-35
+J35
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+128
+ 
+ 4
+25-37
+J37
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+37
+ 
+ 
+ 
+ 
+ 
+25-43
+J43
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+20
+23
+ 
+ 
+ 
+ 
+25-46
+J46
+ 
+2
+ 
+ 
+ 
+ 
+ 
+4
+40
+ 
+ 
+ 
+25-47
+25-47
+J47
+ 
+2
+ 
+ 
+ 
+ 
+ 
+4
+40
+ 
+ 
+4 
+25-61
+J61
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+61
+ 
+ 
+ 4
+ 
+25-90
+J90
+2
+ 
+ 
+ 
+ 
+ 
+ 
+4
+40
+ 
+ 
+ 
+25-91
+25-91
+J91
+2
+ 
+ 
+ 
+ 
+ 
+ 
+4
+40
+ 
+ 
+4 
+Blue shaded entries are not Mil Spec. 
+Green shading indicates high-density inserts.
+PAGE 5
+AEROSPACE, DEFENSE & MARINE /// DEUTSCH MIL-DTL-38999 SERIES III CONNECTORS QRG
+DTS Commercial
+8 Twinax
+8 Coax
+8 Power
+12 Twinax
+12 Coax
+10
+12
+16
+20
+22D
+23
+Uses 38999/62-8* Boots
+Inactive: Superseded by
+Includes K Class
+Military and 
+Commercial ACT 
+Downloaded from Arrow.com.
+Downloaded from Arrow.com.
+Downloaded from Arrow.com.
+Downloaded from Arrow.com.
+Downloaded from Arrow.com.
+
+
+===== PAGE 6 =====
+© 2015 TE Connectivity Ltd. family of companies. All Rights Reserved.
+1-1773860-8   ADM/RRD   1M   10/2015
+DEUTSCH, TE Connectivity and the TE connectivity (logo) are trademarks of the TE Connectivity Ltd. family of companies.
+Other products, logos, and company names mentioned herein may be trademarks of their respective owners.
+While TE has made every reasonable effort to ensure the accuracy of the information herein, nothing herein constitutes any guarantee that such information 
+is error-free, or any other representation, warranty or guarantee that the information is accurate, correct, reliable or current. The TE entity issuing this 
+publication reserves the right to make any adjustments to the information contained herein at any time without notice. All implied warranties regarding 
+the information contained herein, including, but not limited to, any implied warranties of merchantability or fitness for a particular purpose are expressly 
+disclaimed. The dimensions herein are for reference purposes only and are subject to change without notice.  
+Specifications are subject to change without notice.
+Consult TE for the latest dimensions and design specifications. 
+AEROSPACE, DEFENSE & MARINE /// DEUTSCH MIL-DTL-38999 SERIES III CONNECTORS QRG
+For More Information
+TE Technical Support Center
+North America	
++1 800 522 6752
+Asia Pacific	
++86 0 400 820 6015
+Austria	
++43 1 905 601 228 
+Baltic Regions	
++46 8 5072 5000 
+Benelux	
++31 73 6246 999 
+Czech Republic	
++420 800 701 462 
+France	
++33 1 34 20 86 86 
+Germany	
++49 6251 133 1999 
+Hungary	
++36 809 874 04 
+Italy	
++39 011 401 2632 
+Nordic	
++46 8 5072 5000 
+Poland	
++48 800 702 309 
+Russia	
++7495 790 790 2
+Spain/Portugal	
++34 93 2910366 
+Switzerland	
++41 52 633 66 26 
+United Kingdom	
++44 800 267 666 
+Follow us on Twitter for all the latest product news  
+@TEConnectivity, and on Facebook, TEConnectivity.
+te.com/38999
+Downloaded from Arrow.com.
+Downloaded from Arrow.com.
+Downloaded from Arrow.com.
+Downloaded from Arrow.com.
+Downloaded from Arrow.com.
+Downloaded from Arrow.com.
