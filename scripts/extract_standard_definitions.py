@@ -368,7 +368,8 @@ def extract(project_root: Path, pdf_name: str = "dtl38999.pdf") -> tuple[dict[st
         if doc.page_count < 103:
             raise RuntimeError("dtl38999.pdf is shorter than expected; cannot source figure 6 page 103.")
 
-    data_dir = project_root / "data"
+    # Web app is source of truth for runtime data; extraction writes into app/.
+    data_dir = project_root / "app" / "data"
     data_dir.mkdir(parents=True, exist_ok=True)
     standard_definitions = build_standard_definitions(pdf_path)
     part_number_rules = build_part_number_rules(pdf_path)

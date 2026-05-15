@@ -992,8 +992,10 @@ def extract(project_root: Path, pdf_name: str = "d38999-contact-arrangements.pdf
         if not pdf_path.exists():
             raise FileNotFoundError(pdf_path)
 
-    data_dir = project_root / "data"
-    svg_dir = data_dir / "svg"
+    # The web app is the source of truth for runtime data; extraction outputs
+    # land directly inside app/.
+    data_dir = project_root / "app" / "data"
+    svg_dir = project_root / "app" / "assets" / "svg"
     debug_dir = project_root / "output" / "debug"
     for directory in (svg_dir, data_dir, debug_dir):
         directory.mkdir(parents=True, exist_ok=True)

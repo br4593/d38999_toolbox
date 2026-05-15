@@ -961,17 +961,8 @@
     const sections = [
       ["Interactive PN Decoder", interactivePnGuide(state.decoded, "manual")],
       ["How To Choose The Connector", connectorDecisionGraphic(state.decoded)],
-      ["Coverage", manualCoverage()],
-      ["Part Number Fields", partNumberFieldCards()],
-      ["Example PN Breakdown", partNumberExampleBreakdown()],
-      ["Shell Size And Pins", shellAndPinArrangementHelp()],
-      ["Shell Types", dlaSlashSheetSummary()],
-      ["Series", definitionCards(defs.series)],
-      ["Shell Size Codes", keyValueTable(defs.shell_size_codes_series_iii_iv, (key, value) => [key, value.shell_size, value.section])],
-      ["Contact Styles", keyValueTable(defs.contact_styles, (key, value) => [key, value.contact_gender || "", value.description])],
-      ["Classes / Finishes", keyValueTable(defs.classes, (key, value) => [key, value.confidence || "", value.description])],
-      ["Polarization", polarizationSummary()],
-      ["Known Limits", manualWarnings()],
+      ["PN Parts And Options", manualPnPartSections(state.decoded)],
+      ["Source Coverage", manualCoverage()],
     ];
     els.manualContent.innerHTML = sections.map(([title, body]) => `
       <section class="manual-section">
@@ -1142,6 +1133,194 @@
       <div class="manual-note">Beginner rule: the PN is not just an ID. It is an ordered recipe for the connector body, finish, shell size, insert, contacts, and keying.</div>
       <div class="manual-note">Common confusion: <span class="mono">/26</span> is the shell type/body style. The shell size is the later letter, for example <span class="mono">E</span> equals shell size <span class="mono">17</span>.</div>
     `;
+  }
+
+  function manualPnPartSections(decoded) {
+    const active = activeDecodedOrExample(decoded);
+    const items = manualFieldItems(decoded);
+    const fieldByKey = new Map(items.map((item) => [item.key, item]));
+    const sections = [
+      {
+        key: "slash_sheet",
+        title: "Shell Type",
+        subtitle: "What body style is this connector?",
+        body: shellTypeOptions(active),
+        open: true
+      },
+      {
+        key: "class",
+        title: "Class / Finish",
+        subtitle: "What material, plating, or environmental finish?",
+        body: classOptions(active)
+      },
+      {
+        key: "shell_size",
+        title: "Shell Code",
+        subtitle: "What physical shell size?",
+        body: shellCodeOptions(active)
+      },
+      {
+        key: "insert_arrangement",
+        title: "Insert Arrangement",
+        subtitle: "What pin layout goes inside the shell?",
+        body: insertOptions(active)
+      },
+      {
+        key: "contact_style",
+        title: "Contact Styles",
+        subtitle: "Pins, sockets, less contacts, or special terminations.",
+        body: contactStyleOptions(active)
+      },
+      {
+        key: "polarization",
+        title: "Keying / Polarization",
+        subtitle: "Which key position prevents wrong mating?",
+        body: keyingOptions(active)
+      }
+    ];
+    return `
+      <div class="manual-accordion">
+        ${sections.map((section, index) => {
+          const item = fieldByKey.get(section.key);
+          return `
+            <details class="manual-part" ${section.open ? "open" : ""} style="--step:${index}">
+              <summary>
+                <span class="manual-part-icon">${escapeHtml(item?.icon || "")}</span>
+                <span>
+                  <strong>${escapeHtml(section.title)}</strong>
+                  <em>${escapeHtml(section.subtitle)}</em>
+                </span>
+                <b class="mono">${escapeHtml(item?.token || "")}</b>
+              </summary>
+              <div class="manual-part-body">
+                <div class="manual-part-explain">
+                  <strong>${escapeHtml(item?.summary || "")}</strong>
+                  <p>${escapeHtml(item?.use || "")}</p>
+                </div>
+                ${section.body}
+              </div>
+            </details>
+          `;
+        }).join("")}
+      </div>
+    `;
+  }
+
+  function optionChip(code, title, text, active = false) {
+    return `
+      <div class="option-chip ${active ? "active" : ""}">
+        <strong class="mono">${escapeHtml(code)}</strong>
+        <span>${escapeHtml(title || "")}</span>
+        ${text ? `<em>${escapeHtml(text)}</em>` : ""}
+      </div>
+    `;
+  }
+
+  function shellTypeOptions(active) {
+    const docs = (dlaDocs.documents || [])
+      .filter((item) =>
+        item.family === "slash_sheet" &&
+        !item.is_initial_draft &&
+        (item.series === "III" || item.series === "IV" || item.series === "III/IV")
+      )
+      .sort((a, b) => naturalCompare(a.slash_sheet || "", b.slash_sheet || ""));
+    const chips = docs.map((doc) => {
+      const title = [doc.component, doc.mount].filter(Boolean).join(", ") || doc.description;
+      const text = [doc.series ? `Series ${doc.series}` : "", doc.coupling ? `${doc.coupling} coupling` : "", doc.contacts].filter(Boolean).join(" | ");
+      return optionChip(doc.slash_sheet || "", title, text, active.ok && active.slash_sheet === doc.slash_sheet);
+    }).join("");
+    return `
+      <div class="field-graphic shell-type-graphic" aria-hidden="true">
+        <span class="shell-ring"></span>
+        <span class="shell-plug"></span>
+        <span class="shell-label">/26</span>
+      </div>
+      <div class="option-grid compact-options">${chips}</div>
+    `;
+  }
+
+  function classOptions(active) {
+    const chips = Object.entries(defs.classes || {})
+      .sort(([a], [b]) => naturalCompare(a, b))
+      .map(([code, value]) => optionChip(code, summarizeText(value.description, 88), value.confidence || "", active.ok && active.class_field === code))
+      .join("");
+    return `
+      <div class="field-graphic finish-graphic" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="option-grid">${chips}</div>
+    `;
+  }
+
+  function shellCodeOptions(active) {
+    const chips = Object.entries(defs.shell_size_codes_series_iii_iv || {})
+      .sort(([a], [b]) => naturalCompare(a, b))
+      .map(([code, value]) => optionChip(code, `shell size ${value.shell_size}`, "physical connector size", active.ok && active.shell_code === code))
+      .join("");
+    return `
+      <div class="shell-scale" aria-hidden="true">
+        ${Object.entries(defs.shell_size_codes_series_iii_iv || {}).map(([code, value]) => `
+          <span class="${active.ok && active.shell_code === code ? "active" : ""}" style="--size:${Number(value.shell_size) || 9}">${escapeHtml(code)}</span>
+        `).join("")}
+      </div>
+      <div class="option-grid shell-options">${chips}</div>
+    `;
+  }
+
+  function insertOptions(active) {
+    const arr = active.ok ? arrangementById(active.arrangement_id) : null;
+    const shellCount = active.ok
+      ? arrangements.filter((item) => item.shell_size === active.shell_size).length
+      : arrangements.length;
+    return `
+      <div class="insert-graphic" aria-hidden="true">
+        ${Array.from({ length: 24 }, (_, index) => `<span style="--i:${index}"></span>`).join("")}
+      </div>
+      <div class="manual-stat-grid">
+        ${optionChip(active.ok ? active.arrangement_id : "17-35", "selected pinout", arr ? `${arr.contact_count} contacts | ${sizeSummary(arr)}` : "type a PN to resolve")}
+        ${optionChip(active.ok ? active.shell_size : "shell", "numeric shell size", `${shellCount} extracted arrangement(s) in this shell`)}
+        ${optionChip(active.ok ? active.insert_arrangement : "insert", "insert number", "combines with shell size to choose the drawing")}
+      </div>
+    `;
+  }
+
+  function contactStyleOptions(active) {
+    const chips = Object.entries(defs.contact_styles || {})
+      .sort(([a], [b]) => naturalCompare(a, b))
+      .map(([code, value]) => optionChip(code, value.contact_gender || "contact option", summarizeText(value.description, 80), active.ok && active.contact_style === code))
+      .join("");
+    return `
+      <div class="field-graphic contact-graphic" aria-hidden="true">
+        <span class="pin-contact"></span>
+        <span class="socket-contact"></span>
+      </div>
+      <div class="option-grid">${chips}</div>
+    `;
+  }
+
+  function keyingOptions(active) {
+    const rotations = active.ok
+      ? defs.polarization?.series_iii?.rotations_by_shell_size?.[active.shell_size] || {}
+      : defs.polarization?.series_iii?.rotations_by_shell_size?.["17"] || {};
+    const chips = Object.entries(rotations)
+      .sort(([a], [b]) => naturalCompare(a, b))
+      .map(([code, value]) => optionChip(code, value.description || "keying option", "changes shell key teeth, not pin layout", active.ok && active.polarization === code))
+      .join("");
+    return `
+      <div class="keying-graphic" aria-hidden="true">
+        <span class="key-shell"></span>
+        <span class="key-tooth top"></span>
+        <span class="key-tooth side"></span>
+        <span class="key-tooth lower"></span>
+      </div>
+      <div class="option-grid keying-options">${chips}</div>
+    `;
+  }
+
+  function summarizeText(value, maxLength) {
+    const text = String(value || "").replace(/\s+/g, " ").trim();
+    if (text.length <= maxLength) return text;
+    return `${text.slice(0, Math.max(0, maxLength - 3)).trim()}...`;
   }
 
   function manualCoverage() {

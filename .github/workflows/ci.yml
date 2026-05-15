@@ -24,11 +24,6 @@ jobs:
           import json, sys
           from pathlib import Path
           required = [
-              "data/insert_arrangements.json",
-              "data/part_number_rules.json",
-              "data/standard_definitions.json",
-              "data/dla_documents.json",
-              "data/review_needed.json",
               "app/data/insert_arrangements.json",
               "app/data/part_number_rules.json",
               "app/data/standard_definitions.json",
@@ -72,7 +67,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Re-bundle app from sources
+      - name: Rebuild app/app-data.js
         run: python scripts/build_app.py
 
       - name: Verify app entry point exists

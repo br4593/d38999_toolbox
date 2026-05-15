@@ -1,16 +1,9 @@
 """
 Build the self-contained offline d38999 Toolbox web app into ``app/``.
 
-The app is fully self-contained:
-
-* HTML / CSS / JS templates come from ``app_static/``.
-* Pinout, arrangement, and standard-definition data come from ``data/*.json``.
-* Manufacturer cross-reference rules come from ``scripts/d38999_rules.py``.
-* Insert-arrangement vector graphics come from ``data/svg/*.svg``.
-
-It is written into ``app/`` with the JSON also copied to ``app/data/`` for
-inspection. The generated ``app/app-data.js`` embeds the same content so the
-page works when opened directly via ``file://`` (no server, no fetch()).
+HTML / CSS / JS templates come from ``app_static/``. Canonical JSON data comes
+from ``data/*.json``. The generated app is written into ``app/`` and embeds the
+same JSON into ``app/app-data.js`` so the page works from ``file://``.
 """
 
 from __future__ import annotations
@@ -51,11 +44,17 @@ def build(project_root: Path) -> Path:
     data_dir = project_root / "data"
     svg_dir = data_dir / "svg"
     static_dir = project_root / "app_static"
-    rules_path = project_root / "scripts" / "d38999_rules.py"
-
     app_dir = project_root / "app"
     app_data_dir = app_dir / "data"
     app_svg_dir = app_dir / "assets" / "svg"
+    rules_path = project_root / "scripts" / "d38999_rules.py"
+
+    if not rules_path.exists():
+        raise FileNotFoundError(f"Missing converter rules at {rules_path}")
+    if not static_dir.exists():
+        raise FileNotFoundError(f"Missing app_static/ directory at {static_dir}")
+    if not svg_dir.exists():
+        raise FileNotFoundError(f"Missing data/svg/ directory at {svg_dir}")
 
     missing = [name for name in DATA_FILES if not (data_dir / name).exists()]
     if missing:
@@ -65,14 +64,6 @@ def build(project_root: Path) -> Path:
             + ". Run scripts/extract_arrangements.py and "
               "scripts/extract_standard_definitions.py first."
         )
-    if not svg_dir.exists():
-        raise FileNotFoundError(
-            "Missing data/svg/. Run scripts/extract_arrangements.py first."
-        )
-    if not static_dir.exists():
-        raise FileNotFoundError("Missing app_static/ directory.")
-    if not rules_path.exists():
-        raise FileNotFoundError("Missing scripts/d38999_rules.py.")
 
     docs_rules = load_module(rules_path, "d38999_rules")
 

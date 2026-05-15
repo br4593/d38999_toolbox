@@ -34,3 +34,20 @@ Thumbs.db
 **/debug/
 **/chrome-validation-profile-*/
 **/validation-downloads-*/
+
+# --- Legacy directories replaced by the simpler layout ---
+# Source-of-truth is now `app/`; the legacy mirrors and template folder are
+# regenerable artefacts and must not be committed. `scripts/cleanup_workspace.sh`
+# removes them from disk in one command.
+app_static/
+tests/
+text/
+data/svg/
+data/insert_arrangements.json
+data/part_number_rules.json
+data/standard_definitions.json
+data/dla_documents.json
+data/review_needed.json
+
+# Duplicate of MIL-DTL-38999-dtl38999.pdf; keep only the canonical name.
+docs/pdfs/dtl38999.pdf
