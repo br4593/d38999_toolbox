@@ -19,12 +19,14 @@
   </header>
 
   <nav class="top-tabs" aria-label="Application sections">
-    <button class="tab-button active" type="button" data-tab="pinout">Pinout</button>
+    <button class="tab-button active" type="button" data-tab="decoder">Decoder</button>
+    <button class="tab-button" type="button" data-tab="catalog">Catalog</button>
     <button class="tab-button" type="button" data-tab="converter">Converter</button>
     <button class="tab-button" type="button" data-tab="manual">Manual</button>
   </nav>
 
-  <div id="pinoutPanel" class="app-shell tab-panel active">
+  <!-- ===== DECODER TAB ===== -->
+  <div id="decoderPanel" class="app-shell tab-panel active">
     <aside class="sidebar panel">
       <section>
         <h2>Decode a part number</h2>
@@ -36,73 +38,16 @@
         <div id="decodeMessage" class="message"></div>
       </section>
 
-      <section>
-        <h2>Filter arrangements</h2>
-        <label for="slashSheetFilter">Series / slash sheet</label>
-        <select id="slashSheetFilter"></select>
-
-        <label for="shellStyleFilter">Shell style</label>
-        <select id="shellStyleFilter">
-          <option value="">Any</option>
-          <option value="plug">Plug</option>
-          <option value="receptacle">Receptacle</option>
-          <option value="unknown">Unknown</option>
-        </select>
-
-        <label for="shellFilter">Shell size</label>
-        <select id="shellFilter"></select>
-
-        <label for="arrangementFilter">Insert arrangement</label>
-        <input id="arrangementFilter" class="mono" type="text" placeholder="e.g. 17-26 or 35">
-
-        <div class="filter-grid">
-          <div>
-            <label for="countFilter">Contacts</label>
-            <select id="countFilter"></select>
-          </div>
-          <div>
-            <label for="sizeFilter">Size</label>
-            <select id="sizeFilter"></select>
-          </div>
-          <div>
-            <label for="typeFilter">Type</label>
-            <select id="typeFilter"></select>
-          </div>
-          <div>
-            <label for="genderFilter">Pin / socket</label>
-            <select id="genderFilter">
-              <option value="">All</option>
-              <option value="pin">Pin</option>
-              <option value="socket">Socket</option>
-              <option value="unknown">Unknown</option>
-            </select>
-          </div>
+      <section class="decoder-hint-section">
+        <h2>Quick examples</h2>
+        <div class="example-chips">
+          <button type="button" class="example-chip" data-example="D38999/26WE35PN">26WE35PN</button>
+          <button type="button" class="example-chip" data-example="D38999/20FB35SN">20FB35SN</button>
+          <button type="button" class="example-chip" data-example="D38999/24WC35PN">24WC35PN</button>
+          <button type="button" class="example-chip" data-example="D38999/26WJ26PN">26WJ26PN</button>
+          <button type="button" class="example-chip" data-example="D38999/26WA98SN">26WA98SN</button>
         </div>
-
-        <label for="keyingFilter">Polarization</label>
-        <select id="keyingFilter">
-          <option value="">All</option>
-          <option value="N">N — normal</option>
-          <option value="A">A — alternate</option>
-          <option value="B">B — alternate</option>
-          <option value="C">C — alternate</option>
-          <option value="D">D — alternate</option>
-          <option value="E">E — alternate</option>
-        </select>
-      </section>
-
-      <section>
-        <h2>Matching arrangements</h2>
-        <div id="arrangementCards" class="arrangement-cards"></div>
-      </section>
-
-      <section>
-        <h2>Compare two</h2>
-        <label for="compareA">Arrangement A</label>
-        <select id="compareA"></select>
-        <label for="compareB">Arrangement B</label>
-        <select id="compareB"></select>
-        <div id="comparisonPanel" class="comparison-panel"></div>
+        <p class="decoder-hint">Enter any D38999 part number above. The connector graphic and pin table update instantly. <a href="#" id="openCatalogLink">Browse the catalog</a> to find arrangements by filter.</p>
       </section>
     </aside>
 
@@ -189,6 +134,93 @@
     </aside>
   </div>
 
+  <!-- ===== CATALOG TAB ===== -->
+  <div id="catalogPanel" class="catalog-shell tab-panel">
+    <aside class="sidebar panel">
+      <section>
+        <h2>Filter arrangements</h2>
+        <label for="slashSheetFilter">Series / slash sheet</label>
+        <select id="slashSheetFilter"></select>
+
+        <label for="shellStyleFilter">Shell style</label>
+        <select id="shellStyleFilter">
+          <option value="">Any</option>
+          <option value="plug">Plug</option>
+          <option value="receptacle">Receptacle</option>
+          <option value="unknown">Unknown</option>
+        </select>
+
+        <label for="shellFilter">Shell size</label>
+        <select id="shellFilter"></select>
+
+        <label for="arrangementFilter">Insert arrangement</label>
+        <input id="arrangementFilter" class="mono" type="text" placeholder="e.g. 17-26 or 35">
+
+        <div class="filter-grid">
+          <div>
+            <label for="countFilter">Contacts</label>
+            <select id="countFilter"></select>
+          </div>
+          <div>
+            <label for="sizeFilter">Size</label>
+            <select id="sizeFilter"></select>
+          </div>
+          <div>
+            <label for="typeFilter">Type</label>
+            <select id="typeFilter"></select>
+          </div>
+          <div>
+            <label for="genderFilter">Pin / socket</label>
+            <select id="genderFilter">
+              <option value="">All</option>
+              <option value="pin">Pin</option>
+              <option value="socket">Socket</option>
+              <option value="unknown">Unknown</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="keyingFilter">Polarization</label>
+        <select id="keyingFilter">
+          <option value="">All</option>
+          <option value="N">N — normal</option>
+          <option value="A">A — alternate</option>
+          <option value="B">B — alternate</option>
+          <option value="C">C — alternate</option>
+          <option value="D">D — alternate</option>
+          <option value="E">E — alternate</option>
+        </select>
+
+        <button id="clearFiltersButton" type="button" class="clear-filters-btn">Clear filters</button>
+      </section>
+
+      <section>
+        <h2>Compare two</h2>
+        <label for="compareA">Arrangement A</label>
+        <select id="compareA"></select>
+        <label for="compareB">Arrangement B</label>
+        <select id="compareB"></select>
+        <div id="comparisonPanel" class="comparison-panel"></div>
+      </section>
+    </aside>
+
+    <main class="catalog-main">
+      <div class="catalog-toolbar">
+        <span id="catalogCount" class="catalog-count"></span>
+        <div class="catalog-sort-row">
+          <label for="catalogSort" class="compact-field">Sort</label>
+          <select id="catalogSort" class="compact-select">
+            <option value="id">Arrangement ID</option>
+            <option value="contacts">Contact count</option>
+            <option value="shell">Shell size</option>
+          </select>
+        </div>
+      </div>
+      <div id="catalogGrid" class="catalog-grid"></div>
+    </main>
+  </div>
+
+  <!-- ===== CONVERTER TAB ===== -->
   <section id="converterPanel" class="converter-tab-panel panel tab-panel" aria-labelledby="converter-title">
     <main class="converter-shell">
       <section class="converter-card panel" aria-labelledby="converter-title">
@@ -250,6 +282,7 @@
     </template>
   </section>
 
+  <!-- ===== MANUAL TAB ===== -->
   <section id="manualPanel" class="manual-panel panel tab-panel" aria-label="D38999 manual">
     <div class="panel-title-row">
       <div>

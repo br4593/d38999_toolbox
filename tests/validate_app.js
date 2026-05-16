@@ -137,7 +137,7 @@ async function main() {
     }
 
     await waitFor(
-      () => cdp.eval(`Boolean(window.D38999_TOOLBOX_DATA && window.D38999_TOOLBOX_DATA.pinout && window.D38999_TOOLBOX_DATA.converter && document.querySelectorAll(".arrangement-card").length && document.querySelector("#connectorSvg .shell"))`),
+      () => cdp.eval(`Boolean(window.D38999_TOOLBOX_DATA && window.D38999_TOOLBOX_DATA.pinout && window.D38999_TOOLBOX_DATA.converter && document.querySelectorAll(".catalog-card").length && document.querySelector("#connectorSvg .shell"))`),
       "app data and initial connector drawing"
     );
 
@@ -180,8 +180,7 @@ async function main() {
       headerBackground: getComputedStyle(document.querySelector(".app-header")).backgroundColor,
       manualTab: Boolean(document.querySelector('.tab-button[data-tab="manual"]')),
       pnGuide: document.querySelector("#partNumberGuidePanel").textContent,
-      tableHeaders: [...document.querySelectorAll("#pinTable th")].map((node) => node.textContent.trim()),
-      tableQuestionLabels: [...document.querySelectorAll("#pinTable tbody td:first-child")].filter((node) => node.textContent.trim() === "?").length,
+      pinTableRemoved: !document.querySelector("#pinTable"),
       removedAssignmentControls: [
         "#signalNameInput",
         "#exportJsonButton",
@@ -194,18 +193,14 @@ async function main() {
     assert(initial.pinLabels === 0, "Pin labels are hidden by default to reduce drawing clutter");
     assert(initial.pinSymbols >= 26, "Gauge contact symbols are visible by default for 17-26");
     assert(initial.visibleQuestionLabels === 0, "Visible connector labels have no question marks");
-    assert(initial.tableQuestionLabels === 0, "Pin table labels have no question marks");
     assert(!initial.sourceImage, "Raw extracted SVG image layer is not displayed");
     assert(initial.shellFill, "Connector viewer uses the dynamic redrawn shell");
     assert(initial.background === "rgb(255, 255, 255)", "Connector viewer uses white drawing background");
     assert(initial.headerBackground === "rgb(0, 101, 165)", "Header uses #0065a5 brand color");
     assert(initial.manualTab, "D38999 manual tab is present");
     assert(initial.pnGuide.includes("Shell code"), "Part-number guide is rendered");
+    assert(initial.pinTableRemoved, "Decoder-side pin catalog table is removed");
     assert(initial.removedAssignmentControls, "Signal-assignment controls are absent");
-    assert(
-      JSON.stringify(initial.tableHeaders) === JSON.stringify(["Pin", "Size", "Type", "Confidence", "Label source"]),
-      "Pin catalog table headers match the revised catalog UI"
-    );
 
     const converterAudit = await cdp.eval(`(() => {
       document.querySelector('.tab-button[data-tab="converter"]').click();
@@ -223,7 +218,7 @@ async function main() {
     assert(/rule/i.test(converterAudit.countPill), "Converter rule count is displayed");
     assert(converterAudit.resultTitle.includes("D38999/26WD35PN"), "Converter renders decoded D38999 input");
     assert(converterAudit.firstCandidate.includes("TV06RW-15-35PN"), "Converter shows an Amphenol candidate");
-    await cdp.eval(`document.querySelector('.tab-button[data-tab="pinout"]').click(); true;`);
+    await cdp.eval(`document.querySelector('.tab-button[data-tab="decoder"]').click(); true;`);
 
     const pinSearch = await cdp.eval(`(() => {
       const input = document.querySelector("#pinSearchInput");
@@ -253,10 +248,11 @@ async function main() {
       const selectByArrangement = (id) => {
         document.querySelector("#arrangementFilter").value = id;
         document.querySelector("#arrangementFilter").dispatchEvent(new Event("input", { bubbles: true }));
-        [...document.querySelectorAll(".arrangement-card strong")].find((node) => node.textContent.trim() === id).closest(".arrangement-card").click();
+        [...document.querySelectorAll(".catalog-card .catalog-card-id")].find((node) => node.textContent.trim() === id).closest(".catalog-card").click();
       };
       selectByArrangement("25-46");
-      const sizes = [...document.querySelectorAll("#pinTable tbody tr")].map((row) => row.children[1].textContent.trim());
+      const arrangementA = window.D38999_TOOLBOX_DATA.pinout.insertArrangements.arrangements.find((arr) => arr.id === "25-46");
+      const sizes = (arrangementA.contacts || []).map((contact) => String(contact.size).trim());
       const has8 = Boolean(document.querySelector("#connectorSvg .gauge-8"));
       const has16 = Boolean(document.querySelector("#connectorSvg .gauge-16"));
       const has20 = Boolean(document.querySelector("#connectorSvg .gauge-20"));
@@ -277,22 +273,10 @@ async function main() {
       const shell = document.querySelector("#shellFilter");
       shell.value = "17";
       shell.dispatchEvent(new Event("change", { bubbles: true }));
-      const cards = [...document.querySelectorAll(".arrangement-card strong")].map((node) => node.textContent.trim());
+      const cards = [...document.querySelectorAll(".catalog-card .catalog-card-id")].map((node) => node.textContent.trim());
       return { count: cards.length, all17: cards.every((text) => text.startsWith("17-")) };
     })()`);
     assert(manualFilter.count > 0 && manualFilter.all17, "Manual shell-size filter returns shell 17 arrangements");
-
-    const beforeDownloads = new Set(fs.readdirSync(downloadsDir));
-    await cdp.eval(`document.querySelector("#exportPinCsvButton").click(); true;`);
-    const csvFile = await waitFor(() => {
-      const files = fs.readdirSync(downloadsDir).filter((file) => !beforeDownloads.has(file));
-      return files.find((file) => file.endsWith(".csv"));
-    }, "pin CSV download");
-    const exportedCsv = fs.readFileSync(path.join(downloadsDir, csvFile), "utf8");
-    const header = exportedCsv.split(/\r?\n/, 1)[0];
-    assert(header === "pin,contact_size,type,confidence,label_source", "Pin CSV has catalog header");
-    assert(!/\b(x|y|source_x|source_y|signal_name|net_name|wire_color|wire_gauge|notes)\b/i.test(header), "Pin CSV header has no geometry or wiring fields");
-    assert(!exportedCsv.includes("?"), "Pin CSV has no question-mark labels");
 
     const screenshot = await cdp.send("Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
     fs.writeFileSync(path.join(debugDir, "app_revised.png"), Buffer.from(screenshot.data, "base64"));
@@ -308,15 +292,13 @@ async function main() {
         "extracted separator guide paths render in dense arrangements",
         "D38999 manual tab and part-number guide render",
         "redrawn dynamic shell is used and raw source SVG is not layered",
-        "catalog table has no coordinate columns",
+        "decoder-side pin catalog is removed",
         "pin search highlights and opens detail",
         "part number lookup selects 17-35",
         "manual shell filter works",
         "signal-assignment controls are absent",
-        "pin CSV export downloads without geometry or wiring fields",
       ],
       data: dataAudit,
-      downloads: { csvFile },
       screenshot: "output/debug/app_revised.png",
     }, null, 2));
     success = true;

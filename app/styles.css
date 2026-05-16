@@ -344,7 +344,7 @@ label {
 
 .main-panel {
   display: grid;
-  grid-template-rows: minmax(540px, calc(100vh - 360px)) 220px;
+  grid-template-rows: minmax(540px, calc(100vh - 160px));
   gap: 14px;
   min-width: 0;
 }
@@ -370,8 +370,7 @@ label {
 }
 
 .panel-title-row h2,
-.viewer-panel h2,
-.table-panel h2 {
+.viewer-panel h2 {
   font-size: 14px;
   text-transform: none;
   letter-spacing: 0;
@@ -786,51 +785,6 @@ label {
 .legend-pin.selected { border-color: var(--accent); background: var(--selected); }
 .legend-pin.match    { border-color: var(--accent); background: var(--match); }
 .legend-pin.review   { border-color: var(--review);  border-style: dashed; }
-
-/* Pin catalog table ----------------------------------------------------- */
-
-.table-scroll {
-  overflow: auto;
-  flex: 1;
-  border: 1px solid var(--line-soft);
-  border-radius: var(--radius-md);
-  background: var(--surface);
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12.5px;
-}
-
-th, td {
-  padding: 8px 10px;
-  border-bottom: 1px solid var(--line-soft);
-  text-align: left;
-  white-space: nowrap;
-}
-
-th {
-  position: sticky;
-  top: 0;
-  background: var(--surface-3);
-  color: var(--muted);
-  font-weight: 600;
-  font-size: 11.5px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  z-index: 1;
-}
-
-th:hover { color: var(--ink); }
-
-td { color: var(--text); }
-
-td.mono, th.mono { font-family: var(--mono); }
-
-tr:hover td   { background: var(--surface-2); }
-tr.active td  { background: var(--accent-soft); color: var(--accent-strong); }
 
 /* Detail lists (right panel) ------------------------------------------- */
 
@@ -2013,13 +1967,380 @@ tr.active td  { background: var(--accent-soft); color: var(--accent-strong); }
   }
 }
 
-/* Scrollbar polish (WebKit) ------------------------------------------- */
+/* =========================================================================
+   Catalog tab
+   ========================================================================= */
 
-::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 6px;
-  border: 2px solid var(--bg);
+/* Layout: sidebar (280px) + scrollable main */
+.catalog-shell {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 14px;
+  padding: 14px 18px;
+  min-height: calc(100vh - 120px);
+  align-items: start;
 }
-::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+.catalog-main {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.catalog-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 2px;
+}
+
+.catalog-count {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.catalog-sort-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Grid of fixed-size cards */
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 168px));
+  gap: 12px;
+  align-items: start;
+}
+
+/* Individual card */
+.catalog-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 244px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  overflow: hidden;
+}
+
+.catalog-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.catalog-card.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.14);
+}
+
+/* SVG thumbnail area — fixed height, zoom cursor */
+.catalog-card-svg {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--line-soft);
+  overflow: hidden;
+  cursor: zoom-in;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.catalog-card-svg svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 128px;
+  max-height: 128px;
+}
+
+/* Zoom hint on hover */
+.catalog-card-svg::after {
+  content: "🔍";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 0.75rem;
+  opacity: 0;
+  transition: opacity 0.15s;
+  pointer-events: none;
+}
+
+.catalog-card:hover .catalog-card-svg::after {
+  opacity: 1;
+}
+
+/* Card body — compact info */
+.catalog-card-body {
+  flex: 1;
+  min-height: 0;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.catalog-card-id {
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: var(--mono);
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.catalog-card-meta {
+  display: grid;
+  gap: 2px;
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+.catalog-size-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 22px;
+  align-content: flex-start;
+}
+
+.size-pill {
+  font-size: 0.62rem;
+  font-weight: 600;
+  padding: 2px 5px;
+  border-radius: 999px;
+  font-family: var(--mono);
+  color: #fff;
+  line-height: 1.2;
+}
+
+.size-pill-8  { background: #7c3aed; }
+.size-pill-10 { background: #0891b2; }
+.size-pill-12 { background: #047857; }
+.size-pill-16 { background: #b45309; }
+.size-pill-20 { background: #be185d; }
+.size-pill-22d { background: #374151; }
+
+.catalog-card-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.catalog-service {
+  min-width: 0;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-family: var(--mono);
+  white-space: nowrap;
+}
+
+.catalog-open-btn {
+  margin-left: auto;
+  padding: 5px 8px;
+  font-size: 0.68rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  width: auto;
+  flex-shrink: 0;
+  text-align: center;
+  transition: background 0.12s, border-color 0.12s;
+}
+
+.catalog-open-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* Empty state */
+.catalog-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.clear-filters-inline-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: inherit;
+  padding: 0;
+}
+
+/* =========================================================================
+   Lightbox overlay
+   ========================================================================= */
+
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.12s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.lightbox-card {
+  display: grid;
+  grid-template-columns: 420px 240px;
+  max-height: 90vh;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  overflow: hidden;
+  animation: scaleIn 0.14s ease;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.92); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.lightbox-svg-pane {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2);
+  padding: 24px;
+  min-height: 340px;
+}
+
+.lightbox-svg-pane svg {
+  width: 100%;
+  max-width: 370px;
+  height: auto;
+  max-height: 70vh;
+}
+
+.lightbox-info-pane {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 12px;
+  overflow-y: auto;
+  border-left: 1px solid var(--line);
+}
+
+.lightbox-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.lightbox-id {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.lightbox-close {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.lightbox-close:hover {
+  background: var(--surface-3);
+  color: var(--ink);
+}
+
+.lightbox-stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 12px;
+}
+
+.lightbox-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.lightbox-stat-label {
+  font-size: 0.68rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.lightbox-stat-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+  font-family: var(--mono);
+}
+
+.lightbox-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.lightbox-actions {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lightbox-primary-btn {
+  padding: 8px 12px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  transition: opacity 0.12s;
+}
+
+.lightbox-primary-btn:hover { opacity: 0.88; }
+
+/* =========================================================================
+   Scrollbar polish
+   ========================================================================= */
+
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }

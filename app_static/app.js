@@ -27,8 +27,9 @@
     isPanning: false,
     panStart: null,
     panViewBox: null,
-    activeTab: "pinout",
+    activeTab: "decoder",
     activeManualField: "slash_sheet",
+    catalogSort: "id",
   };
 
   const $ = (id) => document.getElementById(id);
@@ -48,7 +49,10 @@
     typeFilter: $("typeFilter"),
     genderFilter: $("genderFilter"),
     keyingFilter: $("keyingFilter"),
-    arrangementCards: $("arrangementCards"),
+    catalogGrid: $("catalogGrid"),
+    catalogCount: $("catalogCount"),
+    catalogSort: $("catalogSort"),
+    clearFiltersButton: $("clearFiltersButton"),
     compareA: $("compareA"),
     compareB: $("compareB"),
     comparisonPanel: $("comparisonPanel"),
@@ -71,6 +75,7 @@
     exportPinCsvButton: $("exportPinCsvButton"),
     copyTableButton: $("copyTableButton"),
     printReportButton: $("printReportButton"),
+    openCatalogLink: $("openCatalogLink"),
   };
 
   function normalizeConfidence(value) {
@@ -152,7 +157,7 @@
     bindEvents();
     renderManual();
     renderPartNumberGuide(null);
-    renderCards();
+    renderCatalog();
     if (arrangements.length) {
       selectArrangement(arrangements.find((arr) => arr.id === "17-26") || arrangements[0], true);
     }
@@ -212,6 +217,24 @@
     els.partNumberInput.addEventListener("keydown", (event) => {
       if (event.key === "Enter") decodeFromInput();
     });
+
+    // Example chips in the decoder sidebar
+    document.querySelectorAll(".example-chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        els.partNumberInput.value = chip.dataset.example;
+        decodeFromInput();
+      });
+    });
+
+    // "Browse the catalog" link in decoder hint
+    if (els.openCatalogLink) {
+      els.openCatalogLink.addEventListener("click", (event) => {
+        event.preventDefault();
+        selectTab("catalog");
+      });
+    }
+
+    // Catalog filters
     for (const element of [
       els.slashSheetFilter,
       els.shellStyleFilter,
@@ -223,9 +246,23 @@
       els.genderFilter,
       els.keyingFilter,
     ]) {
-      element.addEventListener("input", renderCards);
-      element.addEventListener("change", renderCards);
+      element.addEventListener("input", renderCatalog);
+      element.addEventListener("change", renderCatalog);
     }
+
+    // Clear filters button
+    if (els.clearFiltersButton) {
+      els.clearFiltersButton.addEventListener("click", clearFilters);
+    }
+
+    // Catalog sort
+    if (els.catalogSort) {
+      els.catalogSort.addEventListener("change", () => {
+        state.catalogSort = els.catalogSort.value;
+        renderCatalog();
+      });
+    }
+
     els.compareA.addEventListener("change", renderComparison);
     els.compareB.addEventListener("change", renderComparison);
     els.labelsToggle.addEventListener("change", renderViewer);
@@ -244,6 +281,19 @@
     bindPanZoom();
   }
 
+  function clearFilters() {
+    els.slashSheetFilter.value = "";
+    els.shellStyleFilter.value = "";
+    els.shellFilter.value = "";
+    els.arrangementFilter.value = "";
+    els.countFilter.value = "";
+    els.sizeFilter.value = "";
+    els.typeFilter.value = "";
+    els.genderFilter.value = "";
+    els.keyingFilter.value = "";
+    renderCatalog();
+  }
+
   function onManualTokenClick(event) {
     const button = event.target.closest("[data-manual-field]");
     if (!button) return;
@@ -260,6 +310,8 @@
     document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.remove("active"));
     const panel = $(`${tabName}Panel`);
     if (panel) panel.classList.add("active");
+    // When switching to catalog, re-render to reflect any selection change
+    if (tabName === "catalog") renderCatalog();
   }
 
   function filteredArrangements() {
@@ -291,23 +343,174 @@
     });
   }
 
-  function renderCards() {
+  function sortedCatalog(filtered) {
+    const sort = state.catalogSort || "id";
+    return filtered.slice().sort((a, b) => {
+      if (sort === "contacts") return Number(a.contact_count) - Number(b.contact_count);
+      if (sort === "shell") return Number(a.shell_size) - Number(b.shell_size);
+      return naturalCompare(a.id, b.id);
+    });
+  }
+
+  function renderCatalog() {
     const filtered = filteredArrangements();
-    els.arrangementCards.innerHTML = "";
-    for (const arr of filtered) {
-      const card = document.createElement("div");
-      card.className = `arrangement-card ${state.selectedArrangement?.id === arr.id ? "active" : ""}`;
-      card.innerHTML = `
-        <strong>${escapeHtml(arr.id)}</strong>
-        <span>${arr.contact_count} contacts | ${escapeHtml(sizeSummary(arr))}</span>
-        <span>Service ${escapeHtml(arr.service_rating || "unknown")} | source page ${arr.source_page}</span>
-      `;
-      card.addEventListener("click", () => selectArrangement(arr, true));
-      els.arrangementCards.appendChild(card);
+    const sorted = sortedCatalog(filtered);
+
+    // Update count badge
+    if (els.catalogCount) {
+      els.catalogCount.textContent = filtered.length === arrangements.length
+        ? `${arrangements.length} arrangements`
+        : `${filtered.length} of ${arrangements.length} arrangements`;
     }
-    if (!filtered.length) {
-      els.arrangementCards.innerHTML = `<div class="message warn">No arrangements match the current filters.</div>`;
+
+    if (!els.catalogGrid) return;
+    els.catalogGrid.innerHTML = "";
+
+    if (!sorted.length) {
+      // Use event delegation on the grid to avoid accumulating listeners on re-render
+      els.catalogGrid.innerHTML = `<div class="catalog-empty">No arrangements match the current filters. <button type="button" class="clear-filters-inline-btn">Clear filters</button></div>`;
+      return;
     }
+
+    for (const arr of sorted) {
+      const card = buildCatalogCard(arr);
+      els.catalogGrid.appendChild(card);
+    }
+  }
+
+  function buildCatalogCard(arr) {
+    const isActive = state.selectedArrangement?.id === arr.id;
+    const card = document.createElement("div");
+    card.className = `catalog-card${isActive ? " active" : ""}`;
+
+    const viewBox = connectorBaseViewBox(arr);
+    const svgMarkup = miniSvgMarkup(arr);
+    const sizePills = (arr.contact_size_notes || [])
+      .map((note) => `<span class="size-pill size-pill-${cssToken(note.size)}">#${escapeHtml(note.size)}</span>`)
+      .join("");
+
+    card.innerHTML = `
+      <div class="catalog-card-svg" title="Click to enlarge">
+        <svg class="mini-connector-svg catalog-mini-svg" viewBox="${viewBox.join(" ")}" xmlns="http://www.w3.org/2000/svg" aria-label="Arrangement ${escapeHtml(arr.id)}">${svgMarkup}</svg>
+      </div>
+      <div class="catalog-card-body">
+        <div class="catalog-card-id mono">${escapeHtml(arr.id)}</div>
+        <div class="catalog-card-meta">
+          <span>${arr.contact_count} contacts</span>
+          <span>Shell ${escapeHtml(arr.shell_size)}</span>
+        </div>
+        <div class="catalog-size-pills">${sizePills}</div>
+        <div class="catalog-card-footer">
+          <span class="catalog-service">Svc ${escapeHtml(arr.service_rating || "?")}</span>
+          <button type="button" class="catalog-open-btn">Decoder →</button>
+        </div>
+      </div>
+    `;
+
+    // Single unified click handler — no overlapping listeners
+    card.addEventListener("click", (event) => {
+      if (event.target.closest(".catalog-card-svg")) {
+        // SVG thumbnail → open lightbox
+        openLightbox(arr);
+      } else if (event.target.closest(".catalog-open-btn")) {
+        // "Open in Decoder" button → switch tab
+        openInDecoder(arr);
+      } else {
+        // Card body → select / highlight only
+        selectArrangement(arr, true);
+        renderCatalog();
+      }
+    });
+
+    return card;
+  }
+
+  function openInDecoder(arr) {
+    selectArrangement(arr, true);
+    selectTab("decoder");
+  }
+
+  // ---- Lightbox (click-to-enlarge from catalog) ----
+
+  function openLightbox(arr) {
+    closeLightbox();   // remove any existing one first
+
+    const viewBox = connectorBaseViewBox(arr);
+    const svgMarkup = miniSvgMarkup(arr);
+    const sizePills = (arr.contact_size_notes || [])
+      .map((note) => `<span class="size-pill size-pill-${cssToken(note.size)}">#${escapeHtml(note.size)}</span>`)
+      .join("");
+
+    const overlay = document.createElement("div");
+    overlay.className = "lightbox-overlay";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-label", `Arrangement ${arr.id}`);
+
+    overlay.innerHTML = `
+      <div class="lightbox-card" role="document">
+        <div class="lightbox-svg-pane">
+          <svg class="mini-connector-svg lightbox-connector-svg"
+               viewBox="${viewBox.join(" ")}"
+               xmlns="http://www.w3.org/2000/svg"
+               aria-label="Arrangement ${escapeHtml(arr.id)}">${svgMarkup}</svg>
+        </div>
+        <div class="lightbox-info-pane">
+          <div class="lightbox-header">
+            <div class="lightbox-id mono">${escapeHtml(arr.id)}</div>
+            <button type="button" class="lightbox-close" aria-label="Close">✕</button>
+          </div>
+          <div class="lightbox-stat-grid">
+            <div class="lightbox-stat">
+              <div class="lightbox-stat-label">Contacts</div>
+              <div class="lightbox-stat-value">${arr.contact_count}</div>
+            </div>
+            <div class="lightbox-stat">
+              <div class="lightbox-stat-label">Shell</div>
+              <div class="lightbox-stat-value">${escapeHtml(arr.shell_size)}</div>
+            </div>
+            <div class="lightbox-stat">
+              <div class="lightbox-stat-label">Service</div>
+              <div class="lightbox-stat-value">${escapeHtml(arr.service_rating || "—")}</div>
+            </div>
+            <div class="lightbox-stat">
+              <div class="lightbox-stat-label">Source p.</div>
+              <div class="lightbox-stat-value">${arr.source_page || "—"}</div>
+            </div>
+          </div>
+          <div class="lightbox-pills">${sizePills}</div>
+          <div class="lightbox-actions">
+            <button type="button" class="lightbox-primary-btn">Open in Decoder →</button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Close on overlay click (outside card) or close button
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay || event.target.closest(".lightbox-close")) {
+        closeLightbox();
+      } else if (event.target.closest(".lightbox-primary-btn")) {
+        closeLightbox();
+        openInDecoder(arr);
+      }
+    });
+
+    // Close on Escape key
+    overlay._escHandler = (event) => { if (event.key === "Escape") closeLightbox(); };
+    document.addEventListener("keydown", overlay._escHandler);
+
+    document.body.appendChild(overlay);
+    state.lightboxOpen = true;
+  }
+
+  function closeLightbox() {
+    const existing = document.querySelector(".lightbox-overlay");
+    if (existing) {
+      if (existing._escHandler) document.removeEventListener("keydown", existing._escHandler);
+      existing.remove();
+    }
+    state.lightboxOpen = false;
   }
 
   function sizeSummary(arr) {
@@ -322,12 +525,17 @@
       state.baseViewBox = connectorBaseViewBox(arrangement);
       state.viewBox = state.baseViewBox.slice();
     }
-    renderCards();
     renderViewer();
     renderTable();
     renderSourceInfo();
     renderPinDetail();
     els.selectedStatus.textContent = `${arrangement.id} | ${arrangement.contact_count} contacts`;
+    // Update active highlight in catalog grid without full re-render
+    document.querySelectorAll(".catalog-card").forEach((card) => {
+      const idEl = card.querySelector(".catalog-card-id");
+      const isActive = idEl && idEl.textContent === arrangement.id;
+      card.classList.toggle("active", isActive);
+    });
   }
 
   function renderSourceInfo() {
@@ -335,7 +543,7 @@
     if (!arr) return;
     els.viewerTitle.textContent = `Insert Arrangement ${arr.id}`;
     const review = reviewById.get(arr.id);
-    const warning = review ? ` | review: ${review.issues.length} issue(s)` : "";
+    const warning = review?.issues?.length ? ` | review: ${review.issues.length} issue(s)` : "";
     const decodedNote = state.decoded?.ok && state.decoded.arrangement_id === arr.id
       ? ` | ${state.decoded.part_number} | keying ${state.decoded.polarization}`
       : "";
@@ -819,9 +1027,13 @@
     const defaultNote = decoded.polarization_defaulted
       ? " Showing keying N by default; type A, B, C, D, or E after the contact letter to choose alternate keying."
       : "";
-    setMessage(els.decodeMessage, `Decoded ${decoded.part_number}.${defaultNote}`);
     const arr = arrangementById(decoded.arrangement_id);
-    if (arr) selectArrangement(arr, true);
+    if (arr) {
+      selectArrangement(arr, true);
+      setMessage(els.decodeMessage, `Decoded ${decoded.part_number}.${defaultNote}`);
+    } else {
+      setMessage(els.decodeMessage, `Decoded ${decoded.part_number}, but insert arrangement "${decoded.arrangement_id}" was not found in the data.${defaultNote}`, "warn");
+    }
   }
 
   function decodePartNumber(partNumber) {
