@@ -25,9 +25,13 @@
     isPanning: false,
     panStart: null,
     panViewBox: null,
-    activeTab: "decoder",
+    activeTab: "home",
     activeManualField: "slash_sheet",
     catalogSort: "id",
+    manualSelector: null,
+    buildStep: 0,
+    buildRendered: false,
+    manualRendered: false,
   };
 
   const $ = (id) => document.getElementById(id);
@@ -35,6 +39,7 @@
   const els = {
     dataStatus: $("dataStatus"),
     selectedStatus: $("selectedStatus"),
+    goHomeButton: $("goHomeButton"),
     partNumberInput: $("partNumberInput"),
     decodeButton: $("decodeButton"),
     decodeMessage: $("decodeMessage"),
@@ -65,6 +70,9 @@
     viewerFrame: $("viewerFrame"),
     decodedPanel: $("decodedPanel"),
     partNumberGuidePanel: $("partNumberGuidePanel"),
+    buildPanel: $("buildPanel"),
+    buildContent: $("buildContent"),
+    homePanel: $("homePanel"),
     manualPanel: $("manualPanel"),
     manualContent: $("manualContent"),
     pinDetailHeader: $("pinDetailHeader"),
@@ -144,7 +152,6 @@
       : `${arrangements.length} arrangements loaded`;
     populateFilters();
     bindEvents();
-    renderManual();
     renderPartNumberGuide(null);
     renderCatalog();
     if (arrangements.length) {
@@ -152,6 +159,7 @@
     }
     renderDecoded(null);
     renderComparison();
+    selectTab("home");
   }
 
   function populateFilters() {
@@ -185,6 +193,54 @@
 
   function unique(values) {
     return [...new Set(values.filter((value) => value !== undefined && value !== null && value !== ""))];
+  }
+
+  const selectorFieldOrder = ["slash_sheet", "class_field", "shell_code", "insert_arrangement", "contact_style", "polarization"];
+
+  function blankSelectorSelection() {
+    return {
+      slash_sheet: "",
+      class_field: "",
+      shell_code: "",
+      insert_arrangement: "",
+      contact_style: "",
+      polarization: "",
+    };
+  }
+
+  function selectorSelectionFromDecoded(decoded) {
+    if (!decoded?.ok) return blankSelectorSelection();
+    const active = decoded;
+    return {
+      slash_sheet: active.slash_sheet || "",
+      class_field: active.class_field || "",
+      shell_code: active.shell_code || "",
+      insert_arrangement: active.insert_arrangement || "",
+      contact_style: active.contact_style || "",
+      polarization: active.polarization || "",
+    };
+  }
+
+  function currentBuildStepFromSelection(selection) {
+    const firstEmpty = selectorFieldOrder.findIndex((field) => !selection[field]);
+    if (firstEmpty === -1) return selectorFieldOrder.length - 1;
+    return firstEmpty;
+  }
+
+  function maxBuildStep(selection) {
+    return Math.max(0, currentBuildStepFromSelection(selection));
+  }
+
+  function syncBuildStep(selection) {
+    state.buildStep = Math.min(state.buildStep, maxBuildStep(selection));
+  }
+
+  function ensureManualSelectorState(decoded) {
+    if (!state.manualSelector) {
+      state.manualSelector = selectorSelectionFromDecoded(decoded);
+      state.buildStep = currentBuildStepFromSelection(state.manualSelector);
+    }
+    return state.manualSelector;
   }
 
   function fillSelect(select, options) {
@@ -223,6 +279,10 @@
       });
     }
 
+    document.querySelectorAll("[data-home-target]").forEach((button) => {
+      button.addEventListener("click", () => selectTab(button.dataset.homeTarget || "home"));
+    });
+
     // Catalog filters
     for (const element of [
       els.slashSheetFilter,
@@ -259,7 +319,8 @@
     els.resetViewButton.addEventListener("click", resetView);
     els.pinSearchInput.addEventListener("input", searchPin);
     els.partNumberGuidePanel.addEventListener("click", onManualTokenClick);
-    els.manualContent.addEventListener("click", onManualTokenClick);
+    if (els.buildContent) els.buildContent.addEventListener("click", onManualTokenClick);
+    if (els.manualContent) els.manualContent.addEventListener("click", onManualTokenClick);
     document.querySelectorAll(".tab-button").forEach((button) => {
       button.addEventListener("click", () => selectTab(button.dataset.tab));
     });
@@ -280,23 +341,74 @@
   }
 
   function onManualTokenClick(event) {
+    const selectorButton = event.target.closest("[data-selector-field]");
+    if (selectorButton) {
+      if (selectorButton.disabled) return;
+      const field = selectorButton.dataset.selectorField;
+      const value = selectorButton.dataset.selectorValue || "";
+      const next = { ...ensureManualSelectorState(state.decoded), [field]: value };
+      const fieldIndex = selectorFieldOrder.indexOf(field);
+      selectorFieldOrder.slice(fieldIndex + 1).forEach((key) => {
+        next[key] = "";
+      });
+      state.manualSelector = next;
+      state.buildStep = Math.min(fieldIndex + 1, selectorFieldOrder.length - 1);
+      syncBuildStep(next);
+      if (state.buildRendered) renderBuildConnector();
+      return;
+    }
+
+    const buildStepButton = event.target.closest("[data-build-step]");
+    if (buildStepButton) {
+      const step = Number(buildStepButton.dataset.buildStep);
+      if (Number.isFinite(step)) {
+        state.buildStep = Math.min(step, maxBuildStep(ensureManualSelectorState(state.decoded)));
+        if (state.buildRendered) renderBuildConnector();
+      }
+      return;
+    }
+
+    const selectorAction = event.target.closest("[data-selector-action]");
+    if (selectorAction) {
+      const action = selectorAction.dataset.selectorAction;
+      if (action === "reset") {
+        state.manualSelector = selectorSelectionFromDecoded(state.decoded);
+        state.buildStep = currentBuildStepFromSelection(state.manualSelector);
+        if (state.buildRendered) renderBuildConnector();
+      } else if (action === "prev-step") {
+        state.buildStep = Math.max(0, state.buildStep - 1);
+        if (state.buildRendered) renderBuildConnector();
+      } else if (action === "apply") {
+        const context = manualSelectorContext(state.decoded);
+        if (!context.exact) return;
+        els.partNumberInput.value = context.exact.part_number;
+        decodeFromInput();
+        selectTab("decoder");
+      }
+      return;
+    }
+
     const button = event.target.closest("[data-manual-field]");
     if (!button) return;
     state.activeManualField = button.dataset.manualField || "slash_sheet";
     renderPartNumberGuide(state.decoded);
-    renderManual();
+    if (state.manualRendered) renderManual();
   }
 
   function selectTab(tabName) {
     state.activeTab = tabName;
+    document.body.classList.toggle("is-home", tabName === "home");
     document.querySelectorAll(".tab-button").forEach((button) => {
       button.classList.toggle("active", button.dataset.tab === tabName);
     });
     document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.remove("active"));
     const panel = $(`${tabName}Panel`);
     if (panel) panel.classList.add("active");
+    if (tabName === "build" && !state.buildRendered) renderBuildConnector();
+    if (tabName === "manual" && !state.manualRendered) renderManual();
     // When switching to catalog, re-render to reflect any selection change
     if (tabName === "catalog") renderCatalog();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function filteredArrangements() {
@@ -717,9 +829,10 @@
     });
   }
 
-  function keyingDrawing(arr) {
+  function keyingDrawing(arr, decodedOverride) {
     const group = svgEl("g", { class: "keying-drawing" });
-    const decoded = state.decoded?.ok && state.decoded.arrangement_id === arr.id ? state.decoded : null;
+    const decodedFromState = state.decoded?.ok && state.decoded.arrangement_id === arr.id ? state.decoded : null;
+    const decoded = decodedOverride?.ok ? decodedOverride : decodedFromState;
     const pol = decoded?.polarization_definition;
     if (!decoded || !pol || !arr.outline) return group;
 
@@ -843,8 +956,8 @@
     const text = contact.label && contact.label !== "?" ? contact.label : `Pin ${contact._index + 1}`;
     const detail = `#${contact.size || "?"}`;
     const radius = pinRadius(contact);
-    const width = Math.max(text.length * radius * 0.8, radius * 5.2);
-    const height = radius * 2.75;
+    const width = Math.max(text.length * radius * 1.2, radius * 7.2);
+    const height = radius * 4.1;
     const x = contact.x + radius * 2.3;
     const y = contact.y - height - radius * 1.2;
     const group = svgEl("g", { class: "hover-pin-label" });
@@ -865,15 +978,15 @@
     }));
     group.appendChild(svgEl("text", {
       class: "hover-pin-label-name",
-      x: x + radius * 0.65,
-      y: y + radius * 1.05,
-      "font-size": radius * 0.9,
+      x: x + radius * 0.95,
+      y: y + radius * 1.55,
+      "font-size": radius * 1.55,
     }, text));
     group.appendChild(svgEl("text", {
       class: "hover-pin-label-detail",
-      x: x + radius * 0.65,
-      y: y + radius * 2.05,
-      "font-size": radius * 0.62,
+      x: x + radius * 0.95,
+      y: y + radius * 3.0,
+      "font-size": radius * 0.95,
     }, detail));
     svg.appendChild(group);
   }
@@ -947,8 +1060,14 @@
       return;
     }
     state.decoded = decoded;
+    if (decoded.ok) {
+      state.manualSelector = selectorSelectionFromDecoded(decoded);
+      state.buildStep = currentBuildStepFromSelection(state.manualSelector);
+    }
     renderDecoded(decoded);
     renderPartNumberGuide(decoded);
+    if (state.buildRendered) renderBuildConnector();
+    if (state.manualRendered) renderManual();
     if (!decoded.ok) {
       setMessage(els.decodeMessage, decoded.message, true);
       return;
@@ -1069,6 +1188,181 @@
     return defs.polarization?.series_iii?.rotations_by_shell_size?.[shellSize]?.[letter] || null;
   }
 
+  function selectorRuleFinishes(rule) {
+    if (rule.finishes) return rule.finishes;
+    if (Array.isArray(rule.supported_finishes)) {
+      return Object.fromEntries(rule.supported_finishes.map((code) => [code, code]));
+    }
+    if (rule.format === "amphenol_prefix") {
+      const out = {};
+      Object.values(rule.styles || {}).forEach((style) => {
+        Object.keys(style.prefix_by_finish || {}).forEach((code) => {
+          out[code] = code;
+        });
+      });
+      return out;
+    }
+    return {};
+  }
+
+  function createSelectorNode() {
+    return {
+      children: new Map(),
+      descendantCount: 0,
+      example: null,
+      exact: null,
+    };
+  }
+
+  function buildManualSelectorTree() {
+    if (buildManualSelectorTree.cache) return buildManualSelectorTree.cache;
+
+    const shellCodeDefs = defs.shell_size_codes_series_iii_iv || {};
+    const allShellCodes = Object.keys(shellCodeDefs);
+    const root = createSelectorNode();
+    const fieldValues = Object.fromEntries(selectorFieldOrder.map((field) => [field, new Set()]));
+
+    (converterData.rules || []).forEach((rule) => {
+      const styles = rule.styles || {};
+      const finishCodes = Object.keys(selectorRuleFinishes(rule));
+      const contactCodes = rule.supported_contacts || [];
+      const keyCodes = rule.supported_keys || ["N"];
+      const allowedShellCodes = rule.allowed_shell_size_codes?.length ? rule.allowed_shell_size_codes : allShellCodes;
+
+      Object.keys(styles).forEach((shellType) => {
+        const slashSheet = `/${shellType}`;
+        const slashDef = (defs.slash_sheets || {})[slashSheet] || dlaSlashSheetDefinition(slashSheet);
+        arrangements.forEach((arr) => {
+          if (!allowedShellCodes.includes(arr.shell_size_code)) return;
+
+          finishCodes.forEach((classField) => {
+            const classCode = classField.replace(/-$/, "");
+            const classDef = defs.classes?.[classCode] || null;
+            contactCodes.forEach((contactStyle) => {
+              const contactDef = defs.contact_styles?.[contactStyle] || null;
+              keyCodes.forEach((polarization) => {
+                const shellSizeDef = shellCodeDefs[arr.shell_size_code] || null;
+                const polDef = polarizationDefinition(arr.shell_size, polarization, slashDef);
+                if ((slashDef?.series_inferred_from_source_text || "III") === "III" && !polDef) return;
+
+                const candidate = {
+                  ok: true,
+                  part_number: `D38999/${shellType}${classField}${arr.shell_size_code}${arr.arrangement_number}${contactStyle}${polarization}`,
+                  entered_part_number: `D38999/${shellType}${classField}${arr.shell_size_code}${arr.arrangement_number}${contactStyle}${polarization}`,
+                  polarization_defaulted: false,
+                  family: "D38999 / MIL-DTL-38999",
+                  slash_sheet: slashSheet,
+                  slash_sheet_definition: slashDef,
+                  class_field: classField,
+                  class_definition: classDef,
+                  shell_code: arr.shell_size_code,
+                  shell_size: arr.shell_size,
+                  shell_size_definition: shellSizeDef,
+                  insert_arrangement: arr.arrangement_number,
+                  arrangement_id: arr.id,
+                  contact_style: contactStyle,
+                  contact_definition: contactDef,
+                  polarization,
+                  polarization_definition: polDef,
+                  arrangement_exists: true,
+                  source_pattern: (partRules.part_number_patterns || [])[0] || null,
+                  manufacturers: new Set(),
+                  productLines: new Set(),
+                };
+
+                const pathValues = selectorFieldOrder.map((field) => candidate[field]);
+                pathValues.forEach((value, index) => fieldValues[selectorFieldOrder[index]].add(value));
+
+                const visited = [root];
+                let node = root;
+                pathValues.forEach((value) => {
+                  if (!node.children.has(value)) node.children.set(value, createSelectorNode());
+                  node = node.children.get(value);
+                  visited.push(node);
+                });
+
+                if (!node.exact) {
+                  node.exact = candidate;
+                  visited.forEach((visitedNode) => {
+                    visitedNode.descendantCount += 1;
+                    if (!visitedNode.example) visitedNode.example = candidate;
+                  });
+                }
+
+                const exact = node.exact;
+                exact.manufacturers.add(rule.manufacturer || "Unknown");
+                exact.productLines.add(`${rule.manufacturer || "Unknown"} ${rule.product_line || ""}`.trim());
+              });
+            });
+          });
+        });
+      });
+    });
+
+    buildManualSelectorTree.cache = {
+      root,
+      fieldValues: Object.fromEntries(
+        Object.entries(fieldValues).map(([field, values]) => [field, sortSelectorValues(field, [...values])])
+      ),
+    };
+    return buildManualSelectorTree.cache;
+  }
+
+  function sortSelectorValues(field, values) {
+    return values.sort((a, b) => {
+      if (field === "shell_code") {
+        return Number(shellSizeForShellCode(a)) - Number(shellSizeForShellCode(b));
+      }
+      if (field === "insert_arrangement") return Number(a) - Number(b);
+      return naturalCompare(a, b);
+    });
+  }
+
+  function selectorOptionUniverse(field) {
+    return buildManualSelectorTree().fieldValues[field] || [];
+  }
+
+  function shellSizeForShellCode(code) {
+    return defs.shell_size_codes_series_iii_iv?.[code]?.shell_size || "";
+  }
+
+  function manualSelectorContext(decoded) {
+    const tree = buildManualSelectorTree();
+    const selection = ensureManualSelectorState(decoded);
+    const parentNodes = {};
+    let prefixNode = tree.root;
+    let prefixBroken = false;
+
+    selectorFieldOrder.forEach((field) => {
+      parentNodes[field] = prefixBroken ? null : prefixNode;
+      const selected = selection[field];
+      if (!selected || prefixBroken) return;
+      const next = prefixNode.children.get(selected) || null;
+      if (!next) {
+        prefixBroken = true;
+        prefixNode = null;
+        return;
+      }
+      prefixNode = next;
+    });
+
+    const currentNode = prefixBroken ? null : prefixNode;
+    const exact = currentNode?.exact || null;
+    const preview = exact || currentNode?.example || tree.root.example || activeDecodedOrExample(decoded);
+    syncBuildStep(selection);
+    return {
+      tree,
+      selection,
+      parentNodes,
+      currentNode,
+      exact,
+      preview,
+      activeStep: Math.min(state.buildStep, exact ? selectorFieldOrder.length - 1 : maxBuildStep(selection)),
+      matchCount: currentNode?.descendantCount || 0,
+      totalCount: tree.root.descendantCount || 0,
+    };
+  }
+
   function renderDecoded(decoded) {
     if (!decoded) {
       els.decodedPanel.innerHTML = `<div class="detail-item"><div class="value">No part number decoded.</div></div>`;
@@ -1079,19 +1373,32 @@
       return;
     }
     const rows = [
-      ["Family", decoded.family, sourceRef(decoded.source_pattern?.fields?.[0])],
-      ["Shell type", `${decoded.slash_sheet} - ${decoded.slash_sheet_definition?.description || "unknown"}`, sourceRef(decoded.slash_sheet_definition || decoded.source_pattern?.fields?.[1])],
-      ["Class / finish", `${decoded.class_field} - ${decoded.class_definition?.description || "unknown"}`, sourceRef(decoded.class_definition)],
+      ["Connector body", `${decoded.slash_sheet} - ${decoded.slash_sheet_definition?.description || "unknown"}`, sourceRef(decoded.slash_sheet_definition || decoded.source_pattern?.fields?.[1])],
+      ["Material / finish", `${decoded.class_field} - ${decoded.class_definition?.description || "unknown"}`, sourceRef(decoded.class_definition)],
       ["Shell size", `${decoded.shell_size} (code ${decoded.shell_code})`, sourceRef(decoded.shell_size_definition)],
-      ["Insert arrangement", decoded.arrangement_id, sourceRef(decoded.source_pattern?.fields?.[4])],
-      ["Contact style", `${decoded.contact_style} - ${decoded.contact_definition?.description || "unknown"}`, sourceRef(decoded.contact_definition)],
+      ["Insert layout", decoded.arrangement_id, sourceRef(decoded.source_pattern?.fields?.[4])],
+      ["Contacts", `${decoded.contact_style} - ${decoded.contact_definition?.description || "unknown"}`, sourceRef(decoded.contact_definition)],
       ["Contact gender", decoded.contact_definition?.contact_gender || "unknown", sourceRef(decoded.contact_definition)],
-      ["Polarization", `${decoded.polarization} - ${decoded.polarization_definition?.description || "unknown"}`, sourceRef(decoded.polarization_definition || decoded.source_pattern?.fields?.[6])],
-      ["Arrangement SVG", decoded.arrangement_exists ? "available" : "not extracted", decoded.arrangement_exists ? "d38999-contact-arrangements.pdf" : "needs manual verification"],
+      ["Keying", `${decoded.polarization} - ${decoded.polarization_definition?.description || "unknown"}`, sourceRef(decoded.polarization_definition || decoded.source_pattern?.fields?.[6])],
+      ["Drawing", decoded.arrangement_exists ? "available" : "not extracted", decoded.arrangement_exists ? "d38999-contact-arrangements.pdf" : "needs manual verification"],
     ];
-    els.decodedPanel.innerHTML = rows
+    els.decodedPanel.innerHTML = decodedSummaryCard(decoded)
+      + rows
       .map(([name, value, src]) => detailHtml(name, value, src))
       .join("");
+  }
+
+  function decodedSummaryCard(decoded) {
+    const shellText = decoded.shell_size ? `shell size ${decoded.shell_size}` : "known shell size";
+    const bodyText = decoded.slash_sheet_definition?.description || "connector body";
+    const contactText = decoded.contact_definition?.contact_gender || "contact option";
+    const keyingText = decoded.polarization_definition?.description || `keying ${decoded.polarization}`;
+    return `
+      <div class="detail-item detail-summary">
+        <div class="name">Plain-English Summary</div>
+        <div class="value">${escapeHtml(`This is a ${bodyText}, ${shellText}, insert ${decoded.arrangement_id}, ${contactText.toLowerCase()}, ${keyingText.toLowerCase()}.`)}</div>
+      </div>
+    `;
   }
 
   function renderPartNumberGuide(decoded) {
@@ -1100,12 +1407,27 @@
     els.partNumberGuidePanel.innerHTML = interactivePnGuide(decoded, "compact");
   }
 
+  function renderBuildConnector() {
+    if (!els.buildContent) return;
+    const selector = manualSelectorContext(state.decoded);
+    const sections = [
+      ["Build Connector", connectorSelector(selector)],
+    ];
+    els.buildContent.innerHTML = sections.map(([title, body]) => `
+      <section class="manual-section build-section">
+        <h3>${escapeHtml(title)}</h3>
+        ${body}
+      </section>
+    `).join("");
+    state.buildRendered = true;
+  }
+
   function renderManual() {
     if (!els.manualContent) return;
+    const preview = activeDecodedOrExample(state.decoded);
     const sections = [
-      ["Interactive PN Decoder", interactivePnGuide(state.decoded, "manual")],
-      ["How To Choose The Connector", connectorDecisionGraphic(state.decoded)],
-      ["PN Parts And Options", manualPnPartSections(state.decoded)],
+      ["Interactive PN Decoder", interactivePnGuide(preview, "manual")],
+      ["PN Parts And Options", manualPnPartSections(preview)],
       ["Source Coverage", manualCoverage()],
     ];
     els.manualContent.innerHTML = sections.map(([title, body]) => `
@@ -1114,11 +1436,198 @@
         ${body}
       </section>
     `).join("");
+    state.manualRendered = true;
   }
 
   function activeDecodedOrExample(decoded) {
     if (decoded?.ok) return decoded;
     return decodePartNumber("D38999/26WE35PN");
+  }
+
+  function selectorFieldMeta(field, value, preview) {
+    const arr = preview?.arrangement_id ? arrangementById(preview.arrangement_id) : null;
+    if (field === "slash_sheet") {
+      const slashDef = (defs.slash_sheets || {})[value] || dlaSlashSheetDefinition(value);
+      return {
+        code: `D38999${value}`,
+        title: slashDef?.description || "shell type",
+        detail: slashDef?.series_inferred_from_source_text ? `Series ${slashDef.series_inferred_from_source_text}` : "connector body style",
+      };
+    }
+    if (field === "class_field") {
+      return {
+        code: value,
+        title: defs.classes?.[value]?.description || "finish / material class",
+        detail: defs.classes?.[value]?.confidence || "service class",
+      };
+    }
+    if (field === "shell_code") {
+      return {
+        code: value,
+        title: `shell size ${shellSizeForShellCode(value)}`,
+        detail: "physical shell size code",
+      };
+    }
+    if (field === "insert_arrangement") {
+      const arrangementId = preview?.shell_size && value ? `${preview.shell_size}-${value}` : "";
+      const optionArr = arrangementById(arrangementId) || arr;
+      return {
+        code: value,
+        title: optionArr ? `${optionArr.id} | ${optionArr.contact_count} contacts` : "insert arrangement",
+        detail: optionArr ? sizeSummary(optionArr) : "pin layout number",
+      };
+    }
+    if (field === "contact_style") {
+      return {
+        code: value,
+        title: defs.contact_styles?.[value]?.contact_gender || defs.contact_styles?.[value]?.description || "contact style",
+        detail: summarizeText(defs.contact_styles?.[value]?.description || "", 72),
+      };
+    }
+    return {
+      code: value,
+      title: defs.polarization?.series_iii?.rotations_by_shell_size?.[preview?.shell_size || ""]?.[value]?.description || `keying ${value}`,
+      detail: preview?.slash_sheet_definition?.series_inferred_from_source_text === "III"
+        ? "source-backed Series III polarization"
+        : "manufacturer-supported keying option",
+    };
+  }
+
+  function selectorOptionButton(field, value, context) {
+    const active = String(context.selection[field] || "") === String(value);
+    const optionNode = context.parentNodes[field]?.children.get(value) || null;
+    const disabled = !optionNode;
+    const preview = optionNode?.example || context.preview;
+    const meta = selectorFieldMeta(field, value, preview);
+    const optionCount = optionNode?.descendantCount || 0;
+    return `
+      <button
+        type="button"
+        class="option-chip selector-chip ${active ? "active" : ""}"
+        data-selector-field="${escapeHtml(field)}"
+        data-selector-value="${escapeHtml(value)}"
+        ${disabled ? "disabled" : ""}
+      >
+        <strong class="mono">${escapeHtml(meta.code)}</strong>
+        <span>${escapeHtml(meta.title || "")}</span>
+        <em>${escapeHtml(disabled ? "not available with current selections" : `${optionCount} valid connector${optionCount === 1 ? "" : "s"} | ${meta.detail || ""}`)}</em>
+      </button>
+    `;
+  }
+
+  function connectorSelector(context) {
+    const pnValue = context.exact?.part_number || "Choose shell type, finish, shell size, insert, contacts, and keying.";
+    const summary = context.exact
+      ? `${context.exact.manufacturers.size} manufacturer family${context.exact.manufacturers.size === 1 ? "" : "ies"} match this connector in the current rule set.`
+      : context.matchCount === context.totalCount
+        ? `${context.totalCount} valid D38999 connectors are available in the current rule set.`
+        : `${context.matchCount} valid D38999 connector${context.matchCount === 1 ? "" : "s"} remain under the current selections.`;
+    const fields = [
+      ["slash_sheet", "1. Shell Type"],
+      ["class_field", "2. Class / Finish"],
+      ["shell_code", "3. Shell Code"],
+      ["insert_arrangement", "4. Insert Arrangement"],
+      ["contact_style", "5. Contact Style"],
+      ["polarization", "6. Polarization"],
+    ];
+    const stepHelp = {
+      slash_sheet: "Choose the connector body style first: plug, receptacle, hermetic body, or other shell family.",
+      class_field: "Pick the material and finish that fit the environment and hardware family.",
+      shell_code: "Choose the shell-size code. The app translates the letter into the physical shell size for you.",
+      insert_arrangement: "Choose the insert layout that gives you the contact pattern and count you need.",
+      contact_style: "Pick whether the connector ships with pins, sockets, or another contact option.",
+      polarization: "Set the keying position that prevents wrong mating between similar connectors.",
+    };
+    const activeStep = context.activeStep;
+    const activeField = fields[activeStep]?.[0] || fields[0][0];
+    const activeTitle = fields[activeStep]?.[1] || fields[0][1];
+    const activeValue = context.selection[activeField] || "";
+
+    return `
+      <div class="selector-shell">
+        <div class="selector-hero">
+          <div>
+            <div class="pn-eyebrow">Assemble a real connector</div>
+            <div class="selector-pn mono">${escapeHtml(pnValue)}</div>
+            <p>${escapeHtml(summary)} ${context.exact ? `${context.exact.productLines.size} source-backed product line${context.exact.productLines.size === 1 ? "" : "s"} support this exact connector.` : ""}</p>
+            <div class="selector-actions">
+              <button type="button" class="selector-action secondary" data-selector-action="prev-step" ${activeStep === 0 ? "disabled" : ""}>Back</button>
+              <button type="button" class="selector-action" data-selector-action="apply" ${context.exact ? "" : "disabled"}>Open in decoder</button>
+              <button type="button" class="selector-action secondary" data-selector-action="reset">${state.decoded?.ok ? "Use decoded PN" : "Clear"}</button>
+            </div>
+          </div>
+        </div>
+        <div class="build-stepper">
+          ${fields.map(([field, title], index) => {
+            const status = index < activeStep
+              ? "done"
+              : index === activeStep
+                ? "active"
+                : context.selection[field]
+                  ? "done"
+                  : "pending";
+            const label = context.selection[field] || "Not chosen";
+            return `
+              <button type="button" class="build-step-pill ${status}" data-build-step="${index}">
+                <strong>${escapeHtml(title)}</strong>
+                <span>${escapeHtml(label)}</span>
+              </button>
+            `;
+          }).join("")}
+        </div>
+        <section class="build-step-card">
+          <div class="build-step-card-head">
+            <div class="build-step-kicker">Step ${activeStep + 1} of ${fields.length}</div>
+            <strong>${escapeHtml(activeTitle)}</strong>
+            <p>${escapeHtml(stepHelp[activeField] || "")}</p>
+          </div>
+          ${activeValue ? `<div class="manual-note build-current-choice">Current choice: <span class="mono">${escapeHtml(activeValue)}</span></div>` : ""}
+          <div class="option-grid ${activeField === "insert_arrangement" ? "compact-options" : ""}">
+            ${selectorOptionUniverse(activeField).map((value) => selectorOptionButton(activeField, value, context)).join("")}
+          </div>
+        </section>
+        ${context.exact ? buildConnectorResult(context.exact) : ""}
+        <div class="selector-grid build-summary-grid">
+          ${fields.map(([field, title], index) => `
+            <section class="selector-field build-summary-item ${index === activeStep ? "active" : ""}">
+              <div class="selector-field-head">
+                <strong>${escapeHtml(title)}</strong>
+                <span>${escapeHtml(context.selection[field] || "Choose")}</span>
+              </div>
+            </section>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  function buildConnectorResult(decoded) {
+    const arrangement = decoded?.arrangement_id ? arrangementById(decoded.arrangement_id) : null;
+    return `
+      <section class="build-result">
+        <div class="build-result-head">
+          <strong>Selected Connector</strong>
+          <span class="mono">${escapeHtml(decoded.part_number || "")}</span>
+        </div>
+        <div class="build-result-body">
+          <div class="selector-preview">
+            ${manualArrangementPreview(decoded, { showBoundary: true, showKeying: true })}
+            <div class="selector-preview-meta">
+              <strong>${escapeHtml(decoded.arrangement_id || "")}</strong>
+              <span>${escapeHtml(arrangement ? `${arrangement.contact_count} contacts | ${sizeSummary(arrangement)}` : "Arrangement preview")}</span>
+            </div>
+          </div>
+          <div class="manual-stat-grid">
+            ${optionChip(decoded.slash_sheet || "", "shell type", decoded.slash_sheet_definition?.description || "")}
+            ${optionChip(decoded.class_field || "", "class / finish", decoded.class_definition?.description || "")}
+            ${optionChip(decoded.shell_code || "", "shell size", decoded.shell_size ? `size ${decoded.shell_size}` : "")}
+            ${optionChip(decoded.insert_arrangement || "", "insert arrangement", decoded.arrangement_id || "")}
+            ${optionChip(decoded.contact_style || "", "contact style", decoded.contact_definition?.contact_gender || decoded.contact_definition?.description || "")}
+            ${optionChip(decoded.polarization || "", "polarization", decoded.polarization_definition?.description || "")}
+          </div>
+        </div>
+      </section>
+    `;
   }
 
   function manualFieldItems(decoded) {
@@ -1411,15 +1920,38 @@
     `;
   }
 
+  function svgOuterMarkup(node) {
+    return node?.outerHTML || "";
+  }
+
+  function manualArrangementPreview(active, options = {}) {
+    const fallbackId = active?.arrangement_id || "17-35";
+    const arr = arrangementById(fallbackId) || arrangements[0] || null;
+    if (!arr?.outline) return "";
+
+    const outline = arr.outline;
+    const previewClasses = ["connector-svg", "mini-connector-svg", "manual-preview-svg"];
+    if (options.showKeying) previewClasses.push("manual-keying-svg");
+
+    return `
+      <div class="field-graphic manual-svg-frame" aria-hidden="true">
+        <svg class="${previewClasses.join(" ")}" viewBox="${connectorBaseViewBox(arr).join(" ")}">
+          ${miniSvgMarkup(arr)}
+          ${options.showBoundary ? `<circle class="insert-boundary" cx="${outline.center_x}" cy="${outline.center_y}" r="${outline.radius * 0.88}"></circle>` : ""}
+          ${svgOuterMarkup(orientationMarker(arr))}
+          ${options.showKeying ? svgOuterMarkup(keyingDrawing(arr, active)) : ""}
+        </svg>
+      </div>
+    `;
+  }
+
   function insertOptions(active) {
     const arr = active.ok ? arrangementById(active.arrangement_id) : null;
     const shellCount = active.ok
       ? arrangements.filter((item) => item.shell_size === active.shell_size).length
       : arrangements.length;
     return `
-      <div class="insert-graphic" aria-hidden="true">
-        ${Array.from({ length: 24 }, (_, index) => `<span style="--i:${index}"></span>`).join("")}
-      </div>
+      ${manualArrangementPreview(active, { showBoundary: true })}
       <div class="manual-stat-grid">
         ${optionChip(active.ok ? active.arrangement_id : "17-35", "selected pinout", arr ? `${arr.contact_count} contacts | ${sizeSummary(arr)}` : "type a PN to resolve")}
         ${optionChip(active.ok ? active.shell_size : "shell", "numeric shell size", `${shellCount} extracted arrangement(s) in this shell`)}
@@ -1451,12 +1983,7 @@
       .map(([code, value]) => optionChip(code, value.description || "keying option", "changes shell key teeth, not pin layout", active.ok && active.polarization === code))
       .join("");
     return `
-      <div class="keying-graphic" aria-hidden="true">
-        <span class="key-shell"></span>
-        <span class="key-tooth top"></span>
-        <span class="key-tooth side"></span>
-        <span class="key-tooth lower"></span>
-      </div>
+      ${manualArrangementPreview(active, { showBoundary: true, showKeying: true })}
       <div class="option-grid keying-options">${chips}</div>
     `;
   }
