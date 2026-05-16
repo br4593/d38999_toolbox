@@ -43,9 +43,9 @@ If you'd rather not use Actions, you can instead point Pages directly at a branc
 ## Project Layout
 
 The `app/` directory is the single source of truth for everything the browser
-loads. Edit HTML, CSS, and JS directly in `app/`. The only generated artifact
-is `app/app-data.js`, which `scripts/build_app.py` re-bakes from
-`app/data/*.json` plus `scripts/d38999_rules.py`.
+loads. Edit HTML, CSS, and JS directly in `app/`. Generated artifacts inside
+`app/` are `app/app-data.js`, `app/data/*.json`, and `app/assets/svg/*`, which
+`scripts/build_app.py` refreshes from `data/*` plus `scripts/d38999_rules.py`.
 
 ```text
 d38999-toolbox/
@@ -73,9 +73,7 @@ d38999-toolbox/
 |   |-- extract_standard_definitions.py
 |   |-- extract_dla_documents.py
 |   |-- build_app.py              # regenerates app/app-data.js
-|   |-- validate_app.js           # headless-Chrome smoke test
-|   |-- cleanup_workspace.sh      # one-shot legacy-dir cleanup (POSIX)
-|   `-- cleanup_workspace.ps1     # same, for Windows PowerShell
+|   `-- validate_app.js           # headless-Chrome smoke test
 |-- docs/
 |   |-- D38999_manufacturer_guide.md
 |   |-- pdfs/                     # source MIL-DTL-38999 / DLA / manufacturer PDFs
@@ -102,7 +100,7 @@ committed regardless.
 - Missing polarization defaults to `N`; explicit `A`, `B`, `C`, `D`, and `E` are supported.
 - Series III keying teeth are rendered on the connector drawing from the extracted Figure 6 angle table.
 - Hover a contact to see only pin name and gauge.
-- Search pins by label and export the pin catalog to CSV.
+- Search pins by label and inspect the selected pin detail in the decoder.
 - Compare two insert arrangements side by side.
 
 ### Converter

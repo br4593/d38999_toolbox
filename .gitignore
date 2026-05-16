@@ -36,11 +36,9 @@ Thumbs.db
 **/validation-downloads-*/
 
 # --- Legacy directories replaced by the simpler layout ---
-# Source-of-truth is now `app/`; the legacy mirrors and template folder are
-# regenerable artefacts and must not be committed. `scripts/cleanup_workspace.sh`
-# removes them from disk in one command.
+# Source-of-truth is now `app/`; `app_static/` is obsolete and should stay out
+# of future commits.
 app_static/
-tests/
 text/
 data/svg/
 data/insert_arrangements.json

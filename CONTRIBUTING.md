@@ -15,8 +15,7 @@ If you cannot point to a source page, the corresponding JSON should be marked
 
 | Where | What lives there |
 |---|---|
-| `app/` | The shipped built app. Don't hand-edit - run `scripts/build_app.py`. |
-| `app_static/` | Source templates (`index.html`, `styles.css`, `app.js`, `converter.js`). Edit these. |
+| `app/` | The shipped web app and source-of-truth UI files (`index.html`, `styles.css`, `app.js`, `converter.js`, `app-data.js`). Edit HTML/CSS/JS here. |
 | `data/` | Canonical JSON / SVG / CSV / SQLite data. Regenerable via the extract / build scripts. |
 | `scripts/` | All Python entry points + the converter rule database (`d38999_rules.py`). |
 | `tests/` | Smoke test for the built app. |

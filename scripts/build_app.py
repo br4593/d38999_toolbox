@@ -1,9 +1,10 @@
 """
-Build the self-contained offline d38999 Toolbox web app into ``app/``.
+Bake embedded data into the self-contained offline d38999 Toolbox web app.
 
-HTML / CSS / JS templates come from ``app_static/``. Canonical JSON data comes
-from ``data/*.json``. The generated app is written into ``app/`` and embeds the
-same JSON into ``app/app-data.js`` so the page works from ``file://``.
+The checked-in web app lives directly in ``app/``. Canonical JSON data comes
+from ``data/*.json``. This script refreshes ``app/data/*``, ``app/assets/svg/*``,
+and regenerates ``app/app-data.js`` so the page works from ``file://`` or a
+static host without runtime fetches.
 """
 
 from __future__ import annotations
@@ -11,7 +12,6 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
-import shutil
 import sys
 from pathlib import Path
 
@@ -22,9 +22,6 @@ DATA_FILES = [
     "dla_documents.json",
     "review_needed.json",
 ]
-
-STATIC_FILES = ["index.html", "styles.css", "app.js", "converter.js"]
-
 
 def load_module(module_path: Path, module_name: str):
     spec = importlib.util.spec_from_file_location(module_name, module_path)
@@ -43,16 +40,14 @@ def read_json(path: Path) -> object:
 def build(project_root: Path) -> Path:
     data_dir = project_root / "data"
     svg_dir = data_dir / "svg"
-    static_dir = project_root / "app_static"
     app_dir = project_root / "app"
     app_data_dir = app_dir / "data"
     app_svg_dir = app_dir / "assets" / "svg"
     rules_path = project_root / "scripts" / "d38999_rules.py"
+    cname_path = project_root / "CNAME"
 
     if not rules_path.exists():
         raise FileNotFoundError(f"Missing converter rules at {rules_path}")
-    if not static_dir.exists():
-        raise FileNotFoundError(f"Missing app_static/ directory at {static_dir}")
     if not svg_dir.exists():
         raise FileNotFoundError(f"Missing data/svg/ directory at {svg_dir}")
 
@@ -70,14 +65,17 @@ def build(project_root: Path) -> Path:
     app_data_dir.mkdir(parents=True, exist_ok=True)
     app_svg_dir.mkdir(parents=True, exist_ok=True)
 
-    for name in STATIC_FILES:
-        shutil.copy2(static_dir / name, app_dir / name)
-
     for name in DATA_FILES:
-        shutil.copy2(data_dir / name, app_data_dir / name)
+        source = data_dir / name
+        target = app_data_dir / name
+        target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
 
     for svg_path in sorted(svg_dir.glob("*.svg")):
-        shutil.copy2(svg_path, app_svg_dir / svg_path.name)
+        target = app_svg_dir / svg_path.name
+        target.write_text(svg_path.read_text(encoding="utf-8"), encoding="utf-8")
+
+    if cname_path.exists():
+        (app_dir / "CNAME").write_text(cname_path.read_text(encoding="utf-8"), encoding="utf-8")
 
     embedded = {
         "pinout": {
