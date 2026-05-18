@@ -2897,6 +2897,493 @@ body.is-home .header-home-button {
 .lightbox-primary-btn:hover { opacity: 0.88; }
 
 /* =========================================================================
+   Mating / Reciprocal Connector panel
+   ========================================================================= */
+
+.mating-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Hero bar at top of panel */
+.mating-hero {
+  padding: 28px 32px 20px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.mating-hero h2 {
+  margin: 0 0 6px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.mating-hero p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  max-width: 560px;
+}
+
+/* Body / content area */
+.mating-body {
+  flex: 1;
+  padding: 24px 32px 40px;
+  max-width: 1100px;
+}
+
+/* Prompt (no connector decoded yet) */
+.mating-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 48px 24px;
+  gap: 12px;
+}
+
+.mating-prompt-icon svg {
+  width: 64px;
+  height: 64px;
+  color: var(--dim);
+}
+
+.mating-prompt h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.mating-prompt p {
+  margin: 0;
+  color: var(--muted);
+  max-width: 360px;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 18px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: opacity 0.12s ease, transform 0.18s var(--spring);
+}
+
+.btn-primary:hover { opacity: 0.88; transform: scale(1.03); }
+
+/* Unsupported slash sheet */
+.mating-unsupported {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mating-unsupported strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.mating-unsupported p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+/* Warning banners */
+.mating-warn {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--warn-soft);
+  border: 1px solid rgba(180, 83, 9, 0.18);
+  border-radius: var(--radius-md);
+  color: var(--warn);
+  font-size: 0.84rem;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.mating-warn-icon {
+  flex-shrink: 0;
+  width: 15px;
+  height: 15px;
+  margin-top: 1px;
+}
+
+/* Source connector card (used for both source and mating sides) */
+.mating-source-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.mating-source-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.mating-source-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--dim);
+}
+
+.mating-source-pn {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+
+.mating-source-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+/* SVG preview in the source card */
+.mating-source-svg {
+  width: 100%;
+}
+
+.mating-source-svg .field-graphic {
+  min-height: 0;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(26, 115, 232, 0.12), transparent 44%),
+    linear-gradient(135deg, #fff, #f0f4fb);
+}
+
+.mating-source-svg .manual-svg-frame {
+  padding: 8px;
+}
+
+.mating-source-svg .manual-preview-svg {
+  height: 168px;
+}
+
+.mating-source-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-content: flex-start;
+}
+
+/* External shell profile schematic */
+.shell-profile-frame {
+  width: 100%;
+  background: linear-gradient(135deg, var(--surface-2), var(--bg));
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.shell-profile-svg {
+  width: 100%;
+  max-width: 220px;
+  height: 52px;
+  color: var(--muted);
+}
+
+/* Side-by-side: source card ←→ mating card */
+.mating-pair {
+  display: grid;
+  grid-template-columns: 1fr 48px 1fr;
+  align-items: stretch;
+  gap: 0;
+}
+
+.mating-pair-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dim);
+}
+
+.mating-pair-arrow svg {
+  width: 22px;
+  height: 22px;
+}
+
+@media (max-width: 700px) {
+  .mating-pair {
+    display: flex;
+    flex-direction: column;
+  }
+  .mating-pair-arrow {
+    transform: rotate(90deg);
+    align-self: center;
+    padding: 4px 0;
+  }
+}
+
+/* SVG preview in each option card */
+.mating-option-svg .field-graphic {
+  min-height: 0;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(26, 115, 232, 0.10), transparent 44%),
+    linear-gradient(135deg, #fff, #f0f4fb);
+}
+
+.mating-option-svg .manual-svg-frame {
+  padding: 8px 10px;
+}
+
+.mating-option-svg .manual-preview-svg {
+  height: 110px;
+}
+
+/* Wider option cards when SVG is present */
+.mating-options-grid:has(.mating-option-svg) {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+/* Slash-sheet selector row — sits above the pair, full width, centered */
+.mating-selector {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 20px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.mating-sel-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 9px 18px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  cursor: pointer;
+  text-align: center;
+  min-width: 100px;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+.mating-sel-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.mating-sel-btn.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.mating-sel-code {
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+.mating-sel-desc {
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+.mating-results-header h3 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.mating-results-header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.mating-results-header .mono {
+  font-size: 0.9em;
+}
+
+/* Options grid */
+.mating-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+}
+
+/* Individual option card */
+.mating-option-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.22s var(--ease-out), transform 0.22s var(--spring), border-color 0.15s ease;
+}
+
+.mating-option-card:hover {
+  box-shadow: var(--shadow-lift);
+  transform: translateY(-2px) scale(1.008);
+  border-color: var(--accent);
+}
+
+.mating-option-header {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.mating-slash-code {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+.mating-option-desc {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* Mating part number display */
+.mating-pn {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.025em;
+  padding: 8px 10px;
+  background: var(--bg-2);
+  border-radius: var(--radius-sm);
+  word-break: break-all;
+}
+
+.mating-pn-unknown {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+
+/* Chips row in option card */
+.mating-option-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+/* Action button */
+.mating-option-actions {
+  margin-top: auto;
+}
+
+/* Mating PN smoke-test validation badge */
+.mating-validation {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 0.79rem;
+  line-height: 1.4;
+}
+
+.mating-val-icon {
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+  margin-top: 1px;
+}
+
+.mating-validation-ok {
+  background: var(--ok-soft);
+  color: var(--ok);
+  border: 1px solid rgba(4, 120, 87, 0.2);
+}
+
+.mating-validation-warn {
+  background: var(--warn-soft);
+  color: var(--warn);
+  border: 1px solid rgba(180, 83, 9, 0.18);
+}
+
+.mating-validation-fail {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border: 1px solid rgba(185, 28, 28, 0.18);
+}
+
+.mating-decode-btn {
+  padding: 7px 13px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  transition: opacity 0.12s ease, transform 0.16s var(--spring);
+}
+
+.mating-decode-btn:hover {
+  opacity: 0.88;
+  transform: scale(1.03);
+}
+
+/* Hermetic note */
+.mating-hermetic-note {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+}
+
+.mating-hermetic-note strong {
+  display: block;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+}
+
+.mating-hermetic-note p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+/* =========================================================================
    Scrollbar polish
    ========================================================================= */
 

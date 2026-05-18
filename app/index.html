@@ -28,6 +28,10 @@
       <svg class="tab-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"/><path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M10 10l4 4"/></svg>
       <span>Decoder</span>
     </button>
+    <button class="tab-button" type="button" data-tab="mating">
+      <svg class="tab-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="4" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/><circle cx="12" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/><path stroke="currentColor" stroke-width="1.4" stroke-linecap="round" d="M6.5 8h3"/></svg>
+      <span>Mating Connector</span>
+    </button>
     <button class="tab-button" type="button" data-tab="catalog">
       <svg class="tab-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/></svg>
       <span>Inserts Catalog</span>
@@ -352,6 +356,18 @@
       </div>
     </div>
     <div id="manualContent" class="manual-content"></div>
+  </section>
+
+  <section id="matingPanel" class="mating-shell tab-panel" aria-label="Mating Connector">
+    <div class="mating-hero">
+      <div class="mating-hero-content">
+        <h2>Mating / Reciprocal Connector</h2>
+        <p>Find the exact mating connector for any decoded D38999 part number — same insert arrangement, opposite contact gender.</p>
+      </div>
+    </div>
+    <div class="mating-body">
+      <div id="matingContent"></div>
+    </div>
   </section>
 
   <script src="app-data.js"></script>

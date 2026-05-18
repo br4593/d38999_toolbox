@@ -32,9 +32,130 @@
     buildStep: 0,
     buildRendered: false,
     manualRendered: false,
+    selectedMateSheet: null,
   };
 
   const $ = (id) => document.getElementById(id);
+
+  // ---- Mating connector lookup tables ----
+  const MATE_MAP = {
+    // Series III plugs
+    "/26": { role: "plug", series: "III", mates: ["/20", "/24", "/28"] },
+    "/29": { role: "plug", series: "III", mates: ["/20", "/24", "/28"], lanyard: true },
+    "/30": { role: "plug", series: "III", mates: ["/20", "/24", "/28"], lanyard: true },
+    "/31": { role: "plug", series: "III", mates: ["/20", "/24", "/28"], lanyard: true },
+    "/36": { role: "plug", series: "III", mates: ["/20", "/24", "/28", "/34", "/35"], lanyard: true },
+    // Series III receptacles
+    "/20": { role: "receptacle", series: "III", mates: ["/26"] },
+    "/21": { role: "receptacle", series: "III", mates: [], hermetic: true },
+    "/22": { role: "receptacle", series: "III", mates: ["/26"] },
+    "/23": { role: "receptacle", series: "III", mates: [], hermetic: true },
+    "/24": { role: "receptacle", series: "III", mates: ["/26"] },
+    "/25": { role: "receptacle", series: "III", mates: [], hermetic: true },
+    "/27": { role: "receptacle", series: "III", mates: [], hermetic: true },
+    "/28": { role: "receptacle", series: "III", mates: ["/26"] },
+    "/32": { role: "cover_plug", series: "III", mates: ["/33"] },
+    "/33": { role: "cover_receptacle", series: "III", mates: ["/32"] },
+    "/34": { role: "receptacle", series: "III", mates: ["/26", "/36"] },
+    "/35": { role: "receptacle", series: "III", mates: ["/26", "/36"] },
+    // Series IV plugs
+    "/46": { role: "plug", series: "IV", mates: ["/40", "/42", "/44", "/49"] },
+    "/47": { role: "plug", series: "IV", mates: ["/40", "/42", "/44", "/49"] },
+    // Series IV receptacles
+    "/40": { role: "receptacle", series: "IV", mates: ["/46", "/47"] },
+    "/41": { role: "receptacle", series: "IV", mates: [], hermetic: true },
+    "/42": { role: "receptacle", series: "IV", mates: ["/46", "/47"] },
+    "/43": { role: "receptacle", series: "IV", mates: [], hermetic: true },
+    "/44": { role: "receptacle", series: "IV", mates: ["/46", "/47"] },
+    "/45": { role: "receptacle", series: "IV", mates: [], hermetic: true },
+    "/48": { role: "receptacle", series: "IV", mates: [], hermetic: true },
+    "/49": { role: "receptacle", series: "IV", mates: ["/46", "/47"] },
+    "/50": { role: "receptacle", series: "IV", mates: [], dummy: true },
+    "/51": { role: "cover_plug", series: "IV", mates: ["/52"] },
+    "/52": { role: "cover_receptacle", series: "IV", mates: ["/51"] },
+  };
+
+  const CONTACT_FLIP = {
+    A: "B", B: "A",
+    C: "D", D: "C",
+    G: "U", U: "G",
+    H: "J", J: "H",
+    P: "S", S: "P",
+    R: "M", M: "R",
+    X: "Z", Z: "X",
+  };
+
+  // Side-profile schematic SVGs for each external shell mounting style
+  const SHELL_PROFILES = {
+    plug: `<svg viewBox="0 0 100 58" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" class="shell-profile-svg">
+      <rect x="2" y="24" width="14" height="10" rx="1.5" stroke-width="1.2"/>
+      <rect x="16" y="17" width="34" height="24" rx="2" stroke-width="1.5"/>
+      <rect x="46" y="9" width="40" height="40" rx="2" stroke-width="1.5"/>
+      <line x1="54" y1="10" x2="54" y2="48" stroke-width="0.7" opacity="0.45"/>
+      <line x1="62" y1="10" x2="62" y2="48" stroke-width="0.7" opacity="0.45"/>
+      <line x1="70" y1="10" x2="70" y2="48" stroke-width="0.7" opacity="0.45"/>
+      <line x1="78" y1="10" x2="78" y2="48" stroke-width="0.7" opacity="0.45"/>
+      <text x="50" y="56.5" text-anchor="middle" font-size="7.5" font-family="system-ui,sans-serif" fill="currentColor" stroke="none" opacity="0.65">Straight Plug</text>
+    </svg>`,
+    wall_receptacle: `<svg viewBox="0 0 100 58" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" class="shell-profile-svg">
+      <line x1="2" y1="26" x2="14" y2="26" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="2" y1="32" x2="14" y2="32" stroke-width="1.2" stroke-linecap="round"/>
+      <rect x="14" y="19" width="44" height="20" rx="2" stroke-width="1.5"/>
+      <rect x="58" y="7" width="12" height="44" rx="1.5" stroke-width="1.5"/>
+      <circle cx="64" cy="14" r="2.5" stroke-width="1.3"/>
+      <circle cx="64" cy="44" r="2.5" stroke-width="1.3"/>
+      <line x1="74" y1="2" x2="74" y2="56" stroke-width="1" stroke-dasharray="3 2.5" opacity="0.35"/>
+      <text x="44" y="56.5" text-anchor="middle" font-size="7.5" font-family="system-ui,sans-serif" fill="currentColor" stroke="none" opacity="0.65">Wall Flange</text>
+    </svg>`,
+    jamnut_receptacle: `<svg viewBox="0 0 100 58" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" class="shell-profile-svg">
+      <line x1="2" y1="26" x2="12" y2="26" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="2" y1="32" x2="12" y2="32" stroke-width="1.2" stroke-linecap="round"/>
+      <rect x="12" y="19" width="74" height="20" rx="2" stroke-width="1.5"/>
+      <rect x="34" y="10" width="18" height="38" rx="1" stroke-width="1.4"/>
+      <line x1="37" y1="11" x2="37" y2="47" stroke-width="0.8" opacity="0.4"/>
+      <line x1="41" y1="11" x2="41" y2="47" stroke-width="0.8" opacity="0.4"/>
+      <line x1="45" y1="11" x2="45" y2="47" stroke-width="0.8" opacity="0.4"/>
+      <line x1="49" y1="11" x2="49" y2="47" stroke-width="0.8" opacity="0.4"/>
+      <text x="50" y="56.5" text-anchor="middle" font-size="7.5" font-family="system-ui,sans-serif" fill="currentColor" stroke="none" opacity="0.65">Jam-Nut</text>
+    </svg>`,
+    box_receptacle: `<svg viewBox="0 0 100 58" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" class="shell-profile-svg">
+      <rect x="6" y="10" width="70" height="38" rx="2.5" stroke-width="1.5"/>
+      <rect x="24" y="17" width="34" height="24" rx="1.5" stroke-width="1" stroke-dasharray="3 2" opacity="0.6"/>
+      <circle cx="11" cy="16" r="2.5" stroke-width="1.3"/>
+      <circle cx="11" cy="42" r="2.5" stroke-width="1.3"/>
+      <circle cx="71" cy="16" r="2.5" stroke-width="1.3"/>
+      <circle cx="71" cy="42" r="2.5" stroke-width="1.3"/>
+      <text x="44" y="56.5" text-anchor="middle" font-size="7.5" font-family="system-ui,sans-serif" fill="currentColor" stroke="none" opacity="0.65">Box Mount</text>
+    </svg>`,
+    cover: `<svg viewBox="0 0 100 58" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" class="shell-profile-svg">
+      <rect x="4" y="15" width="54" height="28" rx="3" stroke-width="1.5"/>
+      <path d="M58 15 Q72 29 58 43" stroke-width="1.5"/>
+      <rect x="62" y="22" width="22" height="14" rx="2" stroke-width="1.2" opacity="0.7"/>
+      <text x="45" y="56.5" text-anchor="middle" font-size="7.5" font-family="system-ui,sans-serif" fill="currentColor" stroke="none" opacity="0.65">Protective Cover</text>
+    </svg>`,
+    inline_receptacle: `<svg viewBox="0 0 100 58" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" class="shell-profile-svg">
+      <line x1="2" y1="26" x2="14" y2="26" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="2" y1="32" x2="14" y2="32" stroke-width="1.2" stroke-linecap="round"/>
+      <rect x="14" y="15" width="72" height="28" rx="2.5" stroke-width="1.5"/>
+      <line x1="86" y1="26" x2="98" y2="26" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="86" y1="32" x2="98" y2="32" stroke-width="1.2" stroke-linecap="round"/>
+      <text x="50" y="56.5" text-anchor="middle" font-size="7.5" font-family="system-ui,sans-serif" fill="currentColor" stroke="none" opacity="0.65">In-Line</text>
+    </svg>`,
+  };
+
+  const SHELL_PROFILE_TYPE = {
+    "/20": "wall_receptacle", "/21": "box_receptacle",  "/22": "box_receptacle",
+    "/23": "jamnut_receptacle", "/24": "jamnut_receptacle", "/25": "box_receptacle",
+    "/26": "plug", "/27": "box_receptacle", "/28": "jamnut_receptacle",
+    "/29": "plug", "/30": "plug", "/31": "plug",
+    "/32": "cover", "/33": "cover", "/34": "jamnut_receptacle",
+    "/35": "wall_receptacle", "/36": "plug",
+    "/40": "wall_receptacle", "/41": "box_receptacle", "/42": "box_receptacle",
+    "/43": "jamnut_receptacle", "/44": "jamnut_receptacle", "/45": "box_receptacle",
+    "/46": "plug", "/47": "plug", "/48": "box_receptacle",
+    "/49": "inline_receptacle", "/50": "box_receptacle",
+    "/51": "cover", "/52": "cover",
+  };
 
   const els = {
     dataStatus: $("dataStatus"),
@@ -408,6 +529,7 @@
     if (tabName === "manual" && !state.manualRendered) renderManual();
     // When switching to catalog, re-render to reflect any selection change
     if (tabName === "catalog") renderCatalog();
+    if (tabName === "mating") renderMatingPanel();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -1068,6 +1190,7 @@
     renderPartNumberGuide(decoded);
     if (state.buildRendered) renderBuildConnector();
     if (state.manualRendered) renderManual();
+    if (state.activeTab === "mating") renderMatingPanel();
     if (!decoded.ok) {
       setMessage(els.decodeMessage, decoded.message, true);
       return;
@@ -1361,6 +1484,245 @@
       matchCount: currentNode?.descendantCount || 0,
       totalCount: tree.root.descendantCount || 0,
     };
+  }
+
+  // ---- Mating / reciprocal connector panel ----
+
+  function renderMatingPanel() {
+    const panel = $("matingContent");
+    if (!panel) return;
+    const decoded = state.decoded;
+
+    if (!decoded?.ok) {
+      panel.innerHTML = `
+        <div class="mating-prompt">
+          <div class="mating-prompt-icon" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none"><circle cx="14" cy="24" r="9" stroke="currentColor" stroke-width="2.5"/><circle cx="34" cy="24" r="9" stroke="currentColor" stroke-width="2.5"/><path stroke="currentColor" stroke-width="2.5" stroke-linecap="round" d="M23 24h2"/></svg>
+          </div>
+          <h3>No connector decoded yet</h3>
+          <p>Decode a D38999 part number in the Decoder tab first, then come back here to find its exact mating connector.</p>
+          <button type="button" class="btn-primary mating-goto-decoder" data-home-target="decoder">Go to Decoder →</button>
+        </div>
+      `;
+      panel.querySelector(".mating-goto-decoder")?.addEventListener("click", () => selectTab("decoder"));
+      return;
+    }
+
+    const slashSheet = decoded.slash_sheet;
+    const mateInfo = MATE_MAP[slashSheet];
+
+    if (!mateInfo) {
+      panel.innerHTML = `
+        <div class="mating-unsupported">
+          <strong>Mating data not available for D38999${escapeHtml(slashSheet)}</strong>
+          <p>This slash sheet is not yet in the mating database. Consult the slash sheet document directly for mating connector specifications.</p>
+          ${matingSourceCard(decoded)}
+        </div>
+      `;
+      return;
+    }
+
+    // Warnings
+    const warnings = [];
+    if (decoded.class_field === "N") {
+      warnings.push("Class N connectors are not standard-stocked. Verify distributor availability before designing in.");
+    }
+    if (mateInfo.lanyard) {
+      warnings.push(`D38999${slashSheet} is a lanyard-release plug. It physically mates with standard Series III receptacles but has a special disconnect mechanism — verify system design compatibility.`);
+    }
+    if (mateInfo.dummy) {
+      warnings.push(`D38999${slashSheet} is a dummy stowage receptacle used for connector protection, not live signals.`);
+    }
+
+    const warningsHtml = warnings.map((w) => `
+      <div class="mating-warn">
+        <svg class="mating-warn-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2L14 13H2L8 2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 7v3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.5" r="0.55" fill="currentColor"/></svg>
+        <span>${escapeHtml(w)}</span>
+      </div>
+    `).join("");
+
+    // Hermetic — no standard mating part number
+    if (mateInfo.hermetic) {
+      panel.innerHTML = `
+        ${warningsHtml}
+        ${matingSourceCard(decoded)}
+        <div class="mating-hermetic-note">
+          <strong>Hermetic Connector</strong>
+          <p>Hermetic receptacles use fixed solder contacts that are part of the glass-to-metal seal assembly. The mating plug configuration must be specified from the hermetic slash sheet document. Contact the connector manufacturer for exact mating connector specifications.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const contactFlipped = CONTACT_FLIP[decoded.contact_style];
+    const hasFlip = Boolean(contactFlipped);
+
+    const matingOptions = mateInfo.mates.map((mateSheet) => {
+      const ssNum = mateSheet.slice(1);
+      const mateDef = dlaSlashSheetDefinition(mateSheet);
+      const desc = mateDef?.description || `D38999${mateSheet} connector`;
+      const partNum = hasFlip
+        ? `D38999/${ssNum}${decoded.class_field}${decoded.shell_code}${decoded.insert_arrangement}${contactFlipped}${decoded.polarization}`
+        : null;
+      return { mateSheet, ssNum, desc, partNum, mateDef };
+    });
+
+    const roleLabel = mateInfo.role === "plug" ? "Plug" : mateInfo.role.startsWith("cover") ? "Cover" : "Receptacle";
+    const mateRoleLabel = mateInfo.role === "plug" ? "receptacle" : mateInfo.role === "cover_plug" ? "mating cover" : "plug";
+    const flippedGender = decoded.contact_definition?.contact_gender === "pin" ? "socket" : decoded.contact_definition?.contact_gender === "socket" ? "pin" : "opposite-gender";
+    const contactNote = hasFlip
+      ? `${mateRoleLabel} with insert ${decoded.arrangement_id} and ${flippedGender} contacts (${contactFlipped})`
+      : `${mateRoleLabel} with insert ${decoded.arrangement_id}`;
+
+    const srcArr = decoded.arrangement_id ? arrangementById(decoded.arrangement_id) : null;
+
+    // Determine which mating slash sheet is selected
+    const validSheets = matingOptions.map((o) => o.mateSheet);
+    if (!state.selectedMateSheet || !validSheets.includes(state.selectedMateSheet)) {
+      state.selectedMateSheet = matingOptions[0].mateSheet;
+    }
+    const selectedOpt = matingOptions.find((o) => o.mateSheet === state.selectedMateSheet);
+
+    const selectorHtml = matingOptions.length > 1 ? `
+      <div class="mating-selector">
+        ${matingOptions.map((opt) => `
+          <button type="button" class="mating-sel-btn${opt.mateSheet === state.selectedMateSheet ? " active" : ""}" data-mate-sheet="${escapeHtml(opt.mateSheet)}">
+            <span class="mating-sel-code">${escapeHtml(opt.mateSheet)}</span>
+            <span class="mating-sel-desc">${escapeHtml(opt.desc.length > 35 ? opt.desc.slice(0, 32) + "\u2026" : opt.desc)}</span>
+          </button>
+        `).join("")}
+      </div>
+    ` : "";
+
+    panel.innerHTML = `
+      ${warningsHtml}
+      ${selectorHtml}
+      <div class="mating-pair">
+        ${matingSourceCard(decoded)}
+        <div class="mating-pair-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M14 7l5 5-5 5"/></svg>
+        </div>
+        ${matingSelectedCard(decoded, selectedOpt)}
+      </div>
+    `;
+
+    panel.querySelectorAll("[data-mating-pn]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        els.partNumberInput.value = btn.dataset.matingPn;
+        decodeFromInput();
+        selectTab("decoder");
+      });
+    });
+    panel.querySelectorAll("[data-mate-sheet]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.selectedMateSheet = btn.dataset.mateSheet;
+        renderMatingPanel();
+      });
+    });
+  }
+
+  function shellProfileHtml(slashSheet) {
+    const svg = SHELL_PROFILES[SHELL_PROFILE_TYPE[slashSheet]];
+    return svg ? `<div class="shell-profile-frame">${svg}</div>` : "";
+  }
+
+  function matingSourceCard(decoded) {
+    const bodyText = decoded.slash_sheet_definition?.description || decoded.slash_sheet;
+    const arr = decoded.arrangement_id ? arrangementById(decoded.arrangement_id) : null;
+    const svgHtml = arr?.outline ? `
+      <div class="mating-source-svg">
+        ${manualArrangementPreview(decoded, { showBoundary: true, showKeying: true })}
+      </div>` : "";
+    return `
+      <div class="mating-source-card">
+        <div class="mating-source-header">
+          <span class="mating-source-label">Decoded Connector</span>
+          <span class="mating-source-pn mono">${escapeHtml(decoded.part_number)}</span>
+        </div>
+        <div class="mating-source-body">
+          ${svgHtml}
+          ${shellProfileHtml(decoded.slash_sheet)}
+          <div class="mating-source-chips">
+            ${optionChip(decoded.slash_sheet, "shell type", bodyText)}
+            ${optionChip(decoded.class_field, "class / finish", decoded.class_definition?.description || "")}
+            ${optionChip(decoded.shell_code, "shell size", decoded.shell_size ? `size ${decoded.shell_size}` : "")}
+            ${optionChip(decoded.insert_arrangement, "insert", decoded.arrangement_id || "")}
+            ${optionChip(decoded.contact_style, "contacts", decoded.contact_definition?.description || "")}
+            ${optionChip(decoded.polarization, "polarization", decoded.polarization_definition?.description || "")}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function matingSelectedCard(decoded, opt) {
+    const contactFlipped = CONTACT_FLIP[decoded.contact_style];
+    const hasFlip = Boolean(contactFlipped);
+    const flippedContactDef = contactFlipped ? defs.contact_styles?.[contactFlipped] : null;
+    const flippedGender = decoded.contact_definition?.contact_gender === "pin" ? "socket"
+      : decoded.contact_definition?.contact_gender === "socket" ? "pin" : "opposite-gender";
+    // Pseudo-decoded for SVG: same insert arrangement + polarization, opposite contact face
+    const mateDecoded = {
+      ok: true,
+      arrangement_id: decoded.arrangement_id,
+      polarization: decoded.polarization,
+      polarization_definition: decoded.polarization_definition,
+    };
+    const arr = decoded.arrangement_id ? arrangementById(decoded.arrangement_id) : null;
+    const svgHtml = arr?.outline ? `
+      <div class="mating-source-svg">
+        ${manualArrangementPreview(mateDecoded, { showBoundary: true, showKeying: true })}
+      </div>` : "";
+    const shellHtml = shellProfileHtml(opt.mateSheet);
+    const pnBlock = opt.partNum
+      ? `<div class="mating-pn mono">${escapeHtml(opt.partNum)}</div>`
+      : `<div class="mating-pn mating-pn-unknown">Contact style ${escapeHtml(decoded.contact_style)} — flip not mapped; determine contact style from slash sheet</div>`;
+    const decodeBtn = opt.partNum
+      ? `<button type="button" class="mating-decode-btn" data-mating-pn="${escapeHtml(opt.partNum)}">Open in Decoder →</button>`
+      : "";
+    let validationBadge = "";
+    if (opt.partNum) {
+      const check = decodePartNumber(opt.partNum);
+      if (!check.ok) {
+        validationBadge = `<div class="mating-validation mating-validation-fail">
+          <svg class="mating-val-icon" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.3"/><path d="M4 4l4 4M8 4l-4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <span>Decode check failed: ${escapeHtml(check.message)}</span>
+        </div>`;
+      } else if (!check.arrangement_exists) {
+        validationBadge = `<div class="mating-validation mating-validation-warn">
+          <svg class="mating-val-icon" viewBox="0 0 12 12" fill="none"><path d="M6 1L11 10H1L6 1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 5v2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="6" cy="9" r="0.5" fill="currentColor"/></svg>
+          <span>Part number decodes — insert arrangement not in drawing database</span>
+        </div>`;
+      } else {
+        validationBadge = `<div class="mating-validation mating-validation-ok">
+          <svg class="mating-val-icon" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.3"/><path d="M3.5 6.5l2 1.5 3-3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Valid — decodes with arrangement ${escapeHtml(check.arrangement_id)}</span>
+        </div>`;
+      }
+    }
+    return `
+      <div class="mating-source-card">
+        <div class="mating-source-header">
+          <span class="mating-source-label">Mating Connector</span>
+          <span class="mating-source-pn mono">${escapeHtml(opt.partNum || `D38999${opt.mateSheet}`)}</span>
+        </div>
+        <div class="mating-source-body">
+          ${svgHtml}
+          ${shellHtml}
+          <div class="mating-source-chips">
+            ${optionChip(opt.mateSheet, "shell type", opt.desc)}
+            ${optionChip(decoded.class_field, "class / finish", decoded.class_definition?.description || "")}
+            ${optionChip(decoded.shell_code, "shell size", decoded.shell_size ? `size ${decoded.shell_size}` : "")}
+            ${optionChip(decoded.insert_arrangement, "insert", decoded.arrangement_id || "")}
+            ${optionChip(contactFlipped || decoded.contact_style, "contacts", flippedContactDef?.description || (hasFlip ? flippedGender : ""))}
+            ${optionChip(decoded.polarization, "polarization", decoded.polarization_definition?.description || "")}
+          </div>
+          ${pnBlock}
+          ${validationBadge}
+          <div class="mating-option-actions">${decodeBtn}</div>
+        </div>
+      </div>
+    `;
   }
 
   function renderDecoded(decoded) {
