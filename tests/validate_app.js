@@ -278,6 +278,71 @@ async function main() {
     })()`);
     assert(manualFilter.count > 0 && manualFilter.all17, "Manual shell-size filter returns shell 17 arrangements");
 
+    // Switch back to decoder tab for reciprocal tests
+    await cdp.eval(`document.querySelector('.tab-button[data-tab="decoder"]').click(); true;`);
+
+    const reciprocalAudit = await cdp.eval(`(() => {
+      document.querySelector("#partNumberInput").value = "D38999/26WE35PN";
+      document.querySelector("#decodeButton").click();
+      const panel = document.querySelector("#reciprocalPanel");
+      if (!panel) return { panelExists: false };
+      const pnEl = panel.querySelector(".reciprocal-pn");
+      const recipPN = pnEl ? pnEl.textContent.trim() : "";
+      const segBtns = panel.querySelectorAll(".reciprocal-segment-btn");
+      const activeSeg = panel.querySelector(".reciprocal-segment-btn.active");
+      const couplingArrow = Boolean(panel.querySelector(".reciprocal-coupling-arrow"));
+      const openBtn = panel.querySelector(".reciprocal-open-btn");
+      const badges = panel.querySelectorAll(".reciprocal-badge.ok");
+      return {
+        panelExists: true,
+        hasPN: Boolean(pnEl),
+        recipPN,
+        segCount: segBtns.length,
+        hasActiveSeg: Boolean(activeSeg),
+        couplingArrow,
+        hasOpenBtn: Boolean(openBtn),
+        badgeCount: badges.length,
+      };
+    })()`);
+    assert(reciprocalAudit.panelExists, "Reciprocal panel element exists in DOM");
+    assert(reciprocalAudit.hasPN, "Reciprocal panel renders a mating part number");
+    assert(/^D38999\/\d+/.test(reciprocalAudit.recipPN), "Mating part number is a valid D38999 PN");
+    assert(reciprocalAudit.recipPN !== "D38999/26WE35PN", "Mating PN differs from source — role is reversed");
+    assert(reciprocalAudit.segCount >= 1, "At least one mount-type segment button is rendered");
+    assert(reciprocalAudit.hasActiveSeg, "One segment button is marked active");
+    assert(reciprocalAudit.couplingArrow, "Coupling arrow glyph rendered between the two SVG panes");
+    assert(reciprocalAudit.hasOpenBtn, "Open reciprocal connector CTA button is present");
+    assert(reciprocalAudit.badgeCount >= 5, "At least 5 match badges are shown");
+
+    const segSwitchAudit = await cdp.eval(`(() => {
+      const panel = document.querySelector("#reciprocalPanel");
+      const btns = [...panel.querySelectorAll(".reciprocal-segment-btn")];
+      if (btns.length < 2) return { skipped: true };
+      const firstPN = panel.querySelector(".reciprocal-pn").textContent.trim();
+      const secondBtn = btns.find((b) => !b.classList.contains("active"));
+      secondBtn.click();
+      const newPN = panel.querySelector(".reciprocal-pn").textContent.trim();
+      return { skipped: false, firstPN, newPN, pnChanged: firstPN !== newPN };
+    })()`);
+    if (!segSwitchAudit.skipped) {
+      assert(segSwitchAudit.pnChanged, "Clicking a different mount-type segment updates the mating part number");
+    }
+
+    const openRecipAudit = await cdp.eval(`(() => {
+      const panel = document.querySelector("#reciprocalPanel");
+      const openBtn = panel.querySelector(".reciprocal-open-btn");
+      if (!openBtn) return { skipped: true };
+      const recipPN = openBtn.dataset.reciprocalOpen;
+      openBtn.click();
+      const inputVal = document.querySelector("#partNumberInput").value;
+      const decodedText = document.querySelector("#decodedPanel").textContent;
+      return { skipped: false, inputVal, recipPN, inputMatchesPN: inputVal === recipPN, decodedNotEmpty: decodedText.length > 20 };
+    })()`);
+    if (!openRecipAudit.skipped) {
+      assert(openRecipAudit.inputMatchesPN, "Open reciprocal button sets part number input to the mating PN");
+      assert(openRecipAudit.decodedNotEmpty, "Opening reciprocal PN decodes it successfully in decoded panel");
+    }
+
     const screenshot = await cdp.send("Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
     fs.writeFileSync(path.join(debugDir, "app_revised.png"), Buffer.from(screenshot.data, "base64"));
 
@@ -297,6 +362,9 @@ async function main() {
         "part number lookup selects 17-35",
         "manual shell filter works",
         "signal-assignment controls are absent",
+        "reciprocal panel renders mating PN with segment control and face SVGs",
+        "mount-type segment switching updates mating PN",
+        "open reciprocal connector button decodes the mating PN",
       ],
       data: dataAudit,
       screenshot: "output/debug/app_revised.png",
