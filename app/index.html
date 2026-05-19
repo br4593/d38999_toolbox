@@ -141,7 +141,8 @@
           <div class="toolbar">
             <label class="compact-field" for="labelsToggle">Labels</label>
             <select id="labelsToggle" class="compact-select">
-              <option value="focus" selected>Selected only</option>
+              <option value="smart" selected>Smart</option>
+              <option value="focus">Selected only</option>
               <option value="all">Show all</option>
               <option value="off">Hide all</option>
             </select>
@@ -155,12 +156,13 @@
           <span id="searchMessage" class="message"></span>
         </div>
         <div class="legend">
-          <span><i class="legend-contact gauge-8"></i>#8</span>
-          <span><i class="legend-contact gauge-10"></i>#10</span>
-          <span><i class="legend-contact gauge-12"></i>#12</span>
-          <span><i class="legend-contact gauge-16"></i>#16</span>
-          <span><i class="legend-contact gauge-20"></i>#20</span>
-          <span><i class="legend-contact gauge-22d"></i>#22D</span>
+          <span class="legend-label">Contact size</span>
+          <button type="button" class="legend-filter" data-gauge-filter="8" aria-pressed="false"><i class="legend-contact gauge-8"></i>#8</button>
+          <button type="button" class="legend-filter" data-gauge-filter="10" aria-pressed="false"><i class="legend-contact gauge-10"></i>#10</button>
+          <button type="button" class="legend-filter" data-gauge-filter="12" aria-pressed="false"><i class="legend-contact gauge-12"></i>#12</button>
+          <button type="button" class="legend-filter" data-gauge-filter="16" aria-pressed="false"><i class="legend-contact gauge-16"></i>#16</button>
+          <button type="button" class="legend-filter" data-gauge-filter="20" aria-pressed="false"><i class="legend-contact gauge-20"></i>#20</button>
+          <button type="button" class="legend-filter" data-gauge-filter="22d" aria-pressed="false"><i class="legend-contact gauge-22d"></i>#22D</button>
           <span><i class="legend-pin match"></i>Search match</span>
         </div>
         <div id="viewerFrame" class="viewer-frame">
@@ -171,7 +173,7 @@
 
     <aside class="right-panel panel">
       <section>
-        <h2>Decoded part number</h2>
+        <h2>Decoded parts</h2>
         <div id="decodedPanel" class="details-list"></div>
       </section>
 

@@ -1,0 +1,155 @@
+{
+  "schema_version": "2026-05-19",
+  "generated_at": "2026-05-19T00:00:00Z",
+  "visualAssets": [
+    {
+      "id": "d38999-plug-generic",
+      "type": "shell_style_outline",
+      "manufacturer": "Repo-generated",
+      "series": "D38999 generic",
+      "shellStyle": "plug",
+      "source": "Conesys-MIL-DTL-38999-Series-III.pdf page 49; Souriau-Mil-DTL-38999-Series-III.pdf page 44",
+      "usage": [
+        "connector type selector",
+        "generic plug visual"
+      ],
+      "copyrightStatus": "recreated_simplified_svg",
+      "status": "recreated",
+      "file": "assets/d38999/svg/d38999-plug-generic.svg"
+    },
+    {
+      "id": "d38999-receptacle-generic",
+      "type": "shell_style_outline",
+      "manufacturer": "Repo-generated",
+      "series": "D38999 generic",
+      "shellStyle": "receptacle",
+      "source": "Conesys-MIL-DTL-38999-Series-III.pdf page 4; Souriau-Mil-DTL-38999-Series-III.pdf page 43",
+      "usage": [
+        "connector type selector",
+        "generic receptacle visual"
+      ],
+      "copyrightStatus": "recreated_simplified_svg",
+      "status": "recreated",
+      "file": "assets/d38999/svg/d38999-receptacle-generic.svg"
+    },
+    {
+      "id": "series_iii_straight_plug_outline",
+      "type": "shell_style_outline",
+      "manufacturer": "Conesys / Souriau reference geometry",
+      "series": "D38999 Series III",
+      "shellStyle": "straight plug",
+      "shellStyleCode": "/26",
+      "source": "Conesys-MIL-DTL-38999-Series-III.pdf page 49; Souriau-Mil-DTL-38999-Series-III.pdf page 44",
+      "usage": [
+        "connector type selector",
+        "Build P/N preview",
+        "mating explanation"
+      ],
+      "copyrightStatus": "recreate_simplified_svg_recommended",
+      "status": "recreated",
+      "file": "assets/d38999/svg/d38999-straight-plug.svg"
+    },
+    {
+      "id": "series_iii_wall_mount_receptacle_outline",
+      "type": "shell_style_outline",
+      "manufacturer": "Conesys / Souriau reference geometry",
+      "series": "D38999 Series III",
+      "shellStyle": "wall mount receptacle",
+      "shellStyleCode": "/20",
+      "source": "Conesys-MIL-DTL-38999-Series-III.pdf page 4; Souriau-Mil-DTL-38999-Series-III.pdf page 43",
+      "usage": [
+        "connector type selector",
+        "Build P/N preview"
+      ],
+      "copyrightStatus": "recreate_simplified_svg_recommended",
+      "status": "recreated",
+      "file": "assets/d38999/svg/d38999-wall-mount-receptacle.svg"
+    },
+    {
+      "id": "series_iii_jam_nut_receptacle_outline",
+      "type": "shell_style_outline",
+      "manufacturer": "Conesys / Souriau reference geometry",
+      "series": "D38999 Series III",
+      "shellStyle": "jam nut receptacle",
+      "shellStyleCode": "/24",
+      "source": "Conesys-MIL-DTL-38999-Series-III.pdf page 48; Souriau-Mil-DTL-38999-Series-III.pdf page 43",
+      "usage": [
+        "connector type selector",
+        "Build P/N preview"
+      ],
+      "copyrightStatus": "recreate_simplified_svg_recommended",
+      "status": "recreated",
+      "file": "assets/d38999/svg/d38999-jam-nut-receptacle.svg"
+    },
+    {
+      "id": "series_iii_keying_helper",
+      "type": "keying_diagram",
+      "manufacturer": "Conesys",
+      "series": "D38999 Series III",
+      "source": "Conesys-MIL-DTL-38999-Series-III.pdf page 50",
+      "usage": [
+        "keying explanation",
+        "mating compatibility explanation"
+      ],
+      "copyrightStatus": "recreate_simplified_svg_recommended",
+      "status": "recreated",
+      "file": "assets/d38999/svg/d38999-keying-helper.svg",
+      "notes": "Important to show that the receptacle mating face is printed and the plug view is opposite."
+    },
+    {
+      "id": "series_iii_shell_size_thread_helper",
+      "type": "dimension_helper",
+      "manufacturer": "Souriau",
+      "series": "D38999 Series III",
+      "source": "Souriau-Mil-DTL-38999-Series-III.pdf page 43",
+      "usage": [
+        "backshell helper",
+        "shell size visual helper"
+      ],
+      "copyrightStatus": "recreate_simplified_svg_recommended",
+      "status": "recreated",
+      "file": "assets/d38999/svg/d38999-shell-size-helper.svg"
+    },
+    {
+      "id": "insert_arrangement_placeholder",
+      "type": "insert_arrangement_placeholder",
+      "manufacturer": "Repo-generated",
+      "series": "D38999 Series III / IV",
+      "source": "d38999-contact-arrangements.pdf pages 3 to 9",
+      "usage": [
+        "insert arrangement preview",
+        "manual helper"
+      ],
+      "copyrightStatus": "safe_if_redrawn_from_extracted_geometry",
+      "status": "recreated",
+      "file": "assets/d38999/svg/d38999-insert-placeholder.svg"
+    },
+    {
+      "id": "dummy_receptacle_warning",
+      "type": "warning_diagram",
+      "manufacturer": "Souriau / DLA reference geometry",
+      "series": "D38999 Series III / IV",
+      "source": "Souriau-Mil-DTL-38999-Series-III.pdf page 25; MIL-DTL-38999/9B page 1; MIL-DTL-38999/50C page 1",
+      "usage": [
+        "backshell vs mating connector warning",
+        "reciprocal finder warning"
+      ],
+      "copyrightStatus": "recreate_simplified_svg_recommended",
+      "status": "planned"
+    },
+    {
+      "id": "d38999-backshell-generic",
+      "type": "accessory_outline",
+      "manufacturer": "Repo-generated",
+      "series": "D38999 generic",
+      "source": "Conesys-MIL-DTL-38999-Series-III.pdf page 4; Souriau-Mil-DTL-38999-Series-III.pdf page 43",
+      "usage": [
+        "backshell helper",
+        "accessory warning"
+      ],
+      "copyrightStatus": "recreated_simplified_svg",
+      "status": "recreated",
+      "file": "assets/d38999/svg/d38999-backshell-generic.svg"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 96" fill="none" stroke="currentColor" stroke-width="3">
+  <rect x="18" y="34" width="78" height="28" rx="4"/>
+  <rect x="96" y="24" width="42" height="48" rx="4"/>
+  <path d="M138 24 L182 12 L202 26 L158 40"/>
+  <path d="M138 72 L182 84 L202 70 L158 56"/>
+  <text x="110" y="92" text-anchor="middle" font-size="12" stroke="none" fill="currentColor">Backshell / Accessory</text>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 96" fill="none" stroke="currentColor" stroke-width="3">
+  <rect x="10" y="38" width="26" height="20" rx="2"/>
+  <rect x="36" y="28" width="66" height="40" rx="4"/>
+  <rect x="100" y="16" width="86" height="64" rx="4"/>
+  <line x1="116" y1="18" x2="116" y2="78" opacity="0.45"/>
+  <line x1="132" y1="18" x2="132" y2="78" opacity="0.45"/>
+  <line x1="148" y1="18" x2="148" y2="78" opacity="0.45"/>
+  <line x1="164" y1="18" x2="164" y2="78" opacity="0.45"/>
+  <text x="110" y="92" text-anchor="middle" font-size="12" stroke="none" fill="currentColor">Generic D38999 Plug</text>
+</svg>

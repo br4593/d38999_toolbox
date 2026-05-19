@@ -21,6 +21,11 @@ DATA_FILES = [
     "standard_definitions.json",
     "dla_documents.json",
     "review_needed.json",
+    "d38999_extracted_rules.json",
+    "d38999_part_number_examples.json",
+    "d38999_catalog_supported_combinations.json",
+    "d38999_verified_part_numbers.json",
+    "d38999_visual_assets.json",
 ]
 
 def load_module(module_path: Path, module_name: str):
@@ -40,9 +45,11 @@ def read_json(path: Path) -> object:
 def build(project_root: Path) -> Path:
     data_dir = project_root / "data"
     svg_dir = data_dir / "svg"
+    visual_svg_dir = project_root / "assets" / "d38999" / "svg"
     app_dir = project_root / "app"
     app_data_dir = app_dir / "data"
     app_svg_dir = app_dir / "assets" / "svg"
+    app_visual_svg_dir = app_dir / "assets" / "d38999" / "svg"
     rules_path = project_root / "scripts" / "d38999_rules.py"
     cname_path = project_root / "CNAME"
 
@@ -64,6 +71,7 @@ def build(project_root: Path) -> Path:
 
     app_data_dir.mkdir(parents=True, exist_ok=True)
     app_svg_dir.mkdir(parents=True, exist_ok=True)
+    app_visual_svg_dir.mkdir(parents=True, exist_ok=True)
 
     for name in DATA_FILES:
         source = data_dir / name
@@ -73,6 +81,11 @@ def build(project_root: Path) -> Path:
     for svg_path in sorted(svg_dir.glob("*.svg")):
         target = app_svg_dir / svg_path.name
         target.write_text(svg_path.read_text(encoding="utf-8"), encoding="utf-8")
+
+    if visual_svg_dir.exists():
+        for svg_path in sorted(visual_svg_dir.glob("*.svg")):
+            target = app_visual_svg_dir / svg_path.name
+            target.write_text(svg_path.read_text(encoding="utf-8"), encoding="utf-8")
 
     if cname_path.exists():
         (app_dir / "CNAME").write_text(cname_path.read_text(encoding="utf-8"), encoding="utf-8")
@@ -92,6 +105,13 @@ def build(project_root: Path) -> Path:
             "known_classes": docs_rules.KNOWN_CLASSES,
             "contact_descriptions": docs_rules.CONTACT_DESCRIPTIONS,
             "rules": docs_rules.RULES,
+        },
+        "research": {
+            "extractedRules": read_json(data_dir / "d38999_extracted_rules.json"),
+            "partNumberExamples": read_json(data_dir / "d38999_part_number_examples.json"),
+            "catalogSupportedCombinations": read_json(data_dir / "d38999_catalog_supported_combinations.json"),
+            "verifiedPartNumbers": read_json(data_dir / "d38999_verified_part_numbers.json"),
+            "visualAssets": read_json(data_dir / "d38999_visual_assets.json"),
         },
     }
 

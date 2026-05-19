@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 110" fill="none" stroke="currentColor" stroke-width="3">
+  <rect x="10" y="42" width="28" height="18" rx="2"/>
+  <rect x="38" y="30" width="70" height="42" rx="4"/>
+  <rect x="108" y="14" width="98" height="74" rx="4"/>
+  <line x1="126" y1="16" x2="126" y2="86" opacity="0.45"/>
+  <line x1="144" y1="16" x2="144" y2="86" opacity="0.45"/>
+  <line x1="162" y1="16" x2="162" y2="86" opacity="0.45"/>
+  <line x1="180" y1="16" x2="180" y2="86" opacity="0.45"/>
+  <text x="120" y="106" text-anchor="middle" font-size="12" stroke="none" fill="currentColor">Straight Plug</text>
+</svg>

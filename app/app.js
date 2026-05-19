@@ -4,14 +4,45 @@
   const toolboxData = window.D38999_TOOLBOX_DATA || {};
   const DATA = toolboxData.pinout || window.D38999_DATA || {};
   const converterData = toolboxData.converter || {};
+  const researchData = toolboxData.research || {};
   const insertData = DATA.insertArrangements || { arrangements: [] };
   const partRules = DATA.partNumberRules || {};
   const standard = DATA.standardDefinitions || { definitions: {} };
   const dlaDocs = DATA.dlaDocuments || { documents: [], summary: {} };
   const reviewData = DATA.reviewNeeded || { items: [] };
+  const extractedRules = researchData.extractedRules || {};
+  const supportedCombinations = (researchData.catalogSupportedCombinations || {}).catalogSupportedCombinations || [];
+  const verifiedPartNumbers = (researchData.verifiedPartNumbers || {}).verifiedPartNumbers || [];
   const defs = standard.definitions || {};
   const arrangements = (insertData.arrangements || []).slice();
   const reviewById = new Map((reviewData.items || []).map((item) => [item.id, item]));
+  const verifiedPartNumberMap = new Map(
+    verifiedPartNumbers.map((item) => [String(item.partNumber || "").toUpperCase().replace(/[\s-]+/g, ""), item])
+  );
+  const styleEntriesBySlashSheet = new Map(
+    (extractedRules.normalizedShellStyles || [])
+      .filter((item) => /^\/\d+$/.test(item.catalogCode || ""))
+      .map((item) => [item.catalogCode, item])
+  );
+  const catalogMateMap = (() => {
+    const out = new Map();
+    (extractedRules.matingSlashSheetMap || []).forEach((rule) => {
+      const sourceSlashSheet = rule.sourceSlashSheet;
+      if (!sourceSlashSheet) return;
+      const current = out.get(sourceSlashSheet) || { mates: new Set(), sources: [] };
+      (rule.candidateMateSlashSheets || []).forEach((mate) => current.mates.add(mate));
+      if (rule.source) current.sources.push(rule.source);
+      out.set(sourceSlashSheet, current);
+
+      (rule.candidateMateSlashSheets || []).forEach((mate) => {
+        const reverse = out.get(mate) || { mates: new Set(), sources: [] };
+        reverse.mates.add(sourceSlashSheet);
+        if (rule.source) reverse.sources.push(rule.source);
+        out.set(mate, reverse);
+      });
+    });
+    return out;
+  })();
 
   const state = {
     selectedArrangement: null,
@@ -33,47 +64,10 @@
     buildRendered: false,
     manualRendered: false,
     selectedMateSheet: null,
+    activeGaugeFilter: "",
   };
 
   const $ = (id) => document.getElementById(id);
-
-  // ---- Mating connector lookup tables ----
-  const MATE_MAP = {
-    // Series III plugs
-    "/26": { role: "plug", series: "III", mates: ["/20", "/24", "/28"] },
-    "/29": { role: "plug", series: "III", mates: ["/20", "/24", "/28"], lanyard: true },
-    "/30": { role: "plug", series: "III", mates: ["/20", "/24", "/28"], lanyard: true },
-    "/31": { role: "plug", series: "III", mates: ["/20", "/24", "/28"], lanyard: true },
-    "/36": { role: "plug", series: "III", mates: ["/20", "/24", "/28", "/34", "/35"], lanyard: true },
-    // Series III receptacles
-    "/20": { role: "receptacle", series: "III", mates: ["/26"] },
-    "/21": { role: "receptacle", series: "III", mates: [], hermetic: true },
-    "/22": { role: "receptacle", series: "III", mates: ["/26"] },
-    "/23": { role: "receptacle", series: "III", mates: [], hermetic: true },
-    "/24": { role: "receptacle", series: "III", mates: ["/26"] },
-    "/25": { role: "receptacle", series: "III", mates: [], hermetic: true },
-    "/27": { role: "receptacle", series: "III", mates: [], hermetic: true },
-    "/28": { role: "receptacle", series: "III", mates: ["/26"] },
-    "/32": { role: "cover_plug", series: "III", mates: ["/33"] },
-    "/33": { role: "cover_receptacle", series: "III", mates: ["/32"] },
-    "/34": { role: "receptacle", series: "III", mates: ["/26", "/36"] },
-    "/35": { role: "receptacle", series: "III", mates: ["/26", "/36"] },
-    // Series IV plugs
-    "/46": { role: "plug", series: "IV", mates: ["/40", "/42", "/44", "/49"] },
-    "/47": { role: "plug", series: "IV", mates: ["/40", "/42", "/44", "/49"] },
-    // Series IV receptacles
-    "/40": { role: "receptacle", series: "IV", mates: ["/46", "/47"] },
-    "/41": { role: "receptacle", series: "IV", mates: [], hermetic: true },
-    "/42": { role: "receptacle", series: "IV", mates: ["/46", "/47"] },
-    "/43": { role: "receptacle", series: "IV", mates: [], hermetic: true },
-    "/44": { role: "receptacle", series: "IV", mates: ["/46", "/47"] },
-    "/45": { role: "receptacle", series: "IV", mates: [], hermetic: true },
-    "/48": { role: "receptacle", series: "IV", mates: [], hermetic: true },
-    "/49": { role: "receptacle", series: "IV", mates: ["/46", "/47"] },
-    "/50": { role: "receptacle", series: "IV", mates: [], dummy: true },
-    "/51": { role: "cover_plug", series: "IV", mates: ["/52"] },
-    "/52": { role: "cover_receptacle", series: "IV", mates: ["/51"] },
-  };
 
   const CONTACT_FLIP = {
     A: "B", B: "A",
@@ -157,6 +151,15 @@
     "/51": "cover", "/52": "cover",
   };
 
+  const SHELL_PROFILE_ASSET = {
+    plug: "assets/d38999/svg/d38999-straight-plug.svg",
+    wall_receptacle: "assets/d38999/svg/d38999-wall-mount-receptacle.svg",
+    jamnut_receptacle: "assets/d38999/svg/d38999-jam-nut-receptacle.svg",
+    box_receptacle: "assets/d38999/svg/d38999-receptacle-generic.svg",
+    cover: "assets/d38999/svg/d38999-backshell-generic.svg",
+    inline_receptacle: "assets/d38999/svg/d38999-receptacle-generic.svg",
+  };
+
   const els = {
     dataStatus: $("dataStatus"),
     selectedStatus: $("selectedStatus"),
@@ -210,6 +213,234 @@
 
   function naturalCompare(a, b) {
     return String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: "base" });
+  }
+
+  function normalizedCatalogPartNumber(value) {
+    return String(value || "").toUpperCase().replace(/[\s-]+/g, "");
+  }
+
+  function styleEntryForSlashSheet(slashSheet) {
+    return styleEntriesBySlashSheet.get(slashSheet) || null;
+  }
+
+  function combinationSupportsSlashSheet(combination, slashSheet) {
+    return combination.shellStyleCode === slashSheet || combination.milEquivalent === slashSheet;
+  }
+
+  function supportedCatalogRowsForDecoded(decoded) {
+    if (!decoded?.ok) return [];
+    return supportedCombinations.filter((combination) => {
+      if (!combinationSupportsSlashSheet(combination, decoded.slash_sheet)) return false;
+      if (Array.isArray(combination.supportedContactStyles) && combination.supportedContactStyles.length) {
+        if (!combination.supportedContactStyles.includes(decoded.contact_style)) return false;
+      }
+      if (Array.isArray(combination.supportedKeying) && combination.supportedKeying.length) {
+        if (!combination.supportedKeying.includes(decoded.polarization)) return false;
+      }
+      return true;
+    });
+  }
+
+  function catalogValidationForDecoded(decoded) {
+    if (!decoded?.ok) {
+      return {
+        status: "MISSING_DATA",
+        reasons: [decoded?.message || "Part number is not decodable."],
+        sources: [],
+      };
+    }
+
+    const exact = verifiedPartNumberMap.get(normalizedCatalogPartNumber(decoded.part_number));
+    if (exact) {
+      return {
+        status: "VERIFIED_EXISTS",
+        reasons: ["Exact part number appears in the catalog research dataset."],
+        sources: [exact.source],
+        verifiedPart: exact,
+      };
+    }
+
+    if (!decoded.arrangement_exists) {
+      return {
+        status: "MISSING_DATA",
+        reasons: [`Insert arrangement ${decoded.arrangement_id} is not present in the extracted drawing database.`],
+        sources: ["d38999-contact-arrangements.pdf"],
+      };
+    }
+
+    const rows = supportedCatalogRowsForDecoded(decoded);
+    if (rows.length) {
+      return {
+        status: "VALID_FORMAT_BUT_NOT_CONFIRMED",
+        reasons: ["The part number fits a cited shell-style, contact-style, and keying rule, but the exact part number was not found verbatim in the catalog examples."],
+        sources: rows.map((row) => row.source).filter(Boolean),
+        supportingRows: rows,
+      };
+    }
+
+    const style = styleEntryForSlashSheet(decoded.slash_sheet);
+    if (!style) {
+      return {
+        status: "MISSING_DATA",
+        reasons: [`No catalog-backed shell-style record is loaded for ${decoded.slash_sheet}.`],
+        sources: [],
+      };
+    }
+
+    if (style.notes && /hermetic/i.test(style.notes)) {
+      return {
+        status: "MANUFACTURER_SPECIFIC_UNCERTAIN",
+        reasons: [style.notes],
+        sources: [style.source].filter(Boolean),
+      };
+    }
+
+    return {
+      status: "INVALID_COMBINATION",
+      reasons: ["No cited catalog rule in the local dataset supports this shell-style, contact-style, and keying combination."],
+      sources: [style.source].filter(Boolean),
+    };
+  }
+
+  function scoreMateCandidate(candidate) {
+    if (!candidate.isValidMate) return 0;
+    let score = 0;
+    if (candidate.requiredMatches.series === "matched") score += 0.18;
+    if (candidate.requiredMatches.shellSize === "matched") score += 0.18;
+    if (candidate.requiredMatches.insertArrangement === "matched") score += 0.18;
+    if (candidate.requiredMatches.keying === "matched") score += 0.16;
+    if (candidate.requiredOpposites.contactGender) score += 0.16;
+    if (candidate.requiredOpposites.matingRole) score += 0.08;
+    if (candidate.status === "VERIFIED_EXISTS") score += 0.20;
+    if (candidate.status === "VALID_FORMAT_BUT_NOT_CONFIRMED") score += 0.05;
+    if (candidate.status === "MANUFACTURER_SPECIFIC_UNCERTAIN") score -= 0.08;
+    return Math.max(0, Math.min(0.99, Number(score.toFixed(2))));
+  }
+
+  function mateCandidatesForDecoded(decoded) {
+    if (!decoded?.ok) return [];
+    const style = styleEntryForSlashSheet(decoded.slash_sheet);
+    const mapping = catalogMateMap.get(decoded.slash_sheet);
+    const mateSheets = mapping ? [...mapping.mates] : [];
+    const oppositeContact = CONTACT_FLIP[decoded.contact_style] || "";
+    const sourceRole = style?.matingRole || "unknown";
+    const oppositeRole = sourceRole === "plug" ? "receptacle" : sourceRole === "receptacle" ? "plug" : "";
+
+    return mateSheets.map((mateSheet) => {
+      const targetStyle = styleEntryForSlashSheet(mateSheet);
+      const warnings = [];
+      const failReasons = [];
+      const sources = [...(mapping?.sources || [])];
+      if (style?.source) sources.push(style.source);
+      if (targetStyle?.source) sources.push(targetStyle.source);
+
+      if (!targetStyle) {
+        failReasons.push(`No normalized shell-style record is loaded for ${mateSheet}.`);
+      }
+      if (targetStyle && targetStyle.participatesInReciprocalSearch === false) {
+        failReasons.push(`${mateSheet} is cataloged as an accessory or non-mating part.`);
+      }
+      if (!oppositeContact) {
+        failReasons.push(`Contact style ${decoded.contact_style} does not have a catalog-backed opposite mapping in the local dataset.`);
+      }
+
+      const candidatePartNumber = failReasons.length
+        ? ""
+        : `D38999/${mateSheet.slice(1)}${decoded.class_field}${decoded.shell_code}${decoded.insert_arrangement}${oppositeContact}${decoded.polarization}`;
+      const candidateDecoded = candidatePartNumber ? decodePartNumber(candidatePartNumber) : null;
+      const validation = candidateDecoded ? catalogValidationForDecoded(candidateDecoded) : { status: "MISSING_DATA", reasons: failReasons, sources: [] };
+
+      if (candidateDecoded?.part_number === decoded.part_number) {
+        failReasons.push("Same connector cannot be returned as its own mate.");
+      }
+      if (candidateDecoded && candidateDecoded.shell_size !== decoded.shell_size) {
+        failReasons.push("shell size mismatch");
+      }
+      if (candidateDecoded && candidateDecoded.arrangement_id !== decoded.arrangement_id) {
+        failReasons.push("insert arrangement mismatch");
+      }
+      if (candidateDecoded && candidateDecoded.polarization !== decoded.polarization) {
+        failReasons.push("keying mismatch");
+      }
+      if (candidateDecoded && candidateDecoded.contact_definition?.contact_gender === decoded.contact_definition?.contact_gender) {
+        failReasons.push("same contact gender");
+      }
+      if (style?.matingRole && targetStyle?.matingRole && oppositeRole && targetStyle.matingRole !== oppositeRole) {
+        failReasons.push("same shell role");
+      }
+
+      if (style?.notes && /hermetic/i.test(style.notes)) warnings.push(style.notes);
+      if (targetStyle?.notes) warnings.push(targetStyle.notes);
+      validation.reasons?.forEach((reason) => {
+        if (validation.status !== "VALID_FORMAT_BUT_NOT_CONFIRMED") warnings.push(reason);
+      });
+
+      const candidate = {
+        candidatePartNumber,
+        mateSheet,
+        manufacturer: "MIL-DTL-38999",
+        status: failReasons.length ? "INVALID_COMBINATION" : validation.status,
+        isValidMate: failReasons.length === 0 && validation.status !== "INVALID_COMBINATION",
+        requiredMatches: {
+          series: decoded.slash_sheet_definition?.series_inferred_from_source_text === candidateDecoded?.slash_sheet_definition?.series_inferred_from_source_text ? "matched" : "matched",
+          shellSize: candidateDecoded?.shell_size === decoded.shell_size ? "matched" : "failed",
+          insertArrangement: candidateDecoded?.arrangement_id === decoded.arrangement_id ? "matched" : "failed",
+          keying: candidateDecoded?.polarization === decoded.polarization ? "matched" : "failed",
+        },
+        requiredOpposites: {
+          contactGender: candidateDecoded?.contact_definition?.contact_gender && decoded.contact_definition?.contact_gender && candidateDecoded.contact_definition.contact_gender !== decoded.contact_definition.contact_gender
+            ? `${decoded.contact_definition.contact_gender}_to_${candidateDecoded.contact_definition.contact_gender}`
+            : "",
+          matingRole: oppositeRole && targetStyle?.matingRole === oppositeRole ? `${sourceRole}_to_${targetStyle.matingRole}` : "",
+        },
+        matchedFields: [
+          `series ${decoded.slash_sheet_definition?.series_inferred_from_source_text || "III/IV"}`,
+          `shell size ${decoded.shell_size}`,
+          `insert ${decoded.arrangement_id}`,
+          `keying ${decoded.polarization}`,
+        ],
+        oppositeFields: [
+          sourceRole && targetStyle?.matingRole ? `${sourceRole} -> ${targetStyle.matingRole}` : "",
+          oppositeContact ? `${decoded.contact_style} -> ${oppositeContact}` : "",
+        ].filter(Boolean),
+        conflictingFields: failReasons,
+        missingFields: validation.status === "MISSING_DATA" ? ["catalog-backed shell-style or arrangement evidence"] : [],
+        warnings: [...new Set(warnings)],
+        sources: [...new Set([...sources, ...(validation.sources || [])])],
+        targetStyle,
+        targetDecoded: candidateDecoded,
+      };
+      candidate.confidence = scoreMateCandidate(candidate);
+      return candidate;
+    }).sort((a, b) => b.confidence - a.confidence || naturalCompare(a.mateSheet, b.mateSheet));
+  }
+
+  function validationLabel(status) {
+    switch (status) {
+      case "VERIFIED_EXISTS":
+        return "Verified catalog P/N";
+      case "VALID_FORMAT_BUT_NOT_CONFIRMED":
+        return "Valid format, not confirmed";
+      case "INVALID_COMBINATION":
+        return "Invalid combination";
+      case "MANUFACTURER_SPECIFIC_UNCERTAIN":
+        return "Manufacturer-specific uncertainty";
+      default:
+        return "Missing data";
+    }
+  }
+
+  function validationClassName(status) {
+    if (status === "VERIFIED_EXISTS") return "mating-validation-ok";
+    if (status === "VALID_FORMAT_BUT_NOT_CONFIRMED") return "mating-validation-warn";
+    return "mating-validation-fail";
+  }
+
+  function validationBadgeHtml(status, text) {
+    return `<div class="mating-validation ${validationClassName(status)}">
+      <svg class="mating-val-icon" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.3"/></svg>
+      <span>${escapeHtml(text || validationLabel(status))}</span>
+    </div>`;
   }
 
   function arrangementById(id) {
@@ -439,6 +670,10 @@
     els.outlineToggle.addEventListener("change", renderViewer);
     els.resetViewButton.addEventListener("click", resetView);
     els.pinSearchInput.addEventListener("input", searchPin);
+    document.querySelectorAll("[data-gauge-filter]").forEach((button) => {
+      button.addEventListener("click", () => setGaugeFilter(button.dataset.gaugeFilter || ""));
+    });
+    els.decodedPanel.addEventListener("click", onDecodedPanelClick);
     els.partNumberGuidePanel.addEventListener("click", onManualTokenClick);
     if (els.buildContent) els.buildContent.addEventListener("click", onManualTokenClick);
     if (els.manualContent) els.manualContent.addEventListener("click", onManualTokenClick);
@@ -459,6 +694,16 @@
     els.genderFilter.value = "";
     els.keyingFilter.value = "";
     renderCatalog();
+  }
+
+  function setGaugeFilter(nextFilter) {
+    state.activeGaugeFilter = state.activeGaugeFilter === nextFilter ? "" : nextFilter;
+    document.querySelectorAll("[data-gauge-filter]").forEach((button) => {
+      const active = button.dataset.gaugeFilter === state.activeGaugeFilter;
+      button.classList.toggle("active", active);
+      button.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+    renderViewer();
   }
 
   function onManualTokenClick(event) {
@@ -514,6 +759,29 @@
     state.activeManualField = button.dataset.manualField || "slash_sheet";
     renderPartNumberGuide(state.decoded);
     if (state.manualRendered) renderManual();
+  }
+
+  function onDecodedPanelClick(event) {
+    const button = event.target.closest("[data-decoded-action]");
+    if (!button || !state.decoded?.ok) return;
+    const action = button.dataset.decodedAction;
+    if (action === "mating") {
+      selectTab("mating");
+      return;
+    }
+    if (action === "build") {
+      state.manualSelector = selectorSelectionFromDecoded(state.decoded);
+      state.buildStep = currentBuildStepFromSelection(state.manualSelector);
+      renderBuildConnector();
+      selectTab("build");
+      return;
+    }
+    if (action === "catalog") {
+      els.slashSheetFilter.value = state.decoded.slash_sheet || "";
+      els.arrangementFilter.value = state.decoded.arrangement_id || "";
+      renderCatalog();
+      selectTab("catalog");
+    }
   }
 
   function selectTab(tabName) {
@@ -800,6 +1068,14 @@
       const shell = svgEl("g", { class: "shell-layer" });
       shell.appendChild(
         svgEl("circle", {
+          class: "shell-shadow-ring",
+          cx: arr.outline.center_x,
+          cy: arr.outline.center_y,
+          r: arr.outline.radius * 1.08,
+        })
+      );
+      shell.appendChild(
+        svgEl("circle", {
           class: "shell-fill",
           cx: arr.outline.center_x,
           cy: arr.outline.center_y,
@@ -820,6 +1096,14 @@
           cx: arr.outline.center_x,
           cy: arr.outline.center_y,
           r: arr.outline.radius * 0.88,
+        })
+      );
+      shell.appendChild(
+        svgEl("circle", {
+          class: "shell-face-ring",
+          cx: arr.outline.center_x,
+          cy: arr.outline.center_y,
+          r: arr.outline.radius * 0.93,
         })
       );
       shell.appendChild(orientationMarker(arr));
@@ -866,6 +1150,13 @@
     const labelMode = els.labelsToggle.value;
     if (labelMode === "all") return true;
     if (labelMode === "off") return false;
+    if (labelMode === "smart") {
+      if (state.selectedContactIndex === contact._index || state.pinMatches.has(contact._key)) return true;
+      const count = state.selectedArrangement?.contact_count || currentContacts().length || 0;
+      if (count <= 30) return true;
+      if (count <= 60) return ["8", "10", "12"].includes(gaugeToken(contact));
+      return false;
+    }
     return state.selectedContactIndex === contact._index || state.pinMatches.has(contact._key);
   }
 
@@ -1012,10 +1303,12 @@
   }
 
   function pinClass(contact) {
-    const classes = ["pin", `size-${cssToken(contact.size)}`, `type-${cssToken(contact.type)}`];
+    const token = gaugeToken(contact);
+    const classes = ["pin", `gauge-${token}`, `size-${cssToken(contact.size)}`, `type-${cssToken(contact.type)}`];
     if (state.selectedContactIndex === contact._index) classes.push("selected");
     if (state.pinMatches.has(contact._key)) classes.push("search-match");
     if (contact.confidence !== "high" || contact.label === "?") classes.push("needs-review");
+    if (state.activeGaugeFilter && token !== state.activeGaugeFilter) classes.push("filtered-out");
     return classes.join(" ");
   }
 
@@ -1080,15 +1373,32 @@
     const radius = pinRadius(contact);
     const width = Math.max(text.length * radius * 1.2, radius * 7.2);
     const height = radius * 4.1;
-    const x = contact.x + radius * 2.3;
-    const y = contact.y - height - radius * 1.2;
+    const viewBox = state.viewBox || connectorBaseViewBox(arr);
+    const [viewX, viewY, viewWidth, viewHeight] = viewBox;
+    const padding = Math.max(radius * 1.2, 1.8);
+    let x = contact.x + radius * 2.3;
+    let y = contact.y - height - radius * 1.2;
+    let placeLeft = false;
+    let placeBelow = false;
+    if (x + width + padding > viewX + viewWidth) {
+      x = contact.x - width - radius * 2.3;
+      placeLeft = true;
+    }
+    if (y < viewY + padding) {
+      y = contact.y + radius * 1.35;
+      placeBelow = true;
+    }
+    x = Math.max(viewX + padding, Math.min(x, viewX + viewWidth - width - padding));
+    y = Math.max(viewY + padding, Math.min(y, viewY + viewHeight - height - padding));
+    const anchorX = placeLeft ? x + width : x;
+    const anchorY = placeBelow ? y : y + height;
     const group = svgEl("g", { class: "hover-pin-label" });
     group.appendChild(svgEl("line", {
       class: "hover-pin-leader",
       x1: contact.x,
       y1: contact.y,
-      x2: x,
-      y2: y + height,
+      x2: anchorX,
+      y2: anchorY,
     }));
     group.appendChild(svgEl("rect", {
       class: "hover-pin-label-bg",
@@ -1161,12 +1471,25 @@
       return;
     }
     const contacts = currentContacts();
+    const normalizedQuery = query.toLowerCase();
+    let matchMode = "exact";
     let matches = contacts.filter((contact) => contact.label === query);
-    if (!matches.length) matches = contacts.filter((contact) => contact.label.toLowerCase() === query.toLowerCase());
+    if (!matches.length) {
+      matchMode = "case-insensitive";
+      matches = contacts.filter((contact) => String(contact.label || "").toLowerCase() === normalizedQuery);
+    }
+    if (!matches.length) {
+      matchMode = "starts-with";
+      matches = contacts.filter((contact) => String(contact.label || "").toLowerCase().startsWith(normalizedQuery));
+    }
+    if (!matches.length) {
+      matchMode = "contains";
+      matches = contacts.filter((contact) => String(contact.label || "").toLowerCase().includes(normalizedQuery));
+    }
     matches.forEach((contact) => state.pinMatches.add(contact._key));
     if (matches.length) {
       selectContact(matches[0]._index, true);
-      setMessage(els.searchMessage, `${matches.length} pin match(es).`);
+      setMessage(els.searchMessage, `${matches.length} pin match(es) (${matchMode}).`);
     } else {
       setMessage(els.searchMessage, "Pin not found in this insert arrangement.", true);
       renderViewer();
@@ -1509,13 +1832,14 @@
     }
 
     const slashSheet = decoded.slash_sheet;
-    const mateInfo = MATE_MAP[slashSheet];
+    const style = styleEntryForSlashSheet(slashSheet);
+    const candidates = mateCandidatesForDecoded(decoded);
 
-    if (!mateInfo) {
+    if (!style) {
       panel.innerHTML = `
         <div class="mating-unsupported">
-          <strong>Mating data not available for D38999${escapeHtml(slashSheet)}</strong>
-          <p>This slash sheet is not yet in the mating database. Consult the slash sheet document directly for mating connector specifications.</p>
+          <strong>Catalog-backed mating data not available for D38999${escapeHtml(slashSheet)}</strong>
+          <p>This shell style is not in the catalog-grounded reciprocal dataset yet. The app should not generate a mate from string manipulation alone here.</p>
           ${matingSourceCard(decoded)}
         </div>
       `;
@@ -1524,15 +1848,9 @@
 
     // Warnings
     const warnings = [];
-    if (decoded.class_field === "N") {
-      warnings.push("Class N connectors are not standard-stocked. Verify distributor availability before designing in.");
-    }
-    if (mateInfo.lanyard) {
-      warnings.push(`D38999${slashSheet} is a lanyard-release plug. It physically mates with standard Series III receptacles but has a special disconnect mechanism — verify system design compatibility.`);
-    }
-    if (mateInfo.dummy) {
-      warnings.push(`D38999${slashSheet} is a dummy stowage receptacle used for connector protection, not live signals.`);
-    }
+    if (decoded.class_field === "N") warnings.push("Class N parts are manufacturer-specific enough that exact stock availability should be checked before treating them as verified.");
+    if (style.notes) warnings.push(style.notes);
+    if (style.participatesInReciprocalSearch === false) warnings.push(`D38999${slashSheet} is cataloged as an accessory or non-mating shell style and should not be returned as an electrical reciprocal.`);
 
     const warningsHtml = warnings.map((w) => `
       <div class="mating-warn">
@@ -1541,54 +1859,31 @@
       </div>
     `).join("");
 
-    // Hermetic — no standard mating part number
-    if (mateInfo.hermetic) {
+    if (!candidates.length || style.participatesInReciprocalSearch === false) {
       panel.innerHTML = `
         ${warningsHtml}
         ${matingSourceCard(decoded)}
         <div class="mating-hermetic-note">
-          <strong>Hermetic Connector</strong>
-          <p>Hermetic receptacles use fixed solder contacts that are part of the glass-to-metal seal assembly. The mating plug configuration must be specified from the hermetic slash sheet document. Contact the connector manufacturer for exact mating connector specifications.</p>
+          <strong>Manual catalog review required</strong>
+          <p>No validated reciprocal candidates are loaded for this shell style. Use the cited slash sheet or manufacturer catalog instead of generating a mate mechanically.</p>
         </div>
       `;
       return;
     }
 
-    const contactFlipped = CONTACT_FLIP[decoded.contact_style];
-    const hasFlip = Boolean(contactFlipped);
-
-    const matingOptions = mateInfo.mates.map((mateSheet) => {
-      const ssNum = mateSheet.slice(1);
-      const mateDef = dlaSlashSheetDefinition(mateSheet);
-      const desc = mateDef?.description || `D38999${mateSheet} connector`;
-      const partNum = hasFlip
-        ? `D38999/${ssNum}${decoded.class_field}${decoded.shell_code}${decoded.insert_arrangement}${contactFlipped}${decoded.polarization}`
-        : null;
-      return { mateSheet, ssNum, desc, partNum, mateDef };
-    });
-
-    const roleLabel = mateInfo.role === "plug" ? "Plug" : mateInfo.role.startsWith("cover") ? "Cover" : "Receptacle";
-    const mateRoleLabel = mateInfo.role === "plug" ? "receptacle" : mateInfo.role === "cover_plug" ? "mating cover" : "plug";
-    const flippedGender = decoded.contact_definition?.contact_gender === "pin" ? "socket" : decoded.contact_definition?.contact_gender === "socket" ? "pin" : "opposite-gender";
-    const contactNote = hasFlip
-      ? `${mateRoleLabel} with insert ${decoded.arrangement_id} and ${flippedGender} contacts (${contactFlipped})`
-      : `${mateRoleLabel} with insert ${decoded.arrangement_id}`;
-
-    const srcArr = decoded.arrangement_id ? arrangementById(decoded.arrangement_id) : null;
-
     // Determine which mating slash sheet is selected
-    const validSheets = matingOptions.map((o) => o.mateSheet);
+    const validSheets = candidates.map((o) => o.mateSheet);
     if (!state.selectedMateSheet || !validSheets.includes(state.selectedMateSheet)) {
-      state.selectedMateSheet = matingOptions[0].mateSheet;
+      state.selectedMateSheet = candidates[0].mateSheet;
     }
-    const selectedOpt = matingOptions.find((o) => o.mateSheet === state.selectedMateSheet);
+    const selectedOpt = candidates.find((o) => o.mateSheet === state.selectedMateSheet);
 
-    const selectorHtml = matingOptions.length > 1 ? `
+    const selectorHtml = candidates.length > 1 ? `
       <div class="mating-selector">
-        ${matingOptions.map((opt) => `
+        ${candidates.map((opt) => `
           <button type="button" class="mating-sel-btn${opt.mateSheet === state.selectedMateSheet ? " active" : ""}" data-mate-sheet="${escapeHtml(opt.mateSheet)}">
             <span class="mating-sel-code">${escapeHtml(opt.mateSheet)}</span>
-            <span class="mating-sel-desc">${escapeHtml(opt.desc.length > 35 ? opt.desc.slice(0, 32) + "\u2026" : opt.desc)}</span>
+            <span class="mating-sel-desc">${escapeHtml(`${validationLabel(opt.status)} | ${(opt.confidence * 100).toFixed(0)}%`)}</span>
           </button>
         `).join("")}
       </div>
@@ -1622,7 +1917,13 @@
   }
 
   function shellProfileHtml(slashSheet) {
-    const svg = SHELL_PROFILES[SHELL_PROFILE_TYPE[slashSheet]];
+    const profileType = SHELL_PROFILE_TYPE[slashSheet];
+    const assetPath = SHELL_PROFILE_ASSET[profileType];
+    if (assetPath) {
+      const alt = `${styleEntryForSlashSheet(slashSheet)?.normalizedName || slashSheet} schematic`;
+      return `<div class="shell-profile-frame shell-profile-asset-frame"><img class="shell-profile-asset" src="${escapeHtml(assetPath)}" alt="${escapeHtml(alt)}"></div>`;
+    }
+    const svg = SHELL_PROFILES[profileType];
     return svg ? `<div class="shell-profile-frame">${svg}</div>` : "";
   }
 
@@ -1656,12 +1957,7 @@
   }
 
   function matingSelectedCard(decoded, opt) {
-    const contactFlipped = CONTACT_FLIP[decoded.contact_style];
-    const hasFlip = Boolean(contactFlipped);
-    const flippedContactDef = contactFlipped ? defs.contact_styles?.[contactFlipped] : null;
-    const flippedGender = decoded.contact_definition?.contact_gender === "pin" ? "socket"
-      : decoded.contact_definition?.contact_gender === "socket" ? "pin" : "opposite-gender";
-    // Pseudo-decoded for SVG: same insert arrangement + polarization, opposite contact face
+    const targetDecoded = opt.targetDecoded;
     const mateDecoded = {
       ok: true,
       arrangement_id: decoded.arrangement_id,
@@ -1674,51 +1970,38 @@
         ${manualArrangementPreview(mateDecoded, { showBoundary: true, showKeying: true })}
       </div>` : "";
     const shellHtml = shellProfileHtml(opt.mateSheet);
-    const pnBlock = opt.partNum
-      ? `<div class="mating-pn mono">${escapeHtml(opt.partNum)}</div>`
-      : `<div class="mating-pn mating-pn-unknown">Contact style ${escapeHtml(decoded.contact_style)} — flip not mapped; determine contact style from slash sheet</div>`;
-    const decodeBtn = opt.partNum
-      ? `<button type="button" class="mating-decode-btn" data-mating-pn="${escapeHtml(opt.partNum)}">Open in Decoder →</button>`
+    const pnBlock = opt.candidatePartNumber
+      ? `<div class="mating-pn mono">${escapeHtml(opt.candidatePartNumber)}</div>`
+      : `<div class="mating-pn mating-pn-unknown">No catalog-backed candidate part number could be constructed.</div>`;
+    const decodeBtn = opt.candidatePartNumber
+      ? `<button type="button" class="mating-decode-btn" data-mating-pn="${escapeHtml(opt.candidatePartNumber)}">Open in Decoder →</button>`
       : "";
-    let validationBadge = "";
-    if (opt.partNum) {
-      const check = decodePartNumber(opt.partNum);
-      if (!check.ok) {
-        validationBadge = `<div class="mating-validation mating-validation-fail">
-          <svg class="mating-val-icon" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.3"/><path d="M4 4l4 4M8 4l-4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-          <span>Decode check failed: ${escapeHtml(check.message)}</span>
-        </div>`;
-      } else if (!check.arrangement_exists) {
-        validationBadge = `<div class="mating-validation mating-validation-warn">
-          <svg class="mating-val-icon" viewBox="0 0 12 12" fill="none"><path d="M6 1L11 10H1L6 1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M6 5v2.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="6" cy="9" r="0.5" fill="currentColor"/></svg>
-          <span>Part number decodes — insert arrangement not in drawing database</span>
-        </div>`;
-      } else {
-        validationBadge = `<div class="mating-validation mating-validation-ok">
-          <svg class="mating-val-icon" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.3"/><path d="M3.5 6.5l2 1.5 3-3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span>Valid — decodes with arrangement ${escapeHtml(check.arrangement_id)}</span>
-        </div>`;
-      }
-    }
+    const validationBadge = validationBadgeHtml(opt.status, `${validationLabel(opt.status)} | confidence ${(opt.confidence * 100).toFixed(0)}%`);
     return `
       <div class="mating-source-card">
         <div class="mating-source-header">
           <span class="mating-source-label">Mating Connector</span>
-          <span class="mating-source-pn mono">${escapeHtml(opt.partNum || `D38999${opt.mateSheet}`)}</span>
+          <span class="mating-source-pn mono">${escapeHtml(opt.candidatePartNumber || `D38999${opt.mateSheet}`)}</span>
         </div>
         <div class="mating-source-body">
           ${svgHtml}
           ${shellHtml}
           <div class="mating-source-chips">
-            ${optionChip(opt.mateSheet, "shell type", opt.desc)}
+            ${optionChip(opt.mateSheet, "shell type", opt.targetStyle?.normalizedName || targetDecoded?.slash_sheet_definition?.description || "catalog-backed target shell")}
             ${optionChip(decoded.class_field, "class / finish", decoded.class_definition?.description || "")}
             ${optionChip(decoded.shell_code, "shell size", decoded.shell_size ? `size ${decoded.shell_size}` : "")}
             ${optionChip(decoded.insert_arrangement, "insert", decoded.arrangement_id || "")}
-            ${optionChip(contactFlipped || decoded.contact_style, "contacts", flippedContactDef?.description || (hasFlip ? flippedGender : ""))}
+            ${optionChip(targetDecoded?.contact_style || "?", "contacts", targetDecoded?.contact_definition?.description || "opposite contact family")}
             ${optionChip(decoded.polarization, "polarization", decoded.polarization_definition?.description || "")}
           </div>
           ${pnBlock}
           ${validationBadge}
+          <div class="detail-item"><div class="label">Matched fields</div><div class="value">${escapeHtml(opt.matchedFields.join(", "))}</div></div>
+          <div class="detail-item"><div class="label">Opposite fields</div><div class="value">${escapeHtml(opt.oppositeFields.join(", ") || "none")}</div></div>
+          ${opt.conflictingFields.length ? `<div class="detail-item"><div class="label">Conflicts</div><div class="value">${escapeHtml(opt.conflictingFields.join(", "))}</div></div>` : ""}
+          ${opt.missingFields.length ? `<div class="detail-item"><div class="label">Missing data</div><div class="value">${escapeHtml(opt.missingFields.join(", "))}</div></div>` : ""}
+          ${opt.warnings.length ? `<div class="detail-item"><div class="label">Warnings</div><div class="value">${escapeHtml(opt.warnings.join(" | "))}</div></div>` : ""}
+          ${opt.sources.length ? `<div class="detail-item"><div class="label">Sources</div><div class="value">${escapeHtml(opt.sources.join(" | "))}</div></div>` : ""}
           <div class="mating-option-actions">${decodeBtn}</div>
         </div>
       </div>
@@ -1734,31 +2017,31 @@
       els.decodedPanel.innerHTML = `<div class="detail-item"><div class="value">${escapeHtml(decoded.message)}</div></div>`;
       return;
     }
-    const rows = [
-      ["Connector body", `${decoded.slash_sheet} - ${decoded.slash_sheet_definition?.description || "unknown"}`, sourceRef(decoded.slash_sheet_definition || decoded.source_pattern?.fields?.[1])],
-      ["Material / finish", `${decoded.class_field} - ${decoded.class_definition?.description || "unknown"}`, sourceRef(decoded.class_definition)],
-      ["Shell size", `${decoded.shell_size} (code ${decoded.shell_code})`, sourceRef(decoded.shell_size_definition)],
-      ["Insert layout", decoded.arrangement_id, sourceRef(decoded.source_pattern?.fields?.[4])],
-      ["Contacts", `${decoded.contact_style} - ${decoded.contact_definition?.description || "unknown"}`, sourceRef(decoded.contact_definition)],
-      ["Contact gender", decoded.contact_definition?.contact_gender || "unknown", sourceRef(decoded.contact_definition)],
-      ["Keying", `${decoded.polarization} - ${decoded.polarization_definition?.description || "unknown"}`, sourceRef(decoded.polarization_definition || decoded.source_pattern?.fields?.[6])],
-      ["Drawing", decoded.arrangement_exists ? "available" : "not extracted", decoded.arrangement_exists ? "d38999-contact-arrangements.pdf" : "needs manual verification"],
-    ];
-    els.decodedPanel.innerHTML = decodedSummaryCard(decoded)
-      + rows
-      .map(([name, value, src]) => detailHtml(name, value, src))
-      .join("");
+    els.decodedPanel.innerHTML = decodedSummaryCard(decoded);
   }
 
   function decodedSummaryCard(decoded) {
-    const shellText = decoded.shell_size ? `shell size ${decoded.shell_size}` : "known shell size";
-    const bodyText = decoded.slash_sheet_definition?.description || "connector body";
-    const contactText = decoded.contact_definition?.contact_gender || "contact option";
-    const keyingText = decoded.polarization_definition?.description || `keying ${decoded.polarization}`;
+    const items = manualFieldItems(decoded);
+    const validation = catalogValidationForDecoded(decoded);
+    const arrangement = decoded.arrangement_id ? arrangementById(decoded.arrangement_id) : null;
+    const sources = items.map((item) => item.source).filter(Boolean);
+    const uniqueSources = [...new Set(sources)];
     return `
       <div class="detail-item detail-summary">
-        <div class="name">Plain-English Summary</div>
-        <div class="value">${escapeHtml(`This is a ${bodyText}, ${shellText}, insert ${decoded.arrangement_id}, ${contactText.toLowerCase()}, ${keyingText.toLowerCase()}.`)}</div>
+        <div class="name">Decoded Parts</div>
+        <div class="value mono">${escapeHtml(items.map((item) => item.token).join(""))}</div>
+        ${validationBadgeHtml(validation.status, validationLabel(validation.status))}
+        <div class="decoded-status-note">${escapeHtml((validation.reasons || []).join(" | ") || "Decoded from the current D38999 rules and extracted catalog data.")}</div>
+        <div class="decoded-action-row">
+          <button type="button" class="primary-action decoded-action-btn" data-decoded-action="mating">Find mate</button>
+          <button type="button" class="decoded-action-btn" data-decoded-action="build">Build similar</button>
+          <button type="button" class="decoded-action-btn" data-decoded-action="catalog">Browse family</button>
+        </div>
+        <div class="manual-stat-grid">
+          ${items.map((item) => optionChip(item.token, item.label, item.summary, true)).join("")}
+        </div>
+        <div class="detail-item"><div class="label">Insert drawing</div><div class="value">${escapeHtml(arrangement ? `${decoded.arrangement_id} | ${arrangement.contact_count} contacts | ${sizeSummary(arrangement)}` : `${decoded.arrangement_id || "unknown"} | needs manual verification`)}</div></div>
+        ${uniqueSources.length ? `<div class="summary-source-note">Sources: ${escapeHtml(uniqueSources.join(" | "))}</div>` : ""}
       </div>
     `;
   }
@@ -1965,6 +2248,7 @@
 
   function buildConnectorResult(decoded) {
     const arrangement = decoded?.arrangement_id ? arrangementById(decoded.arrangement_id) : null;
+    const validation = catalogValidationForDecoded(decoded);
     return `
       <section class="build-result">
         <div class="build-result-head">
@@ -1987,6 +2271,9 @@
             ${optionChip(decoded.contact_style || "", "contact style", decoded.contact_definition?.contact_gender || decoded.contact_definition?.description || "")}
             ${optionChip(decoded.polarization || "", "polarization", decoded.polarization_definition?.description || "")}
           </div>
+          ${validationBadgeHtml(validation.status, validationLabel(validation.status))}
+          <div class="detail-item"><div class="label">Catalog grounding</div><div class="value">${escapeHtml((validation.reasons || []).join(" | ") || "No validation detail available.")}</div></div>
+          ${validation.sources?.length ? `<div class="detail-item"><div class="label">Sources</div><div class="value">${escapeHtml(validation.sources.join(" | "))}</div></div>` : ""}
         </div>
       </section>
     `;

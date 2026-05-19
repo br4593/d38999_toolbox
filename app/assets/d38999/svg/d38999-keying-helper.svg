@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" fill="none" stroke="currentColor" stroke-width="3">
+  <circle cx="110" cy="110" r="70"/>
+  <circle cx="110" cy="110" r="42" opacity="0.45"/>
+  <line x1="110" y1="40" x2="110" y2="18"/>
+  <line x1="166" y1="76" x2="188" y2="62"/>
+  <line x1="166" y1="144" x2="188" y2="158"/>
+  <line x1="54" y1="144" x2="32" y2="158"/>
+  <line x1="54" y1="76" x2="32" y2="62"/>
+  <text x="110" y="14" text-anchor="middle" font-size="14" stroke="none" fill="currentColor">MASTER KEYWAY</text>
+  <text x="110" y="112" text-anchor="middle" font-size="16" stroke="none" fill="currentColor">N</text>
+  <text x="194" y="62" font-size="14" stroke="none" fill="currentColor">A</text>
+  <text x="194" y="166" font-size="14" stroke="none" fill="currentColor">B</text>
+  <text x="14" y="166" font-size="14" stroke="none" fill="currentColor">C</text>
+  <text x="14" y="62" font-size="14" stroke="none" fill="currentColor">D</text>
+  <text x="110" y="210" text-anchor="middle" font-size="12" stroke="none" fill="currentColor">Same key letter must match. Plug view is opposite of the receptacle mating-face drawing.</text>
+</svg>

@@ -104,6 +104,42 @@ class CdpClient {
 }
 
 async function main() {
+  const requiredDataFiles = [
+    "data/d38999_extracted_rules.json",
+    "data/d38999_part_number_examples.json",
+    "data/d38999_catalog_supported_combinations.json",
+    "data/d38999_verified_part_numbers.json",
+    "data/d38999_visual_assets.json",
+  ];
+  const requiredSvgFiles = [
+    "assets/d38999/svg/d38999-plug-generic.svg",
+    "assets/d38999/svg/d38999-receptacle-generic.svg",
+    "assets/d38999/svg/d38999-wall-mount-receptacle.svg",
+    "assets/d38999/svg/d38999-jam-nut-receptacle.svg",
+    "assets/d38999/svg/d38999-straight-plug.svg",
+    "assets/d38999/svg/d38999-backshell-generic.svg",
+    "assets/d38999/svg/d38999-keying-helper.svg",
+    "assets/d38999/svg/d38999-shell-size-helper.svg",
+    "assets/d38999/svg/d38999-insert-placeholder.svg",
+  ];
+
+  requiredDataFiles.forEach((relativePath) => {
+    assert(fs.existsSync(path.join(projectRoot, relativePath)), `Required research data file exists: ${relativePath}`);
+  });
+  requiredSvgFiles.forEach((relativePath) => {
+    assert(fs.existsSync(path.join(projectRoot, relativePath)), `Required SVG asset exists: ${relativePath}`);
+  });
+
+  const extractedRules = JSON.parse(fs.readFileSync(path.join(projectRoot, "data", "d38999_extracted_rules.json"), "utf8"));
+  const verifiedPartNumbers = JSON.parse(fs.readFileSync(path.join(projectRoot, "data", "d38999_verified_part_numbers.json"), "utf8"));
+  const visualAssets = JSON.parse(fs.readFileSync(path.join(projectRoot, "data", "d38999_visual_assets.json"), "utf8"));
+
+  assert(Array.isArray(extractedRules.catalogGroundingPolicy.statusValues), "Catalog grounding status values are present");
+  assert(extractedRules.catalogGroundingPolicy.statusValues.includes("VERIFIED_EXISTS"), "Catalog grounding includes VERIFIED_EXISTS");
+  assert(extractedRules.catalogGroundingPolicy.statusValues.includes("VALID_FORMAT_BUT_NOT_CONFIRMED"), "Catalog grounding includes VALID_FORMAT_BUT_NOT_CONFIRMED");
+  assert((verifiedPartNumbers.verifiedPartNumbers || []).length >= 5, "At least five exact verified part numbers are available");
+  assert((visualAssets.visualAssets || []).some((item) => item.file === "assets/d38999/svg/d38999-keying-helper.svg"), "Visual asset metadata references the created keying helper SVG");
+
   fs.mkdirSync(downloadsDir, { recursive: true });
   fs.mkdirSync(profileDir, { recursive: true });
   let success = false;
@@ -278,69 +314,74 @@ async function main() {
     })()`);
     assert(manualFilter.count > 0 && manualFilter.all17, "Manual shell-size filter returns shell 17 arrangements");
 
-    // Switch back to decoder tab for reciprocal tests
-    await cdp.eval(`document.querySelector('.tab-button[data-tab="decoder"]').click(); true;`);
+    // Switch to the mating tab for catalog-backed reciprocal tests
+    await cdp.eval(`document.querySelector('.tab-button[data-tab="mating"]').click(); true;`);
 
     const reciprocalAudit = await cdp.eval(`(() => {
       document.querySelector("#partNumberInput").value = "D38999/26WE35PN";
       document.querySelector("#decodeButton").click();
-      const panel = document.querySelector("#reciprocalPanel");
+      document.querySelector('.tab-button[data-tab="mating"]').click();
+      const panel = document.querySelector("#matingContent");
       if (!panel) return { panelExists: false };
-      const pnEl = panel.querySelector(".reciprocal-pn");
+      const pnEl = panel.querySelector(".mating-pn");
       const recipPN = pnEl ? pnEl.textContent.trim() : "";
-      const segBtns = panel.querySelectorAll(".reciprocal-segment-btn");
-      const activeSeg = panel.querySelector(".reciprocal-segment-btn.active");
-      const couplingArrow = Boolean(panel.querySelector(".reciprocal-coupling-arrow"));
-      const openBtn = panel.querySelector(".reciprocal-open-btn");
-      const badges = panel.querySelectorAll(".reciprocal-badge.ok");
+      const sheetBtns = panel.querySelectorAll("[data-mate-sheet]");
+      const activeSheet = panel.querySelector(".mating-sel-btn.active");
+      const pairingArrow = Boolean(panel.querySelector(".mating-pair-arrow"));
+      const openBtn = panel.querySelector(".mating-decode-btn");
+      const validationBadges = panel.querySelectorAll(".mating-validation");
+      const sourceCards = panel.querySelectorAll(".mating-source-card");
       return {
         panelExists: true,
         hasPN: Boolean(pnEl),
         recipPN,
-        segCount: segBtns.length,
-        hasActiveSeg: Boolean(activeSeg),
-        couplingArrow,
+        segCount: sheetBtns.length,
+        hasActiveSeg: Boolean(activeSheet),
+        pairingArrow,
         hasOpenBtn: Boolean(openBtn),
-        badgeCount: badges.length,
+        badgeCount: validationBadges.length,
+        sourceCardCount: sourceCards.length,
       };
     })()`);
-    assert(reciprocalAudit.panelExists, "Reciprocal panel element exists in DOM");
-    assert(reciprocalAudit.hasPN, "Reciprocal panel renders a mating part number");
+    assert(reciprocalAudit.panelExists, "Mating panel element exists in DOM");
+    assert(reciprocalAudit.hasPN, "Mating panel renders a catalog-backed candidate part number");
     assert(/^D38999\/\d+/.test(reciprocalAudit.recipPN), "Mating part number is a valid D38999 PN");
-    assert(reciprocalAudit.recipPN !== "D38999/26WE35PN", "Mating PN differs from source — role is reversed");
-    assert(reciprocalAudit.segCount >= 1, "At least one mount-type segment button is rendered");
-    assert(reciprocalAudit.hasActiveSeg, "One segment button is marked active");
-    assert(reciprocalAudit.couplingArrow, "Coupling arrow glyph rendered between the two SVG panes");
-    assert(reciprocalAudit.hasOpenBtn, "Open reciprocal connector CTA button is present");
-    assert(reciprocalAudit.badgeCount >= 5, "At least 5 match badges are shown");
+    assert(reciprocalAudit.recipPN !== "D38999/26WE35PN", "Mating PN differs from source and reverses the shell role");
+    assert(reciprocalAudit.sourceCardCount >= 2, "Mating view renders both source and mate connector cards");
+    assert(reciprocalAudit.pairingArrow, "Pairing arrow glyph is rendered between the two connector cards");
+    assert(reciprocalAudit.hasOpenBtn, "Open mating connector CTA button is present");
+    assert(reciprocalAudit.badgeCount >= 1, "At least one catalog validation badge is shown");
+    if (reciprocalAudit.segCount > 0) {
+      assert(reciprocalAudit.hasActiveSeg, "One mating shell option button is marked active");
+    }
 
     const segSwitchAudit = await cdp.eval(`(() => {
-      const panel = document.querySelector("#reciprocalPanel");
-      const btns = [...panel.querySelectorAll(".reciprocal-segment-btn")];
+      const panel = document.querySelector("#matingContent");
+      const btns = [...panel.querySelectorAll("[data-mate-sheet]")];
       if (btns.length < 2) return { skipped: true };
-      const firstPN = panel.querySelector(".reciprocal-pn").textContent.trim();
-      const secondBtn = btns.find((b) => !b.classList.contains("active"));
+      const firstPN = panel.querySelector(".mating-pn").textContent.trim();
+      const secondBtn = btns.find((button) => !button.classList.contains("active"));
       secondBtn.click();
-      const newPN = panel.querySelector(".reciprocal-pn").textContent.trim();
+      const newPN = panel.querySelector(".mating-pn").textContent.trim();
       return { skipped: false, firstPN, newPN, pnChanged: firstPN !== newPN };
     })()`);
     if (!segSwitchAudit.skipped) {
-      assert(segSwitchAudit.pnChanged, "Clicking a different mount-type segment updates the mating part number");
+      assert(segSwitchAudit.pnChanged, "Clicking a different mating shell option updates the candidate part number");
     }
 
     const openRecipAudit = await cdp.eval(`(() => {
-      const panel = document.querySelector("#reciprocalPanel");
-      const openBtn = panel.querySelector(".reciprocal-open-btn");
+      const panel = document.querySelector("#matingContent");
+      const openBtn = panel.querySelector(".mating-decode-btn");
       if (!openBtn) return { skipped: true };
-      const recipPN = openBtn.dataset.reciprocalOpen;
+      const recipPN = openBtn.dataset.matingPn;
       openBtn.click();
       const inputVal = document.querySelector("#partNumberInput").value;
       const decodedText = document.querySelector("#decodedPanel").textContent;
       return { skipped: false, inputVal, recipPN, inputMatchesPN: inputVal === recipPN, decodedNotEmpty: decodedText.length > 20 };
     })()`);
     if (!openRecipAudit.skipped) {
-      assert(openRecipAudit.inputMatchesPN, "Open reciprocal button sets part number input to the mating PN");
-      assert(openRecipAudit.decodedNotEmpty, "Opening reciprocal PN decodes it successfully in decoded panel");
+      assert(openRecipAudit.inputMatchesPN, "Open mating button sets part number input to the mating PN");
+      assert(openRecipAudit.decodedNotEmpty, "Opening the mating PN decodes it successfully in the decoder panel");
     }
 
     const screenshot = await cdp.send("Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
@@ -362,9 +403,9 @@ async function main() {
         "part number lookup selects 17-35",
         "manual shell filter works",
         "signal-assignment controls are absent",
-        "reciprocal panel renders mating PN with segment control and face SVGs",
-        "mount-type segment switching updates mating PN",
-        "open reciprocal connector button decodes the mating PN",
+        "mating panel renders catalog-backed mating PN with paired connector cards",
+        "mating shell option switching updates the candidate PN when multiple options exist",
+        "open mating connector button decodes the mating PN",
       ],
       data: dataAudit,
       screenshot: "output/debug/app_revised.png",
