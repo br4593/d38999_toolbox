@@ -12,12 +12,26 @@
   const reviewData = DATA.reviewNeeded || { items: [] };
   const extractedRules = researchData.extractedRules || {};
   const supportedCombinations = (researchData.catalogSupportedCombinations || {}).catalogSupportedCombinations || [];
+  const validPartNumbersData = researchData.validPartNumbers || {};
+  const validPartNumbers = validPartNumbersData.partNumbers || [];
   const verifiedPartNumbers = (researchData.verifiedPartNumbers || {}).verifiedPartNumbers || [];
+  const federalConnectorsSecondarySource = researchData.federalConnectorsSecondarySource || {};
+  const secondarySourceEntries = federalConnectorsSecondarySource.entries || [];
+  const secondarySourceImportableOverlaps = federalConnectorsSecondarySource.importableOverlaps || [];
   const defs = standard.definitions || {};
   const arrangements = (insertData.arrangements || []).slice();
   const reviewById = new Map((reviewData.items || []).map((item) => [item.id, item]));
+  const validPartNumberMap = new Map(
+    validPartNumbers.map((item) => [String(item.normalizedPartNumber || item.partNumber || "").toUpperCase().replace(/[\s-]+/g, ""), item])
+  );
   const verifiedPartNumberMap = new Map(
     verifiedPartNumbers.map((item) => [String(item.partNumber || "").toUpperCase().replace(/[\s-]+/g, ""), item])
+  );
+  const secondarySourcePartNumberMap = new Map(
+    secondarySourceEntries.map((item) => [String(item.normalizedPartNumber || item.partNumber || "").toUpperCase().replace(/[\s-]+/g, ""), item])
+  );
+  const secondarySourceImportableMap = new Map(
+    secondarySourceImportableOverlaps.map((item) => [String(item.partNumber || "").toUpperCase().replace(/[\s-]+/g, ""), item])
   );
   const styleEntriesBySlashSheet = new Map(
     (extractedRules.normalizedShellStyles || [])
@@ -250,6 +264,16 @@
       };
     }
 
+    const validExact = validPartNumberMap.get(normalizedCatalogPartNumber(decoded.part_number));
+    if (validExact) {
+      return {
+        status: "EXACT_PN_MATCH",
+        reasons: ["Exact part number match found in the valid D38999 database."],
+        sources: summarizedValidPartSources(validExact),
+        exactPart: validExact,
+      };
+    }
+
     const exact = verifiedPartNumberMap.get(normalizedCatalogPartNumber(decoded.part_number));
     if (exact) {
       return {
@@ -257,6 +281,16 @@
         reasons: ["Exact part number appears in the catalog research dataset."],
         sources: [exact.source],
         verifiedPart: exact,
+      };
+    }
+
+    const secondaryExact = secondarySourcePartNumberMap.get(normalizedCatalogPartNumber(decoded.part_number));
+    if (secondaryExact) {
+      return {
+        status: "SECONDARY_SOURCE_EXACT",
+        reasons: ["Exact part number match found in the local research data."],
+        sources: [secondaryExact.sourcePage, secondaryExact.productUrl, ...((secondaryExact.crossCheck && secondaryExact.crossCheck.manufacturerSupportSources) || [])].filter(Boolean),
+        secondaryPart: secondaryExact,
       };
     }
 
@@ -311,7 +345,9 @@
     if (candidate.requiredMatches.keying === "matched") score += 0.16;
     if (candidate.requiredOpposites.contactGender) score += 0.16;
     if (candidate.requiredOpposites.matingRole) score += 0.08;
+    if (candidate.status === "EXACT_PN_MATCH") score += 0.20;
     if (candidate.status === "VERIFIED_EXISTS") score += 0.20;
+    if (candidate.status === "SECONDARY_SOURCE_EXACT") score += 0.1;
     if (candidate.status === "VALID_FORMAT_BUT_NOT_CONFIRMED") score += 0.05;
     if (candidate.status === "MANUFACTURER_SPECIFIC_UNCERTAIN") score -= 0.08;
     return Math.max(0, Math.min(0.99, Number(score.toFixed(2))));
@@ -417,8 +453,10 @@
 
   function validationLabel(status) {
     switch (status) {
+      case "EXACT_PN_MATCH":
       case "VERIFIED_EXISTS":
-        return "Verified catalog P/N";
+      case "SECONDARY_SOURCE_EXACT":
+        return "Exact PN match";
       case "VALID_FORMAT_BUT_NOT_CONFIRMED":
         return "Valid format, not confirmed";
       case "INVALID_COMBINATION":
@@ -431,7 +469,9 @@
   }
 
   function validationClassName(status) {
+    if (status === "EXACT_PN_MATCH") return "mating-validation-ok";
     if (status === "VERIFIED_EXISTS") return "mating-validation-ok";
+    if (status === "SECONDARY_SOURCE_EXACT") return "mating-validation-ok";
     if (status === "VALID_FORMAT_BUT_NOT_CONFIRMED") return "mating-validation-warn";
     return "mating-validation-fail";
   }
@@ -440,6 +480,33 @@
     return `<div class="mating-validation ${validationClassName(status)}">
       <svg class="mating-val-icon" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.3"/></svg>
       <span>${escapeHtml(text || validationLabel(status))}</span>
+    </div>`;
+  }
+
+  function summarizedValidPartSources(part) {
+    if (!part) return [];
+    const bits = [];
+    (part.manufacturers || []).forEach((manufacturer) => bits.push(manufacturer));
+    (part.qpls || []).forEach((qpl) => bits.push(`QPL ${qpl}`));
+    (part.sources || []).forEach((source) => {
+      if (!source) return;
+      if (source.type === "manufacturer_verified" && source.citation) bits.push(source.citation);
+      else if (source.type === "catalog_example") bits.push([source.sourcePdf, source.sourcePage ? `page ${source.sourcePage}` : ""].filter(Boolean).join(" "));
+      else if (source.type === "federalconnectors_exact") bits.push("Federal Connectors index");
+      else if (source.type === "qpl" && source.qpl) bits.push(`QPL ${source.qpl}`);
+    });
+    return [...new Set(bits)].filter(Boolean);
+  }
+
+  function exactCatalogHitHtml(validation, partNumberOverride = "") {
+    const exactPart = validation?.exactPart;
+    const verified = validation?.verifiedPart;
+    const secondary = validation?.secondaryPart;
+    if (!exactPart && !verified && !secondary) return "";
+    const title = "Exact part-number match";
+    return `<div class="exact-catalog-hit">
+      <div class="exact-catalog-hit-title">${escapeHtml(title)}</div>
+      <div class="exact-catalog-hit-part mono">${escapeHtml(partNumberOverride || exactPart?.partNumber || verified?.partNumber || secondary?.partNumber || "")}</div>
     </div>`;
   }
 
@@ -1074,6 +1141,7 @@
           r: arr.outline.radius * 1.08,
         })
       );
+      shell.appendChild(connectorFaceHardware(arr));
       shell.appendChild(
         svgEl("circle", {
           class: "shell-fill",
@@ -1144,6 +1212,95 @@
       svg.appendChild(group);
     });
     renderHoverPinLabel(svg, arr);
+  }
+
+  function currentShellFaceType(arr) {
+    const decoded = state.decoded;
+    if (!decoded?.ok || decoded.arrangement_id !== arr.id) return "";
+    return SHELL_PROFILE_TYPE[decoded.slash_sheet] || "";
+  }
+
+  function connectorFaceHardware(arr) {
+    const outline = arr.outline;
+    const profileType = currentShellFaceType(arr);
+    const group = svgEl("g", { class: `mount-hardware mount-${profileType || "none"}` });
+    if (!outline || !profileType) return group;
+
+    const cx = outline.center_x;
+    const cy = outline.center_y;
+    const radius = outline.radius;
+
+    if (profileType === "wall_receptacle" || profileType === "box_receptacle") {
+      const plateWidth = radius * (profileType === "wall_receptacle" ? 2.8 : 2.55);
+      const plateHeight = radius * (profileType === "wall_receptacle" ? 2.25 : 2.45);
+      const x = cx - plateWidth / 2;
+      const y = cy - plateHeight / 2;
+      group.appendChild(svgEl("rect", {
+        class: "mount-flange",
+        x,
+        y,
+        width: plateWidth,
+        height: plateHeight,
+        rx: radius * (profileType === "wall_receptacle" ? 0.2 : 0.14),
+      }));
+      group.appendChild(svgEl("rect", {
+        class: "mount-flange-inner",
+        x: cx - plateWidth * 0.38,
+        y: cy - plateHeight * 0.34,
+        width: plateWidth * 0.76,
+        height: plateHeight * 0.68,
+        rx: radius * 0.12,
+      }));
+      const holeOffsetX = plateWidth * 0.38;
+      const holeOffsetY = plateHeight * 0.36;
+      [
+        [cx - holeOffsetX, cy - holeOffsetY],
+        [cx + holeOffsetX, cy - holeOffsetY],
+        [cx - holeOffsetX, cy + holeOffsetY],
+        [cx + holeOffsetX, cy + holeOffsetY],
+      ].forEach(([hx, hy]) => {
+        group.appendChild(svgEl("circle", {
+          class: "mount-hole",
+          cx: hx,
+          cy: hy,
+          r: radius * 0.11,
+        }));
+      });
+      return group;
+    }
+
+    if (profileType === "jamnut_receptacle") {
+      const outerRadius = radius * 1.34;
+      const innerRadius = radius * 1.16;
+      const points = [];
+      for (let i = 0; i < 12; i += 1) {
+        const angle = (-90 + i * 30) * Math.PI / 180;
+        const pointRadius = i % 2 === 0 ? outerRadius : outerRadius * 0.92;
+        points.push(`${cx + Math.cos(angle) * pointRadius},${cy + Math.sin(angle) * pointRadius}`);
+      }
+      group.appendChild(svgEl("polygon", {
+        class: "jamnut-ring",
+        points: points.join(" "),
+      }));
+      group.appendChild(svgEl("circle", {
+        class: "jamnut-inner-ring",
+        cx,
+        cy,
+        r: innerRadius,
+      }));
+      return group;
+    }
+
+    if (profileType === "inline_receptacle") {
+      group.appendChild(svgEl("circle", {
+        class: "inline-face-ring",
+        cx,
+        cy,
+        r: radius * 1.18,
+      }));
+    }
+
+    return group;
   }
 
   function shouldRenderLabel(contact) {
@@ -1716,6 +1873,8 @@
                   productLines: new Set(),
                 };
 
+                if (!validPartNumberMap.has(normalizedCatalogPartNumber(candidate.part_number))) return;
+
                 const pathValues = selectorFieldOrder.map((field) => candidate[field]);
                 pathValues.forEach((value, index) => fieldValues[selectorFieldOrder[index]].add(value));
 
@@ -1734,10 +1893,6 @@
                     if (!visitedNode.example) visitedNode.example = candidate;
                   });
                 }
-
-                const exact = node.exact;
-                exact.manufacturers.add(rule.manufacturer || "Unknown");
-                exact.productLines.add(`${rule.manufacturer || "Unknown"} ${rule.product_line || ""}`.trim());
               });
             });
           });
@@ -1928,6 +2083,7 @@
   }
 
   function matingSourceCard(decoded) {
+    const validation = catalogValidationForDecoded(decoded);
     const bodyText = decoded.slash_sheet_definition?.description || decoded.slash_sheet;
     const arr = decoded.arrangement_id ? arrangementById(decoded.arrangement_id) : null;
     const svgHtml = arr?.outline ? `
@@ -1943,6 +2099,7 @@
         <div class="mating-source-body">
           ${svgHtml}
           ${shellProfileHtml(decoded.slash_sheet)}
+          ${exactCatalogHitHtml(validation, decoded.part_number)}
           <div class="mating-source-chips">
             ${optionChip(decoded.slash_sheet, "shell type", bodyText)}
             ${optionChip(decoded.class_field, "class / finish", decoded.class_definition?.description || "")}
@@ -1958,6 +2115,7 @@
 
   function matingSelectedCard(decoded, opt) {
     const targetDecoded = opt.targetDecoded;
+    const exactValidation = targetDecoded ? catalogValidationForDecoded(targetDecoded) : null;
     const mateDecoded = {
       ok: true,
       arrangement_id: decoded.arrangement_id,
@@ -1986,6 +2144,7 @@
         <div class="mating-source-body">
           ${svgHtml}
           ${shellHtml}
+          ${exactCatalogHitHtml(exactValidation, opt.candidatePartNumber)}
           <div class="mating-source-chips">
             ${optionChip(opt.mateSheet, "shell type", opt.targetStyle?.normalizedName || targetDecoded?.slash_sheet_definition?.description || "catalog-backed target shell")}
             ${optionChip(decoded.class_field, "class / finish", decoded.class_definition?.description || "")}
@@ -2001,7 +2160,6 @@
           ${opt.conflictingFields.length ? `<div class="detail-item"><div class="label">Conflicts</div><div class="value">${escapeHtml(opt.conflictingFields.join(", "))}</div></div>` : ""}
           ${opt.missingFields.length ? `<div class="detail-item"><div class="label">Missing data</div><div class="value">${escapeHtml(opt.missingFields.join(", "))}</div></div>` : ""}
           ${opt.warnings.length ? `<div class="detail-item"><div class="label">Warnings</div><div class="value">${escapeHtml(opt.warnings.join(" | "))}</div></div>` : ""}
-          ${opt.sources.length ? `<div class="detail-item"><div class="label">Sources</div><div class="value">${escapeHtml(opt.sources.join(" | "))}</div></div>` : ""}
           <div class="mating-option-actions">${decodeBtn}</div>
         </div>
       </div>
@@ -2031,6 +2189,7 @@
         <div class="name">Decoded Parts</div>
         <div class="value mono">${escapeHtml(items.map((item) => item.token).join(""))}</div>
         ${validationBadgeHtml(validation.status, validationLabel(validation.status))}
+        ${exactCatalogHitHtml(validation, decoded.part_number)}
         <div class="decoded-status-note">${escapeHtml((validation.reasons || []).join(" | ") || "Decoded from the current D38999 rules and extracted catalog data.")}</div>
         <div class="decoded-action-row">
           <button type="button" class="primary-action decoded-action-btn" data-decoded-action="mating">Find mate</button>
@@ -2163,9 +2322,9 @@
   function connectorSelector(context) {
     const pnValue = context.exact?.part_number || "Choose shell type, finish, shell size, insert, contacts, and keying.";
     const summary = context.exact
-      ? `${context.exact.manufacturers.size} manufacturer family${context.exact.manufacturers.size === 1 ? "" : "ies"} match this connector in the current rule set.`
+      ? "This exact connector is present in the valid D38999 database."
       : context.matchCount === context.totalCount
-        ? `${context.totalCount} valid D38999 connectors are available in the current rule set.`
+        ? `${context.totalCount} valid D38999 connectors are buildable from the current valid-PN dataset.`
         : `${context.matchCount} valid D38999 connector${context.matchCount === 1 ? "" : "s"} remain under the current selections.`;
     const fields = [
       ["slash_sheet", "1. Shell Type"],
@@ -2194,7 +2353,7 @@
           <div>
             <div class="pn-eyebrow">Assemble a real connector</div>
             <div class="selector-pn mono">${escapeHtml(pnValue)}</div>
-            <p>${escapeHtml(summary)} ${context.exact ? `${context.exact.productLines.size} source-backed product line${context.exact.productLines.size === 1 ? "" : "s"} support this exact connector.` : ""}</p>
+            <p>${escapeHtml(summary)}</p>
             <div class="selector-actions">
               <button type="button" class="selector-action secondary" data-selector-action="prev-step" ${activeStep === 0 ? "disabled" : ""}>Back</button>
               <button type="button" class="selector-action" data-selector-action="apply" ${context.exact ? "" : "disabled"}>Open in decoder</button>
@@ -2272,8 +2431,8 @@
             ${optionChip(decoded.polarization || "", "polarization", decoded.polarization_definition?.description || "")}
           </div>
           ${validationBadgeHtml(validation.status, validationLabel(validation.status))}
+          ${exactCatalogHitHtml(validation, decoded.part_number)}
           <div class="detail-item"><div class="label">Catalog grounding</div><div class="value">${escapeHtml((validation.reasons || []).join(" | ") || "No validation detail available.")}</div></div>
-          ${validation.sources?.length ? `<div class="detail-item"><div class="label">Sources</div><div class="value">${escapeHtml(validation.sources.join(" | "))}</div></div>` : ""}
         </div>
       </section>
     `;

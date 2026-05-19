@@ -25,6 +25,8 @@ DATA_FILES = [
     "d38999_part_number_examples.json",
     "d38999_catalog_supported_combinations.json",
     "d38999_verified_part_numbers.json",
+    "d38999_federalconnectors_secondary_source.json",
+    "d38999_valid_part_numbers.json",
     "d38999_visual_assets.json",
 ]
 
@@ -110,7 +112,9 @@ def build(project_root: Path) -> Path:
             "extractedRules": read_json(data_dir / "d38999_extracted_rules.json"),
             "partNumberExamples": read_json(data_dir / "d38999_part_number_examples.json"),
             "catalogSupportedCombinations": read_json(data_dir / "d38999_catalog_supported_combinations.json"),
+            "validPartNumbers": read_json(data_dir / "d38999_valid_part_numbers.json"),
             "verifiedPartNumbers": read_json(data_dir / "d38999_verified_part_numbers.json"),
+            "federalConnectorsSecondarySource": read_json(data_dir / "d38999_federalconnectors_secondary_source.json"),
             "visualAssets": read_json(data_dir / "d38999_visual_assets.json"),
         },
     }
