@@ -8,14 +8,37 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from d38999_environment import build_environment_outputs, ENVIRONMENT_FILTER_DEFINITIONS
+
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
 DEFAULT_OUTPUT = DATA_DIR / "d38999_valid_part_numbers.json"
+DEFAULT_ENVIRONMENT_OUTPUT = DATA_DIR / "d38999_environment_classification.json"
 
-PART_NUMBER_RE = re.compile(
+STANDARD_PART_NUMBER_RE = re.compile(
     r"^D38999/(?P<slashSheet>\d{2})(?P<class>[A-Z])(?P<shellSizeCode>[A-Z]{1,2})(?P<insertArrangement>\d{1,3})(?P<contactStyle>[A-Z])(?P<keying>[A-Z])$"
 )
+SHELL25_LANYARD_RE = re.compile(
+    r"^D38999/(?P<slashSheet>31|36)(?P<class>[A-Z])(?P<lanyardLengthCode>[A-Z])(?P<insertArrangement>\d{1,3})(?P<contactStyle>[A-Z])(?P<keying>[A-Z])(?P<typeNumber>\d)$"
+)
+DUMMY_STOWAGE_RE = re.compile(
+    r"^D38999/(?P<slashSheet>22|50)(?P<shellSizeCode>[A-HJ](?:\d)?)(?P<class>[A-Z])$"
+)
+PROTECTIVE_COVER_RE = re.compile(
+    r"^D38999/(?P<slashSheet>32|33|51|52)(?P<class>[A-Z])(?P<shellSizeNumber>\d{1,2})(?P<keying>[A-Z])$"
+)
+SHELL_SIZE_NUMBER_TO_CODE = {
+    "9": "A",
+    "11": "B",
+    "13": "C",
+    "15": "D",
+    "17": "E",
+    "19": "F",
+    "21": "G",
+    "23": "H",
+    "25": "J",
+}
 
 
 def read_json(path: Path) -> Any:
@@ -31,12 +54,34 @@ def canonical_part_number(part_number: str) -> str:
 
 
 def decode_part_number(part_number: str) -> dict[str, str] | None:
-    match = PART_NUMBER_RE.match(part_number)
-    if not match:
-        return None
-    decoded = match.groupdict()
-    decoded["slashSheet"] = f"/{decoded['slashSheet']}"
-    return decoded
+    match = STANDARD_PART_NUMBER_RE.match(part_number)
+    if match:
+        decoded = match.groupdict()
+        decoded["slashSheet"] = f"/{decoded['slashSheet']}"
+        return decoded
+
+    match = SHELL25_LANYARD_RE.match(part_number)
+    if match:
+        decoded = match.groupdict()
+        decoded["slashSheet"] = f"/{decoded['slashSheet']}"
+        decoded["shellSizeCode"] = "J"
+        decoded["shellSize"] = "25"
+        return decoded
+
+    match = DUMMY_STOWAGE_RE.match(part_number)
+    if match:
+        decoded = match.groupdict()
+        decoded["slashSheet"] = f"/{decoded['slashSheet']}"
+        return decoded
+
+    match = PROTECTIVE_COVER_RE.match(part_number)
+    if match:
+        decoded = match.groupdict()
+        decoded["slashSheet"] = f"/{decoded['slashSheet']}"
+        decoded["shellSizeCode"] = SHELL_SIZE_NUMBER_TO_CODE.get(decoded["shellSizeNumber"], "")
+        return decoded
+
+    return None
 
 
 def is_d38999_part_number(part_number: str) -> bool:
@@ -192,7 +237,7 @@ def load_qpl_files(records: dict[str, dict[str, Any]]) -> list[str]:
     return [path.name for path in qpl_files]
 
 
-def finalize(records: dict[str, dict[str, Any]], qpl_files: list[str]) -> dict[str, Any]:
+def finalize(records: dict[str, dict[str, Any]], qpl_files: list[str]) -> tuple[dict[str, Any], dict[str, Any]]:
     part_numbers = sorted(records.values(), key=lambda item: item["partNumber"])
     counts = Counter()
     for record in part_numbers:
@@ -200,6 +245,10 @@ def finalize(records: dict[str, dict[str, Any]], qpl_files: list[str]) -> dict[s
         record["qpls"].sort()
         record["evidenceLevel"] = evidence_level(record["sourcePresence"])
         counts[record["evidenceLevel"]] += 1
+
+    environment_fields, environment_report, environment_tag_counts = build_environment_outputs(part_numbers)
+    for record, enrichment in zip(part_numbers, environment_fields):
+        record.update(enrichment)
 
     summary = {
         "uniquePartNumbers": len(part_numbers),
@@ -212,10 +261,11 @@ def finalize(records: dict[str, dict[str, Any]], qpl_files: list[str]) -> dict[s
         },
         "evidenceLevelCounts": dict(sorted(counts.items())),
         "qplFiles": qpl_files,
+        "environmentTagCounts": environment_tag_counts,
     }
 
-    return {
-        "schema_version": "2026-05-19",
+    payload = {
+        "schema_version": "2026-05-20",
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "description": "Unified database of valid MIL D38999 part numbers built from all PN-bearing JSON datasets in the repository.",
         "inputs": {
@@ -225,17 +275,24 @@ def finalize(records: dict[str, dict[str, Any]], qpl_files: list[str]) -> dict[s
             "qplFiles": qpl_files,
         },
         "summary": summary,
+        "environment_filter_definitions": ENVIRONMENT_FILTER_DEFINITIONS,
         "partNumbers": part_numbers,
     }
+    return payload, environment_report
 
 
-def build_payload() -> dict[str, Any]:
+def build_outputs() -> tuple[dict[str, Any], dict[str, Any]]:
     records: dict[str, dict[str, Any]] = {}
     load_verified(records)
     load_examples(records)
     load_federal_connectors(records)
     qpl_files = load_qpl_files(records)
     return finalize(records, qpl_files)
+
+
+def build_payload() -> dict[str, Any]:
+    payload, _ = build_outputs()
+    return payload
 
 
 def main() -> None:
@@ -245,12 +302,23 @@ def main() -> None:
         default=str(DEFAULT_OUTPUT),
         help="Output JSON path (defaults to data/d38999_valid_part_numbers.json).",
     )
+    parser.add_argument(
+        "--environment-output",
+        default=str(DEFAULT_ENVIRONMENT_OUTPUT),
+        help="Output JSON path for environment classification report (defaults to data/d38999_environment_classification.json).",
+    )
     args = parser.parse_args()
 
     output_path = Path(args.output).resolve()
-    payload = build_payload()
-    output_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    environment_output_path = Path(args.environment_output).resolve()
+    payload, environment_report = build_outputs()
+    output_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    environment_output_path.write_text(
+        json.dumps(environment_report, ensure_ascii=False, separators=(",", ":")) + "\n",
+        encoding="utf-8",
+    )
     print(f"Wrote {payload['summary']['uniquePartNumbers']} unified valid D38999 part numbers to {output_path}")
+    print(f"Wrote {len(environment_report['connector_records'])} environment-classified connector records to {environment_output_path}")
 
 
 if __name__ == "__main__":

@@ -15,6 +15,8 @@ import json
 import sys
 from pathlib import Path
 
+# The app reads lightweight environment fields from d38999_valid_part_numbers.json.
+# The full environment audit stays in data/ only so the static bundle does not ship an unused large blob.
 DATA_FILES = [
     "insert_arrangements.json",
     "part_number_rules.json",
@@ -79,6 +81,10 @@ def build(project_root: Path) -> Path:
         source = data_dir / name
         target = app_data_dir / name
         target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
+
+    obsolete_environment_report = app_data_dir / "d38999_environment_classification.json"
+    if obsolete_environment_report.exists():
+        obsolete_environment_report.unlink()
 
     for svg_path in sorted(svg_dir.glob("*.svg")):
         target = app_svg_dir / svg_path.name
