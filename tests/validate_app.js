@@ -1,7 +1,7 @@
 const fs = require("fs");
 const http = require("http");
 const path = require("path");
-const { spawn } = require("child_process");
+const { execFileSync, spawn } = require("child_process");
 
 const projectRoot = path.resolve(__dirname, "..");
 const appUrl = `file:///${path.join(projectRoot, "app", "index.html").replace(/\\/g, "/")}`;
@@ -11,17 +11,38 @@ const downloadsDir = path.join(debugDir, `validation-downloads-${runId}`);
 const profileDir = path.join(debugDir, `chrome-validation-profile-${runId}`);
 const port = 9333 + Math.floor(Math.random() * 1000);
 
-const chromeCandidates = [
-  "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe",
-  "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
-  "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-  "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
-];
+const chromeCandidates = process.platform === "win32"
+  ? [
+      "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe",
+      "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+      "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+      "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+    ]
+  : [
+      "/usr/bin/google-chrome",
+      "/usr/bin/google-chrome-stable",
+      "/usr/bin/chromium",
+      "/usr/bin/chromium-browser",
+      "/usr/bin/microsoft-edge",
+      "/usr/bin/msedge",
+      "/snap/bin/chromium",
+    ];
 
 function chromePath() {
   const found = chromeCandidates.find((candidate) => fs.existsSync(candidate));
-  if (!found) throw new Error("No Chrome or Edge executable found for headless validation.");
-  return found;
+  if (found) return found;
+  if (process.platform !== "win32") {
+    const commandCandidates = ["google-chrome", "google-chrome-stable", "chromium", "chromium-browser", "microsoft-edge", "msedge"];
+    for (const candidate of commandCandidates) {
+      try {
+        const resolved = execFileSync("which", [candidate], { encoding: "utf8" }).trim();
+        if (resolved && fs.existsSync(resolved)) return resolved;
+      } catch {
+        // Try the next browser name.
+      }
+    }
+  }
+  throw new Error("No Chrome or Edge executable found for headless validation.");
 }
 
 function getJson(urlPath) {
@@ -280,6 +301,21 @@ async function main() {
     assert(decoded.selected.includes("17-35"), "Part number D38999/26WE35PN selects 17-35");
     assert(decoded.decoded.includes("17-35"), "Decoded panel shows 17-35");
 
+    const exactUiAudit = await cdp.eval(`(() => {
+      document.querySelector("#partNumberInput").value = "D38999/20FA23SN";
+      document.querySelector("#decodeButton").click();
+      const panel = document.querySelector("#decodedPanel");
+      return {
+        exactTitles: [...panel.querySelectorAll(".exact-catalog-hit-title")].map((node) => node.textContent.trim()),
+        exactBadgeTexts: [...panel.querySelectorAll(".mating-validation span")].map((node) => node.textContent.trim()),
+        summaries: [...panel.querySelectorAll(".connector-summary .value")].map((node) => node.textContent.trim()),
+      };
+    })()`);
+    assert(exactUiAudit.exactTitles.filter((text) => /exact part-number match/i.test(text)).length === 1, "Decoded exact match renders one exact-match block");
+    assert(exactUiAudit.exactBadgeTexts.filter((text) => /exact part-number match/i.test(text)).length === 0, "Decoded exact match does not also render a duplicate validation badge");
+    assert(exactUiAudit.summaries.some((text) => /wall-mount receptacle/i.test(text) && /panel|flange/i.test(text)), "Decoded summary explains the shell style in plain language");
+    assert(exactUiAudit.summaries.every((text) => !/QPL-validated/i.test(text)), "Decoded summary does not repeat QPL validation wording");
+
     const guideAndGaugeAudit = await cdp.eval(`(() => {
       const selectByArrangement = (id) => {
         document.querySelector("#arrangementFilter").value = id;
@@ -401,6 +437,7 @@ async function main() {
         "decoder-side pin catalog is removed",
         "pin search highlights and opens detail",
         "part number lookup selects 17-35",
+        "decoded exact-match cards render one exact-match block and one human summary",
         "manual shell filter works",
         "signal-assignment controls are absent",
         "mating panel renders catalog-backed mating PN with paired connector cards",

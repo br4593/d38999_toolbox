@@ -14,6 +14,11 @@
   const supportedCombinations = (researchData.catalogSupportedCombinations || {}).catalogSupportedCombinations || [];
   const validPartNumbersData = researchData.validPartNumbers || {};
   const validPartNumbers = validPartNumbersData.partNumbers || [];
+  const environmentFilterDefinitions = validPartNumbersData.environment_filter_definitions || [];
+  const environmentFilterOrder = environmentFilterDefinitions.map((item) => item.filter_key).filter(Boolean);
+  const environmentFilterMap = new Map(
+    environmentFilterDefinitions.map((item) => [item.filter_key, item])
+  );
   const verifiedPartNumbers = (researchData.verifiedPartNumbers || {}).verifiedPartNumbers || [];
   const federalConnectorsSecondarySource = researchData.federalConnectorsSecondarySource || {};
   const secondarySourceEntries = federalConnectorsSecondarySource.entries || [];
@@ -79,6 +84,59 @@
     manualRendered: false,
     selectedMateSheet: null,
     activeGaugeFilter: "",
+    buildEnvironmentFilter: "",
+  };
+
+  const EXACT_VALIDATION_STATUSES = new Set(["EXACT_PN_MATCH", "VERIFIED_EXISTS", "SECONDARY_SOURCE_EXACT"]);
+  const SHELL_STYLE_LABELS = {
+    "wall mount receptacle": "Wall-mount receptacle",
+    "jam nut receptacle": "Jam-nut receptacle",
+    "straight plug": "Straight plug",
+    "straight plug with emi fingers": "RFI/EMI straight plug",
+    "box mount receptacle": "Box-mount receptacle",
+    "inline receptacle": "Inline receptacle",
+    "box mount hermetic receptacle": "Hermetic box-mount receptacle",
+    "jam nut hermetic receptacle": "Hermetic jam-nut receptacle",
+    "solder mount hermetic receptacle": "Hermetic solder-mount receptacle",
+    "weld mount hermetic receptacle": "Hermetic weld-mount receptacle",
+    "dummy receptacle": "Dummy receptacle",
+    "protective cap for plug": "Protective cap for plug",
+    "protective cap for receptacle": "Protective cap for receptacle",
+  };
+  const SHELL_STYLE_DESCRIPTIONS = {
+    "wall mount receptacle": "A fixed connector mounted to a panel or equipment wall with a flange. It usually mates with a cable plug.",
+    "jam nut receptacle": "A panel-mounted connector secured with a rear jam nut. It is useful when you want a compact round panel cutout instead of a flange.",
+    "straight plug": "A cable-side connector that plugs into a receptacle. It is typically used on the harness or cable end.",
+    "straight plug with emi fingers": "A cable-side plug with shielding fingers to improve EMI/RFI continuity when used with the correct backshell and cable-shield termination.",
+    "box mount receptacle": "A fixed connector mounted directly to an equipment box or enclosure.",
+    "inline receptacle": "A cable-side receptacle used for cable-to-cable inline connections rather than a direct panel mount.",
+    "box mount hermetic receptacle": "A sealed receptacle mounted to a box or bulkhead to prevent gas or fluid leakage through the connector body.",
+    "jam nut hermetic receptacle": "A hermetic panel receptacle retained with a rear jam nut for compact sealed installations.",
+    "solder mount hermetic receptacle": "A hermetic receptacle intended for sealed wall or bulkhead installations where solder termination is required.",
+    "weld mount hermetic receptacle": "A hermetic receptacle welded into a panel or pressure boundary to maintain a sealed barrier.",
+    "dummy receptacle": "A protection or stowage part rather than an electrical mating connector.",
+    "protective cap for plug": "An accessory cap used to protect a plug when it is unmated. It is not an electrical mate.",
+    "protective cap for receptacle": "An accessory cap used to protect a receptacle when it is unmated. It is not an electrical mate.",
+  };
+  const ENVIRONMENT_TAG_LABELS = {
+    land_general: "General land use",
+    land_vehicle: "Land vehicle",
+    land_military: "Military land systems",
+    desert_dust: "Desert / dust",
+    high_vibration: "High vibration",
+    high_shock: "High shock",
+    marine_above_deck: "Marine / above-deck",
+    salt_fog: "Salt fog",
+    coastal: "Coastal exposure",
+    aerospace_general: "Aerospace",
+    aircraft_fixed_wing: "Fixed-wing aircraft",
+    industrial: "Industrial",
+    outdoor_exposed: "Outdoor exposed",
+    high_temperature: "High temperature",
+    low_temperature: "Low temperature",
+    high_emi_rfi: "High EMI/RFI",
+    fuel_oil_hydraulic_exposure: "Fuel, oil, and hydraulic exposure",
+    sealed_weatherproof: "Sealed / weatherproof",
   };
 
   const $ = (id) => document.getElementById(id);
@@ -451,21 +509,301 @@
     }).sort((a, b) => b.confidence - a.confidence || naturalCompare(a.mateSheet, b.mateSheet));
   }
 
-  function validationLabel(status) {
+  function normalizeDisplayKey(value) {
+    return String(value || "")
+      .trim()
+      .replace(/[\s_]+/g, " ")
+      .replace(/\s*\/\s*/g, "/")
+      .replace(/\s*-\s*/g, "-")
+      .replace(/\s+/g, " ")
+      .toLowerCase();
+  }
+
+  function displayTextScore(value) {
+    const text = String(value || "");
+    if (!text) return -1;
+    let score = 0;
+    if (text.trim() === text) score += 1;
+    if (!text.includes("_")) score += 3;
+    if (/[A-Z][a-z]/.test(text)) score += 2;
+    if (!/^[A-Z0-9_ /-]+$/.test(text)) score += 2;
+    if (/[/-]/.test(text)) score += 1;
+    score += Math.min(text.length, 48) / 100;
+    return score;
+  }
+
+  function preferredDisplayText(current, candidate) {
+    if (!current) return candidate;
+    if (!candidate) return current;
+    const currentScore = displayTextScore(current);
+    const candidateScore = displayTextScore(candidate);
+    if (candidateScore > currentScore) return candidate;
+    if (candidateScore === currentScore && candidate.length > current.length) return candidate;
+    return current;
+  }
+
+  function humanizeEnum(value) {
+    const text = String(value || "").trim();
+    if (!text) return "";
+    const tokenMap = {
+      iii: "III",
+      iv: "IV",
+      mil: "MIL",
+      dtl: "DTL",
+      pn: "PN",
+      qpl: "QPL",
+      emi: "EMI",
+      rfi: "RFI",
+    };
+    return text
+      .replace(/[_-]+/g, " ")
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((token) => {
+        const lower = token.toLowerCase();
+        if (tokenMap[lower]) return tokenMap[lower];
+        if (/^[a-z]\d$/i.test(token)) return token.toUpperCase();
+        return lower.charAt(0).toUpperCase() + lower.slice(1);
+      })
+      .join(" ")
+      .replace(/\bPn\b/g, "PN")
+      .replace(/\bQpl\b/g, "QPL")
+      .replace(/\bEmi\b/g, "EMI")
+      .replace(/\bRfi\b/g, "RFI");
+  }
+
+  function dedupeDisplayItems(items, options = {}) {
+    const list = Array.isArray(items) ? items : [];
+    const out = [];
+    const seen = new Map();
+    const getLabel = options.getLabel || ((item) => {
+      if (item == null) return "";
+      if (typeof item === "string" || typeof item === "number") return String(item);
+      return item.label || item.title || item.name || item.text || item.code || item.source || "";
+    });
+    const getKey = options.getKey || ((item) => {
+      if (item == null) return "";
+      if (typeof item === "string" || typeof item === "number") return normalizeDisplayKey(item);
+      const semanticBits = [
+        item.type,
+        item.label,
+        item.source_type,
+        item.source_name,
+        item.source,
+        item.qpl,
+        item.file,
+        item.matched_part_number,
+        item.match_type,
+        item.partNumber,
+        item.part_number,
+        item.code,
+      ].filter(Boolean);
+      return normalizeDisplayKey(semanticBits.join(" | "));
+    });
+    const mapOutput = options.mapOutput || ((item, label) => {
+      if (item == null || typeof item === "string" || typeof item === "number") return label;
+      if (Object.prototype.hasOwnProperty.call(item, "label")) return { ...item, label };
+      return { ...item, displayLabel: label };
+    });
+
+    list.forEach((item) => {
+      const label = String(getLabel(item) || "").trim();
+      const key = String(getKey(item) || normalizeDisplayKey(label)).trim();
+      if (!label || !key) return;
+      const existing = seen.get(key);
+      if (!existing) {
+        out.push(mapOutput(item, label));
+        seen.set(key, { index: out.length - 1, label });
+        return;
+      }
+      const preferred = preferredDisplayText(existing.label, label);
+      if (preferred !== existing.label) {
+        existing.label = preferred;
+        out[existing.index] = mapOutput(item, preferred);
+      }
+    });
+
+    return out.filter(Boolean);
+  }
+
+  function joinDisplayItems(items, separator = ", ", fallback = "", options = {}) {
+    const labels = dedupeDisplayItems(items, {
+      ...options,
+      mapOutput: (item, label) => label,
+    });
+    return labels.length ? labels.join(separator) : fallback;
+  }
+
+  function readableList(items) {
+    const list = dedupeDisplayItems(items, { mapOutput: (item, label) => label });
+    if (!list.length) return "";
+    if (list.length === 1) return list[0];
+    if (list.length === 2) return `${list[0]} and ${list[1]}`;
+    return `${list.slice(0, -1).join(", ")}, and ${list[list.length - 1]}`;
+  }
+
+  function ensureSentence(text) {
+    const value = String(text || "").trim();
+    if (!value) return "";
+    return /[.!?]$/.test(value) ? value : `${value}.`;
+  }
+
+  function firstSentence(text) {
+    const value = String(text || "").trim();
+    if (!value) return "";
+    const match = value.match(/^[^.!?]+[.!?]/);
+    return match ? match[0].trim() : ensureSentence(value);
+  }
+
+  function isExactValidationStatus(status) {
+    return EXACT_VALIDATION_STATUSES.has(status);
+  }
+
+  function shellStyleInfo(input) {
+    const decoded = typeof input === "string" ? { slash_sheet: input } : input || {};
+    const slashSheet = decoded.slash_sheet || decoded.slashSheet || "";
+    const slashDefinition = decoded.slash_sheet_definition || decoded.slashSheetDefinition || dlaSlashSheetDefinition(slashSheet);
+    const styleEntry = slashSheet ? styleEntryForSlashSheet(slashSheet) : null;
+    const rawName = styleEntry?.normalizedName || slashDefinition?.shell_style || slashDefinition?.description || "";
+    return {
+      slashSheet,
+      slashDefinition,
+      styleEntry,
+      rawName,
+      key: normalizeDisplayKey(rawName),
+    };
+  }
+
+  function getShellStyleLabel(input) {
+    const info = shellStyleInfo(input);
+    if (SHELL_STYLE_LABELS[info.key]) return SHELL_STYLE_LABELS[info.key];
+    if (info.rawName) return humanizeEnum(info.rawName);
+    if (info.slashDefinition?.description) return info.slashDefinition.description;
+    return info.slashSheet || "Shell style";
+  }
+
+  function getShellStyleDescription(input) {
+    const info = shellStyleInfo(input);
+    if (SHELL_STYLE_DESCRIPTIONS[info.key]) return SHELL_STYLE_DESCRIPTIONS[info.key];
+    if (info.styleEntry?.notes) return info.styleEntry.notes;
+    if (info.slashDefinition?.description) return info.slashDefinition.description;
+    return "This slash sheet selects the connector body style.";
+  }
+
+  function getEnvironmentLabel(tag) {
+    const key = normalizeDisplayKey(tag).replace(/ /g, "_");
+    return ENVIRONMENT_TAG_LABELS[key] || humanizeEnum(tag);
+  }
+
+  function contactSummaryText(decoded) {
+    const gender = normalizeDisplayKey(decoded?.contact_definition?.contact_gender || "");
+    if (gender === "pin") return "using pin contacts";
+    if (gender === "socket") return "using socket contacts";
+    const styleCode = String(decoded?.contact_style || "").toUpperCase();
+    if (styleCode === "P") return "using pin contacts";
+    if (styleCode === "S") return "using socket contacts";
+    const description = String(decoded?.contact_definition?.description || "").trim();
+    if (description) return `contact style: ${description}`;
+    return "Contact gender is not specified.";
+  }
+
+  function summaryValidationHighlight(validation) {
+    if (!validation) return "";
+    const sourcePresence = validation.exactPart?.sourcePresence || {};
+    if (sourcePresence.manufacturerVerified) return "It is backed by manufacturer catalog research.";
+    if (sourcePresence.federalConnectorsExact) return "It is backed by Federal Connectors data.";
+    if (sourcePresence.catalogExample) return "It matches a catalog example in the loaded research data.";
+    if (validation.status === "VERIFIED_EXISTS") return "It is backed by the catalog research dataset.";
+    if (validation.status === "SECONDARY_SOURCE_EXACT") return "It is backed by Federal Connectors data.";
+    return "";
+  }
+
+  function environmentSummarySentence(part) {
+    if (!part) return "";
+    const note = firstSentence(part.environment_notes);
+    if (note) return note;
+    const scored = Object.entries(part.environment_score || {})
+      .filter(([, score]) => Number(score) >= 4)
+      .map(([filterKey]) => environmentFilterLabel(filterKey, true).toLowerCase());
+    if (scored.length) return `The loaded data points to ${readableList(scored)} service.`;
+    const tags = dedupeDisplayItems(part.environment_tags || [], {
+      getLabel: (item) => getEnvironmentLabel(item),
+      mapOutput: (item, label) => label,
+    }).slice(0, 3);
+    if (tags.length) return `Environment tags include ${readableList(tags)}.`;
+    return "";
+  }
+
+  function buildValidationEvidenceText(validation) {
+    if (!validation) return "Validation source is not available.";
+    const sourceText = joinDisplayItems(validation.sources || [], " | ", "");
+    if (isExactValidationStatus(validation.status) && sourceText) {
+      return summarizeText(`Validation sources: ${sourceText}`, 220);
+    }
+    const reasonText = joinDisplayItems(validation.reasons || [], " | ", "");
+    if (reasonText) return summarizeText(reasonText, 220);
+    if (sourceText) return summarizeText(`Sources: ${sourceText}`, 220);
+    return "Validation source is not available.";
+  }
+
+  function buildConnectorHumanSummary(decoded, options = {}) {
+    if (!decoded?.ok) return String(options.emptyText || "").trim();
+    const validation = options.validation || catalogValidationForDecoded(decoded);
+    const shellLabel = getShellStyleLabel(decoded) || "Connector";
+    const shellSizeText = decoded.shell_size ? `shell size ${decoded.shell_size}` : "shell size not specified";
+    const arrangementText = decoded.arrangement_id
+      ? `insert arrangement ${decoded.arrangement_id}`
+      : decoded.insert_arrangement
+        ? `insert arrangement ${decoded.insert_arrangement}`
+        : "insert arrangement is not specified";
+    const contactText = contactSummaryText(decoded);
+    const leadBits = [shellLabel, shellSizeText, arrangementText];
+    if (contactText && !/^Contact gender is not specified\.?$/i.test(contactText)) {
+      leadBits.push(contactText);
+    }
+    const sentences = [ensureSentence(leadBits.join(", "))];
+    const shellDescription = getShellStyleDescription(decoded);
+    if (shellDescription) sentences.push(ensureSentence(shellDescription));
+    const validationHighlight = summaryValidationHighlight(validation);
+    if (validationHighlight) sentences.push(ensureSentence(validationHighlight));
+    const environmentSummary = environmentSummarySentence(validation?.exactPart || validation?.verifiedPart || validation?.secondaryPart);
+    if (environmentSummary) sentences.push(ensureSentence(environmentSummary));
+    if (/^Contact gender is not specified\.?$/i.test(contactText)) sentences.push("Contact gender is not specified.");
+    const matePartNumber = String(options.matePartNumber || decoded.mating_connector_pn || decoded.reciprocal_connector_pn || "").trim();
+    if (matePartNumber) {
+      sentences.push(`Known mate: ${matePartNumber}.`);
+    } else if (options.includeMateStatus !== false) {
+      sentences.push("Mating connector is not listed.");
+    }
+    const summary = dedupeDisplayItems(sentences, { mapOutput: (item, label) => label }).join(" ");
+    return summarizeText(summary, 420);
+  }
+
+  function connectorSummaryDetailHtml(decoded, options = {}) {
+    const summary = buildConnectorHumanSummary(decoded, options) || String(options.emptyText || "").trim();
+    if (!summary) return "";
+    return `<div class="detail-item detail-summary connector-summary"><div class="name">${escapeHtml(options.label || "Connector summary")}</div><div class="value">${escapeHtml(summary)}</div></div>`;
+  }
+
+  function getValidationStatusLabel(status) {
     switch (status) {
       case "EXACT_PN_MATCH":
       case "VERIFIED_EXISTS":
       case "SECONDARY_SOURCE_EXACT":
-        return "Exact PN match";
+        return "Exact part-number match";
       case "VALID_FORMAT_BUT_NOT_CONFIRMED":
-        return "Valid format, not confirmed";
+        return "Format valid, listing unconfirmed";
       case "INVALID_COMBINATION":
-        return "Invalid combination";
+        return "Unsupported combination";
       case "MANUFACTURER_SPECIFIC_UNCERTAIN":
-        return "Manufacturer-specific uncertainty";
+        return "Needs manufacturer review";
       default:
-        return "Missing data";
+        return "Missing catalog data";
     }
+  }
+
+  function validationLabel(status) {
+    return getValidationStatusLabel(status);
   }
 
   function validationClassName(status) {
@@ -483,6 +821,16 @@
     </div>`;
   }
 
+  function validationSummaryHtml(validation, options = {}) {
+    if (!validation?.status) return "";
+    if (isExactValidationStatus(validation.status)) {
+      return exactCatalogHitHtml(validation, options.partNumber || "", { hidePartNumber: options.hidePartNumber !== false });
+    }
+    const bits = [validationLabel(validation.status)];
+    if (Number.isFinite(options.confidence)) bits.push(`confidence ${(options.confidence * 100).toFixed(0)}%`);
+    return validationBadgeHtml(validation.status, bits.join(" | "));
+  }
+
   function summarizedValidPartSources(part) {
     if (!part) return [];
     const bits = [];
@@ -495,18 +843,69 @@
       else if (source.type === "federalconnectors_exact") bits.push("Federal Connectors index");
       else if (source.type === "qpl" && source.qpl) bits.push(`QPL ${source.qpl}`);
     });
-    return [...new Set(bits)].filter(Boolean);
+    return dedupeDisplayItems(bits, { mapOutput: (item, label) => label });
   }
 
-  function exactCatalogHitHtml(validation, partNumberOverride = "") {
+  function environmentFilterLabel(filterKey, short = false) {
+    const definition = environmentFilterMap.get(filterKey);
+    if (!definition) return filterKey;
+    if (!short) return definition.filter_name || filterKey;
+    const shortLabels = {
+      land: "Land",
+      sea: "Sea",
+      air: "Air",
+      space: "Space",
+      industrial: "Industrial",
+    };
+    return shortLabels[filterKey] || definition.filter_name || filterKey;
+  }
+
+  function environmentScore(part, filterKey) {
+    return Number(part?.environment_score?.[filterKey] || 0);
+  }
+
+  function partFitsEnvironment(part, filterKey) {
+    if (!filterKey) return true;
+    return environmentScore(part, filterKey) >= 3;
+  }
+
+  function environmentBadgesHtml(part) {
+    if (!part) return "";
+    const keys = (environmentFilterOrder.length ? environmentFilterOrder : ["land", "sea", "air", "space", "industrial"])
+      .filter((filterKey) => environmentScore(part, filterKey) >= 3);
+    if (!keys.length) return "";
+    return `
+      <div class="exact-catalog-hit-subtitle">Environment fit</div>
+      <div class="environment-badge-row">
+        ${keys.map((filterKey) => {
+          const score = environmentScore(part, filterKey);
+          const conditional = score === 3;
+          const label = conditional
+            ? `${environmentFilterLabel(filterKey, true)} (conditional)`
+            : environmentFilterLabel(filterKey, true);
+          return `<span class="environment-badge${conditional ? " conditional" : ""}">${escapeHtml(label)}</span>`;
+        }).join("")}
+      </div>
+    `;
+  }
+
+  function environmentNotesHtml(part) {
+    if (!part?.environment_notes) return "";
+    return `<div class="exact-catalog-hit-meta">${escapeHtml(part.environment_notes)}</div>`;
+  }
+
+  function exactCatalogHitHtml(validation, partNumberOverride = "", options = {}) {
     const exactPart = validation?.exactPart;
     const verified = validation?.verifiedPart;
     const secondary = validation?.secondaryPart;
     if (!exactPart && !verified && !secondary) return "";
+    const hidePartNumber = Boolean(options.hidePartNumber);
     const title = "Exact part-number match";
     return `<div class="exact-catalog-hit">
       <div class="exact-catalog-hit-title">${escapeHtml(title)}</div>
-      <div class="exact-catalog-hit-part mono">${escapeHtml(partNumberOverride || exactPart?.partNumber || verified?.partNumber || secondary?.partNumber || "")}</div>
+      ${hidePartNumber ? "" : `<div class="exact-catalog-hit-part mono">${escapeHtml(partNumberOverride || exactPart?.partNumber || verified?.partNumber || secondary?.partNumber || "")}</div>`}
+      ${exactPart ? environmentBadgesHtml(exactPart) : ""}
+      ${exactPart ? environmentNotesHtml(exactPart) : ""}
     </div>`;
   }
 
@@ -656,7 +1055,7 @@
 
   function ensureManualSelectorState(decoded) {
     if (!state.manualSelector) {
-      state.manualSelector = selectorSelectionFromDecoded(decoded);
+      state.manualSelector = blankSelectorSelection();
       state.buildStep = currentBuildStepFromSelection(state.manualSelector);
     }
     return state.manualSelector;
@@ -774,6 +1173,16 @@
   }
 
   function onManualTokenClick(event) {
+    const environmentButton = event.target.closest("[data-build-environment]");
+    if (environmentButton) {
+      const nextFilter = environmentButton.dataset.buildEnvironment || "";
+      if (state.buildEnvironmentFilter !== nextFilter) {
+        state.buildEnvironmentFilter = nextFilter;
+        if (state.buildRendered) renderBuildConnector();
+      }
+      return;
+    }
+
     const selectorButton = event.target.closest("[data-selector-field]");
     if (selectorButton) {
       if (selectorButton.disabled) return;
@@ -805,8 +1214,9 @@
     if (selectorAction) {
       const action = selectorAction.dataset.selectorAction;
       if (action === "reset") {
-        state.manualSelector = selectorSelectionFromDecoded(state.decoded);
+        state.manualSelector = blankSelectorSelection();
         state.buildStep = currentBuildStepFromSelection(state.manualSelector);
+        state.buildEnvironmentFilter = "";
         if (state.buildRendered) renderBuildConnector();
       } else if (action === "prev-step") {
         state.buildStep = Math.max(0, state.buildStep - 1);
@@ -837,8 +1247,9 @@
       return;
     }
     if (action === "build") {
-      state.manualSelector = selectorSelectionFromDecoded(state.decoded);
+      state.manualSelector = blankSelectorSelection();
       state.buildStep = currentBuildStepFromSelection(state.manualSelector);
+      state.buildEnvironmentFilter = "";
       renderBuildConnector();
       selectTab("build");
       return;
@@ -1220,53 +1631,57 @@
     return SHELL_PROFILE_TYPE[decoded.slash_sheet] || "";
   }
 
-  function connectorFaceHardware(arr) {
-    const outline = arr.outline;
-    const profileType = currentShellFaceType(arr);
-    const group = svgEl("g", { class: `mount-hardware mount-${profileType || "none"}` });
-    if (!outline || !profileType) return group;
-
-    const cx = outline.center_x;
-    const cy = outline.center_y;
-    const radius = outline.radius;
+  function shellFaceGeometry(profileType, cx, cy, radius) {
+    if (!profileType) return [];
 
     if (profileType === "wall_receptacle" || profileType === "box_receptacle") {
       const plateWidth = radius * (profileType === "wall_receptacle" ? 2.8 : 2.55);
       const plateHeight = radius * (profileType === "wall_receptacle" ? 2.25 : 2.45);
       const x = cx - plateWidth / 2;
       const y = cy - plateHeight / 2;
-      group.appendChild(svgEl("rect", {
-        class: "mount-flange",
-        x,
-        y,
-        width: plateWidth,
-        height: plateHeight,
-        rx: radius * (profileType === "wall_receptacle" ? 0.2 : 0.14),
-      }));
-      group.appendChild(svgEl("rect", {
-        class: "mount-flange-inner",
-        x: cx - plateWidth * 0.38,
-        y: cy - plateHeight * 0.34,
-        width: plateWidth * 0.76,
-        height: plateHeight * 0.68,
-        rx: radius * 0.12,
-      }));
       const holeOffsetX = plateWidth * 0.38;
       const holeOffsetY = plateHeight * 0.36;
+      const shapes = [
+        {
+          tag: "rect",
+          attrs: {
+            class: "mount-flange",
+            x,
+            y,
+            width: plateWidth,
+            height: plateHeight,
+            rx: radius * (profileType === "wall_receptacle" ? 0.2 : 0.14),
+          },
+        },
+        {
+          tag: "rect",
+          attrs: {
+            class: "mount-flange-inner",
+            x: cx - plateWidth * 0.38,
+            y: cy - plateHeight * 0.34,
+            width: plateWidth * 0.76,
+            height: plateHeight * 0.68,
+            rx: radius * 0.12,
+          },
+        },
+      ];
       [
         [cx - holeOffsetX, cy - holeOffsetY],
         [cx + holeOffsetX, cy - holeOffsetY],
         [cx - holeOffsetX, cy + holeOffsetY],
         [cx + holeOffsetX, cy + holeOffsetY],
       ].forEach(([hx, hy]) => {
-        group.appendChild(svgEl("circle", {
-          class: "mount-hole",
-          cx: hx,
-          cy: hy,
-          r: radius * 0.11,
-        }));
+        shapes.push({
+          tag: "circle",
+          attrs: {
+            class: "mount-hole",
+            cx: hx,
+            cy: hy,
+            r: radius * 0.11,
+          },
+        });
       });
-      return group;
+      return shapes;
     }
 
     if (profileType === "jamnut_receptacle") {
@@ -1278,27 +1693,139 @@
         const pointRadius = i % 2 === 0 ? outerRadius : outerRadius * 0.92;
         points.push(`${cx + Math.cos(angle) * pointRadius},${cy + Math.sin(angle) * pointRadius}`);
       }
-      group.appendChild(svgEl("polygon", {
-        class: "jamnut-ring",
-        points: points.join(" "),
-      }));
-      group.appendChild(svgEl("circle", {
-        class: "jamnut-inner-ring",
-        cx,
-        cy,
-        r: innerRadius,
-      }));
-      return group;
+      return [
+        {
+          tag: "polygon",
+          attrs: {
+            class: "jamnut-ring",
+            points: points.join(" "),
+          },
+        },
+        {
+          tag: "circle",
+          attrs: {
+            class: "jamnut-inner-ring",
+            cx,
+            cy,
+            r: innerRadius,
+          },
+        },
+      ];
     }
 
     if (profileType === "inline_receptacle") {
-      group.appendChild(svgEl("circle", {
-        class: "inline-face-ring",
-        cx,
-        cy,
-        r: radius * 1.18,
-      }));
+      return [
+        {
+          tag: "circle",
+          attrs: {
+            class: "inline-face-ring",
+            cx,
+            cy,
+            r: radius * 1.18,
+          },
+        },
+      ];
     }
+
+    return [];
+  }
+
+  function appendShellFaceGeometry(group, shapes) {
+    shapes.forEach((shape) => {
+      group.appendChild(svgEl(shape.tag, shape.attrs));
+    });
+  }
+
+  function svgAttrValue(value) {
+    return typeof value === "number" ? Number(value.toFixed(3)).toString() : String(value);
+  }
+
+  function svgShapeMarkup(shape) {
+    const attrs = Object.entries(shape.attrs)
+      .map(([key, value]) => `${key}="${svgAttrValue(value)}"`)
+      .join(" ");
+    return `<${shape.tag} ${attrs}></${shape.tag}>`;
+  }
+
+  function shellFaceOrientationMarkup(cx, cy, radius) {
+    const topY = cy - radius * 1.18;
+    const baseY = cy - radius * 0.9;
+    const halfWidth = radius * 0.17;
+    return `<path class="orientation-marker" d="M ${svgAttrValue(cx)} ${svgAttrValue(topY)} L ${svgAttrValue(cx + halfWidth)} ${svgAttrValue(baseY)} L ${svgAttrValue(cx - halfWidth)} ${svgAttrValue(baseY)} Z"></path>`;
+  }
+
+  function plugFaceDetailMarkup(cx, cy, radius) {
+    const marks = [];
+    for (let i = 0; i < 12; i += 1) {
+      const angle = i * 30 * Math.PI / 180;
+      const innerRadius = radius * 1.1;
+      const outerRadius = radius * 1.26;
+      marks.push(`
+        <line
+          class="plug-coupling-mark"
+          x1="${svgAttrValue(cx + Math.cos(angle) * innerRadius)}"
+          y1="${svgAttrValue(cy + Math.sin(angle) * innerRadius)}"
+          x2="${svgAttrValue(cx + Math.cos(angle) * outerRadius)}"
+          y2="${svgAttrValue(cy + Math.sin(angle) * outerRadius)}"
+        ></line>
+      `);
+    }
+    return marks.join("");
+  }
+
+  function coverFaceDetailMarkup(cx, cy, radius) {
+    return `
+      <circle class="cover-face" cx="${svgAttrValue(cx)}" cy="${svgAttrValue(cy)}" r="${svgAttrValue(radius * 0.78)}"></circle>
+      <circle class="cover-lip" cx="${svgAttrValue(cx)}" cy="${svgAttrValue(cy)}" r="${svgAttrValue(radius * 0.58)}"></circle>
+      <path class="cover-lanyard" d="M ${svgAttrValue(cx + radius * 0.64)} ${svgAttrValue(cy - radius * 0.18)} Q ${svgAttrValue(cx + radius * 1.12)} ${svgAttrValue(cy - radius * 0.46)} ${svgAttrValue(cx + radius * 1.16)} ${svgAttrValue(cy + radius * 0.04)}"></path>
+    `;
+  }
+
+  function shellFacePreviewMarkup(slashSheet) {
+    const profileType = SHELL_PROFILE_TYPE[slashSheet] || "";
+    if (!profileType) return "";
+
+    const cx = 50;
+    const cy = 50;
+    const radius = 22;
+    const hardware = shellFaceGeometry(profileType, cx, cy, radius)
+      .map((shape) => svgShapeMarkup(shape))
+      .join("");
+    const detail = profileType === "plug"
+      ? plugFaceDetailMarkup(cx, cy, radius)
+      : profileType === "cover"
+        ? coverFaceDetailMarkup(cx, cy, radius)
+        : "";
+
+    return `
+      <div class="selector-shell-graphic" aria-hidden="true">
+        <svg class="connector-svg mini-connector-svg shell-face-preview-svg" viewBox="0 0 100 100">
+          <g class="shell-layer">
+            <circle class="shell-shadow-ring" cx="${cx}" cy="${cy}" r="${svgAttrValue(radius * 1.08)}"></circle>
+            ${hardware}
+            <circle class="shell-fill" cx="${cx}" cy="${cy}" r="${svgAttrValue(radius * 1.04)}"></circle>
+            <circle class="shell" cx="${cx}" cy="${cy}" r="${radius}"></circle>
+            <circle class="insert-boundary" cx="${cx}" cy="${cy}" r="${svgAttrValue(radius * 0.88)}"></circle>
+            <circle class="shell-face-ring" cx="${cx}" cy="${cy}" r="${svgAttrValue(radius * 0.93)}"></circle>
+            ${detail}
+            ${shellFaceOrientationMarkup(cx, cy, radius)}
+          </g>
+        </svg>
+      </div>
+    `;
+  }
+
+  function connectorFaceHardware(arr) {
+    const outline = arr.outline;
+    const profileType = currentShellFaceType(arr);
+    const group = svgEl("g", { class: `mount-hardware mount-${profileType || "none"}` });
+    if (!outline || !profileType) return group;
+
+    const cx = outline.center_x;
+    const cy = outline.center_y;
+    const radius = outline.radius;
+
+    appendShellFaceGeometry(group, shellFaceGeometry(profileType, cx, cy, radius));
 
     return group;
   }
@@ -1662,10 +2189,6 @@
       return;
     }
     state.decoded = decoded;
-    if (decoded.ok) {
-      state.manualSelector = selectorSelectionFromDecoded(decoded);
-      state.buildStep = currentBuildStepFromSelection(state.manualSelector);
-    }
     renderDecoded(decoded);
     renderPartNumberGuide(decoded);
     if (state.buildRendered) renderBuildConnector();
@@ -1818,7 +2341,10 @@
   }
 
   function buildManualSelectorTree() {
-    if (buildManualSelectorTree.cache) return buildManualSelectorTree.cache;
+    if (!buildManualSelectorTree.cache) buildManualSelectorTree.cache = new Map();
+    const cacheKey = state.buildEnvironmentFilter || "__all__";
+    const cached = buildManualSelectorTree.cache.get(cacheKey);
+    if (cached) return cached;
 
     const shellCodeDefs = defs.shell_size_codes_series_iii_iv || {};
     const allShellCodes = Object.keys(shellCodeDefs);
@@ -1873,7 +2399,9 @@
                   productLines: new Set(),
                 };
 
-                if (!validPartNumberMap.has(normalizedCatalogPartNumber(candidate.part_number))) return;
+                const exactPart = validPartNumberMap.get(normalizedCatalogPartNumber(candidate.part_number));
+                if (!exactPart) return;
+                if (!partFitsEnvironment(exactPart, state.buildEnvironmentFilter)) return;
 
                 const pathValues = selectorFieldOrder.map((field) => candidate[field]);
                 pathValues.forEach((value, index) => fieldValues[selectorFieldOrder[index]].add(value));
@@ -1900,13 +2428,14 @@
       });
     });
 
-    buildManualSelectorTree.cache = {
+    const tree = {
       root,
       fieldValues: Object.fromEntries(
         Object.entries(fieldValues).map(([field, values]) => [field, sortSelectorValues(field, [...values])])
       ),
     };
-    return buildManualSelectorTree.cache;
+    buildManualSelectorTree.cache.set(cacheKey, tree);
+    return tree;
   }
 
   function sortSelectorValues(field, values) {
@@ -2048,7 +2577,7 @@
       ${warningsHtml}
       ${selectorHtml}
       <div class="mating-pair">
-        ${matingSourceCard(decoded)}
+        ${matingSourceCard(decoded, selectedOpt?.candidatePartNumber || "")}
         <div class="mating-pair-arrow" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M14 7l5 5-5 5"/></svg>
         </div>
@@ -2075,16 +2604,15 @@
     const profileType = SHELL_PROFILE_TYPE[slashSheet];
     const assetPath = SHELL_PROFILE_ASSET[profileType];
     if (assetPath) {
-      const alt = `${styleEntryForSlashSheet(slashSheet)?.normalizedName || slashSheet} schematic`;
+      const alt = `${getShellStyleLabel(slashSheet) || slashSheet} schematic`;
       return `<div class="shell-profile-frame shell-profile-asset-frame"><img class="shell-profile-asset" src="${escapeHtml(assetPath)}" alt="${escapeHtml(alt)}"></div>`;
     }
     const svg = SHELL_PROFILES[profileType];
     return svg ? `<div class="shell-profile-frame">${svg}</div>` : "";
   }
 
-  function matingSourceCard(decoded) {
+  function matingSourceCard(decoded, matePartNumber = "") {
     const validation = catalogValidationForDecoded(decoded);
-    const bodyText = decoded.slash_sheet_definition?.description || decoded.slash_sheet;
     const arr = decoded.arrangement_id ? arrangementById(decoded.arrangement_id) : null;
     const svgHtml = arr?.outline ? `
       <div class="mating-source-svg">
@@ -2097,11 +2625,12 @@
           <span class="mating-source-pn mono">${escapeHtml(decoded.part_number)}</span>
         </div>
         <div class="mating-source-body">
+          ${connectorSummaryDetailHtml(decoded, { matePartNumber })}
           ${svgHtml}
           ${shellProfileHtml(decoded.slash_sheet)}
-          ${exactCatalogHitHtml(validation, decoded.part_number)}
+          ${validationSummaryHtml(validation, { partNumber: decoded.part_number })}
           <div class="mating-source-chips">
-            ${optionChip(decoded.slash_sheet, "shell type", bodyText)}
+            ${optionChip(decoded.slash_sheet, "shell type", getShellStyleLabel(decoded))}
             ${optionChip(decoded.class_field, "class / finish", decoded.class_definition?.description || "")}
             ${optionChip(decoded.shell_code, "shell size", decoded.shell_size ? `size ${decoded.shell_size}` : "")}
             ${optionChip(decoded.insert_arrangement, "insert", decoded.arrangement_id || "")}
@@ -2116,6 +2645,9 @@
   function matingSelectedCard(decoded, opt) {
     const targetDecoded = opt.targetDecoded;
     const exactValidation = targetDecoded ? catalogValidationForDecoded(targetDecoded) : null;
+    const candidateValidation = exactValidation
+      ? { ...exactValidation, status: opt.status || exactValidation.status }
+      : { status: opt.status, reasons: [...(opt.conflictingFields || []), ...(opt.missingFields || [])], sources: opt.sources || [] };
     const mateDecoded = {
       ok: true,
       arrangement_id: decoded.arrangement_id,
@@ -2134,7 +2666,12 @@
     const decodeBtn = opt.candidatePartNumber
       ? `<button type="button" class="mating-decode-btn" data-mating-pn="${escapeHtml(opt.candidatePartNumber)}">Open in Decoder →</button>`
       : "";
-    const validationBadge = validationBadgeHtml(opt.status, `${validationLabel(opt.status)} | confidence ${(opt.confidence * 100).toFixed(0)}%`);
+    const validationEvidence = buildValidationEvidenceText(candidateValidation);
+    const matchedText = joinDisplayItems(opt.matchedFields || [], ", ", "none");
+    const oppositeText = joinDisplayItems(opt.oppositeFields || [], ", ", "none");
+    const conflictText = joinDisplayItems(opt.conflictingFields || [], ", ", "");
+    const missingText = joinDisplayItems(opt.missingFields || [], ", ", "");
+    const warningText = joinDisplayItems(opt.warnings || [], " | ", "");
     return `
       <div class="mating-source-card">
         <div class="mating-source-header">
@@ -2142,11 +2679,12 @@
           <span class="mating-source-pn mono">${escapeHtml(opt.candidatePartNumber || `D38999${opt.mateSheet}`)}</span>
         </div>
         <div class="mating-source-body">
+          ${connectorSummaryDetailHtml(targetDecoded, { validation: candidateValidation, matePartNumber: decoded.part_number, emptyText: "Catalog-backed mating details are incomplete for this candidate." })}
           ${svgHtml}
           ${shellHtml}
-          ${exactCatalogHitHtml(exactValidation, opt.candidatePartNumber)}
+          ${validationSummaryHtml(candidateValidation, { partNumber: opt.candidatePartNumber, confidence: opt.confidence })}
           <div class="mating-source-chips">
-            ${optionChip(opt.mateSheet, "shell type", opt.targetStyle?.normalizedName || targetDecoded?.slash_sheet_definition?.description || "catalog-backed target shell")}
+            ${optionChip(opt.mateSheet, "shell type", getShellStyleLabel(targetDecoded || { slash_sheet: opt.mateSheet }))}
             ${optionChip(decoded.class_field, "class / finish", decoded.class_definition?.description || "")}
             ${optionChip(decoded.shell_code, "shell size", decoded.shell_size ? `size ${decoded.shell_size}` : "")}
             ${optionChip(decoded.insert_arrangement, "insert", decoded.arrangement_id || "")}
@@ -2154,12 +2692,12 @@
             ${optionChip(decoded.polarization, "polarization", decoded.polarization_definition?.description || "")}
           </div>
           ${pnBlock}
-          ${validationBadge}
-          <div class="detail-item"><div class="label">Matched fields</div><div class="value">${escapeHtml(opt.matchedFields.join(", "))}</div></div>
-          <div class="detail-item"><div class="label">Opposite fields</div><div class="value">${escapeHtml(opt.oppositeFields.join(", ") || "none")}</div></div>
-          ${opt.conflictingFields.length ? `<div class="detail-item"><div class="label">Conflicts</div><div class="value">${escapeHtml(opt.conflictingFields.join(", "))}</div></div>` : ""}
-          ${opt.missingFields.length ? `<div class="detail-item"><div class="label">Missing data</div><div class="value">${escapeHtml(opt.missingFields.join(", "))}</div></div>` : ""}
-          ${opt.warnings.length ? `<div class="detail-item"><div class="label">Warnings</div><div class="value">${escapeHtml(opt.warnings.join(" | "))}</div></div>` : ""}
+          <div class="detail-item"><div class="label">Validation evidence</div><div class="value">${escapeHtml(validationEvidence)}</div></div>
+          <div class="detail-item"><div class="label">Matched fields</div><div class="value">${escapeHtml(matchedText)}</div></div>
+          <div class="detail-item"><div class="label">Opposite fields</div><div class="value">${escapeHtml(oppositeText)}</div></div>
+          ${conflictText ? `<div class="detail-item"><div class="label">Conflicts</div><div class="value">${escapeHtml(conflictText)}</div></div>` : ""}
+          ${missingText ? `<div class="detail-item"><div class="label">Missing data</div><div class="value">${escapeHtml(missingText)}</div></div>` : ""}
+          ${warningText ? `<div class="detail-item"><div class="label">Warnings</div><div class="value">${escapeHtml(warningText)}</div></div>` : ""}
           <div class="mating-option-actions">${decodeBtn}</div>
         </div>
       </div>
@@ -2183,17 +2721,18 @@
     const validation = catalogValidationForDecoded(decoded);
     const arrangement = decoded.arrangement_id ? arrangementById(decoded.arrangement_id) : null;
     const sources = items.map((item) => item.source).filter(Boolean);
-    const uniqueSources = [...new Set(sources)];
+    const uniqueSources = dedupeDisplayItems(sources, { mapOutput: (item, label) => label });
+    const validationEvidence = buildValidationEvidenceText(validation);
     return `
       <div class="detail-item detail-summary">
-        <div class="name">Decoded Parts</div>
+        <div class="name">Part number</div>
         <div class="value mono">${escapeHtml(items.map((item) => item.token).join(""))}</div>
-        ${validationBadgeHtml(validation.status, validationLabel(validation.status))}
-        ${exactCatalogHitHtml(validation, decoded.part_number)}
-        <div class="decoded-status-note">${escapeHtml((validation.reasons || []).join(" | ") || "Decoded from the current D38999 rules and extracted catalog data.")}</div>
+        ${connectorSummaryDetailHtml(decoded, { validation })}
+        ${validationSummaryHtml(validation, { partNumber: decoded.part_number })}
+        <div class="decoded-status-note">${escapeHtml(validationEvidence || "Decoded from the current D38999 rules and extracted catalog data.")}</div>
         <div class="decoded-action-row">
           <button type="button" class="primary-action decoded-action-btn" data-decoded-action="mating">Find mate</button>
-          <button type="button" class="decoded-action-btn" data-decoded-action="build">Build similar</button>
+          <button type="button" class="decoded-action-btn" data-decoded-action="build">Build connector</button>
           <button type="button" class="decoded-action-btn" data-decoded-action="catalog">Browse family</button>
         </div>
         <div class="manual-stat-grid">
@@ -2215,7 +2754,7 @@
     if (!els.buildContent) return;
     const selector = manualSelectorContext(state.decoded);
     const sections = [
-      ["Build Connector", connectorSelector(selector)],
+      ["Builder workflow", connectorSelector(selector)],
     ];
     els.buildContent.innerHTML = sections.map(([title, body]) => `
       <section class="manual-section build-section">
@@ -2254,8 +2793,8 @@
       const slashDef = (defs.slash_sheets || {})[value] || dlaSlashSheetDefinition(value);
       return {
         code: `D38999${value}`,
-        title: slashDef?.description || "shell type",
-        detail: slashDef?.series_inferred_from_source_text ? `Series ${slashDef.series_inferred_from_source_text}` : "connector body style",
+        title: getShellStyleLabel({ slash_sheet: value, slash_sheet_definition: slashDef }),
+        detail: getShellStyleDescription({ slash_sheet: value, slash_sheet_definition: slashDef }),
       };
     }
     if (field === "class_field") {
@@ -2304,14 +2843,16 @@
     const preview = optionNode?.example || context.preview;
     const meta = selectorFieldMeta(field, value, preview);
     const optionCount = optionNode?.descendantCount || 0;
+    const shellPreview = field === "slash_sheet" ? shellFacePreviewMarkup(value) : "";
     return `
       <button
         type="button"
-        class="option-chip selector-chip ${active ? "active" : ""}"
+        class="option-chip selector-chip ${field === "slash_sheet" ? "selector-shell-chip" : ""} ${active ? "active" : ""}"
         data-selector-field="${escapeHtml(field)}"
         data-selector-value="${escapeHtml(value)}"
         ${disabled ? "disabled" : ""}
       >
+        ${shellPreview}
         <strong class="mono">${escapeHtml(meta.code)}</strong>
         <span>${escapeHtml(meta.title || "")}</span>
         <em>${escapeHtml(disabled ? "not available with current selections" : `${optionCount} valid connector${optionCount === 1 ? "" : "s"} | ${meta.detail || ""}`)}</em>
@@ -2321,11 +2862,16 @@
 
   function connectorSelector(context) {
     const pnValue = context.exact?.part_number || "Choose shell type, finish, shell size, insert, contacts, and keying.";
-    const summary = context.exact
-      ? "This exact connector is present in the valid D38999 database."
-      : context.matchCount === context.totalCount
-        ? `${context.totalCount} valid D38999 connectors are buildable from the current valid-PN dataset.`
-        : `${context.matchCount} valid D38999 connector${context.matchCount === 1 ? "" : "s"} remain under the current selections.`;
+    const activeEnvironment = state.buildEnvironmentFilter;
+    const summary = context.totalCount === 0
+      ? activeEnvironment
+        ? `No valid exact D38999 connectors in the current dataset are tagged for ${environmentFilterLabel(activeEnvironment, true)} use.`
+        : "No valid D38999 connectors are buildable from the current valid-PN dataset."
+      : context.exact
+        ? "This exact connector is present in the valid D38999 database."
+        : context.matchCount === context.totalCount
+          ? `${context.totalCount} valid D38999 connectors are buildable from the current valid-PN dataset${activeEnvironment ? ` for ${environmentFilterLabel(activeEnvironment, true)} use` : ""}.`
+          : `${context.matchCount} valid D38999 connector${context.matchCount === 1 ? "" : "s"} remain under the current selections${activeEnvironment ? ` for ${environmentFilterLabel(activeEnvironment, true)} use` : ""}.`;
     const fields = [
       ["slash_sheet", "1. Shell Type"],
       ["class_field", "2. Class / Finish"],
@@ -2346,6 +2892,9 @@
     const activeField = fields[activeStep]?.[0] || fields[0][0];
     const activeTitle = fields[activeStep]?.[1] || fields[0][1];
     const activeValue = context.selection[activeField] || "";
+    const optionGridClass = ["option-grid"];
+    if (activeField === "insert_arrangement") optionGridClass.push("compact-options");
+    if (activeField === "slash_sheet") optionGridClass.push("selector-shell-options");
 
     return `
       <div class="selector-shell">
@@ -2357,10 +2906,23 @@
             <div class="selector-actions">
               <button type="button" class="selector-action secondary" data-selector-action="prev-step" ${activeStep === 0 ? "disabled" : ""}>Back</button>
               <button type="button" class="selector-action" data-selector-action="apply" ${context.exact ? "" : "disabled"}>Open in decoder</button>
-              <button type="button" class="selector-action secondary" data-selector-action="reset">${state.decoded?.ok ? "Use decoded PN" : "Clear"}</button>
+              <button type="button" class="selector-action secondary" data-selector-action="reset">Clear</button>
             </div>
           </div>
         </div>
+        <section class="build-environment-filter">
+          <div class="build-environment-filter-head">
+            <strong>Environment fit</strong>
+            <span>${escapeHtml(activeEnvironment ? `${environmentFilterLabel(activeEnvironment)} filter active` : "Show any valid environment")}</span>
+          </div>
+          <div class="build-environment-filter-buttons">
+            <button type="button" class="build-environment-btn${activeEnvironment ? "" : " active"}" data-build-environment="">Any</button>
+            ${environmentFilterDefinitions.map((item) => `
+              <button type="button" class="build-environment-btn${activeEnvironment === item.filter_key ? " active" : ""}" data-build-environment="${escapeHtml(item.filter_key)}">${escapeHtml(environmentFilterLabel(item.filter_key, true))}</button>
+            `).join("")}
+          </div>
+          <p>Filters Build Connector to exact part numbers tagged as suitable or conditionally suitable for the selected environment.</p>
+        </section>
         <div class="build-stepper">
           ${fields.map(([field, title], index) => {
             const status = index < activeStep
@@ -2386,7 +2948,7 @@
             <p>${escapeHtml(stepHelp[activeField] || "")}</p>
           </div>
           ${activeValue ? `<div class="manual-note build-current-choice">Current choice: <span class="mono">${escapeHtml(activeValue)}</span></div>` : ""}
-          <div class="option-grid ${activeField === "insert_arrangement" ? "compact-options" : ""}">
+          <div class="${optionGridClass.join(" ")}">
             ${selectorOptionUniverse(activeField).map((value) => selectorOptionButton(activeField, value, context)).join("")}
           </div>
         </section>
@@ -2408,6 +2970,7 @@
   function buildConnectorResult(decoded) {
     const arrangement = decoded?.arrangement_id ? arrangementById(decoded.arrangement_id) : null;
     const validation = catalogValidationForDecoded(decoded);
+    const validationEvidence = buildValidationEvidenceText(validation);
     return `
       <section class="build-result">
         <div class="build-result-head">
@@ -2422,17 +2985,17 @@
               <span>${escapeHtml(arrangement ? `${arrangement.contact_count} contacts | ${sizeSummary(arrangement)}` : "Arrangement preview")}</span>
             </div>
           </div>
+          ${connectorSummaryDetailHtml(decoded, { validation })}
           <div class="manual-stat-grid">
-            ${optionChip(decoded.slash_sheet || "", "shell type", decoded.slash_sheet_definition?.description || "")}
+            ${optionChip(decoded.slash_sheet || "", "shell type", getShellStyleLabel(decoded))}
             ${optionChip(decoded.class_field || "", "class / finish", decoded.class_definition?.description || "")}
             ${optionChip(decoded.shell_code || "", "shell size", decoded.shell_size ? `size ${decoded.shell_size}` : "")}
             ${optionChip(decoded.insert_arrangement || "", "insert arrangement", decoded.arrangement_id || "")}
             ${optionChip(decoded.contact_style || "", "contact style", decoded.contact_definition?.contact_gender || decoded.contact_definition?.description || "")}
             ${optionChip(decoded.polarization || "", "polarization", decoded.polarization_definition?.description || "")}
           </div>
-          ${validationBadgeHtml(validation.status, validationLabel(validation.status))}
-          ${exactCatalogHitHtml(validation, decoded.part_number)}
-          <div class="detail-item"><div class="label">Catalog grounding</div><div class="value">${escapeHtml((validation.reasons || []).join(" | ") || "No validation detail available.")}</div></div>
+          ${validationSummaryHtml(validation, { partNumber: decoded.part_number })}
+          <div class="detail-item"><div class="label">Validation evidence</div><div class="value">${escapeHtml(validationEvidence || "No validation detail available.")}</div></div>
         </div>
       </section>
     `;
@@ -2441,9 +3004,8 @@
   function manualFieldItems(decoded) {
     const active = activeDecodedOrExample(decoded);
     const arr = active.ok ? arrangementById(active.arrangement_id) : null;
-    const slashMeaning = active.ok
-      ? active.slash_sheet_definition?.description || "Connector shell type from the DLA source data."
-      : "Connector shell type from the DLA source data.";
+    const slashMeaning = active.ok ? getShellStyleLabel(active) : "Connector shell type from the DLA source data.";
+    const slashDescription = active.ok ? getShellStyleDescription(active) : "This selects the connector body style.";
     const classMeaning = active.ok
       ? active.class_definition?.description || "Material and finish class."
       : "Material and finish class.";
@@ -2469,7 +3031,7 @@
         label: "Shell type",
         icon: "BODY",
         summary: slashMeaning,
-        use: "This is not the shell size. It chooses the body style: plug, wall-mount receptacle, jam-nut receptacle, hermetic body, or Series IV shell type. It answers: what connector body am I ordering?",
+        use: `${slashDescription} This is not the shell size. It chooses the body style: plug, wall-mount receptacle, jam-nut receptacle, hermetic body, or Series IV shell type. It answers: what connector body am I ordering?`,
         source: active.ok ? sourceRef(active.slash_sheet_definition || active.source_pattern?.fields?.[1]) : ""
       },
       {
@@ -2569,7 +3131,7 @@
   function connectorDecisionGraphic(decoded) {
     const active = activeDecodedOrExample(decoded);
     const arr = active.ok ? arrangementById(active.arrangement_id) : null;
-    const body = active.ok ? active.slash_sheet_definition?.description || "connector shell type" : "connector shell type";
+    const body = active.ok ? getShellStyleLabel(active) : "connector shell type";
     const shell = active.ok ? `shell size ${active.shell_size}` : "numeric shell size";
     const insert = active.ok ? `${active.arrangement_id}` : "shell-insert arrangement";
     const contacts = arr ? `${arr.contact_count} contacts` : "contact count from insert drawing";
@@ -2686,8 +3248,9 @@
       )
       .sort((a, b) => naturalCompare(a.slash_sheet || "", b.slash_sheet || ""));
     const chips = docs.map((doc) => {
-      const title = [doc.component, doc.mount].filter(Boolean).join(", ") || doc.description;
-      const text = [doc.series ? `Series ${doc.series}` : "", doc.coupling ? `${doc.coupling} coupling` : "", doc.contacts].filter(Boolean).join(" | ");
+      const shellStyle = { slash_sheet: doc.slash_sheet, slash_sheet_definition: dlaSlashSheetDefinition(doc.slash_sheet) };
+      const title = getShellStyleLabel(shellStyle) || ([doc.component, doc.mount].filter(Boolean).join(", ") || doc.description);
+      const text = getShellStyleDescription(shellStyle);
       return optionChip(doc.slash_sheet || "", title, text, active.ok && active.slash_sheet === doc.slash_sheet);
     }).join("");
     return `
@@ -2848,7 +3411,7 @@
     const arr = arrangementById(decoded.arrangement_id);
     const rows = [
       ["D38999", "Family", "MIL-DTL-38999 circular connector family."],
-      ["/26", "Shell type", decoded.slash_sheet_definition?.description || "Connector shell type."],
+      ["/26", "Shell type", `${getShellStyleLabel(decoded)}. ${getShellStyleDescription(decoded)}`],
       ["W", "Class / finish", decoded.class_definition?.description || "Material and finish class."],
       ["E", "Shell size", `Shell-size code E maps to numeric shell size ${decoded.shell_size}.`],
       ["35", "Insert arrangement", `Insert 35 in shell size ${decoded.shell_size} selects arrangement ${decoded.arrangement_id}.`],
