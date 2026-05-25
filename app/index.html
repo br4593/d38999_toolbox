@@ -10,7 +10,7 @@
   <header class="app-header">
     <div>
       <h1>D38999 Toolbox</h1>
-      <p>Decode, browse, build, and learn D38999 connectors from one source-backed reference.</p>
+      <p>Decode, match, browse, build, and convert D38999 connectors.</p>
     </div>
     <div class="header-status">
       <button id="goHomeButton" class="header-home-button" type="button" data-home-target="home">Home</button>
@@ -22,31 +22,31 @@
   <nav class="top-tabs" aria-label="Application sections">
     <button class="tab-button active" type="button" data-tab="home">
       <svg class="tab-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="M2 7.5L8 2l6 5.5V14H10v-4H6v4H2V7.5z"/></svg>
-      <span>Start Here</span>
+      <span>Home</span>
     </button>
     <button class="tab-button" type="button" data-tab="decoder">
       <svg class="tab-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.4"/><path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M10 10l4 4"/></svg>
-      <span>Decoder</span>
+      <span>Decode</span>
     </button>
     <button class="tab-button" type="button" data-tab="mating">
       <svg class="tab-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="4" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/><circle cx="12" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/><path stroke="currentColor" stroke-width="1.4" stroke-linecap="round" d="M6.5 8h3"/></svg>
-      <span>Mating Connector</span>
+      <span>Mating</span>
     </button>
     <button class="tab-button" type="button" data-tab="catalog">
       <svg class="tab-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/></svg>
-      <span>Inserts Catalog</span>
+      <span>Catalog</span>
     </button>
     <button class="tab-button" type="button" data-tab="converter">
       <svg class="tab-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="M2 5h10M9 2.5L12 5l-3 2.5M14 11H4M7 8.5L4 11l3 2.5"/></svg>
-      <span>P/N Converter</span>
+      <span>Convert</span>
     </button>
     <button class="tab-button" type="button" data-tab="build">
       <svg class="tab-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.4" stroke-linecap="round" d="M8 2v12M2 8h12"/></svg>
-      <span>Build Connector</span>
+      <span>Build</span>
     </button>
     <button class="tab-button" type="button" data-tab="manual">
       <svg class="tab-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3" y="1" width="10" height="14" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="M5.5 5.5h5M5.5 8h5M5.5 10.5h3"/></svg>
-      <span>Interactive Manual</span>
+      <span>Manual</span>
     </button>
   </nav>
 
@@ -54,54 +54,54 @@
     <div class="home-shell">
       <section class="home-hero panel">
         <div class="home-hero-copy">
-          <div class="home-kicker">D38999 encyclopedia</div>
-          <h2>Welcome to D38999 Toolbox</h2>
-          <p>Use the toolbox as a part-number decoder, insert reference, connector builder, and learning guide without needing to know the full MIL-DTL-38999 vocabulary first.</p>
-          <div class="home-hero-actions">
-            <button type="button" class="primary-action" data-home-target="decoder">Decode a P/N</button>
-            <button type="button" data-home-target="build">Build a Connector</button>
-          </div>
-        </div>
-        <div class="home-hero-notes">
-          <div class="home-note">
-            <strong>Best for known part numbers</strong>
-            <span>Paste a D38999 P/N and inspect shell style, insert layout, contacts, and keying.</span>
-          </div>
-          <div class="home-note">
-            <strong>Best for discovery</strong>
-            <span>Browse insert layouts by shell size and contact count, or build a valid connector step by step.</span>
-          </div>
+          <div class="home-kicker">Choose a tool</div>
+          <h2>Start with the function you need</h2>
+          <p>Select a large icon below.</p>
         </div>
       </section>
 
-      <div class="home-task-grid">
+      <div class="home-task-grid" role="navigation" aria-label="Home functions">
         <button type="button" class="home-task-card" data-home-target="decoder">
           <div class="home-task-icon" aria-hidden="true">
             <svg viewBox="0 0 32 32" fill="none"><circle cx="13" cy="13" r="8" stroke="currentColor" stroke-width="2"/><path d="M19 19l7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
           </div>
-          <strong>Decode a Connector</strong>
-          <span>Enter a known D38999 part number and see what it means.</span>
+          <strong>Decode</strong>
+          <span>Read a part number.</span>
+        </button>
+        <button type="button" class="home-task-card" data-home-target="mating">
+          <div class="home-task-icon" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none"><circle cx="9" cy="16" r="5.5" stroke="currentColor" stroke-width="2"/><circle cx="23" cy="16" r="5.5" stroke="currentColor" stroke-width="2"/><path d="M14.5 16h3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+          </div>
+          <strong>Mating</strong>
+          <span>Find the matching connector.</span>
         </button>
         <button type="button" class="home-task-card" data-home-target="catalog">
           <div class="home-task-icon" aria-hidden="true">
             <svg viewBox="0 0 32 32" fill="none"><rect x="3" y="3" width="11" height="11" rx="2" stroke="currentColor" stroke-width="2"/><rect x="18" y="3" width="11" height="11" rx="2" stroke="currentColor" stroke-width="2"/><rect x="3" y="18" width="11" height="11" rx="2" stroke="currentColor" stroke-width="2"/><rect x="18" y="18" width="11" height="11" rx="2" stroke="currentColor" stroke-width="2"/></svg>
           </div>
-          <strong>Browse Insert Layouts</strong>
-          <span>Search insert arrangements by shell size, contact count, and contact size.</span>
+          <strong>Catalog</strong>
+          <span>Browse insert layouts.</span>
+        </button>
+        <button type="button" class="home-task-card" data-home-target="converter">
+          <div class="home-task-icon" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none"><path d="M5 11h15" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M15 6l5 5-5 5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M27 21H12" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M17 16l-5 5 5 5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <strong>Convert</strong>
+          <span>Cross-reference part numbers.</span>
         </button>
         <button type="button" class="home-task-card" data-home-target="build">
           <div class="home-task-icon" aria-hidden="true">
             <svg viewBox="0 0 32 32" fill="none"><path d="M22 4a7 7 0 00-7 9L4 24a3 3 0 004 4l11-11a7 7 0 009-7l-4 4-3-1-1-3 4-4A7 7 0 0022 4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
           </div>
-          <strong>Build a Valid Connector</strong>
-          <span>Choose each feature in order and only see combinations that exist.</span>
+          <strong>Build</strong>
+          <span>Create a valid connector.</span>
         </button>
         <button type="button" class="home-task-card" data-home-target="manual">
           <div class="home-task-icon" aria-hidden="true">
             <svg viewBox="0 0 32 32" fill="none"><rect x="6" y="3" width="20" height="26" rx="3" stroke="currentColor" stroke-width="2"/><path d="M11 11h10M11 17h10M11 23h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           </div>
-          <strong>Learn the Standard</strong>
-          <span>Use the interactive guide to understand shell type, insert, keying, and finish fields.</span>
+          <strong>Manual</strong>
+          <span>Learn the code system.</span>
         </button>
       </div>
     </div>
@@ -110,8 +110,8 @@
   <div id="decoderPanel" class="app-shell tab-panel">
     <aside class="sidebar panel">
       <section>
-        <h2>Decode a part number</h2>
-        <label for="partNumberInput">Connector P/N</label>
+        <h2>Decode</h2>
+        <label for="partNumberInput">Part number</label>
         <div class="inline-row">
           <input id="partNumberInput" class="mono" type="text" value="D38999/" placeholder="D38999/26WE35PN" autocomplete="off">
           <button id="decodeButton" type="button">Decode</button>
@@ -120,14 +120,14 @@
       </section>
 
       <section class="decoder-hint-section">
-        <h2>Quick examples</h2>
+        <h2>Examples</h2>
         <div class="example-chips">
           <button type="button" class="example-chip" data-example="D38999/26WE35PN">26WE35PN</button>
           <button type="button" class="example-chip" data-example="D38999/20FB35SN">20FB35SN</button>
           <button type="button" class="example-chip" data-example="D38999/24WC35PN">24WC35PN</button>
           <button type="button" class="example-chip" data-example="D38999/26WA98SN">26WA98SN</button>
         </div>
-        <p class="decoder-hint">Enter any D38999 part number above. The connector graphic and pin detail update instantly. <a href="#" id="openCatalogLink">Browse the catalog</a> to find arrangements by filter.</p>
+        <p class="decoder-hint">Enter a D38999 P/N or <a href="#" id="openCatalogLink">browse the catalog</a>.</p>
       </section>
     </aside>
 
@@ -139,31 +139,31 @@
             <div id="sourceInfo" class="source-line"></div>
           </div>
           <div class="toolbar">
-            <label class="compact-field" for="labelsToggle">Labels</label>
+            <label class="compact-field" for="labelsToggle">Pin labels</label>
             <select id="labelsToggle" class="compact-select">
               <option value="smart">Smart</option>
               <option value="focus">Selected only</option>
               <option value="all">Show all</option>
               <option value="off" selected>Hide all</option>
             </select>
-            <label class="check"><input id="outlineToggle" type="checkbox" checked> Shell outline</label>
+            <label class="check"><input id="outlineToggle" type="checkbox" checked> Outline</label>
             <button id="resetViewButton" type="button">Reset view</button>
           </div>
         </div>
         <div class="viewer-search-row">
-          <label for="pinSearchInput">Find pin</label>
-          <input id="pinSearchInput" class="mono" type="text" placeholder="A, 1, AA...">
+          <label for="pinSearchInput">Pin</label>
+          <input id="pinSearchInput" class="mono" type="text" placeholder="A or 1">
           <span id="searchMessage" class="message"></span>
         </div>
         <div class="legend">
-          <span class="legend-label">Contact size</span>
+          <span class="legend-label">Sizes</span>
           <button type="button" class="legend-filter" data-gauge-filter="8" aria-pressed="false"><i class="legend-contact gauge-8"></i>#8</button>
           <button type="button" class="legend-filter" data-gauge-filter="10" aria-pressed="false"><i class="legend-contact gauge-10"></i>#10</button>
           <button type="button" class="legend-filter" data-gauge-filter="12" aria-pressed="false"><i class="legend-contact gauge-12"></i>#12</button>
           <button type="button" class="legend-filter" data-gauge-filter="16" aria-pressed="false"><i class="legend-contact gauge-16"></i>#16</button>
           <button type="button" class="legend-filter" data-gauge-filter="20" aria-pressed="false"><i class="legend-contact gauge-20"></i>#20</button>
           <button type="button" class="legend-filter" data-gauge-filter="22d" aria-pressed="false"><i class="legend-contact gauge-22d"></i>#22D</button>
-          <span><i class="legend-pin match"></i>Search match</span>
+          <span><i class="legend-pin match"></i>Match</span>
         </div>
         <div id="viewerFrame" class="viewer-frame">
           <svg id="connectorSvg" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Connector insert arrangement"></svg>
@@ -173,18 +173,18 @@
 
     <aside class="right-panel panel">
       <section>
-        <h2>Decoded parts</h2>
+        <h2>Decoded</h2>
         <div id="decodedPanel" class="details-list"></div>
       </section>
 
       <section>
-        <h2>Part-number guide</h2>
+        <h2>Guide</h2>
         <div id="partNumberGuidePanel" class="details-list"></div>
       </section>
 
       <section>
-        <h2>Pin detail</h2>
-        <div id="pinDetailHeader" class="pin-detail-header">Select a pin to see its details here.</div>
+        <h2>Pin</h2>
+        <div id="pinDetailHeader" class="pin-detail-header">Select a pin.</div>
       </section>
     </aside>
   </div>
@@ -343,8 +343,8 @@
   <section id="buildPanel" class="manual-panel panel tab-panel" aria-label="Build Connector">
     <div class="panel-title-row">
       <div>
-        <h2>Build Connector</h2>
-        <div class="source-line">Assemble a valid D38999 connector from the source-backed rule set.</div>
+        <h2>Build</h2>
+        <div class="source-line">Select valid options step by step.</div>
       </div>
     </div>
     <div id="buildContent" class="manual-content"></div>

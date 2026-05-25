@@ -959,6 +959,7 @@
   }
 
   function setMessage(element, text, warn = false) {
+    if (!element) return;
     element.textContent = text || "";
     element.classList.toggle("warn", Boolean(warn));
   }
@@ -2128,7 +2129,7 @@
     const contacts = currentContacts();
     const contact = contacts[state.selectedContactIndex];
     if (!contact) {
-      els.pinDetailHeader.textContent = "Select a pin";
+      els.pinDetailHeader.textContent = "Select a pin.";
       return;
     }
     const source = labelSource(contact);
@@ -2754,7 +2755,7 @@
     if (!els.buildContent) return;
     const selector = manualSelectorContext(state.decoded);
     const sections = [
-      ["Builder workflow", connectorSelector(selector)],
+      ["Build", connectorSelector(selector)],
     ];
     els.buildContent.innerHTML = sections.map(([title, body]) => `
       <section class="manual-section build-section">
@@ -2844,6 +2845,7 @@
     const meta = selectorFieldMeta(field, value, preview);
     const optionCount = optionNode?.descendantCount || 0;
     const shellPreview = field === "slash_sheet" ? shellFacePreviewMarkup(value) : "";
+    const metaLine = disabled ? "Unavailable" : `${optionCount} match${optionCount === 1 ? "" : "es"}`;
     return `
       <button
         type="button"
@@ -2855,43 +2857,42 @@
         ${shellPreview}
         <strong class="mono">${escapeHtml(meta.code)}</strong>
         <span>${escapeHtml(meta.title || "")}</span>
-        <em>${escapeHtml(disabled ? "not available with current selections" : `${optionCount} valid connector${optionCount === 1 ? "" : "s"} | ${meta.detail || ""}`)}</em>
+        <em>${escapeHtml(metaLine)}</em>
       </button>
     `;
   }
 
   function connectorSelector(context) {
-    const pnValue = context.exact?.part_number || "Choose shell type, finish, shell size, insert, contacts, and keying.";
+    const pnValue = context.exact?.part_number || "Choose options to build a connector.";
     const activeEnvironment = state.buildEnvironmentFilter;
     const summary = context.totalCount === 0
       ? activeEnvironment
-        ? `No valid exact D38999 connectors in the current dataset are tagged for ${environmentFilterLabel(activeEnvironment, true)} use.`
-        : "No valid D38999 connectors are buildable from the current valid-PN dataset."
+        ? `No matches for ${environmentFilterLabel(activeEnvironment, true)}.`
+        : "No valid connectors match."
       : context.exact
-        ? "This exact connector is present in the valid D38999 database."
+        ? "Exact match in the valid-part-number set."
         : context.matchCount === context.totalCount
-          ? `${context.totalCount} valid D38999 connectors are buildable from the current valid-PN dataset${activeEnvironment ? ` for ${environmentFilterLabel(activeEnvironment, true)} use` : ""}.`
-          : `${context.matchCount} valid D38999 connector${context.matchCount === 1 ? "" : "s"} remain under the current selections${activeEnvironment ? ` for ${environmentFilterLabel(activeEnvironment, true)} use` : ""}.`;
+          ? `${context.totalCount} valid connector${context.totalCount === 1 ? "" : "s"}${activeEnvironment ? ` for ${environmentFilterLabel(activeEnvironment, true)}` : ""}.`
+          : `${context.matchCount} match${context.matchCount === 1 ? "" : "es"}${activeEnvironment ? ` for ${environmentFilterLabel(activeEnvironment, true)}` : ""}.`;
     const fields = [
-      ["slash_sheet", "1. Shell Type"],
-      ["class_field", "2. Class / Finish"],
-      ["shell_code", "3. Shell Code"],
-      ["insert_arrangement", "4. Insert Arrangement"],
-      ["contact_style", "5. Contact Style"],
-      ["polarization", "6. Polarization"],
+      ["slash_sheet", "Shell"],
+      ["class_field", "Class"],
+      ["shell_code", "Size"],
+      ["insert_arrangement", "Insert"],
+      ["contact_style", "Contacts"],
+      ["polarization", "Keying"],
     ];
     const stepHelp = {
-      slash_sheet: "Choose the connector body style first: plug, receptacle, hermetic body, or other shell family.",
-      class_field: "Pick the material and finish that fit the environment and hardware family.",
-      shell_code: "Choose the shell-size code. The app translates the letter into the physical shell size for you.",
-      insert_arrangement: "Choose the insert layout that gives you the contact pattern and count you need.",
-      contact_style: "Pick whether the connector ships with pins, sockets, or another contact option.",
-      polarization: "Set the keying position that prevents wrong mating between similar connectors.",
+      slash_sheet: "Pick the shell family.",
+      class_field: "Pick class and finish.",
+      shell_code: "Pick the shell size code.",
+      insert_arrangement: "Pick the insert pattern.",
+      contact_style: "Pick the contact option.",
+      polarization: "Pick the keying.",
     };
     const activeStep = context.activeStep;
     const activeField = fields[activeStep]?.[0] || fields[0][0];
     const activeTitle = fields[activeStep]?.[1] || fields[0][1];
-    const activeValue = context.selection[activeField] || "";
     const optionGridClass = ["option-grid"];
     if (activeField === "insert_arrangement") optionGridClass.push("compact-options");
     if (activeField === "slash_sheet") optionGridClass.push("selector-shell-options");
@@ -2899,21 +2900,18 @@
     return `
       <div class="selector-shell">
         <div class="selector-hero">
-          <div>
-            <div class="pn-eyebrow">Assemble a real connector</div>
-            <div class="selector-pn mono">${escapeHtml(pnValue)}</div>
-            <p>${escapeHtml(summary)}</p>
-            <div class="selector-actions">
-              <button type="button" class="selector-action secondary" data-selector-action="prev-step" ${activeStep === 0 ? "disabled" : ""}>Back</button>
-              <button type="button" class="selector-action" data-selector-action="apply" ${context.exact ? "" : "disabled"}>Open in decoder</button>
-              <button type="button" class="selector-action secondary" data-selector-action="reset">Clear</button>
-            </div>
+          <div class="selector-pn mono">${escapeHtml(pnValue)}</div>
+          <p>${escapeHtml(summary)}</p>
+          <div class="selector-actions">
+            <button type="button" class="selector-action secondary" data-selector-action="prev-step" ${activeStep === 0 ? "disabled" : ""}>Back</button>
+            <button type="button" class="selector-action" data-selector-action="apply" ${context.exact ? "" : "disabled"}>Open in decoder</button>
+            <button type="button" class="selector-action secondary" data-selector-action="reset">Clear</button>
           </div>
         </div>
         <section class="build-environment-filter">
           <div class="build-environment-filter-head">
-            <strong>Environment fit</strong>
-            <span>${escapeHtml(activeEnvironment ? `${environmentFilterLabel(activeEnvironment)} filter active` : "Show any valid environment")}</span>
+            <strong>Environment</strong>
+            <span>${escapeHtml(activeEnvironment ? environmentFilterLabel(activeEnvironment, true) : "Any")}</span>
           </div>
           <div class="build-environment-filter-buttons">
             <button type="button" class="build-environment-btn${activeEnvironment ? "" : " active"}" data-build-environment="">Any</button>
@@ -2921,7 +2919,6 @@
               <button type="button" class="build-environment-btn${activeEnvironment === item.filter_key ? " active" : ""}" data-build-environment="${escapeHtml(item.filter_key)}">${escapeHtml(environmentFilterLabel(item.filter_key, true))}</button>
             `).join("")}
           </div>
-          <p>Filters Build Connector to exact part numbers tagged as suitable or conditionally suitable for the selected environment.</p>
         </section>
         <div class="build-stepper">
           ${fields.map(([field, title], index) => {
@@ -2932,7 +2929,7 @@
                 : context.selection[field]
                   ? "done"
                   : "pending";
-            const label = context.selection[field] || "Not chosen";
+            const label = context.selection[field] || "Choose";
             return `
               <button type="button" class="build-step-pill ${status}" data-build-step="${index}">
                 <strong>${escapeHtml(title)}</strong>
@@ -2943,26 +2940,14 @@
         </div>
         <section class="build-step-card">
           <div class="build-step-card-head">
-            <div class="build-step-kicker">Step ${activeStep + 1} of ${fields.length}</div>
             <strong>${escapeHtml(activeTitle)}</strong>
             <p>${escapeHtml(stepHelp[activeField] || "")}</p>
           </div>
-          ${activeValue ? `<div class="manual-note build-current-choice">Current choice: <span class="mono">${escapeHtml(activeValue)}</span></div>` : ""}
           <div class="${optionGridClass.join(" ")}">
             ${selectorOptionUniverse(activeField).map((value) => selectorOptionButton(activeField, value, context)).join("")}
           </div>
         </section>
         ${context.exact ? buildConnectorResult(context.exact) : ""}
-        <div class="selector-grid build-summary-grid">
-          ${fields.map(([field, title], index) => `
-            <section class="selector-field build-summary-item ${index === activeStep ? "active" : ""}">
-              <div class="selector-field-head">
-                <strong>${escapeHtml(title)}</strong>
-                <span>${escapeHtml(context.selection[field] || "Choose")}</span>
-              </div>
-            </section>
-          `).join("")}
-        </div>
       </div>
     `;
   }
