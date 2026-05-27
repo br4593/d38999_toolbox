@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 110" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- Panel (dashed) -->
+  <rect x="172" y="4" width="6" height="102" fill="currentColor" opacity="0.08" stroke="none"/>
+  <line x1="175" y1="4" x2="175" y2="106" stroke-dasharray="5 4" opacity="0.5" stroke-width="1.5"/>
+  <!-- Shell body (shell 19) -->
+  <rect x="52" y="12" width="118" height="80" rx="6"/>
+  <!-- Hex jam nut -->
+  <polygon points="182,20 202,10 222,20 222,86 202,96 182,86" stroke-width="2" opacity="0.7"/>
+  <!-- RJ45 port -->
+  <rect x="86" y="36" width="30" height="24" rx="2" stroke-width="2"/>
+  <!-- 8 pins -->
+  <line x1="90" y1="38" x2="90" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="93.5" y1="38" x2="93.5" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="97" y1="38" x2="97" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="100.5" y1="38" x2="100.5" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="104" y1="38" x2="104" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="107.5" y1="38" x2="107.5" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="111" y1="38" x2="111" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="114.5" y1="38" x2="114.5" y2="45" stroke-width="1" opacity="0.6" transform="translate(-2,0)"/>
+  <!-- Coupling thread area -->
+  <rect x="28" y="28" width="24" height="48" rx="3" stroke-width="1.5" opacity="0.5"/>
+  <!-- Keying notch -->
+  <rect x="106" y="4" width="8" height="6" rx="1.5" fill="currentColor" opacity="0.3"/>
+  <!-- Wire leads -->
+  <line x1="228" y1="38" x2="256" y2="38" stroke-width="1.5" opacity="0.6"/>
+  <line x1="228" y1="48" x2="256" y2="48" stroke-width="1.5" opacity="0.6"/>
+  <line x1="228" y1="58" x2="256" y2="58" stroke-width="1.5" opacity="0.6"/>
+  <line x1="228" y1="68" x2="256" y2="68" stroke-width="1.5" opacity="0.6"/>
+  <text x="140" y="108" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">RJFTV Jam Nut Receptacle</text>
+</svg>

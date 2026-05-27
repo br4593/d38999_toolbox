@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 130" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- PCB board (dashed) -->
+  <rect x="50" y="100" width="160" height="6" fill="currentColor" opacity="0.1" stroke="none"/>
+  <line x1="50" y1="103" x2="210" y2="103" stroke-width="2" opacity="0.5"/>
+  <!-- Stand-off legs -->
+  <line x1="80" y1="78" x2="80" y2="100" stroke-width="2"/>
+  <line x1="180" y1="78" x2="180" y2="100" stroke-width="2"/>
+  <!-- Flange plate -->
+  <rect x="64" y="68" width="132" height="12" rx="2" stroke-width="2"/>
+  <!-- Shell body -->
+  <rect x="90" y="18" width="80" height="52" rx="6"/>
+  <!-- USB-C port (face view) -->
+  <rect x="118" y="34" width="24" height="14" rx="7" stroke-width="2"/>
+  <!-- Keying notch -->
+  <rect x="126" y="10" width="8" height="6" rx="1.5" fill="currentColor" opacity="0.3"/>
+  <!-- Coupling thread ring -->
+  <rect x="78" y="24" width="6" height="40" rx="2" stroke-width="1.5" opacity="0.5"/>
+  <text x="130" y="124" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">USB3CFTV Stand-off (PCB)</text>
+</svg>

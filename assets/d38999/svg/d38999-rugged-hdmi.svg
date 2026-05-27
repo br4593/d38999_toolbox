@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 96" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- D38999-style shell -->
+  <circle cx="110" cy="48" r="38" stroke-width="2.5"/>
+  <circle cx="110" cy="48" r="34" stroke-width="1.5" opacity="0.5"/>
+  <!-- HDMI port shape in center (trapezoid) -->
+  <path d="M93 38 L127 38 L124 60 L96 60 Z" stroke-width="2"/>
+  <!-- Pin row indicators -->
+  <line x1="100" y1="44" x2="100" y2="54" stroke-width="1" opacity="0.5"/>
+  <line x1="104" y1="44" x2="104" y2="54" stroke-width="1" opacity="0.5"/>
+  <line x1="108" y1="44" x2="108" y2="54" stroke-width="1" opacity="0.5"/>
+  <line x1="112" y1="44" x2="112" y2="54" stroke-width="1" opacity="0.5"/>
+  <line x1="116" y1="44" x2="116" y2="54" stroke-width="1" opacity="0.5"/>
+  <line x1="120" y1="44" x2="120" y2="54" stroke-width="1" opacity="0.5"/>
+  <!-- Keying notch -->
+  <rect x="106" y="12" width="8" height="5" rx="1" fill="currentColor" opacity="0.3"/>
+  <text x="110" y="92" text-anchor="middle" font-size="11" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">Rugged HDMI (HDMIFTV style)</text>
+</svg>

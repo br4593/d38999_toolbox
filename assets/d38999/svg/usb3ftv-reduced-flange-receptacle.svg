@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 270 110" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- Panel (dashed) -->
+  <rect x="158" y="4" width="6" height="102" fill="currentColor" opacity="0.08" stroke="none"/>
+  <line x1="161" y1="4" x2="161" y2="106" stroke-dasharray="5 4" opacity="0.5" stroke-width="1.5"/>
+  <!-- Shell body -->
+  <rect x="56" y="18" width="100" height="70" rx="6"/>
+  <!-- Reduced flange (narrow) -->
+  <rect x="164" y="26" width="36" height="54" rx="2" stroke-width="2"/>
+  <!-- Castle nut holes -->
+  <circle cx="182" cy="34" r="3" stroke-width="1.2"/>
+  <circle cx="182" cy="72" r="3" stroke-width="1.2"/>
+  <!-- USB-A port -->
+  <rect x="86" y="40" width="28" height="20" rx="2" stroke-width="2"/>
+  <rect x="90" y="44" width="20" height="12" rx="1" stroke-width="1.2" opacity="0.6"/>
+  <!-- Keying notch -->
+  <rect x="102" y="10" width="8" height="6" rx="1.5" fill="currentColor" opacity="0.3"/>
+  <!-- Wire leads -->
+  <line x1="204" y1="44" x2="228" y2="44" stroke-width="1.5" opacity="0.6"/>
+  <line x1="204" y1="54" x2="228" y2="54" stroke-width="1.5" opacity="0.6"/>
+  <line x1="204" y1="62" x2="228" y2="62" stroke-width="1.5" opacity="0.6"/>
+  <text x="135" y="106" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">USB3FTV Reduced Flange</text>
+</svg>

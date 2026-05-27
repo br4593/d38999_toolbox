@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 100" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- Shell size 15 outer ring -->
+  <circle cx="110" cy="48" r="36" stroke-width="2.5"/>
+  <circle cx="110" cy="48" r="32" stroke-width="1.5" opacity="0.5"/>
+  <!-- USB-A port rectangle (USB 2.0) -->
+  <rect x="96" y="38" width="28" height="20" rx="2" stroke-width="2"/>
+  <!-- Inner contact plate -->
+  <rect x="100" y="42" width="20" height="12" rx="1" stroke-width="1.2" opacity="0.5"/>
+  <!-- 4 pins: VCC, D-, D+, GND -->
+  <line x1="104" y1="44" x2="104" y2="50" stroke-width="1.2" opacity="0.6"/>
+  <line x1="108" y1="44" x2="108" y2="50" stroke-width="1.2" opacity="0.6"/>
+  <line x1="112" y1="44" x2="112" y2="50" stroke-width="1.2" opacity="0.6"/>
+  <line x1="116" y1="44" x2="116" y2="50" stroke-width="1.2" opacity="0.6"/>
+  <!-- Keying notch -->
+  <rect x="106" y="14" width="8" height="5" rx="1.5" fill="currentColor" opacity="0.3"/>
+  <!-- Coding indicator -->
+  <circle cx="110" cy="82" r="2" fill="currentColor" opacity="0.2" stroke="none"/>
+  <text x="110" y="96" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">USBFTV Face (Shell 15)</text>
+</svg>

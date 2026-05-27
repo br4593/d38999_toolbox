@@ -1,0 +1,364 @@
+{
+  "standard_d38999_families": [
+    {
+      "vendor": "Amphenol Aerospace / Amphenol Socapex",
+      "family": "Tri-Start TV / CTV",
+      "connector_type": "standard MIL-DTL-38999 Series III",
+      "interfaces": ["general power", "general signal", "coax", "twinax", "quadrax", "fiber depending on insert/contact system"],
+      "use_when": ["user needs normal D38999 connector", "user needs custom pinout", "user needs power plus low-speed signals", "user needs CAN, RS485, RS422, UART, SPI, I2C", "user needs mixed power/signal/coax/quadrax inserts"],
+      "notes": ["Good default vendor family for standard D38999 Series III designs.", "Use exact shell size, shell style, insert arrangement, contact size, keying, finish, and backshell from official catalog.", "Do not assume high-speed HDMI/DP/USB3/Ethernet works through generic contacts."]
+    },
+    {
+      "vendor": "TE Connectivity / DEUTSCH",
+      "family": "DTS / ACT",
+      "connector_type": "standard MIL-DTL-38999 Series III",
+      "interfaces": ["general power", "general signal", "coax", "twinax depending on configuration"],
+      "use_when": ["user needs alternate standard D38999 supplier", "user needs high-density signal layouts", "user needs qualified aerospace/military connector family"],
+      "notes": ["Verify exact contact current rating, insert arrangement, finish, shell material, and QPL/configuration status."]
+    },
+    {
+      "vendor": "Eaton / Souriau",
+      "family": "8D Series",
+      "connector_type": "MIL-DTL-38999 Series III / EN3645 style",
+      "interfaces": ["general power", "general signal", "aerospace connector layouts"],
+      "use_when": ["user needs Souriau/Eaton option", "user needs EN3645-style aerospace connector", "user needs alternate supplier to Amphenol/TE/Glenair"],
+      "notes": ["Verify exact 8D configuration, QPL/EN3645 status, shell material, finish, and contacts."]
+    },
+    {
+      "vendor": "Glenair",
+      "family": "SuperNine",
+      "connector_type": "MIL-DTL-38999 Series III type / enhanced D38999 family",
+      "interfaces": ["general signal", "power", "coax", "twinax", "quadrax", "fiber", "filtered", "hermetic", "RJ45", "USB", "HDMI", "high-speed variants depending on configuration"],
+      "use_when": ["user wants high-end rugged connector ecosystem", "user needs enhanced sealing/EMI/durability", "user needs high-speed, fiber, filter, hermetic, RJ45, USB, or HDMI variants"],
+      "notes": ["Use Glenair part-number-development tables.", "Sample PNs must be verified before purchase."]
+    },
+    {
+      "vendor": "ITT Cannon",
+      "family": "KJA / KJB",
+      "connector_type": "D38999-style Series III harsh-environment connector",
+      "interfaces": ["general power", "general signal", "harsh environment interconnect"],
+      "use_when": ["user needs another D38999-style supplier", "user needs military/aerospace harsh-environment connector"],
+      "notes": ["Verify exact MIL-DTL-38999 compliance, QPL status, configuration, finish, and contact system."]
+    }
+  ],
+  "rugged_io_d38999_style_connectors": [
+    {
+      "vendor": "Amphenol Socapex / Amphenol PCD",
+      "family": "RJFTV",
+      "interface": "RJ45 Ethernet",
+      "d38999_relation": "MIL-DTL-38999 Series III style rugged RJ45 connector",
+      "supported_interfaces": [
+        "10BASE-T",
+        "100BASE-TX",
+        "1000BASE-T",
+        "Cat5e",
+        "Cat6",
+        "Cat6A variants depending on PN"
+      ],
+      "use_when": [
+        "user needs rugged RJ45",
+        "user needs Ethernet through a panel",
+        "user needs sealed Ethernet connection",
+        "user wants D38999-style Ethernet instead of normal RJ45"
+      ],
+      "example_pns": [
+        "RJFTV21G",
+        "RJFTV71G",
+        "RJFTV71N",
+        "RJFTV6MN",
+        "RJFTV2PEM1G",
+        "RJFTV2SA1G",
+        "RJFTV7SA1G",
+        "RJFTV67B1G",
+        "RJFTV22N00"
+      ],
+      "selection_questions": [
+        "Do you need Cat5e, Cat6, or Cat6A?",
+        "Do you need 100 Mbps, 1 Gbps, or 10 Gbps?",
+        "Do you need plug, square-flange receptacle, or jam-nut receptacle?",
+        "What finish is required: olive drab, nickel, zinc-nickel, black, etc.?",
+        "Do you need sealed backshell, gland, or cap?",
+        "Is the connector for cable-side or panel-side?"
+      ],
+      "warnings": [
+        "Verify exact PN with Amphenol catalog/configurator before production.",
+        "Verify Ethernet category rating for the exact PN.",
+        "Verify shield continuity and grounding strategy.",
+        "Verify cable assembly performance for the target Ethernet speed."
+      ]
+    },
+    {
+      "vendor": "Cinch",
+      "family": "C-RJFTV",
+      "interface": "RJ45 Ethernet",
+      "d38999_relation": "D38999 Series III style rugged RJ45 connector",
+      "supported_interfaces": [
+        "Cat5e examples"
+      ],
+      "use_when": [
+        "user needs rugged RJ45",
+        "user wants an alternative to Amphenol RJFTV",
+        "user needs Ethernet in D38999-style shell"
+      ],
+      "example_pns": [
+        "C-RJFTV5E17021G",
+        "C-RJFTV5E17071G",
+        "C-RJFTV5E1706MN15"
+      ],
+      "selection_questions": [
+        "Do you need square-flange or jam-nut?",
+        "Do you need cable plug or panel receptacle?",
+        "What cable length is needed if using cable assembly PN?",
+        "What environmental finish/sealing is required?"
+      ],
+      "warnings": [
+        "Verify exact PN and category rating with Cinch datasheet.",
+        "Verify mating compatibility with selected rugged RJ45 plug/receptacle."
+      ]
+    },
+    {
+      "vendor": "Glenair",
+      "family": "SuperNine RJ45",
+      "interface": "RJ45 Ethernet",
+      "d38999_relation": "MIL-DTL-38999 Series III type rugged RJ45 connector",
+      "supported_interfaces": [
+        "Cat5e",
+        "Cat6",
+        "Cat6A depending on PN/configuration"
+      ],
+      "use_when": [
+        "user needs rugged RJ45",
+        "user wants Glenair SuperNine ecosystem",
+        "user needs high-reliability Ethernet connector"
+      ],
+      "example_pns": [
+        "233-303 NF 00 G 17 5H N 1",
+        "233-330 NF 00 -17 5H N 1",
+        "233-312 NF G6 - 17 6A N 1"
+      ],
+      "selection_questions": [
+        "What Ethernet category is required?",
+        "What shell style is required?",
+        "What finish/material is required?",
+        "Is this a plug, receptacle, or feedthrough?",
+        "Do you need environmental sealing or EMI shielding?"
+      ],
+      "warnings": [
+        "Glenair sample PNs must be verified and configured using official PN-development tables.",
+        "Do not assume a sample PN is the final purchasable PN for the user's exact use case."
+      ]
+    },
+    {
+      "vendor": "Amphenol Socapex / Amphenol PCD",
+      "family": "USBFTV",
+      "interface": "USB 2.0 Type-A",
+      "d38999_relation": "MIL-DTL-38999 Series III style rugged USB connector",
+      "supported_interfaces": [
+        "USB 2.0"
+      ],
+      "use_when": [
+        "user needs rugged USB 2.0",
+        "user wants a sealed USB Type-A panel connector",
+        "user wants USB through D38999-style shell"
+      ],
+      "example_pns": [
+        "USBFTV",
+        "USBFTV6N",
+        "USBFTV6G",
+        "USBF21ZNSCC",
+        "USBF21GSCC"
+      ],
+      "selection_questions": [
+        "Do you need USB 2.0 only or USB 3.x?",
+        "Do you need plug or panel receptacle?",
+        "Do you need Type-A, Type-B, or feedthrough style?",
+        "What finish and sealing are required?",
+        "Do you need a protective cap?"
+      ],
+      "warnings": [
+        "USBFTV is for USB 2.0 family use; do not use it when USB 3.x performance is required unless exact PN supports it.",
+        "Verify exact PN, finish, cap, and rear termination."
+      ]
+    },
+    {
+      "vendor": "Amphenol Socapex / Amphenol PCD",
+      "family": "USB3FTV",
+      "interface": "USB 3.x Type-A",
+      "d38999_relation": "MIL-DTL-38999 Series III style rugged USB 3 connector",
+      "supported_interfaces": [
+        "USB 3.0",
+        "USB 3.2 Gen 1 depending on exact PN"
+      ],
+      "use_when": [
+        "user needs rugged USB 3.0 / USB 3.2 Gen 1",
+        "user wants sealed USB 3 Type-A",
+        "user needs higher speed than USB 2.0"
+      ],
+      "example_pns": [
+        "USB3FTV6N",
+        "USB3FTV2AN",
+        "USB3FTV2AG",
+        "USB3FTV7AN",
+        "USB3FTV7AG",
+        "USB3FTV7APEG",
+        "USB3FTV2SANF459",
+        "USB3FTV7ANF312",
+        "USB3FTV7AGF312"
+      ],
+      "selection_questions": [
+        "Do you need USB 3.0 / 5 Gbps or only USB 2.0?",
+        "Do you need plug, square-flange receptacle, or jam-nut receptacle?",
+        "What finish is required?",
+        "Do you need a gland, cap, or backshell?",
+        "What cable length and cable type are required?"
+      ],
+      "warnings": [
+        "USB 3.x requires SuperSpeed pair integrity.",
+        "Verify exact PN supports the required USB speed.",
+        "Validate cable length, shielding, and signal integrity.",
+        "Do not replace USB3FTV with generic D38999 contacts unless tested."
+      ]
+    },
+    {
+      "vendor": "Amphenol Socapex / Amphenol PCD",
+      "family": "USB3CFTV",
+      "interface": "USB-C / USB 3.2",
+      "d38999_relation": "Size 11 D38999-style rugged USB-C connector",
+      "supported_interfaces": [
+        "USB-C",
+        "USB 3.2 depending on exact PN/configuration"
+      ],
+      "use_when": [
+        "user needs rugged USB-C",
+        "user needs sealed USB-C through a panel",
+        "user wants D38999-style USB-C connector"
+      ],
+      "example_pns": [
+        "USB3CFTV22G",
+        "USB3CFTV22ZN",
+        "USB3CFTV2G030",
+        "USB3CFTV7G030",
+        "USB3CFTV7ZN030"
+      ],
+      "selection_questions": [
+        "Is this USB-C for power only, USB 2.0, USB 3.x, or DisplayPort Alt Mode?",
+        "Is USB Power Delivery required?",
+        "What current and voltage are required?",
+        "Is orientation handling needed on the PCB?",
+        "Do you need plug, receptacle, or panel feedthrough?",
+        "What finish and environmental sealing are required?"
+      ],
+      "warnings": [
+        "USB-C is not just a pinout; CC, orientation, power role, and PD may require proper electronics.",
+        "Do not blindly map USB-C pins through a connector.",
+        "Verify PD/current/e-marker requirements.",
+        "Verify exact PN and supported USB mode."
+      ]
+    },
+    {
+      "vendor": "Glenair",
+      "family": "SuperNine USB",
+      "interface": "USB 2.0 / USB 3.0 depending on configuration",
+      "d38999_relation": "MIL-DTL-38999 Series III type rugged USB connector",
+      "supported_interfaces": [
+        "USB 2.0",
+        "USB 3.0 depending on PN/configuration"
+      ],
+      "use_when": [
+        "user needs rugged USB",
+        "user wants Glenair SuperNine ecosystem",
+        "user needs high-reliability sealed USB"
+      ],
+      "example_pns": [
+        "233-345 NF 00 -15 2 A N H T",
+        "233-370 NF 00 -17 2 A A N H"
+      ],
+      "selection_questions": [
+        "Do you need USB 2.0 or USB 3.0?",
+        "What shell style and finish are required?",
+        "Do you need feedthrough, cable plug, or panel receptacle?",
+        "Do you need environmental sealing or EMI shielding?"
+      ],
+      "warnings": [
+        "Glenair sample PNs must be verified with official PN-development tables.",
+        "Exact USB speed and connector configuration must be confirmed."
+      ]
+    }
+  ],
+  "rugged_video_d38999_style_connectors": [
+    {
+      "vendor": "Amphenol Socapex / Amphenol PCD",
+      "family": "HDMIFTV",
+      "interface": "HDMI",
+      "connector_type": "D38999-style rugged HDMI connector",
+      "d38999_relation": "rugged HDMI in size 17 38999 shell",
+      "capability_notes": ["HDMI 2.0 family according to vendor data", "intended for rugged HDMI panel/cable applications", "high-speed video connector, not a generic signal-pin arrangement"],
+      "example_pns": ["HDMIFTV2AG", "HDMIFTV6AG", "HDMIFTVC2G", "HDMIFTV2AZN", "HDMIFTV2APEZN", "HDMIFTV2ANF459", "HDMIFTV2APEG"],
+      "use_when": ["user needs rugged HDMI", "user wants HDMI through sealed panel", "user wants D38999-style HDMI connector", "user wants high-speed video without designing custom HDMI pinout through generic contacts"],
+      "selection_questions": ["What HDMI version or resolution/frame rate is required?", "Do you need plug, square-flange receptacle, or jam-nut receptacle?", "What finish is required?", "Do you need cap, gland, backshell, or cable assembly?", "What is the cable length?", "Is this source side, sink side, or panel feedthrough?"],
+      "warnings": ["Do not route HDMI through random D38999 signal pins.", "HDMI TMDS/FRL pairs require controlled impedance and SI validation.", "Verify exact PN, HDMI version, mating connector, finish, and cable assembly."]
+    },
+    {
+      "vendor": "Amphenol Socapex / Amphenol PCD",
+      "family": "MDPFTV",
+      "interface": "Mini DisplayPort / DisplayPort",
+      "connector_type": "D38999-style rugged Mini DisplayPort connector",
+      "d38999_relation": "rugged Mini DisplayPort in size 13 38999 shell",
+      "capability_notes": ["Mini DisplayPort rugged solution", "high-speed differential video connector", "not a generic D38999 signal-pin arrangement"],
+      "example_pns": ["MDPFTV7BNF312", "MDPFTV7BGF312", "MDPFTV7AZNF312", "MDPFTV7BZNF312", "MDPFTV7AGF312", "MDPFTV7ANF312", "MDPFTV7BPEGF312", "MDPFTV7BPENF312", "MDPFTV7APENF312", "MDPFTV7BPEZNF312", "MDPFTV7APEZNF312", "MDPFTV6BG", "MDPFTV6BN", "MDPFTV6AZN", "MDPFTV6AG", "MDPFTV6BZN", "MDPFTV6AN", "MDPFTV7APEGF312"],
+      "use_when": ["user needs rugged DisplayPort", "user needs rugged Mini DisplayPort", "user needs high-resolution video in harsh environment", "user wants D38999-style Mini DP instead of normal Mini DP"],
+      "selection_questions": ["What DisplayPort version is required?", "What resolution and refresh rate are required?", "How many lanes are needed?", "Do you need plug or panel receptacle?", "What shell finish/environmental rating is required?", "What cable length is required?"],
+      "warnings": ["DisplayPort lanes are high-speed differential pairs.", "Do not map DisplayPort through generic contacts unless validated.", "Verify lane count, DP version, cable assembly, mating connector, and SI performance."]
+    },
+    {
+      "vendor": "Glenair",
+      "family": "SuperNine HDMI",
+      "interface": "HDMI",
+      "connector_type": "MIL-DTL-38999 Series III type rugged HDMI",
+      "d38999_relation": "SuperNine D38999-style HDMI connector/cable assembly ecosystem",
+      "example_pns": ["233-364 NF 00 -17 N H", "233-368NFG6-17NH", "233-368MEG6A17NH"],
+      "use_when": ["user wants rugged HDMI in Glenair SuperNine ecosystem", "user wants MIL-DTL-38999 Series III type shell with HDMI", "user needs cable assembly or rugged video interconnect"],
+      "selection_questions": ["What HDMI version/resolution is required?", "Do you need plug, receptacle, or cable assembly?", "What finish/material is required?", "What keying/orientation is required?", "What cable length is required?"],
+      "warnings": ["Use Glenair PN-development tables.", "Sample PNs are examples and must be configured.", "Verify HDMI performance, cable assembly, and mating connector."]
+    }
+  ],
+  "rugged_high_speed_d38999_style_connectors": [
+    {
+      "vendor": "Glenair",
+      "family": "SpeedMaster 10G",
+      "interface": "10G Ethernet / high-speed differential data",
+      "connector_type": "dedicated high-speed module/insert package for SuperNine",
+      "d38999_relation": "MIL-DTL-38999 Series III type high-speed solution",
+      "use_when": ["user needs 10G Ethernet", "user asks for Cat6A in a D38999-style connector", "user needs high-speed differential data through rugged circular connector", "user needs better SI performance than generic contacts"],
+      "selection_questions": ["What Ethernet speed is required: 1G, 2.5G, 5G, 10G?", "Is Cat6A required?", "What cable type and length are required?", "Do you need plug, receptacle, or cable assembly?", "What environmental rating is required?"],
+      "warnings": ["Use official SpeedMaster catalog/configurator.", "Verify insert, cable, shell, contact, and test data.", "Do not assume compatibility with ordinary D38999 inserts."]
+    },
+    {
+      "vendor": "PIC Wire",
+      "family": "MACHFORCE",
+      "interface": "high-speed rugged data",
+      "connector_type": "MIL-DTL-38999-style high-speed connector system",
+      "d38999_relation": "D38999-style rugged high-speed connector",
+      "use_when": ["user needs rugged high-speed data connector", "user needs shielded high-speed cable solution", "user needs Ethernet-class rugged interconnect"],
+      "selection_questions": ["What exact protocol is required?", "What speed/data rate is required?", "What cable length is required?", "What mating connector/cable assembly is required?", "What environmental rating is required?"],
+      "warnings": ["Verify actual protocol support and test data.", "Verify cable, contacts, shielding, and mating system.", "Do not treat as a generic D38999 insert."]
+    }
+  ],
+  "ethernet_category_recommendation": {
+    "description": "Guide for selecting Ethernet cable category in D38999-style connectors",
+    "categories": [
+      {"category": "Cat5e", "max_speed": "1 Gbps", "max_freq": "100 MHz", "use_when": "1000BASE-T over short runs (<30m) where cost matters", "rugged_families": ["RJFTV (most PNs)", "C-RJFTV5E series", "Glenair SuperNine RJ45 basic"]},
+      {"category": "Cat6", "max_speed": "1 Gbps (10G up to 55m)", "max_freq": "250 MHz", "use_when": "1000BASE-T with margin, or 10GBASE-T short runs", "rugged_families": ["RJFTV Cat6 variants", "Glenair SuperNine RJ45 Cat6"]},
+      {"category": "Cat6A", "max_speed": "10 Gbps", "max_freq": "500 MHz", "use_when": "10GBASE-T full distance (100m), high-reliability critical links", "rugged_families": ["RJFTV Cat6A variants (verify PN)", "Glenair SuperNine RJ45 Cat6A", "Glenair SpeedMaster 10G"]}
+    ],
+    "selection_rules": [
+      "For 100 Mbps: Cat5e is sufficient",
+      "For 1 Gbps: Cat5e minimum, Cat6 recommended for margin",
+      "For 2.5G/5G BASE-T: Cat6 minimum, Cat6A recommended",
+      "For 10 Gbps: Cat6A required",
+      "Always verify the exact PN supports the claimed category",
+      "Cable assembly (not just connector) determines actual performance",
+      "Shorter cable runs are more forgiving of category limitations"
+    ]
+  }
+}

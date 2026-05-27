@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 110" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- Panel (dashed) -->
+  <rect x="148" y="4" width="6" height="102" fill="currentColor" opacity="0.08" stroke="none"/>
+  <line x1="151" y1="4" x2="151" y2="106" stroke-dasharray="5 4" opacity="0.5" stroke-width="1.5"/>
+  <!-- Shell body (shell 13) -->
+  <rect x="56" y="22" width="90" height="62" rx="5"/>
+  <!-- Hex jam nut -->
+  <polygon points="158,28 174,20 190,28 190,78 174,86 158,78" stroke-width="2" opacity="0.7"/>
+  <!-- Mini DP port -->
+  <path d="M80 38 L104 38 L102 56 L82 56 Z" stroke-width="2"/>
+  <!-- Pin indicators -->
+  <line x1="86" y1="42" x2="86" y2="48" stroke-width="0.8" opacity="0.5"/>
+  <line x1="90" y1="42" x2="90" y2="48" stroke-width="0.8" opacity="0.5"/>
+  <line x1="94" y1="42" x2="94" y2="48" stroke-width="0.8" opacity="0.5"/>
+  <line x1="98" y1="42" x2="98" y2="48" stroke-width="0.8" opacity="0.5"/>
+  <!-- Coupling thread area -->
+  <rect x="36" y="32" width="20" height="42" rx="3" stroke-width="1.5" opacity="0.5"/>
+  <!-- Keying notch -->
+  <rect x="96" y="14" width="8" height="6" rx="1.5" fill="currentColor" opacity="0.3"/>
+  <!-- Wire leads -->
+  <line x1="196" y1="42" x2="220" y2="42" stroke-width="1.5" opacity="0.6"/>
+  <line x1="196" y1="52" x2="220" y2="52" stroke-width="1.5" opacity="0.6"/>
+  <line x1="196" y1="62" x2="220" y2="62" stroke-width="1.5" opacity="0.6"/>
+  <text x="130" y="108" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">MDPFTV Jam Nut Receptacle</text>
+</svg>

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 270 110" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- Panel (dashed) -->
+  <rect x="158" y="4" width="6" height="102" fill="currentColor" opacity="0.08" stroke="none"/>
+  <line x1="161" y1="4" x2="161" y2="106" stroke-dasharray="5 4" opacity="0.5" stroke-width="1.5"/>
+  <!-- Shell body (shell 18) -->
+  <rect x="52" y="16" width="104" height="74" rx="6"/>
+  <!-- Hex jam nut -->
+  <polygon points="168,22 186,12 204,22 204,84 186,94 168,84" stroke-width="2" opacity="0.7"/>
+  <!-- Bayonet slot indicators on shell -->
+  <rect x="52" y="30" width="4" height="10" rx="1" fill="currentColor" opacity="0.15" stroke="none"/>
+  <rect x="52" y="66" width="4" height="10" rx="1" fill="currentColor" opacity="0.15" stroke="none"/>
+  <!-- RJ45 port -->
+  <rect x="80" y="36" width="30" height="24" rx="2" stroke-width="2"/>
+  <!-- 8 pins -->
+  <line x1="84" y1="38" x2="84" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="87.5" y1="38" x2="87.5" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="91" y1="38" x2="91" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="94.5" y1="38" x2="94.5" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="98" y1="38" x2="98" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="101.5" y1="38" x2="101.5" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="105" y1="38" x2="105" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="108.5" y1="38" x2="108.5" y2="45" stroke-width="1" opacity="0.6" transform="translate(-2,0)"/>
+  <!-- Keying notch -->
+  <rect x="100" y="8" width="8" height="6" rx="1.5" fill="currentColor" opacity="0.3"/>
+  <!-- Wire leads -->
+  <line x1="210" y1="40" x2="238" y2="40" stroke-width="1.5" opacity="0.6"/>
+  <line x1="210" y1="50" x2="238" y2="50" stroke-width="1.5" opacity="0.6"/>
+  <line x1="210" y1="60" x2="238" y2="60" stroke-width="1.5" opacity="0.6"/>
+  <line x1="210" y1="70" x2="238" y2="70" stroke-width="1.5" opacity="0.6"/>
+  <text x="135" y="108" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">RJF Jam Nut Receptacle</text>
+</svg>

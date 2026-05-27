@@ -30,6 +30,10 @@ DATA_FILES = [
     "d38999_federalconnectors_secondary_source.json",
     "d38999_valid_part_numbers.json",
     "d38999_visual_assets.json",
+    "rugged_io_d38999_style_connectors.json",
+    "connector_engineering_reference.json",
+    "high_speed_interface_wiring_reference.json",
+    "pinout_rules.json",
 ]
 
 def load_module(module_path: Path, module_name: str):
@@ -102,6 +106,7 @@ def build(project_root: Path) -> Path:
         "pinout": {
             "insertArrangements": read_json(data_dir / "insert_arrangements.json"),
             "partNumberRules": read_json(data_dir / "part_number_rules.json"),
+            "pinoutRules": read_json(data_dir / "pinout_rules.json"),
             "standardDefinitions": read_json(data_dir / "standard_definitions.json"),
             "dlaDocuments": read_json(data_dir / "dla_documents.json"),
             "reviewNeeded": read_json(data_dir / "review_needed.json"),
@@ -123,6 +128,7 @@ def build(project_root: Path) -> Path:
             "federalConnectorsSecondarySource": read_json(data_dir / "d38999_federalconnectors_secondary_source.json"),
             "visualAssets": read_json(data_dir / "d38999_visual_assets.json"),
         },
+        "ruggedIo": read_json(data_dir / "rugged_io_d38999_style_connectors.json"),
     }
 
     app_data_js = (

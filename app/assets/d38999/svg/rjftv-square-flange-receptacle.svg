@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 120" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- Panel (dashed) -->
+  <rect x="172" y="4" width="6" height="112" fill="currentColor" opacity="0.08" stroke="none"/>
+  <line x1="175" y1="4" x2="175" y2="116" stroke-dasharray="5 4" opacity="0.5" stroke-width="1.5"/>
+  <!-- Shell body (shell 19) -->
+  <rect x="52" y="16" width="118" height="80" rx="6"/>
+  <!-- Square flange plate -->
+  <rect x="178" y="6" width="70" height="100" rx="3" stroke-width="2"/>
+  <!-- 4 mounting holes -->
+  <circle cx="192" cy="20" r="4.5" stroke-width="1.5"/>
+  <circle cx="234" cy="20" r="4.5" stroke-width="1.5"/>
+  <circle cx="192" cy="92" r="4.5" stroke-width="1.5"/>
+  <circle cx="234" cy="92" r="4.5" stroke-width="1.5"/>
+  <!-- RJ45 port -->
+  <rect x="86" y="40" width="30" height="24" rx="2" stroke-width="2"/>
+  <!-- 8 pins -->
+  <line x1="90" y1="42" x2="90" y2="49" stroke-width="1" opacity="0.6"/>
+  <line x1="93.5" y1="42" x2="93.5" y2="49" stroke-width="1" opacity="0.6"/>
+  <line x1="97" y1="42" x2="97" y2="49" stroke-width="1" opacity="0.6"/>
+  <line x1="100.5" y1="42" x2="100.5" y2="49" stroke-width="1" opacity="0.6"/>
+  <line x1="104" y1="42" x2="104" y2="49" stroke-width="1" opacity="0.6"/>
+  <line x1="107.5" y1="42" x2="107.5" y2="49" stroke-width="1" opacity="0.6"/>
+  <line x1="111" y1="42" x2="111" y2="49" stroke-width="1" opacity="0.6"/>
+  <line x1="114.5" y1="42" x2="114.5" y2="49" stroke-width="1" opacity="0.6" transform="translate(-2,0)"/>
+  <!-- Keying notch -->
+  <rect x="106" y="8" width="8" height="6" rx="1.5" fill="currentColor" opacity="0.3"/>
+  <!-- Wire leads -->
+  <line x1="252" y1="44" x2="272" y2="44" stroke-width="1.5" opacity="0.6"/>
+  <line x1="252" y1="54" x2="272" y2="54" stroke-width="1.5" opacity="0.6"/>
+  <line x1="252" y1="64" x2="272" y2="64" stroke-width="1.5" opacity="0.6"/>
+  <text x="150" y="116" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">RJFTV Square Flange Receptacle</text>
+</svg>

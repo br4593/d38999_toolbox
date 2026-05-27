@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 100" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- Shell size 13 outer ring -->
+  <circle cx="110" cy="48" r="34" stroke-width="2.5"/>
+  <circle cx="110" cy="48" r="30" stroke-width="1.5" opacity="0.5"/>
+  <!-- Mini DisplayPort shape (small rounded trapezoid) -->
+  <path d="M99 40 L121 40 L119 56 L101 56 Z" stroke-width="2"/>
+  <!-- 20 pins in two rows -->
+  <line x1="103" y1="43" x2="103" y2="47" stroke-width="0.8" opacity="0.5"/>
+  <line x1="106" y1="43" x2="106" y2="47" stroke-width="0.8" opacity="0.5"/>
+  <line x1="109" y1="43" x2="109" y2="47" stroke-width="0.8" opacity="0.5"/>
+  <line x1="112" y1="43" x2="112" y2="47" stroke-width="0.8" opacity="0.5"/>
+  <line x1="115" y1="43" x2="115" y2="47" stroke-width="0.8" opacity="0.5"/>
+  <line x1="118" y1="43" x2="118" y2="47" stroke-width="0.8" opacity="0.5"/>
+  <line x1="103" y1="50" x2="103" y2="53" stroke-width="0.8" opacity="0.5"/>
+  <line x1="106" y1="50" x2="106" y2="53" stroke-width="0.8" opacity="0.5"/>
+  <line x1="109" y1="50" x2="109" y2="53" stroke-width="0.8" opacity="0.5"/>
+  <line x1="112" y1="50" x2="112" y2="53" stroke-width="0.8" opacity="0.5"/>
+  <line x1="115" y1="50" x2="115" y2="53" stroke-width="0.8" opacity="0.5"/>
+  <line x1="118" y1="50" x2="118" y2="53" stroke-width="0.8" opacity="0.5"/>
+  <!-- Keying notch -->
+  <rect x="106" y="16" width="8" height="5" rx="1.5" fill="currentColor" opacity="0.3"/>
+  <circle cx="110" cy="80" r="2" fill="currentColor" opacity="0.2" stroke="none"/>
+  <text x="110" y="96" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">MDPFTV Face (Shell 13)</text>
+</svg>

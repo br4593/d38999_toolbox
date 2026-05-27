@@ -1,0 +1,823 @@
+{
+  "_metadata": {
+    "title": "High-Speed Interface Wiring Research for D38999 Connector Selection",
+    "version": "1.0.0",
+    "created": "2026-05-27",
+    "purpose": "Reference data for the D38999 agent to determine contact types, pin groupings, and feasibility when routing high-speed interfaces through MIL-DTL-38999 connectors",
+    "sources": [
+      {
+        "title": "USB 2.0 Specification",
+        "organization": "USB Implementers Forum (USB-IF)",
+        "url": "https://www.usb.org/document-library/usb-20-specification",
+        "reliability": "official"
+      },
+      {
+        "title": "USB Type-C Cable and Connector Specification Release 2.4",
+        "organization": "USB Implementers Forum (USB-IF)",
+        "url": "https://usb.org/document-library/usb-type-cr-cable-and-connector-specification-release-22",
+        "reliability": "official"
+      },
+      {
+        "title": "USB 3.2 Specification",
+        "organization": "USB Implementers Forum (USB-IF)",
+        "url": "https://www.usb.org/document-library/usb-32-specification-released-september-22-2017-and-ecns",
+        "reliability": "official"
+      },
+      {
+        "title": "HDMI Specification 1.3a / 1.4 / 2.1",
+        "organization": "HDMI Licensing LLC / HDMI Forum",
+        "url": "https://www.hdmi.org/spec/index",
+        "reliability": "official"
+      },
+      {
+        "title": "DisplayPort Standard 2.1",
+        "organization": "Video Electronics Standards Association (VESA)",
+        "url": "https://www.displayport.org/",
+        "reliability": "official"
+      },
+      {
+        "title": "DVI Specification 1.0",
+        "organization": "Digital Display Working Group (DDWG)",
+        "url": "https://www.ddwg.org/",
+        "reliability": "official"
+      },
+      {
+        "title": "VGA / DE-15 Connector Standard",
+        "organization": "IBM / VESA",
+        "url": "https://en.wikipedia.org/wiki/VGA_connector",
+        "reliability": "secondary"
+      },
+      {
+        "title": "RGB Parallel Display Interface (DPI)",
+        "organization": "Various SoC vendors (Raspberry Pi, STM32, NXP i.MX)",
+        "url": "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html",
+        "reliability": "manufacturer_app_note"
+      },
+      {
+        "title": "USB Hardware - Wikipedia",
+        "organization": "Wikipedia (citing USB-IF specifications)",
+        "url": "https://en.wikipedia.org/wiki/USB_hardware",
+        "reliability": "secondary"
+      },
+      {
+        "title": "HDMI - Wikipedia",
+        "organization": "Wikipedia (citing HDMI specifications)",
+        "url": "https://en.wikipedia.org/wiki/HDMI",
+        "reliability": "secondary"
+      }
+    ]
+  },
+  "interface_comparison": [
+    {
+      "interface": "USB 2.0",
+      "typical_use": "Peripheral data + power (480 Mbps max)",
+      "conductors_required": 5,
+      "differential_pairs": 1,
+      "power_pins": 2,
+      "config_hotplug_pins": 0,
+      "shield_need": "overall_cable_shield",
+      "controlled_impedance_need": "90_ohm_differential",
+      "d38999_recommendation": "maybe_with_limits",
+      "risk_level": "medium"
+    },
+    {
+      "interface": "USB 3.x SuperSpeed",
+      "typical_use": "High-speed data + power (5-20 Gbps)",
+      "conductors_required": 10,
+      "differential_pairs": 3,
+      "power_pins": 2,
+      "config_hotplug_pins": 0,
+      "shield_need": "shielded_twisted_pairs_plus_overall",
+      "controlled_impedance_need": "90_ohm_differential_all_pairs",
+      "d38999_recommendation": "controlled_impedance_required",
+      "risk_level": "high"
+    },
+    {
+      "interface": "USB Type-C (full)",
+      "typical_use": "Universal connector system (data + power + alt modes)",
+      "conductors_required": "24_pin_system_variable",
+      "differential_pairs": "up_to_6",
+      "power_pins": 8,
+      "config_hotplug_pins": 4,
+      "shield_need": "shielded_twisted_pairs_plus_overall",
+      "controlled_impedance_need": "requires_controller_ic",
+      "d38999_recommendation": "redesign_recommended",
+      "risk_level": "very_high"
+    },
+    {
+      "interface": "HDMI (1.x/2.0)",
+      "typical_use": "Digital video + audio (up to 18 Gbps)",
+      "conductors_required": 19,
+      "differential_pairs": 4,
+      "power_pins": 1,
+      "config_hotplug_pins": 3,
+      "shield_need": "individually_shielded_pairs_100_ohm",
+      "controlled_impedance_need": "100_ohm_differential_tmds",
+      "d38999_recommendation": "controlled_impedance_required",
+      "risk_level": "high"
+    },
+    {
+      "interface": "HDMI 2.1+",
+      "typical_use": "Ultra-high-speed video (48-96 Gbps FRL)",
+      "conductors_required": 19,
+      "differential_pairs": 4,
+      "power_pins": 1,
+      "config_hotplug_pins": 3,
+      "shield_need": "individually_shielded_pairs_100_ohm",
+      "controlled_impedance_need": "100_ohm_frl_extremely_demanding",
+      "d38999_recommendation": "avoid_or_redesign",
+      "risk_level": "very_high"
+    },
+    {
+      "interface": "DisplayPort",
+      "typical_use": "Digital video + audio (up to 80 Gbps)",
+      "conductors_required": 20,
+      "differential_pairs": 5,
+      "power_pins": 1,
+      "config_hotplug_pins": 2,
+      "shield_need": "individually_shielded_pairs",
+      "controlled_impedance_need": "100_ohm_differential_all_lanes",
+      "d38999_recommendation": "controlled_impedance_required",
+      "risk_level": "high"
+    },
+    {
+      "interface": "DVI-D Single-Link",
+      "typical_use": "Digital video (up to 3.96 Gbps TMDS)",
+      "conductors_required": 18,
+      "differential_pairs": 4,
+      "power_pins": 1,
+      "config_hotplug_pins": 2,
+      "shield_need": "individually_shielded_pairs_100_ohm",
+      "controlled_impedance_need": "100_ohm_differential_tmds",
+      "d38999_recommendation": "controlled_impedance_required",
+      "risk_level": "medium_to_high"
+    },
+    {
+      "interface": "DVI-D Dual-Link",
+      "typical_use": "High-res digital video (7 TMDS pairs)",
+      "conductors_required": 28,
+      "differential_pairs": 7,
+      "power_pins": 1,
+      "config_hotplug_pins": 2,
+      "shield_need": "individually_shielded_pairs_100_ohm",
+      "controlled_impedance_need": "100_ohm_differential_tmds",
+      "d38999_recommendation": "avoid_or_redesign",
+      "risk_level": "high"
+    },
+    {
+      "interface": "VGA (analog RGB)",
+      "typical_use": "Analog video (legacy displays)",
+      "conductors_required": 15,
+      "differential_pairs": 0,
+      "power_pins": 1,
+      "config_hotplug_pins": 1,
+      "shield_need": "individually_shielded_rgb_coax",
+      "controlled_impedance_need": "75_ohm_coaxial_for_rgb",
+      "d38999_recommendation": "coax_contacts_preferred",
+      "risk_level": "medium"
+    },
+    {
+      "interface": "DPI/Parallel RGB (24-bit)",
+      "typical_use": "Board-level display connection",
+      "conductors_required": 35,
+      "differential_pairs": 0,
+      "power_pins": 2,
+      "config_hotplug_pins": 0,
+      "shield_need": "overall_shield_ground_interleave",
+      "controlled_impedance_need": "matched_length_low_skew",
+      "d38999_recommendation": "serialize_before_connector",
+      "risk_level": "high_for_cable"
+    }
+  ],
+  "interfaces": {
+    "usb2": {
+      "name": "USB 2.0",
+      "standard": "USB 2.0 Specification (USB-IF)",
+      "speeds": ["Low Speed 1.5 Mbps", "Full Speed 12 Mbps", "High Speed 480 Mbps"],
+      "max_cable_length_m": 5,
+      "impedance_ohm": 90,
+      "impedance_type": "differential",
+      "signals": [
+        {"name": "USB2_VBUS", "type": "power", "description": "+5V supply", "current_ma": 500, "wire_color": "RED"},
+        {"name": "USB2_D_P", "type": "diff_pair_p", "pair_with": "USB2_D_N", "description": "Data+", "wire_color": "GREEN"},
+        {"name": "USB2_D_N", "type": "diff_pair_n", "pair_with": "USB2_D_P", "description": "Data-", "wire_color": "WHITE"},
+        {"name": "USB2_GND", "type": "ground", "description": "Signal and power ground", "wire_color": "BLACK"},
+        {"name": "USB2_SHIELD", "type": "shield", "description": "Cable shield / drain wire"}
+      ],
+      "pair_groups": [
+        {"group": "USB2_DATA", "signals": ["USB2_D_P", "USB2_D_N"], "type": "twisted_pair", "impedance_ohm": 90, "notes": "Must be adjacent in connector. Keep as twisted pair."}
+      ],
+      "d38999_contact_recommendation": "maybe_with_limits",
+      "d38999_guidance": {
+        "contact_type": "normal_signal_contacts_possible",
+        "conditions": "Short cable (<2m), validated assembly, or low-speed only (Full Speed 12 Mbps). For High Speed 480 Mbps through D38999, controlled routing and SI validation are required.",
+        "layout_rules": [
+          "Place D+ and D- in adjacent cavities",
+          "Keep GND contact adjacent to D+/D- pair",
+          "VBUS on separate contact, adequately sized for current",
+          "Shell bond for shield continuity",
+          "Do not share USB GND with high-current noisy power return"
+        ],
+        "preferred_solution": "Twinax contact for D+/D- pair if High Speed (480 Mbps) is required"
+      },
+      "pin_group_example": ["USB2_VBUS", "USB2_D_P", "USB2_D_N", "USB2_GND", "USB2_SHIELD"],
+      "spare_pin_policy": "1-2 spares for future expansion (e.g., OTG ID pin)",
+      "warnings": [
+        "USB 2.0 High Speed (480 Mbps) requires 90Ω differential impedance on D+/D-",
+        "Eye diagram validation recommended for production High Speed designs",
+        "Cable shield must terminate to connector shell for EMC compliance",
+        "Do not split D+ and D- across unrelated connector regions",
+        "ESD protection recommended at both ends"
+      ]
+    },
+    "usb3": {
+      "name": "USB 3.x SuperSpeed",
+      "standard": "USB 3.2 Specification (USB-IF)",
+      "speeds": ["SuperSpeed 5 Gbps (Gen 1)", "SuperSpeed+ 10 Gbps (Gen 2)", "SuperSpeed+ 20 Gbps (Gen 2x2)"],
+      "max_cable_length_m": 3,
+      "impedance_ohm": 90,
+      "impedance_type": "differential",
+      "signals": [
+        {"name": "USB2_D_P", "type": "diff_pair_p", "pair_with": "USB2_D_N", "description": "Legacy USB 2.0 Data+"},
+        {"name": "USB2_D_N", "type": "diff_pair_n", "pair_with": "USB2_D_P", "description": "Legacy USB 2.0 Data-"},
+        {"name": "USB3_TX_P", "type": "high_speed_diff_p", "pair_with": "USB3_TX_N", "description": "SuperSpeed Transmit+"},
+        {"name": "USB3_TX_N", "type": "high_speed_diff_n", "pair_with": "USB3_TX_P", "description": "SuperSpeed Transmit-"},
+        {"name": "USB3_RX_P", "type": "high_speed_diff_p", "pair_with": "USB3_RX_N", "description": "SuperSpeed Receive+"},
+        {"name": "USB3_RX_N", "type": "high_speed_diff_n", "pair_with": "USB3_RX_P", "description": "SuperSpeed Receive-"},
+        {"name": "USB3_VBUS", "type": "power", "description": "+5V supply", "current_ma": 900},
+        {"name": "USB3_GND", "type": "ground", "description": "Signal and power ground"},
+        {"name": "USB3_GND_DRAIN", "type": "ground", "description": "SuperSpeed drain/ground"},
+        {"name": "USB3_SHIELD", "type": "shield", "description": "Overall cable shield"}
+      ],
+      "pair_groups": [
+        {"group": "USB2_DATA", "signals": ["USB2_D_P", "USB2_D_N"], "type": "twisted_pair", "impedance_ohm": 90},
+        {"group": "USB3_TX", "signals": ["USB3_TX_P", "USB3_TX_N"], "type": "shielded_twisted_pair", "impedance_ohm": 90, "notes": "SuperSpeed TX pair. Must be shielded and controlled impedance."},
+        {"group": "USB3_RX", "signals": ["USB3_RX_P", "USB3_RX_N"], "type": "shielded_twisted_pair", "impedance_ohm": 90, "notes": "SuperSpeed RX pair. Must be shielded and controlled impedance."}
+      ],
+      "d38999_contact_recommendation": "controlled_impedance_required",
+      "d38999_guidance": {
+        "contact_type": "Twinax or Quadrax contacts required for SuperSpeed pairs",
+        "conditions": "Generic signal contacts are NOT acceptable for reliable USB 3.x operation. The entire interconnect (contacts + cable + termination) must be validated for 5+ Gbps signal integrity.",
+        "layout_rules": [
+          "Use Twinax contacts for USB3_TX pair",
+          "Use Twinax contacts for USB3_RX pair",
+          "USB2 D+/D- can use normal contacts (or separate Twinax)",
+          "Keep SuperSpeed pairs physically separated from high-current power",
+          "Preserve shield continuity through connector",
+          "Minimize stub lengths",
+          "TX and RX direction depends on host/device role"
+        ],
+        "preferred_solution": "Purpose-built USB 3.x rated D38999 insert or qualified high-speed cable assembly"
+      },
+      "pin_group_example": ["USB2_D_P", "USB2_D_N", "USB3_TX_P", "USB3_TX_N", "USB3_RX_P", "USB3_RX_N", "USB3_VBUS", "USB3_GND", "USB3_GND_DRAIN", "USB3_SHIELD"],
+      "spare_pin_policy": "1-2 signal spares for debug/test; no spare on high-speed pairs",
+      "warnings": [
+        "Generic D38999 signal contacts are usually NOT appropriate for USB 3.x",
+        "Signal integrity validation (eye diagram, insertion loss, return loss) is mandatory",
+        "SuperSpeed uses separate TX and RX pairs — direction depends on host/device role",
+        "TX/RX crossing may be needed depending on connector role",
+        "Cable length limited to ~3m for passive copper at 5 Gbps",
+        "Common-mode chokes and ESD protection may be needed at board level",
+        "Do not route SuperSpeed pairs near high-current switching power contacts"
+      ]
+    },
+    "usb_type_c": {
+      "name": "USB Type-C",
+      "standard": "USB Type-C Cable and Connector Specification (USB-IF)",
+      "description": "USB Type-C is a connector SYSTEM, not just a pinout. It includes orientation detection, power delivery negotiation, and alternate mode support.",
+      "signals_24pin": [
+        {"name": "VBUS (x4)", "type": "power", "description": "4 VBUS pins for high-current delivery"},
+        {"name": "GND (x4)", "type": "ground", "description": "4 ground pins"},
+        {"name": "CC1", "type": "config", "description": "Configuration Channel 1 — orientation, current advertisement, PD comms"},
+        {"name": "CC2", "type": "config", "description": "Configuration Channel 2 — orientation, VCONN for active cables"},
+        {"name": "D+ (x1)", "type": "diff_pair_p", "description": "USB 2.0 Data+ (only 1 pair in cable)"},
+        {"name": "D- (x1)", "type": "diff_pair_n", "description": "USB 2.0 Data- (only 1 pair in cable)"},
+        {"name": "SBU1", "type": "sideband", "description": "Sideband Use 1 (Alt Mode dependent)"},
+        {"name": "SBU2", "type": "sideband", "description": "Sideband Use 2 (Alt Mode dependent)"},
+        {"name": "TX1+/TX1-", "type": "high_speed_diff", "description": "SuperSpeed TX pair 1"},
+        {"name": "TX2+/TX2-", "type": "high_speed_diff", "description": "SuperSpeed TX pair 2"},
+        {"name": "RX1+/RX1-", "type": "high_speed_diff", "description": "SuperSpeed RX pair 1"},
+        {"name": "RX2+/RX2-", "type": "high_speed_diff", "description": "SuperSpeed RX pair 2"}
+      ],
+      "implementation_cases": {
+        "usb2_only": {
+          "description": "USB-C carrying only USB 2.0 signals",
+          "min_signals": ["VBUS", "GND", "D+", "D-", "CC1", "CC2"],
+          "contacts_needed": 7,
+          "d38999_feasible": true,
+          "notes": "Requires CC resistors (5.1kΩ pull-down for sink, Rp for source) at each end. No mux needed."
+        },
+        "usb3_single_lane": {
+          "description": "USB-C carrying USB 3.2 Gen 1/Gen 2 (single lane)",
+          "min_signals": ["VBUS", "GND", "D+", "D-", "CC1", "CC2", "TX1+", "TX1-", "RX1+", "RX1-"],
+          "contacts_needed": 12,
+          "d38999_feasible": "with_controlled_impedance",
+          "notes": "Requires orientation mux or fixed orientation. CC controller needed. Twinax contacts for SS pairs."
+        },
+        "usb_pd_power_only": {
+          "description": "USB-C Power Delivery (charging only, no data)",
+          "min_signals": ["VBUS", "GND", "CC1", "CC2"],
+          "contacts_needed": 6,
+          "d38999_feasible": true,
+          "notes": "Requires USB PD controller IC at each end. VBUS voltage negotiated (5V-48V). Current up to 5A. E-marker for >3A or >60W."
+        },
+        "dp_alt_mode": {
+          "description": "DisplayPort Alternate Mode over USB-C",
+          "d38999_feasible": "controlled_impedance_required",
+          "notes": "Uses 2 or 4 SuperSpeed lanes for DP. Requires USB-C/PD controller + DP Alt Mode logic. NOT a simple pin-mapping exercise."
+        },
+        "usb4_thunderbolt": {
+          "description": "USB4 / Thunderbolt over USB-C",
+          "d38999_feasible": false,
+          "notes": "DO NOT attempt through generic D38999. Requires full USB4 PHY, retimers, extremely demanding SI."
+        }
+      },
+      "d38999_contact_recommendation": "case_dependent",
+      "d38999_guidance": {
+        "critical_warning": "Do NOT tell the user to 'just wire USB-C pins through D38999'. USB-C requires active electronics (CC controller, orientation mux, PD controller) at each end.",
+        "decision_tree": [
+          "1. Determine which USB-C FUNCTION is needed (USB2? USB3? Power? Alt Mode?)",
+          "2. For USB 2.0 only: Extract D+/D- + VBUS/GND + CC resistors → feasible with normal contacts",
+          "3. For USB 3.x: Extract SS pairs + USB2 + CC → requires Twinax contacts + controller board",
+          "4. For USB PD power: Extract VBUS/GND + CC → requires PD controller at each end",
+          "5. For Alt Mode / USB4: Recommend board-level USB-C connector at each end, linked by appropriate D38999 cable for the underlying signal (DP lanes, etc.)"
+        ]
+      },
+      "spare_pin_policy": "2-3 spares; reserve for SBU signals if Alt Mode may be added later",
+      "warnings": [
+        "USB-C is NOT just a connector pinout — it is a full configuration/negotiation system",
+        "CC pins MUST have proper resistors or a CC/PD controller at each end",
+        "Orientation detection requires either a mux or fixed wiring (losing reversibility)",
+        "Power Delivery requires a PD controller IC for voltage/current negotiation",
+        "E-marker cable electronics required for >60W or >5 Gbps cables",
+        "High-power USB-C (>60W) involves voltage up to 48V — safety and thermal design required",
+        "Do NOT blindly extend all 24 Type-C pins through D38999 without professional design",
+        "For Alt Mode, the underlying video interface (DP, HDMI) determines the contact requirements"
+      ]
+    },
+    "hdmi": {
+      "name": "HDMI",
+      "standard": "HDMI Specification (HDMI Forum / HDMI Licensing)",
+      "versions": {
+        "1.x_2.0": {"encoding": "TMDS", "max_bandwidth_gbps": 18.0, "data_channels": 3, "pairs": 4},
+        "2.1": {"encoding": "FRL (16b/18b)", "max_bandwidth_gbps": 48.0, "data_channels": 4, "pairs": 4},
+        "2.2": {"encoding": "FRL (16b/18b)", "max_bandwidth_gbps": 96.0, "data_channels": 4, "pairs": 4}
+      },
+      "impedance_ohm": 100,
+      "impedance_type": "differential_per_pair",
+      "cable_construction": "4 shielded twisted pairs (100Ω) + 7 separate conductors",
+      "signals": [
+        {"name": "HDMI_D2_P", "type": "high_speed_diff_p", "pair_with": "HDMI_D2_N", "pin": 1, "description": "TMDS/FRL Data 2+"},
+        {"name": "HDMI_D2_N", "type": "high_speed_diff_n", "pair_with": "HDMI_D2_P", "pin": 3, "description": "TMDS/FRL Data 2-"},
+        {"name": "HDMI_D2_SHIELD", "type": "shield", "pin": 2, "description": "TMDS Data 2 shield/ground"},
+        {"name": "HDMI_D1_P", "type": "high_speed_diff_p", "pair_with": "HDMI_D1_N", "pin": 4, "description": "TMDS/FRL Data 1+"},
+        {"name": "HDMI_D1_N", "type": "high_speed_diff_n", "pair_with": "HDMI_D1_P", "pin": 6, "description": "TMDS/FRL Data 1-"},
+        {"name": "HDMI_D1_SHIELD", "type": "shield", "pin": 5, "description": "TMDS Data 1 shield/ground"},
+        {"name": "HDMI_D0_P", "type": "high_speed_diff_p", "pair_with": "HDMI_D0_N", "pin": 7, "description": "TMDS/FRL Data 0+"},
+        {"name": "HDMI_D0_N", "type": "high_speed_diff_n", "pair_with": "HDMI_D0_P", "pin": 9, "description": "TMDS/FRL Data 0-"},
+        {"name": "HDMI_D0_SHIELD", "type": "shield", "pin": 8, "description": "TMDS Data 0 shield/ground"},
+        {"name": "HDMI_CLK_P", "type": "high_speed_diff_p", "pair_with": "HDMI_CLK_N", "pin": 10, "description": "TMDS/FRL Clock+ (4th data channel in HDMI 2.1+)"},
+        {"name": "HDMI_CLK_N", "type": "high_speed_diff_n", "pair_with": "HDMI_CLK_P", "pin": 12, "description": "TMDS/FRL Clock-"},
+        {"name": "HDMI_CLK_SHIELD", "type": "shield", "pin": 11, "description": "TMDS Clock shield/ground"},
+        {"name": "HDMI_CEC", "type": "single_ended_signal", "pin": 13, "description": "Consumer Electronics Control (one-wire bidirectional serial bus)"},
+        {"name": "HDMI_UTILITY", "type": "single_ended_signal", "pin": 14, "description": "Reserved / ARC+ / HEC+ / eARC+"},
+        {"name": "HDMI_DDC_SCL", "type": "single_ended_signal", "pin": 15, "description": "DDC Clock (I2C SCL, 100-400 kHz)"},
+        {"name": "HDMI_DDC_SDA", "type": "single_ended_signal", "pin": 16, "description": "DDC Data (I2C SDA, for EDID/HDCP)"},
+        {"name": "HDMI_GND", "type": "ground", "pin": 17, "description": "Ground for CEC, DDC, HEC"},
+        {"name": "HDMI_5V", "type": "power", "pin": 18, "description": "+5V (up to 50 mA, for EDID/DDC)"},
+        {"name": "HDMI_HPD", "type": "config", "pin": 19, "description": "Hot Plug Detect / ARC- / HEC- / eARC-"}
+      ],
+      "pair_groups": [
+        {"group": "TMDS_DATA2", "signals": ["HDMI_D2_P", "HDMI_D2_N"], "shield": "HDMI_D2_SHIELD", "impedance_ohm": 100},
+        {"group": "TMDS_DATA1", "signals": ["HDMI_D1_P", "HDMI_D1_N"], "shield": "HDMI_D1_SHIELD", "impedance_ohm": 100},
+        {"group": "TMDS_DATA0", "signals": ["HDMI_D0_P", "HDMI_D0_N"], "shield": "HDMI_D0_SHIELD", "impedance_ohm": 100},
+        {"group": "TMDS_CLOCK", "signals": ["HDMI_CLK_P", "HDMI_CLK_N"], "shield": "HDMI_CLK_SHIELD", "impedance_ohm": 100}
+      ],
+      "d38999_contact_recommendation": "controlled_impedance_required",
+      "d38999_guidance": {
+        "contact_type": "Twinax or Quadrax contacts required for all 4 TMDS/FRL pairs",
+        "low_speed_contacts": "Normal signal contacts acceptable for DDC_SDA, DDC_SCL, CEC, HPD, +5V",
+        "layout_rules": [
+          "Each TMDS/FRL pair in its own Twinax or Quadrax contact cavity",
+          "Keep per-pair shields/returns",
+          "DDC (I2C) SDA/SCL grouped together with ground nearby",
+          "CEC separate from high-speed pairs",
+          "HPD and +5V separate from TMDS",
+          "+5V current is low (50mA max) — #22D contact sufficient",
+          "Shell/shield continuity for EMC"
+        ],
+        "feasibility_by_version": {
+          "hdmi_1.x_1080p": "Possible with Twinax contacts and validated cable assembly",
+          "hdmi_2.0_4k60": "Difficult — requires Premium High Speed cable equivalent. Twinax/Quadrax + SI validation.",
+          "hdmi_2.1_4k120_8k": "Extremely difficult. Ultra High Speed cable. Avoid unless purpose-built solution."
+        }
+      },
+      "total_d38999_contacts_needed": {
+        "high_speed": "4 Twinax contacts (8 conductors + 4 shields)",
+        "low_speed_signal": "5 normal contacts (CEC, DDC_SDA, DDC_SCL, HPD, UTILITY/ARC)",
+        "power": "1 contact (+5V)",
+        "ground": "2-3 contacts (signal ground + shield drain)",
+        "total_minimum": "12-14 contacts in mixed insert"
+      },
+      "spare_pin_policy": "1-2 signal spares; 1 ground spare",
+      "warnings": [
+        "HDMI is high-speed and impedance-sensitive — DO NOT route through random contacts",
+        "DDC is I2C-like but full HDMI is NOT 'just I2C + video'",
+        "HPD and +5V are essential for source/sink detection — cannot be omitted",
+        "HDMI 2.1 FRL is much more demanding than TMDS — may not be achievable through D38999",
+        "Signal integrity validation (eye diagram) required for any production implementation",
+        "If user only needs rugged video, consider DisplayPort, HD-SDI, or Ethernet video instead",
+        "Verify source vs sink direction and mating face orientation before pinout assignment"
+      ]
+    },
+    "displayport": {
+      "name": "DisplayPort",
+      "standard": "DisplayPort Standard (VESA)",
+      "versions": {
+        "1.2": {"lanes": 4, "rate_per_lane_gbps": 5.4, "total_gbps": 21.6, "encoding": "8b/10b"},
+        "1.4": {"lanes": 4, "rate_per_lane_gbps": 8.1, "total_gbps": 32.4, "encoding": "8b/10b"},
+        "2.0": {"lanes": 4, "rate_per_lane_gbps": 20.0, "total_gbps": 80.0, "encoding": "128b/132b"}
+      },
+      "impedance_ohm": 100,
+      "impedance_type": "differential_per_lane",
+      "signals": [
+        {"name": "DP_LANE0_P", "type": "high_speed_diff_p", "pair_with": "DP_LANE0_N", "description": "Main Link Lane 0+"},
+        {"name": "DP_LANE0_N", "type": "high_speed_diff_n", "pair_with": "DP_LANE0_P", "description": "Main Link Lane 0-"},
+        {"name": "DP_LANE1_P", "type": "high_speed_diff_p", "pair_with": "DP_LANE1_N", "description": "Main Link Lane 1+"},
+        {"name": "DP_LANE1_N", "type": "high_speed_diff_n", "pair_with": "DP_LANE1_P", "description": "Main Link Lane 1-"},
+        {"name": "DP_LANE2_P", "type": "high_speed_diff_p", "pair_with": "DP_LANE2_N", "description": "Main Link Lane 2+"},
+        {"name": "DP_LANE2_N", "type": "high_speed_diff_n", "pair_with": "DP_LANE2_P", "description": "Main Link Lane 2-"},
+        {"name": "DP_LANE3_P", "type": "high_speed_diff_p", "pair_with": "DP_LANE3_N", "description": "Main Link Lane 3+"},
+        {"name": "DP_LANE3_N", "type": "high_speed_diff_n", "pair_with": "DP_LANE3_P", "description": "Main Link Lane 3-"},
+        {"name": "DP_AUX_P", "type": "diff_pair_p", "pair_with": "DP_AUX_N", "description": "AUX Channel+ (1 Mbps sideband, Manchester encoded)"},
+        {"name": "DP_AUX_N", "type": "diff_pair_n", "pair_with": "DP_AUX_P", "description": "AUX Channel-"},
+        {"name": "DP_HPD", "type": "config", "description": "Hot Plug Detect (active-low or IRQ)"},
+        {"name": "DP_PWR", "type": "power", "description": "+3.3V power for sink (up to 500mA, optional)"},
+        {"name": "DP_GND", "type": "ground", "description": "Ground / return"},
+        {"name": "DP_SHIELD", "type": "shield", "description": "Cable shield / drain"}
+      ],
+      "pair_groups": [
+        {"group": "MAIN_LINK_0", "signals": ["DP_LANE0_P", "DP_LANE0_N"], "impedance_ohm": 100, "type": "shielded_diff_pair"},
+        {"group": "MAIN_LINK_1", "signals": ["DP_LANE1_P", "DP_LANE1_N"], "impedance_ohm": 100, "type": "shielded_diff_pair"},
+        {"group": "MAIN_LINK_2", "signals": ["DP_LANE2_P", "DP_LANE2_N"], "impedance_ohm": 100, "type": "shielded_diff_pair"},
+        {"group": "MAIN_LINK_3", "signals": ["DP_LANE3_P", "DP_LANE3_N"], "impedance_ohm": 100, "type": "shielded_diff_pair"},
+        {"group": "AUX_CHANNEL", "signals": ["DP_AUX_P", "DP_AUX_N"], "impedance_ohm": 100, "type": "diff_pair"}
+      ],
+      "d38999_contact_recommendation": "controlled_impedance_required",
+      "d38999_guidance": {
+        "contact_type": "Twinax contacts for each Main Link lane pair. Normal contacts for AUX, HPD, DP_PWR.",
+        "layout_rules": [
+          "Each Main Link lane pair in Twinax contact",
+          "AUX channel pair in adjacent contacts (or Twinax if available)",
+          "HPD separate from high-speed lanes",
+          "DP_PWR (+3.3V) on adequately sized contact — do not source power incorrectly",
+          "Keep ground/shield contacts near each lane pair",
+          "Verify source vs sink orientation"
+        ],
+        "lane_reduction": "If bandwidth allows, 2-lane DP (HBR2/HBR3) may suffice for 1080p/1440p, reducing contact count",
+        "feasibility_by_version": {
+          "dp_1.2_hbr2": "Achievable with Twinax contacts and qualified cable assembly",
+          "dp_1.4_hbr3": "Difficult — higher insertion loss budget. Requires SI validation.",
+          "dp_2.0_uhbr": "Extremely difficult through D38999. Avoid."
+        }
+      },
+      "total_d38999_contacts_needed": {
+        "4_lane": "4 Twinax (lanes) + 1 Twinax or 2 signal (AUX) + HPD + DP_PWR + GND = ~14 contacts",
+        "2_lane_reduced": "2 Twinax (lanes) + AUX + HPD + DP_PWR + GND = ~10 contacts"
+      },
+      "spare_pin_policy": "1-2 spares; consider future lane expansion",
+      "warnings": [
+        "DisplayPort main link is high-speed differential — requires controlled-impedance contacts",
+        "Generic D38999 contacts are NOT validated for DP data rates",
+        "AUX channel is lower speed but still differential — keep pair together",
+        "DP_PWR is source-to-sink — do NOT short between devices or source power backwards",
+        "USB-C DisplayPort Alt Mode is different from native DP connector wiring",
+        "Lane count can be reduced (4→2→1) if resolution/refresh allows, saving contacts",
+        "Signal integrity validation required for production",
+        "For very long runs, consider fiber optic DP extender rather than copper through D38999"
+      ]
+    },
+    "dvi": {
+      "name": "DVI (Digital Visual Interface)",
+      "standard": "DVI Specification 1.0 (DDWG: Intel, Silicon Image, Compaq, Fujitsu, HP, IBM, NEC)",
+      "variants": {
+        "dvi_d_single": {
+          "description": "DVI-D Single-Link (digital only)",
+          "tmds_pairs": 4,
+          "max_bandwidth_gbps": 3.96,
+          "max_resolution": "1920x1200 @ 60Hz"
+        },
+        "dvi_d_dual": {
+          "description": "DVI-D Dual-Link (digital, extra TMDS pairs)",
+          "tmds_pairs": 7,
+          "max_bandwidth_gbps": 7.92,
+          "max_resolution": "2560x1600 @ 60Hz"
+        },
+        "dvi_i_single": {
+          "description": "DVI-I Single-Link (digital + analog VGA-compatible)",
+          "tmds_pairs": 4,
+          "analog_signals": true
+        },
+        "dvi_i_dual": {
+          "description": "DVI-I Dual-Link (digital dual-link + analog)",
+          "tmds_pairs": 7,
+          "analog_signals": true
+        },
+        "dvi_a": {
+          "description": "DVI-A (analog only, VGA-compatible)",
+          "tmds_pairs": 0,
+          "analog_signals": true
+        }
+      },
+      "impedance_ohm": 100,
+      "impedance_type": "differential_per_pair",
+      "signals_dvi_d_single": [
+        {"name": "DVI_D2_P", "type": "high_speed_diff_p", "pair_with": "DVI_D2_N", "description": "TMDS Data 2+"},
+        {"name": "DVI_D2_N", "type": "high_speed_diff_n", "pair_with": "DVI_D2_P", "description": "TMDS Data 2-"},
+        {"name": "DVI_D1_P", "type": "high_speed_diff_p", "pair_with": "DVI_D1_N", "description": "TMDS Data 1+"},
+        {"name": "DVI_D1_N", "type": "high_speed_diff_n", "pair_with": "DVI_D1_P", "description": "TMDS Data 1-"},
+        {"name": "DVI_D0_P", "type": "high_speed_diff_p", "pair_with": "DVI_D0_N", "description": "TMDS Data 0+"},
+        {"name": "DVI_D0_N", "type": "high_speed_diff_n", "pair_with": "DVI_D0_P", "description": "TMDS Data 0-"},
+        {"name": "DVI_CLK_P", "type": "high_speed_diff_p", "pair_with": "DVI_CLK_N", "description": "TMDS Clock+"},
+        {"name": "DVI_CLK_N", "type": "high_speed_diff_n", "pair_with": "DVI_CLK_P", "description": "TMDS Clock-"},
+        {"name": "DVI_DDC_SDA", "type": "single_ended_signal", "description": "DDC Data (I2C)"},
+        {"name": "DVI_DDC_SCL", "type": "single_ended_signal", "description": "DDC Clock (I2C)"},
+        {"name": "DVI_HPD", "type": "config", "description": "Hot Plug Detect"},
+        {"name": "DVI_5V", "type": "power", "description": "+5V for DDC/EDID"},
+        {"name": "DVI_GND", "type": "ground", "description": "Digital ground"},
+        {"name": "DVI_SHIELD", "type": "shield", "description": "Per-pair and overall shield"}
+      ],
+      "signals_dvi_d_dual_extra": [
+        {"name": "DVI_D5_P", "type": "high_speed_diff_p", "description": "TMDS Data 5+ (dual-link)"},
+        {"name": "DVI_D5_N", "type": "high_speed_diff_n", "description": "TMDS Data 5- (dual-link)"},
+        {"name": "DVI_D4_P", "type": "high_speed_diff_p", "description": "TMDS Data 4+ (dual-link)"},
+        {"name": "DVI_D4_N", "type": "high_speed_diff_n", "description": "TMDS Data 4- (dual-link)"},
+        {"name": "DVI_D3_P", "type": "high_speed_diff_p", "description": "TMDS Data 3+ (dual-link)"},
+        {"name": "DVI_D3_N", "type": "high_speed_diff_n", "description": "TMDS Data 3- (dual-link)"}
+      ],
+      "signals_dvi_analog": [
+        {"name": "DVI_ANALOG_R", "type": "analog_video", "description": "Analog Red (0.7Vpp, 75Ω)"},
+        {"name": "DVI_ANALOG_G", "type": "analog_video", "description": "Analog Green (0.7Vpp, 75Ω)"},
+        {"name": "DVI_ANALOG_B", "type": "analog_video", "description": "Analog Blue (0.7Vpp, 75Ω)"},
+        {"name": "DVI_ANALOG_HSYNC", "type": "single_ended_signal", "description": "Analog H-Sync"},
+        {"name": "DVI_ANALOG_VSYNC", "type": "single_ended_signal", "description": "Analog V-Sync"},
+        {"name": "DVI_ANALOG_RTN", "type": "ground", "description": "Analog RGB return/ground"},
+        {"name": "DVI_ANALOG_SHIELD", "type": "shield", "description": "Analog section shield"}
+      ],
+      "d38999_guidance": {
+        "dvi_d_single": {
+          "recommendation": "controlled_impedance_required",
+          "contact_type": "4x Twinax for TMDS pairs + normal contacts for DDC/HPD/+5V",
+          "risk": "medium_to_high",
+          "notes": "Same TMDS as HDMI 1.x. Validated cable assembly required."
+        },
+        "dvi_d_dual": {
+          "recommendation": "avoid_or_redesign",
+          "contact_type": "7x Twinax pairs = very large insert. Purpose-built solution preferred.",
+          "risk": "high",
+          "notes": "7 high-speed differential pairs. Consider HDMI or DP conversion instead."
+        },
+        "dvi_i": {
+          "recommendation": "complex_mixed_insert",
+          "contact_type": "4-7x Twinax (digital) + 3x Coax (analog RGB) + signal contacts",
+          "risk": "high",
+          "notes": "Combines digital TMDS + analog video. Very complex. Consider separating digital and analog."
+        },
+        "dvi_a": {
+          "recommendation": "coax_contacts_preferred",
+          "contact_type": "3x Coax for RGB + normal contacts for sync/DDC",
+          "risk": "medium",
+          "notes": "Treat like VGA. Coax contacts for RGB, signal contacts for sync/control."
+        }
+      },
+      "warnings": [
+        "Verify DVI variant (D/I/A) and link count (single/dual) FIRST",
+        "DVI-D digital TMDS pairs require controlled impedance (100Ω) — same as HDMI",
+        "DVI-I requires BOTH digital high-speed pairs AND analog coax — very complex",
+        "DVI dual-link needs 7 differential pairs — very large connector footprint",
+        "For DVI-D single-link, consider HDMI-to-D38999 approach (electrically compatible)",
+        "DDC pullups and +5V current must be verified",
+        "Generic D38999 signal contacts NOT recommended for TMDS"
+      ]
+    },
+    "vga": {
+      "name": "VGA (Video Graphics Array / DE-15)",
+      "standard": "IBM VGA Standard / VESA DDC",
+      "signal_type": "analog",
+      "impedance_ohm": 75,
+      "impedance_type": "coaxial_per_color",
+      "signals": [
+        {"name": "VGA_R", "type": "analog_video", "description": "Red analog video (0.7Vpp into 75Ω)", "de15_pin": 1},
+        {"name": "VGA_G", "type": "analog_video", "description": "Green analog video (0.7Vpp into 75Ω)", "de15_pin": 2},
+        {"name": "VGA_B", "type": "analog_video", "description": "Blue analog video (0.7Vpp into 75Ω)", "de15_pin": 3},
+        {"name": "VGA_R_RTN", "type": "ground", "description": "Red video return/shield", "de15_pin": 6},
+        {"name": "VGA_G_RTN", "type": "ground", "description": "Green video return/shield", "de15_pin": 7},
+        {"name": "VGA_B_RTN", "type": "ground", "description": "Blue video return/shield", "de15_pin": 8},
+        {"name": "VGA_HSYNC", "type": "single_ended_signal", "description": "Horizontal Sync (TTL level)", "de15_pin": 13},
+        {"name": "VGA_VSYNC", "type": "single_ended_signal", "description": "Vertical Sync (TTL level)", "de15_pin": 14},
+        {"name": "VGA_DDC_SDA", "type": "single_ended_signal", "description": "DDC/EDID Data (I2C)", "de15_pin": 12},
+        {"name": "VGA_DDC_SCL", "type": "single_ended_signal", "description": "DDC/EDID Clock (I2C)", "de15_pin": 15},
+        {"name": "VGA_5V", "type": "power", "description": "+5V for DDC/EDID (low current)", "de15_pin": 9},
+        {"name": "VGA_GND", "type": "ground", "description": "Sync/DDC ground", "de15_pin": 10},
+        {"name": "VGA_SHIELD", "type": "shield", "description": "Overall cable shield"}
+      ],
+      "d38999_contact_recommendation": "coax_contacts_preferred",
+      "d38999_guidance": {
+        "contact_type": "Coax contacts for R/G/B video lines; normal signal contacts for sync and DDC",
+        "layout_rules": [
+          "Use coax contacts (size 12 Coax) for VGA_R, VGA_G, VGA_B — each with own return",
+          "Keep each RGB color with its own return/shield (coax provides this inherently)",
+          "HSYNC and VSYNC on normal signal contacts, near ground",
+          "DDC SDA/SCL grouped with ground nearby",
+          "+5V on separate contact",
+          "Keep sync and DDC signals away from high-current switching power"
+        ],
+        "generic_contact_alternative": "For low resolution (≤800x600) or short cables (<1m), normal contacts may work with dedicated returns. Quality will be degraded."
+      },
+      "total_d38999_contacts_needed": {
+        "with_coax": "3 Coax (RGB) + 2 signal (H/V sync) + 2 signal (DDC) + 1 power (+5V) + 2 ground = 10 contacts",
+        "without_coax": "3 signal (RGB) + 3 ground (returns) + 2 sync + 2 DDC + 1 power + 1 ground = 12 contacts"
+      },
+      "spare_pin_policy": "1-2 spares; consider ID bits for monitor detection",
+      "warnings": [
+        "VGA is ANALOG — signal quality depends on shielding, impedance, return paths, crosstalk",
+        "RGB lines should be treated like analog coax, not random logic wires",
+        "Poor wiring causes ghosting, blur, color shift, and noise",
+        "Each RGB signal needs its own individual return — do NOT share a single ground return",
+        "For high resolutions (>1080p equivalent), coax contacts are strongly recommended",
+        "DDC is I2C (for EDID) — keep SDA/SCL together with ground",
+        "VGA is legacy; consider converting to HDMI/DP digitally before the connector if possible"
+      ]
+    },
+    "dpi_parallel_rgb": {
+      "name": "DPI / Parallel RGB",
+      "standard": "Various SoC-specific (Raspberry Pi DPI, STM32 LTDC, i.MX eLCDIF, MIPI DPI)",
+      "description": "Parallel display interface with individual data lines per color bit. NOT to be confused with MIPI DSI (serial).",
+      "note": "DPI is primarily a board-level interface. Routing through a connector/cable is unusual and risky.",
+      "variants": {
+        "rgb565": {"data_bits": 16, "signals": "R[4:0], G[5:0], B[4:0] + PCLK + HSYNC + VSYNC + DE"},
+        "rgb666": {"data_bits": 18, "signals": "R[5:0], G[5:0], B[5:0] + PCLK + HSYNC + VSYNC + DE"},
+        "rgb888": {"data_bits": 24, "signals": "R[7:0], G[7:0], B[7:0] + PCLK + HSYNC + VSYNC + DE"}
+      },
+      "signals_rgb888": [
+        {"name": "DPI_R0", "type": "single_ended_signal"}, {"name": "DPI_R1", "type": "single_ended_signal"},
+        {"name": "DPI_R2", "type": "single_ended_signal"}, {"name": "DPI_R3", "type": "single_ended_signal"},
+        {"name": "DPI_R4", "type": "single_ended_signal"}, {"name": "DPI_R5", "type": "single_ended_signal"},
+        {"name": "DPI_R6", "type": "single_ended_signal"}, {"name": "DPI_R7", "type": "single_ended_signal"},
+        {"name": "DPI_G0", "type": "single_ended_signal"}, {"name": "DPI_G1", "type": "single_ended_signal"},
+        {"name": "DPI_G2", "type": "single_ended_signal"}, {"name": "DPI_G3", "type": "single_ended_signal"},
+        {"name": "DPI_G4", "type": "single_ended_signal"}, {"name": "DPI_G5", "type": "single_ended_signal"},
+        {"name": "DPI_G6", "type": "single_ended_signal"}, {"name": "DPI_G7", "type": "single_ended_signal"},
+        {"name": "DPI_B0", "type": "single_ended_signal"}, {"name": "DPI_B1", "type": "single_ended_signal"},
+        {"name": "DPI_B2", "type": "single_ended_signal"}, {"name": "DPI_B3", "type": "single_ended_signal"},
+        {"name": "DPI_B4", "type": "single_ended_signal"}, {"name": "DPI_B5", "type": "single_ended_signal"},
+        {"name": "DPI_B6", "type": "single_ended_signal"}, {"name": "DPI_B7", "type": "single_ended_signal"},
+        {"name": "DPI_PCLK", "type": "clock", "description": "Pixel clock (critical timing reference)"},
+        {"name": "DPI_HSYNC", "type": "single_ended_signal", "description": "Horizontal sync"},
+        {"name": "DPI_VSYNC", "type": "single_ended_signal", "description": "Vertical sync"},
+        {"name": "DPI_DE", "type": "single_ended_signal", "description": "Data Enable (active display area)"},
+        {"name": "DPI_GND", "type": "ground", "description": "Ground (multiple needed)"},
+        {"name": "DPI_VCC", "type": "power", "description": "Logic power (3.3V or 1.8V)"},
+        {"name": "DPI_BL_PWM", "type": "single_ended_signal", "description": "Backlight PWM (optional)"},
+        {"name": "DPI_RESET", "type": "single_ended_signal", "description": "Display reset (optional)"},
+        {"name": "DPI_CTRL_SDA", "type": "single_ended_signal", "description": "Control I2C SDA (optional)"},
+        {"name": "DPI_CTRL_SCL", "type": "single_ended_signal", "description": "Control I2C SCL (optional)"}
+      ],
+      "total_pin_counts": {
+        "rgb565_min": "16 data + 4 timing + 4-6 ground + 1 power = 25-27",
+        "rgb666_min": "18 data + 4 timing + 5-7 ground + 1 power = 28-30",
+        "rgb888_min": "24 data + 4 timing + 6-8 ground + 1 power = 35-37",
+        "rgb888_with_control": "24 data + 4 timing + 8 ground + 1 power + 4 control = ~41"
+      },
+      "d38999_contact_recommendation": "serialize_before_connector",
+      "d38999_guidance": {
+        "primary_recommendation": "Convert DPI to a serialized interface (LVDS, eDP, HDMI, or DSI) BEFORE crossing a rugged D38999 connector. DPI is a board-level interface not designed for cable/connector runs.",
+        "if_dpi_must_be_used": {
+          "contact_type": "Normal signal contacts with aggressive ground interleaving",
+          "max_pixel_clock_mhz": 25,
+          "max_cable_length_m": 0.3,
+          "layout_rules": [
+            "Interleave ground pins: at least 1 GND per 4-6 data pins",
+            "Keep PCLK near ground contacts (critical reference)",
+            "Group RGB bits by color byte (R[7:0] together, G[7:0] together, B[7:0] together)",
+            "Keep HSYNC/VSYNC/DE near PCLK and ground",
+            "Match wire lengths within ±10mm for all data lines relative to PCLK",
+            "Use shielded cable",
+            "Reduce pixel clock speed if possible (use lower resolution)"
+          ]
+        },
+        "serialization_alternatives": [
+          {"converter": "DPI to LVDS", "chips": "TI SN75LVDS83B, THC63LVD1024", "benefits": "Reduces to 4-5 diff pairs, proven for display cables"},
+          {"converter": "DPI to eDP", "chips": "TI SN65DSI86 (DSI to eDP) or parallel RGB to eDP", "benefits": "Standard display cable interface"},
+          {"converter": "DPI to HDMI", "chips": "TFP410, ADV7513, SiI9022", "benefits": "Standard HDMI cable, widely available rugged connectors"},
+          {"converter": "DPI to MIPI DSI", "chips": "SSD2828, TC358762", "benefits": "Fewer wires, common in embedded displays"}
+        ]
+      },
+      "spare_pin_policy": "2-4 spares if using direct DPI; group with grounds",
+      "warnings": [
+        "DPI/parallel RGB is NOT designed for cable runs — it is a board-level interface",
+        "Cable length, skew, EMI, and crosstalk are major problems",
+        "PCLK is the critical timing reference — all data must arrive within setup/hold window relative to PCLK",
+        "Long cables cause timing violations, color artifacts, and EMC failures",
+        "Strongly recommend serializing (LVDS/eDP/HDMI) before crossing any connector",
+        "If DPI must be used: keep cable <30cm, pixel clock <25 MHz, use shielded ribbon",
+        "Ground interleaving is mandatory — never route 24 data wires without ground returns",
+        "Do NOT confuse DPI (parallel RGB) with MIPI DSI (serial) — completely different interfaces"
+      ]
+    }
+  },
+  "d38999_design_rules": [
+    {
+      "rule_id": "HSI-001",
+      "condition": "interface includes USB 3.x, HDMI, DisplayPort, or DVI-D",
+      "action": "require_controlled_impedance_contacts",
+      "details": "Use Twinax, Quadrax, or manufacturer-specific high-speed contacts validated for the target data rate"
+    },
+    {
+      "rule_id": "HSI-002",
+      "condition": "interface is VGA and video quality matters",
+      "action": "prefer_coax_contacts",
+      "details": "Use size 12 Coax contacts for RGB analog video lines with individual returns"
+    },
+    {
+      "rule_id": "HSI-003",
+      "condition": "interface is DPI/parallel RGB and cable length > 30cm",
+      "action": "recommend_serialization",
+      "details": "Convert to LVDS, eDP, or HDMI before the connector. DPI is not a cable interface."
+    },
+    {
+      "rule_id": "HSI-004",
+      "condition": "interface is USB Type-C PD or Alt Mode",
+      "action": "require_controller_design",
+      "details": "USB-C requires CC controller, orientation logic, and PD negotiation. Do not directly map Type-C pins through D38999 without active electronics."
+    },
+    {
+      "rule_id": "HSI-005",
+      "condition": "any differential pair present",
+      "action": "preserve_pair_adjacency",
+      "details": "P and N of each differential pair MUST be in adjacent connector cavities. Never split a pair across the insert."
+    },
+    {
+      "rule_id": "HSI-006",
+      "condition": "any high-speed pair present",
+      "action": "include_nearby_returns_shields",
+      "details": "Each high-speed pair needs a dedicated shield/return. Use per-pair shielded contacts or ensure ground contacts adjacent to each pair."
+    },
+    {
+      "rule_id": "HSI-007",
+      "condition": "high-speed pairs AND high-current power in same connector",
+      "action": "separate_power_from_signals",
+      "details": "Keep high-current power contacts physically separated from high-speed differential pairs. Power switching noise couples into adjacent high-speed lines."
+    },
+    {
+      "rule_id": "HSI-008",
+      "condition": "any video interface through D38999",
+      "action": "mark_source_sink_direction",
+      "details": "Document source (transmitter) vs sink (receiver) direction. Verify mating face orientation and mirror direction before finalizing pinout."
+    },
+    {
+      "rule_id": "HSI-009",
+      "condition": "interface is HDMI 2.1 FRL, DP 2.0 UHBR, or USB4/Thunderbolt",
+      "action": "avoid_generic_d38999",
+      "details": "These interfaces exceed what typical D38999 contact geometries can support. Recommend purpose-built ruggedized video connectors or fiber optic solutions."
+    },
+    {
+      "rule_id": "HSI-010",
+      "condition": "any interface with hot-plug detect (HPD) pin",
+      "action": "include_hpd_pin",
+      "details": "HPD is essential for source/sink detection. Cannot be omitted. Route as normal signal contact, not near high-speed pairs."
+    },
+    {
+      "rule_id": "HSI-011",
+      "condition": "interface includes DDC (I2C for EDID)",
+      "action": "group_ddc_with_ground",
+      "details": "DDC SDA and SCL should be adjacent with ground nearby. Normal signal contacts are fine. Keep away from noisy power."
+    },
+    {
+      "rule_id": "HSI-012",
+      "condition": "any high-speed interface through D38999",
+      "action": "require_si_validation",
+      "details": "Signal integrity testing (eye diagram, insertion loss, return loss, crosstalk) is MANDATORY before production. D38999 contact geometry alone does not guarantee performance."
+    }
+  ],
+  "pin_naming_conventions": {
+    "usb2": ["USB2_VBUS", "USB2_D_P", "USB2_D_N", "USB2_GND", "USB2_SHIELD"],
+    "usb3": ["USB2_D_P", "USB2_D_N", "USB3_TX_P", "USB3_TX_N", "USB3_RX_P", "USB3_RX_N", "USB3_VBUS", "USB3_GND", "USB3_SHIELD"],
+    "usb_c_minimal": ["USBC_VBUS", "USBC_GND", "USBC_CC1", "USBC_CC2", "USBC_D_P", "USBC_D_N", "USBC_SBU1", "USBC_SBU2"],
+    "hdmi": ["HDMI_D2_P", "HDMI_D2_N", "HDMI_D1_P", "HDMI_D1_N", "HDMI_D0_P", "HDMI_D0_N", "HDMI_CLK_P", "HDMI_CLK_N", "HDMI_DDC_SDA", "HDMI_DDC_SCL", "HDMI_CEC", "HDMI_HPD", "HDMI_5V", "HDMI_GND"],
+    "displayport": ["DP_LANE0_P", "DP_LANE0_N", "DP_LANE1_P", "DP_LANE1_N", "DP_LANE2_P", "DP_LANE2_N", "DP_LANE3_P", "DP_LANE3_N", "DP_AUX_P", "DP_AUX_N", "DP_HPD", "DP_PWR", "DP_GND"],
+    "dvi_d_single": ["DVI_D2_P", "DVI_D2_N", "DVI_D1_P", "DVI_D1_N", "DVI_D0_P", "DVI_D0_N", "DVI_CLK_P", "DVI_CLK_N", "DVI_DDC_SDA", "DVI_DDC_SCL", "DVI_HPD", "DVI_5V", "DVI_GND"],
+    "vga": ["VGA_R", "VGA_R_RTN", "VGA_G", "VGA_G_RTN", "VGA_B", "VGA_B_RTN", "VGA_HSYNC", "VGA_VSYNC", "VGA_DDC_SDA", "VGA_DDC_SCL", "VGA_5V", "VGA_GND"],
+    "dpi_rgb888": ["DPI_R0..R7", "DPI_G0..G7", "DPI_B0..B7", "DPI_PCLK", "DPI_HSYNC", "DPI_VSYNC", "DPI_DE", "DPI_GND"]
+  },
+  "final_warnings": [
+    "Final wiring must be verified against the exact standard revision in use",
+    "High-speed interfaces require controlled impedance, short discontinuities, correct shielding, and SI validation",
+    "D38999 insert geometry alone is NOT enough — contact technology and cable assembly design matter",
+    "Do NOT use generic signal contacts for USB 3.x, HDMI, DisplayPort, or DVI-D digital unless tested and validated",
+    "Official connector pin orientation (mating face vs wire side) and mirror direction must be verified before wiring",
+    "The D38999 connector shell provides overall shielding but individual pair shielding requires appropriate contact types",
+    "For HDMI 2.1, DP 2.0, USB4, or Thunderbolt — recommend purpose-built ruggedized solutions rather than generic D38999",
+    "When mixing high-speed video with power in the same connector, thermal and EMC testing is essential"
+  ]
+}

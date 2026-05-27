@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 270 110" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- Cable entry -->
+  <rect x="8" y="44" width="26" height="18" rx="3"/>
+  <!-- Bayonet coupling ring (MIL-DTL-26482 style) -->
+  <rect x="34" y="26" width="72" height="54" rx="4"/>
+  <!-- Bayonet lugs (instead of threads) -->
+  <rect x="40" y="26" width="10" height="6" rx="2" fill="currentColor" opacity="0.2" stroke="none"/>
+  <rect x="90" y="26" width="10" height="6" rx="2" fill="currentColor" opacity="0.2" stroke="none"/>
+  <rect x="40" y="74" width="10" height="6" rx="2" fill="currentColor" opacity="0.2" stroke="none"/>
+  <!-- Shell size 18 body -->
+  <rect x="106" y="16" width="92" height="74" rx="6"/>
+  <!-- RJ45 port -->
+  <rect x="132" y="36" width="30" height="24" rx="2" stroke-width="2"/>
+  <!-- 8 pins -->
+  <line x1="136" y1="38" x2="136" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="139.5" y1="38" x2="139.5" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="143" y1="38" x2="143" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="146.5" y1="38" x2="146.5" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="150" y1="38" x2="150" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="153.5" y1="38" x2="153.5" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="157" y1="38" x2="157" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="160.5" y1="38" x2="160.5" y2="45" stroke-width="1" opacity="0.6" transform="translate(-2,0)"/>
+  <!-- Keying notch -->
+  <rect x="148" y="8" width="8" height="6" rx="1.5" fill="currentColor" opacity="0.3"/>
+  <text x="152" y="100" text-anchor="middle" font-size="9" stroke="none" fill="currentColor" opacity="0.6" font-family="system-ui,sans-serif">Shell 18 Bayonet</text>
+  <text x="152" y="108" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">RJF Plug (26482 style)</text>
+</svg>

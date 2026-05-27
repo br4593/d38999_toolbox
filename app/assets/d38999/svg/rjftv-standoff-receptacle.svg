@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 130" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- PCB board -->
+  <rect x="50" y="106" width="180" height="6" fill="currentColor" opacity="0.1" stroke="none"/>
+  <line x1="50" y1="109" x2="230" y2="109" stroke-width="2" opacity="0.5"/>
+  <!-- Stand-off legs -->
+  <line x1="90" y1="82" x2="90" y2="106" stroke-width="2"/>
+  <line x1="198" y1="82" x2="198" y2="106" stroke-width="2"/>
+  <!-- Double flange plate -->
+  <rect x="70" y="72" width="148" height="12" rx="2" stroke-width="2"/>
+  <!-- Shell body (shell 19) -->
+  <rect x="88" y="8" width="112" height="66" rx="6"/>
+  <!-- RJ45 port (face view) -->
+  <rect x="124" y="24" width="30" height="24" rx="2" stroke-width="2"/>
+  <!-- 8 pins -->
+  <line x1="128" y1="26" x2="128" y2="33" stroke-width="1" opacity="0.6"/>
+  <line x1="131.5" y1="26" x2="131.5" y2="33" stroke-width="1" opacity="0.6"/>
+  <line x1="135" y1="26" x2="135" y2="33" stroke-width="1" opacity="0.6"/>
+  <line x1="138.5" y1="26" x2="138.5" y2="33" stroke-width="1" opacity="0.6"/>
+  <line x1="142" y1="26" x2="142" y2="33" stroke-width="1" opacity="0.6"/>
+  <line x1="145.5" y1="26" x2="145.5" y2="33" stroke-width="1" opacity="0.6"/>
+  <line x1="149" y1="26" x2="149" y2="33" stroke-width="1" opacity="0.6"/>
+  <line x1="152.5" y1="26" x2="152.5" y2="33" stroke-width="1" opacity="0.6" transform="translate(-2,0)"/>
+  <!-- Keying notch -->
+  <rect x="140" y="2" width="8" height="5" rx="1.5" fill="currentColor" opacity="0.3"/>
+  <!-- Coupling ring -->
+  <rect x="76" y="16" width="6" height="50" rx="2" stroke-width="1.5" opacity="0.5"/>
+  <text x="144" y="126" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">RJFTV Stand-off (PCB)</text>
+</svg>

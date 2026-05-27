@@ -1,0 +1,891 @@
+{
+  "_metadata": {
+    "title": "D38999 Pinout Rules, Protocol Wiring, and Gauge-to-Current Dataset",
+    "version": "1.0.0",
+    "created": "2026-05-27",
+    "purpose": "Reference dataset for the D38999 toolbox. Covers: (1) new protocols not in connector_engineering_reference.json, (2) comprehensive twisted-pair adjacency rules including both-connector constraints, (3) wire gauge current capacity and parallel-pin distribution tables with worked examples.",
+    "companion_files": [
+      "data/connector_engineering_reference.json",
+      "data/high_speed_interface_wiring_reference.json"
+    ],
+    "sources": [
+      {
+        "title": "MIL-DTL-38999 Tables IV and V",
+        "reliability": "official",
+        "notes": "Contact current ratings and derating factors"
+      },
+      {
+        "title": "MIL-STD-1553C (February 2018)",
+        "organization": "U.S. Department of Defense",
+        "reliability": "official",
+        "notes": "Twinax bus, 70-85Ω (78Ω typical), 1 Mbps Manchester encoded, transformer-coupled stubs"
+      },
+      {
+        "title": "ARINC Specification 429 Part 1-17",
+        "organization": "ARINC / Aeronautical Radio Inc.",
+        "reliability": "official",
+        "notes": "78Ω shielded twisted pair, BPRZ differential, ±10V, 12.5 or 100 kbps, max 20 receivers per bus"
+      },
+      {
+        "title": "ARINC Specification 664 Part 7 (AFDX)",
+        "organization": "ARINC / Airbus",
+        "reliability": "official",
+        "notes": "Based on IEEE 802.3 100BASE-TX, deterministic QoS, dual redundant networks, 100 Mbps"
+      },
+      {
+        "title": "ECSS-E-ST-50-12C (SpaceWire)",
+        "organization": "European Space Agency",
+        "reliability": "official",
+        "notes": "LVDS-based, 2-400 Mbps, full duplex 4 differential pairs, 9-pin Micro-D connector"
+      },
+      {
+        "title": "TIA/EIA-644-A (LVDS)",
+        "organization": "TIA/EIA",
+        "reliability": "official",
+        "notes": "100-120Ω differential, 3.5 mA constant current, 350 mV swing, 655 Mbps+ typical"
+      },
+      {
+        "title": "IEEE 802.3an-2006 (10GBASE-T)",
+        "organization": "IEEE",
+        "reliability": "official",
+        "notes": "4 pairs, PAM-16, 400 MHz, Cat 6A for 100m, 10 Gbps full duplex"
+      },
+      {
+        "title": "IEEE 802.3bt-2018 (PoE++)",
+        "organization": "IEEE",
+        "reliability": "official",
+        "notes": "Power over Ethernet, up to 90W PSE, 71.3W at PD, 960 mA per pair"
+      },
+      {
+        "title": "Wikipedia: American Wire Gauge",
+        "reliability": "secondary",
+        "notes": "AWG ampacity table for cross-reference"
+      },
+      {
+        "title": "MIL-W-22759 (Aerospace wire)",
+        "organization": "U.S. Department of Defense",
+        "reliability": "official",
+        "notes": "Standard aerospace wire, PTFE insulation, higher temp rating than commercial wire"
+      }
+    ]
+  },
+
+  "wire_gauge_current_capacity": {
+    "_note": "Wire and contact current ratings for aerospace (MIL-W-22759 PTFE wire) and MIL-DTL-38999 contacts. MIL-spec ratings are lower than AWG commercial tables due to bundling, altitude, and temperature constraints. Always verify with manufacturer datasheet and applicable installation standard (e.g. AS50881).",
+    "mil_dtl_38999_contact_single_ratings": {
+      "_source": "MIL-DTL-38999 Table IV, sea level, 25°C ambient, single contact",
+      "22D": {"amps_continuous": 5.0, "awg": 22, "description": "Signal/low-power contact"},
+      "22":  {"amps_continuous": 5.0, "awg": 22, "description": "Signal/low-power contact (same as 22D)"},
+      "20":  {"amps_continuous": 7.5, "awg": 20, "description": "General-purpose signal/light power"},
+      "16":  {"amps_continuous": 13.0, "awg": 16, "description": "Medium power contact"},
+      "12":  {"amps_continuous": 23.0, "awg": 12, "description": "High power contact"},
+      "8":   {"amps_continuous": 46.0, "awg": 8,  "description": "Heavy power contact"},
+      "4":   {"amps_continuous": 78.0, "awg": 4,  "description": "Very heavy power contact"},
+      "0":   {"amps_continuous": 150.0, "awg": 0, "description": "Maximum power contact"}
+    },
+    "mil_spec_wire_ampacity_bundled": {
+      "_source": "AS50881 Table VII / MIL-HDBK-522, bundled in harness, 70°C insulation, 25°C ambient",
+      "_note": "These are WIRE ampacity values. Contact rating (above) may be the limiting factor — always use the lower of the two.",
+      "22_awg": {"amps": 3.0,   "resistance_ohm_per_100ft": 5.3, "note": "Typical 22 AWG in bundled aerospace harness"},
+      "20_awg": {"amps": 5.0,   "resistance_ohm_per_100ft": 3.3, "note": "Typical 20 AWG"},
+      "18_awg": {"amps": 7.5,   "resistance_ohm_per_100ft": 2.1},
+      "16_awg": {"amps": 10.0,  "resistance_ohm_per_100ft": 1.3},
+      "14_awg": {"amps": 13.0,  "resistance_ohm_per_100ft": 0.83},
+      "12_awg": {"amps": 17.0,  "resistance_ohm_per_100ft": 0.52},
+      "10_awg": {"amps": 24.0,  "resistance_ohm_per_100ft": 0.33},
+      "8_awg":  {"amps": 35.0,  "resistance_ohm_per_100ft": 0.21},
+      "6_awg":  {"amps": 45.0,  "resistance_ohm_per_100ft": 0.13},
+      "4_awg":  {"amps": 60.0,  "resistance_ohm_per_100ft": 0.082},
+      "2_awg":  {"amps": 80.0,  "resistance_ohm_per_100ft": 0.051},
+      "0_awg":  {"amps": 100.0, "resistance_ohm_per_100ft": 0.032}
+    },
+    "derating_factors": {
+      "_source": "MIL-DTL-38999 Table V",
+      "_note": "Multiply contact single-contact rating by this factor when N contacts in same connector are simultaneously energized.",
+      "by_energized_contacts": {
+        "1":   1.00, "2":   0.90, "3":   0.85, "5":   0.78,
+        "7":   0.74, "10":  0.70, "15":  0.66, "20":  0.63,
+        "25":  0.60, "30":  0.58, "37":  0.56, "50":  0.52,
+        "75":  0.48, "100": 0.45
+      },
+      "by_temperature_ambient": {
+        "_note": "Additional multiplier for ambient temperature above 25°C",
+        "25C":  1.00, "50C":  0.85, "75C":  0.70,
+        "100C": 0.55, "125C": 0.40, "150C": 0.25,
+        "175C": 0.10, "200C": 0.00
+      },
+      "by_altitude": {
+        "_note": "Current derating for altitude (reduced convection cooling)",
+        "sea_level": 1.00, "5000ft":  0.95, "10000ft": 0.90,
+        "20000ft":  0.82,  "40000ft": 0.65, "70000ft": 0.50
+      }
+    },
+    "parallel_pin_distribution": {
+      "_principle": "When a single contact cannot carry the required load, the current must be distributed across multiple parallel contacts. All contacts must be the same gauge, same wire length, and same crimp quality to ensure equal sharing. A single contact opening (N-1 failure) must not overload the remaining contacts beyond 80% of their derated capacity.",
+      "_formula": "Required contacts = ceil( I_load / (I_contact_rated × derating_factor × 0.75_margin) )",
+      "_return_balance": "Every supply contact requires an equal number of return contacts of the same gauge. Unbalanced supply/return is a common dangerous error.",
+      "worked_examples": [
+        {
+          "scenario": "5A continuous load, #22D contacts, sea level, 25°C, 10 total energized contacts",
+          "single_contact_rating_A": 5.0,
+          "derating_factor": 0.70,
+          "derated_per_contact_A": 3.5,
+          "load_A": 5.0,
+          "naive_contacts_needed": 2,
+          "with_25pct_margin_contacts": 2,
+          "n_minus_1_check": "If 1 of 2 opens: 5A / 1 contact = 5A > 3.5A * 0.80 = 2.8A → FAIL",
+          "corrected_contacts": 3,
+          "n_minus_1_with_3": "If 1 of 3 opens: 5A / 2 = 2.5A < 3.5A * 0.80 = 2.8A → OK",
+          "total_supply_contacts": 3,
+          "total_return_contacts": 3,
+          "total_contacts_for_this_rail": 6,
+          "recommendation": "Use 3 supply + 3 return #22D contacts"
+        },
+        {
+          "scenario": "20A load, 28 VDC, #20 contacts, sea level, 25°C, 20 total energized contacts",
+          "single_contact_rating_A": 7.5,
+          "derating_factor": 0.63,
+          "derated_per_contact_A": 4.725,
+          "load_A": 20.0,
+          "naive_contacts_needed": 5,
+          "with_25pct_margin_contacts": 6,
+          "n_minus_1_check": "If 1 of 6 opens: 20A / 5 = 4A < 4.725A * 0.80 = 3.78A → FAIL at 4A",
+          "corrected_contacts": 7,
+          "n_minus_1_with_7": "If 1 of 7 opens: 20A / 6 = 3.33A < 4.725A * 0.80 = 3.78A → OK",
+          "alternative": "Use 3x #12 contacts (23A × 0.85 derating × 0.75 margin = 14.7A each; 2 contacts = 29.3A > 20A, N-1 ok for 3 contacts). 3 supply + 3 return = 6 contacts total, more compact.",
+          "total_supply_contacts": 7,
+          "total_return_contacts": 7,
+          "total_contacts_for_this_rail": 14,
+          "recommendation": "Prefer 3x #12 for 20A (6 contacts total) over 7x #20 (14 contacts)"
+        },
+        {
+          "scenario": "50A load, #12 contacts, sea level, 25°C, 15 total energized contacts",
+          "single_contact_rating_A": 23.0,
+          "derating_factor": 0.66,
+          "derated_per_contact_A": 15.18,
+          "load_A": 50.0,
+          "naive_contacts_needed": 4,
+          "with_25pct_margin_contacts": 5,
+          "n_minus_1_check": "If 1 of 5 opens: 50A / 4 = 12.5A < 15.18A * 0.80 = 12.1A → borderline",
+          "corrected_contacts": 6,
+          "total_supply_contacts": 6,
+          "total_return_contacts": 6,
+          "total_contacts_for_this_rail": 12,
+          "recommendation": "Use 6 supply + 6 return #12 contacts. Alternatively use #8 contacts (46A rated, derated 0.66 = 30.4A; 2 contacts = 60.7A, N-1: 30.4A > 50A*0.8=40A, need 3 contacts of #8)"
+        },
+        {
+          "scenario": "100A load, #8 contacts, sea level, 25°C, 20 total energized contacts",
+          "single_contact_rating_A": 46.0,
+          "derating_factor": 0.63,
+          "derated_per_contact_A": 28.98,
+          "load_A": 100.0,
+          "with_25pct_margin_contacts": 5,
+          "n_minus_1_with_5": "If 1 of 5 opens: 100A / 4 = 25A < 28.98A * 0.80 = 23.2A → FAIL",
+          "corrected_contacts": 6,
+          "n_minus_1_with_6": "If 1 of 6 opens: 100A / 5 = 20A < 28.98A * 0.80 = 23.2A → OK",
+          "total_supply_contacts": 6,
+          "total_return_contacts": 6,
+          "total_contacts_for_this_rail": 12,
+          "recommendation": "Use 6 supply + 6 return #8 contacts"
+        }
+      ],
+      "parallel_contact_rules": [
+        "All paralleled contacts MUST be the same gauge/size",
+        "All paralleled wires MUST be the same length (within 10%) — resistance difference causes current imbalance",
+        "All crimp connections MUST use the same qualified crimp tool, die, and process",
+        "Distribute paralleled contacts physically across the insert — do not group all in adjacent cavities",
+        "Each supply contact needs an equal number of return contacts of the same size",
+        "Design for N-1 survival: if one contact opens, remaining contacts must not exceed 80% of their derated capacity",
+        "Apply a minimum 25% margin over the calculated requirement before N-1 check",
+        "Do NOT parallel contacts of different sizes on the same rail",
+        "Fretting corrosion from vibration can increase contact resistance unpredictably over time"
+      ],
+      "voltage_considerations": {
+        "_note": "Contact gauge affects current capacity, not voltage rating directly. MIL-DTL-38999 contacts are rated to 200V DC (Series III) or per applicable slash sheet. Larger loads at higher voltages require fewer contacts since P=V×I (same power, higher voltage = lower current).",
+        "examples": [
+          "1000W at 28 VDC: 35.7A → need multiple contacts",
+          "1000W at 270 VDC: 3.7A → single #22D contact sufficient",
+          "1000W at 115 VAC: 8.7A → 2x #20 contacts sufficient"
+        ]
+      }
+    },
+    "quick_reference_table": {
+      "_note": "Minimum contacts needed (supply only) for given load and contact size. Does NOT include derating or N-1 margin — apply those factors in actual design. Always add equal number of return contacts.",
+      "headers": ["Load (A)", "#22D (5A rated)", "#20 (7.5A rated)", "#16 (13A rated)", "#12 (23A rated)", "#8 (46A rated)"],
+      "rows": [
+        {"load_A": 1,    "#22D": 1, "#20": 1, "#16": 1, "#12": 1, "#8": 1},
+        {"load_A": 5,    "#22D": 1, "#20": 1, "#16": 1, "#12": 1, "#8": 1},
+        {"load_A": 10,   "#22D": 2, "#20": 2, "#16": 1, "#12": 1, "#8": 1},
+        {"load_A": 15,   "#22D": 3, "#20": 2, "#16": 2, "#12": 1, "#8": 1},
+        {"load_A": 20,   "#22D": 4, "#20": 3, "#16": 2, "#12": 1, "#8": 1},
+        {"load_A": 30,   "#22D": 6, "#20": 4, "#16": 3, "#12": 2, "#8": 1},
+        {"load_A": 50,   "#22D": 10,"#20": 7, "#16": 4, "#12": 3, "#8": 2},
+        {"load_A": 75,   "#22D": 15,"#20": 10,"#16": 6, "#12": 4, "#8": 2},
+        {"load_A": 100,  "#22D": 20,"#20": 14,"#16": 8, "#12": 5, "#8": 3},
+        {"load_A": 150,  "#22D": 30,"#20": 20,"#16": 12,"#12": 7, "#8": 4}
+      ],
+      "reminder": "Add derating (typ 0.60–0.85 depending on energized contacts), 25% design margin, N-1 check, AND equal return contacts. Actual contacts needed will be 1.5–2× the table values."
+    }
+  },
+
+  "twisted_pair_adjacency_rules": {
+    "_principle": "A differential pair (+ and − signals) MUST be routed on a twisted pair cable. Both wires of the pair MUST terminate into ADJACENT cavities in the connector. This applies to BOTH connectors in a mated pair — the plug AND the receptacle must each have the P and N of every differential pair in adjacent, physically neighboring cavities.",
+    "why_it_matters": [
+      "Differential pairs rely on equal and opposite fields to cancel EMI emissions and reject common-mode noise.",
+      "If P and N are in non-adjacent cavities, the cable twist must be untwisted before entry, creating an unbalanced stub that radiates and picks up noise.",
+      "For high-speed signals (Ethernet, USB, HDMI TMDS, RS-485, CAN), a non-adjacent assignment causes signal integrity failure: increased common-mode noise, eye diagram violations, bit errors.",
+      "The cable between the two connectors may physically be a twisted pair, but if the connector cavity assignment breaks the pair apart, the twist benefit is lost inside the connector.",
+      "For MIL-STD-1553, ARINC 429, and similar mil/avi buses, splitting the pair in the connector creates coupling paths that violate bus electrical specs."
+    ],
+    "both_connectors_constraint": {
+      "_critical": true,
+      "explanation": "When a plug (connector A) mates with a receptacle (connector B), the cavity numbering is shared — cavity 'A' on the plug mates to cavity 'A' on the receptacle. If the differential pair occupies cavities 'A' and 'B' (adjacent) on the plug, those same cavities 'A' and 'B' will be adjacent on the receptacle. So planning pair assignments by cavity IDs automatically satisfies both connectors simultaneously.",
+      "plug_vs_receptacle_orientation": "WARNING: When viewed from the MATING FACE, plug and receptacle appear as mirror images. When viewed from the WIRE SIDE (installation side), the orientation is different. Always use cavity LABEL (letter/number ID) to plan pin assignments — never use physical position drawings without verifying plug vs receptacle face orientation.",
+      "mirror_face_rule": "Never assign a pair based on physical position drawings without confirming whether the drawing shows the mating face or wire side, and whether it shows the plug or receptacle. Use the cavity label (e.g. 'A', '1', '7', 'AA') as the common reference between both connectors.",
+      "adjacency_verification": "After assigning cavities, verify the insert arrangement drawing confirms the chosen cavities are physically neighboring in the insert. For circular inserts, adjacent means same row AND neighboring column position, or confirmed by the insert arrangement's physical layout."
+    },
+    "insert_adjacency_identification": {
+      "_note": "D38999 insert arrangements have named cavity positions. 'Adjacent' means physically neighboring — sharing a common wall or separated by minimal distance. The insert arrangement drawing is the authoritative source. Common adjacent pairs are determined by the circular geometry: inner ring, middle ring, outer ring positions.",
+      "general_rule": "For any insert arrangement, cavities that share a row in the insert layout are the best candidates for differential pairs. Consult the specific insert arrangement drawing (e.g. MIL-DTL-38999 Appendix or manufacturer insert spec) to confirm adjacency.",
+      "avoid": [
+        "Never place P on inner ring and N on outer ring — these are NOT adjacent",
+        "Never place P and N on opposite sides of the insert face",
+        "Never place P and N with a power contact between them — proximity to high current is also a coupling concern",
+        "Never assume alphabetical order = physical adjacency"
+      ]
+    },
+    "pair_assignment_checklist": [
+      "1. Identify all differential pairs for the interface (see protocol pinout rules below)",
+      "2. Look up the insert arrangement drawing for the selected connector",
+      "3. Identify groups of physically adjacent cavities (neighboring positions in the insert)",
+      "4. Assign each differential pair to one such adjacent group",
+      "5. Verify the SAME cavity labels are used on BOTH the plug and receptacle wiring diagrams",
+      "6. Mark all pair assignments on both plug and receptacle ICD drawings",
+      "7. Keep power contacts away from high-speed diff pair groups (use ground/return as physical buffer)",
+      "8. For shielded pairs: include a dedicated ground/drain contact immediately adjacent to or near the pair"
+    ],
+    "per_protocol_pair_requirements": {
+      "can_bus":           {"pairs": 1, "signals_per_pair": [["CAN_H", "CAN_L"]]},
+      "rs485_half":        {"pairs": 1, "signals_per_pair": [["A(D-)", "B(D+)"]]},
+      "rs485_full":        {"pairs": 2, "signals_per_pair": [["TX+","TX-"], ["RX+","RX-"]]},
+      "rs422":             {"pairs": 2, "signals_per_pair": [["TX+(Y)","TX-(Z)"], ["RX+(A)","RX-(B)"]]},
+      "mil_std_1553":      {"pairs": 1, "signals_per_pair": [["BUS+","BUS-"]], "note": "Dual-redundant: 2 pairs (Bus A and Bus B) for redundant system"},
+      "arinc_429_rx":      {"pairs": 1, "signals_per_pair": [["DATA_A","DATA_B"]]},
+      "arinc_429_tx_rx":   {"pairs": 2, "signals_per_pair": [["TX_A","TX_B"], ["RX_A","RX_B"]], "note": "1 TX pair + 1 RX pair"},
+      "afdx":              {"pairs": 2, "signals_per_pair": [["TX+","TX-"], ["RX+","RX-"]], "note": "Same as 100BASE-TX"},
+      "spacewire":         {"pairs": 4, "signals_per_pair": [["DIN+","DIN-"], ["DOUT+","DOUT-"], ["SIN+","SIN-"], ["SOUT+","SOUT-"]]},
+      "lvds_single":       {"pairs": 1, "signals_per_pair": [["LVDS+","LVDS-"]]},
+      "lvds_fpd_link_18bit":{"pairs": 4, "signals_per_pair": [["D0+","D0-"],["D1+","D1-"],["D2+","D2-"],["CLK+","CLK-"]]},
+      "ethernet_100base_tx":{"pairs": 2, "signals_per_pair": [["TX+","TX-"], ["RX+","RX-"]]},
+      "ethernet_1000base_t":{"pairs": 4, "signals_per_pair": [["BI_DA+","BI_DA-"],["BI_DB+","BI_DB-"],["BI_DC+","BI_DC-"],["BI_DD+","BI_DD-"]]},
+      "ethernet_10gbase_t": {"pairs": 4, "signals_per_pair": [["BI_DA+","BI_DA-"],["BI_DB+","BI_DB-"],["BI_DC+","BI_DC-"],["BI_DD+","BI_DD-"]]},
+      "usb2":              {"pairs": 1, "signals_per_pair": [["D+","D-"]]},
+      "usb3":              {"pairs": 3, "signals_per_pair": [["D+","D-"],["SSTX+","SSTX-"],["SSRX+","SSRX-"]]},
+      "hdmi_tmds":         {"pairs": 4, "signals_per_pair": [["D2+","D2-"],["D1+","D1-"],["D0+","D0-"],["CLK+","CLK-"]]},
+      "displayport_main":  {"pairs": 4, "signals_per_pair": [["L0+","L0-"],["L1+","L1-"],["L2+","L2-"],["L3+","L3-"]]},
+      "aes3_digital_audio":{"pairs": 1, "signals_per_pair": [["AES3+","AES3-"]], "note": "110Ω balanced, 3-pin XLR equivalent"}
+    }
+  },
+
+  "protocols": {
+    "mil_std_1553": {
+      "name": "MIL-STD-1553",
+      "standard": "MIL-STD-1553C (February 2018) / SAE AS15531",
+      "typical_use": "Avionics and military systems data bus: aircraft, spacecraft, ground vehicles",
+      "bit_rate_mbps": 1.0,
+      "encoding": "Manchester bi-phase (biphase-level), self-clocking",
+      "voltage_peak_to_peak_V": {"min": 18, "max": 27},
+      "topology": "bus_multidrop",
+      "impedance_ohm": 78,
+      "impedance_range_ohm": {"min": 70, "max": 85},
+      "cable_type": "twinaxial_shielded",
+      "typical_cable": "78Ω twinax cable per MIL-C-17 or equivalent",
+      "max_bus_length": "No hard limit in standard; practical ~30m (100ft) main bus due to propagation delay vs rise time",
+      "max_stub_length_ft": 20,
+      "max_stub_length_m": 6.1,
+      "termination": {"type": "resistive", "value_ohm": 78, "note": "At each physical end of bus only"},
+      "stub_coupling": {
+        "preferred": "transformer_coupled",
+        "allowed": "direct_coupled",
+        "transformer_turns_ratio": "1:1.41 ± 3%",
+        "direct_coupled_stub_max_ft": 1,
+        "isolation_resistor_direct_ohm": 55
+      },
+      "redundancy": "Dual redundant buses (Bus A and Bus B) — all devices connect to both",
+      "protocol": "Command/Response: Bus Controller (BC) → Remote Terminal (RT). One BC active at a time. Up to 31 RTs.",
+      "signals": [
+        {"name": "BUS_A_P", "type": "diff_pair_p", "pair_with": "BUS_A_N", "description": "Bus A positive (high Manchester)"},
+        {"name": "BUS_A_N", "type": "diff_pair_n", "pair_with": "BUS_A_P", "description": "Bus A negative"},
+        {"name": "BUS_B_P", "type": "diff_pair_p", "pair_with": "BUS_B_N", "description": "Bus B positive (redundant)"},
+        {"name": "BUS_B_N", "type": "diff_pair_n", "pair_with": "BUS_B_P", "description": "Bus B negative (redundant)"},
+        {"name": "SHIELD", "type": "shield", "description": "Cable shield/drain wire"}
+      ],
+      "pair_groups": [
+        {"group": "BUS_A", "signals": ["BUS_A_P", "BUS_A_N"], "type": "twisted_pair_twinax", "impedance_ohm": 78, "notes": "MUST be adjacent in connector. Keep as twinax cable twist to connector entry."},
+        {"group": "BUS_B", "signals": ["BUS_B_P", "BUS_B_N"], "type": "twisted_pair_twinax", "impedance_ohm": 78, "notes": "Second redundant bus. Same adjacency rule applies."}
+      ],
+      "d38999_contacts": 5,
+      "contact_size": "22D",
+      "contact_type_preferred": "standard_signal_or_twinax",
+      "d38999_notes": [
+        "BUS_A_P and BUS_A_N MUST be in adjacent cavities",
+        "BUS_B_P and BUS_B_N MUST be in adjacent cavities (if dual-redundant)",
+        "Keep twinax cable twist as close to the contacts as possible — minimize untwisted stub",
+        "Use shielded backshell with 360° shield termination",
+        "Bus terminators (78Ω) must be AT the bus coupler at the physical end of the main bus — not at the stub connector",
+        "Stub connectors must NOT have termination resistors unless this connector is the physical bus end",
+        "For transformer-coupled stubs: isolation transformer and resistors are in the bus coupler box, not in the circular connector itself",
+        "Shielding: ≥75% optical coverage per MIL-STD-1553",
+        "MIL-DTL-38999 circular connectors are the standard for airborne installations"
+      ],
+      "warnings": [
+        "Do NOT terminate the stub connector — only terminate at the physical ends of the main bus cable",
+        "Star topology is NOT allowed — bus topology only",
+        "Direct-coupled stubs longer than 1 ft (0.3m) can distort main bus waveforms",
+        "Transformer-coupled stubs preferred for fault isolation and noise rejection",
+        "Both Bus A and Bus B must be fully independent — share no grounds, shields, or routing paths"
+      ]
+    },
+
+    "arinc_429": {
+      "name": "ARINC 429",
+      "standard": "ARINC Specification 429 Part 1-17",
+      "typical_use": "Commercial and transport aircraft avionics data bus",
+      "data_rates": ["12.5 kbps (Low Speed)", "100 kbps (High Speed)"],
+      "encoding": "Bipolar Return-to-Zero (BPRZ / bipolar RZ)",
+      "word_length_bits": 32,
+      "voltage_differential_V_peak": {"high": 10.0, "null": 0.0, "note": "±5V on each line for 10Vp-p differential"},
+      "topology": "unidirectional_bus",
+      "direction": "Single transmitter → up to 20 receivers. Full duplex requires separate TX and RX buses.",
+      "impedance_ohm": 78,
+      "cable_type": "shielded_twisted_pair_78ohm",
+      "per_channel_signals": [
+        {"name": "DATA_A", "type": "diff_pair_p", "pair_with": "DATA_B", "description": "Non-inverting data line (high = +10V for '1')"},
+        {"name": "DATA_B", "type": "diff_pair_n", "pair_with": "DATA_A", "description": "Inverting data line"},
+        {"name": "SHIELD", "type": "shield", "description": "Cable shield/drain wire"}
+      ],
+      "pair_groups": [
+        {"group": "DATA_PAIR", "signals": ["DATA_A", "DATA_B"], "type": "twisted_pair", "impedance_ohm": 78, "notes": "Must be adjacent in connector. Each bus direction (TX and RX) is a separate pair."}
+      ],
+      "contacts_minimum_one_direction": 3,
+      "contacts_bidirectional": 6,
+      "contact_size": "22D",
+      "d38999_notes": [
+        "DATA_A and DATA_B MUST be adjacent cavities",
+        "TX and RX are on separate physical wire pairs — each pair must be in adjacent cavities",
+        "Include shield/drain wire contact near the pair",
+        "Do NOT share the signal return with chassis ground — keep bus ground floating from chassis",
+        "Bus driver/receiver ICs (e.g. HOLT HI-8578, DDC ACT4488) must be co-located with equipment, not at the connector",
+        "Each connected subsystem is a separate receiver tap — do not daisy-chain without proper loading analysis",
+        "Maximum 20 receivers on a single bus before signal loading degrades",
+        "For long harness runs, use ≥75% braid or foil+braid shielding"
+      ],
+      "warnings": [
+        "ARINC 429 is unidirectional — TX and RX use separate wire pairs and separate connector cavity pairs",
+        "Do not exceed 20 receiver loads on one transmitter",
+        "Cable shield should be grounded at ONE point only (usually at transmitter end) to avoid ground loops",
+        "Rise/fall time specification (1.5–2.5μs for high speed, 10–20μs for low speed) must be met by driver IC"
+      ]
+    },
+
+    "afdx_arinc_664": {
+      "name": "AFDX (Avionics Full-Duplex Switched Ethernet) / ARINC 664 Part 7",
+      "standard": "ARINC Specification 664 Part 7",
+      "typical_use": "Modern commercial aircraft avionics data network (A380, B787, A350, A400M)",
+      "data_rate_mbps": 100,
+      "physical_layer": "IEEE 802.3 100BASE-TX",
+      "encoding": "4B5B + MLT-3",
+      "impedance_ohm": 100,
+      "topology": "full_duplex_switched_star",
+      "redundancy": "Dual redundant networks (Network A and Network B) — same physical layout, independent",
+      "max_frame_size_bytes": 1518,
+      "signals": [
+        {"name": "TX_P", "type": "diff_pair_p", "pair_with": "TX_N", "description": "Transmit+ (from end-system to switch)"},
+        {"name": "TX_N", "type": "diff_pair_n", "pair_with": "TX_P", "description": "Transmit-"},
+        {"name": "RX_P", "type": "diff_pair_p", "pair_with": "RX_N", "description": "Receive+ (from switch to end-system)"},
+        {"name": "RX_N", "type": "diff_pair_n", "pair_with": "RX_P", "description": "Receive-"},
+        {"name": "SHIELD", "type": "shield", "description": "Cable shield / drain wire"}
+      ],
+      "pair_groups": [
+        {"group": "TX", "signals": ["TX_P", "TX_N"], "type": "twisted_pair", "impedance_ohm": 100, "notes": "TX pair MUST be adjacent. Typically Cat 5e STP cable."},
+        {"group": "RX", "signals": ["RX_P", "RX_N"], "type": "twisted_pair", "impedance_ohm": 100, "notes": "RX pair MUST be adjacent. Keep separate from TX pair for full duplex."}
+      ],
+      "contacts_per_link": 5,
+      "contact_size": "22D",
+      "contact_type_preferred": "standard_or_twinax",
+      "d38999_notes": [
+        "TX+ and TX- MUST be in adjacent cavities",
+        "RX+ and RX- MUST be in adjacent cavities",
+        "For dual-redundant AFDX: Network A and Network B must be on SEPARATE connectors or clearly isolated groups",
+        "Cable must be Cat 5e or better; STP (shielded twisted pair) preferred for harsh environments",
+        "For EMC-critical applications, use shielded backshell with 360° shield termination",
+        "AFDX end-system ICs (e.g. Curtiss-Wright, DDC AFDX modules) handle MAC/VL framing — not in connector",
+        "Standard D38999 signal contacts adequate for 100 Mbps (100BASE-TX bandwidth ~31 MHz) in validated harness"
+      ],
+      "warnings": [
+        "AFDX is NOT generic Ethernet — it adds deterministic scheduling, VL policing, and redundancy at the protocol layer",
+        "Cable quality matters: Cat 5e STP minimum, shielded backshell required for harsh environments",
+        "Both Network A and Network B must be fully independent (separate cables, shields, and connector cavities)",
+        "Max cable length 100m per IEEE 802.3; harness routing should stay well under this"
+      ]
+    },
+
+    "spacewire": {
+      "name": "SpaceWire",
+      "standard": "ECSS-E-ST-50-12C (European Cooperation for Space Standardization)",
+      "typical_use": "Spacecraft on-board data networks, satellite instruments, NASA JWST, GOES-R",
+      "data_rate_mbps": {"min": 2, "max": 400, "initial": 10},
+      "physical_layer": "LVDS-based (IEEE 1355 DS-DE subset)",
+      "encoding": "Data-Strobe (DS) encoding — clock embedded in strobe transitions",
+      "topology": "full_duplex_point_to_point_or_switched",
+      "standard_connector": "9-pin Micro-D (ESCC 3401 / MDM-9)",
+      "signals": [
+        {"name": "DIN_P",  "type": "diff_pair_p", "pair_with": "DIN_N",  "pin_micro_d": 1, "description": "Data In positive (from remote to this node)"},
+        {"name": "SIN_P",  "type": "diff_pair_p", "pair_with": "SIN_N",  "pin_micro_d": 2, "description": "Strobe In positive"},
+        {"name": "GND",    "type": "ground", "pin_micro_d": 3, "description": "Ground (not connected in harness; grounded on PCB connector only)"},
+        {"name": "SOUT_N", "type": "diff_pair_n", "pair_with": "SOUT_P", "pin_micro_d": 4, "description": "Strobe Out negative"},
+        {"name": "DOUT_N", "type": "diff_pair_n", "pair_with": "DOUT_P", "pin_micro_d": 5, "description": "Data Out negative"},
+        {"name": "DIN_N",  "type": "diff_pair_n", "pair_with": "DIN_P",  "pin_micro_d": 6, "description": "Data In negative"},
+        {"name": "SIN_N",  "type": "diff_pair_n", "pair_with": "SIN_P",  "pin_micro_d": 7, "description": "Strobe In negative"},
+        {"name": "SOUT_P", "type": "diff_pair_p", "pair_with": "SOUT_N", "pin_micro_d": 8, "description": "Strobe Out positive"},
+        {"name": "DOUT_P", "type": "diff_pair_p", "pair_with": "DOUT_N", "pin_micro_d": 9, "description": "Data Out positive"}
+      ],
+      "pair_groups": [
+        {"group": "DIN",  "signals": ["DIN_P",  "DIN_N"],  "type": "twisted_pair_lvds", "impedance_ohm": 100, "notes": "Receive data pair. MUST be adjacent."},
+        {"group": "SIN",  "signals": ["SIN_P",  "SIN_N"],  "type": "twisted_pair_lvds", "impedance_ohm": 100, "notes": "Receive strobe pair. MUST be adjacent."},
+        {"group": "DOUT", "signals": ["DOUT_P", "DOUT_N"], "type": "twisted_pair_lvds", "impedance_ohm": 100, "notes": "Transmit data pair. MUST be adjacent."},
+        {"group": "SOUT", "signals": ["SOUT_P", "SOUT_N"], "type": "twisted_pair_lvds", "impedance_ohm": 100, "notes": "Transmit strobe pair. MUST be adjacent."}
+      ],
+      "contacts_in_d38999": 9,
+      "contact_size": "22D",
+      "contact_type_preferred": "twinax_or_validated_signal",
+      "d38999_notes": [
+        "Four differential pairs total: DIN, SIN, DOUT, SOUT — each pair must be adjacent in connector",
+        "SpaceWire defines its own 9-pin Micro-D connector; when using D38999, map signals to adjacent cavity groups",
+        "PCB ground (pin 3 in Micro-D) must NOT be connected in harness — only short to chassis at PCB end",
+        "Receiver termination (100Ω) is internal to LVDS receiver chip — no external termination at connector",
+        "Use individually shielded twisted pairs for each of the 4 differential pairs",
+        "Cable: typically LVDS cable, 100Ω characteristic impedance",
+        "Data-strobe encoding eliminates the need for separate clock signal, but strobe pair must be adjacent just like data pair"
+      ],
+      "warnings": [
+        "SpaceWire has 4 differential pairs — all 4 pairs MUST have adjacent cavity assignments",
+        "In/out direction: DIN/SIN are inputs from remote node; DOUT/SOUT are outputs to remote node — direction crosses in cable",
+        "Fault tolerant: SpaceWire routers can route around failed links — requires correct multi-port wiring",
+        "Space qualification: connector, wire, and termination must meet relevant ECSS/MIL environmental requirements"
+      ]
+    },
+
+    "lvds_generic": {
+      "name": "LVDS (Low-Voltage Differential Signaling)",
+      "standard": "TIA/EIA-644-A (ANSI/TIA-644)",
+      "typical_use": "High-speed point-to-point serial: Camera Link, FPD-Link, proprietary video, instrument buses",
+      "data_rate_mbps_typical": {"min": 100, "max": 3000, "standard_max": 655},
+      "physical_layer": "Differential current-mode, constant 3.5mA",
+      "voltage_differential_mV": 350,
+      "common_mode_V": 1.2,
+      "termination_ohm": {"range": [100, 120], "typical": 100},
+      "topology": "point_to_point_default",
+      "signals_minimal": [
+        {"name": "LVDS_P", "type": "diff_pair_p", "pair_with": "LVDS_N", "description": "LVDS positive"},
+        {"name": "LVDS_N", "type": "diff_pair_n", "pair_with": "LVDS_P", "description": "LVDS negative"}
+      ],
+      "pair_groups": [
+        {"group": "LVDS_PAIR", "signals": ["LVDS_P", "LVDS_N"], "type": "twisted_pair", "impedance_ohm": 100, "notes": "Adjacent cavities mandatory. Keep twist as close to connector as possible."}
+      ],
+      "fpd_link_18bit": {
+        "description": "FPD-Link / LVDS 18-bit RGB video (3 data pairs + 1 clock pair)",
+        "pairs": 4,
+        "signals": ["D0+","D0-","D1+","D1-","D2+","D2-","CLK+","CLK-"],
+        "note": "Each data pair is 7-bit serialized at 7× pixel clock. All 4 pairs MUST have adjacent cavity assignments."
+      },
+      "contacts_per_link": 2,
+      "contact_size": "22D",
+      "contact_type_preferred": "twinax_for_high_speed",
+      "d38999_notes": [
+        "LVDS P and N MUST be in adjacent cavities",
+        "Termination resistor (100Ω) at receiver end — inside equipment, not at connector",
+        "For multipoint (M-LVDS): current doubles (≤12mA), same adjacency rules",
+        "Shielded cable strongly recommended for EMC compliance",
+        "Match cable impedance to termination (both 100Ω typical)"
+      ]
+    },
+
+    "ethernet_10gbase_t": {
+      "name": "10GBASE-T (10 Gigabit Ethernet over copper)",
+      "standard": "IEEE 802.3an-2006 (Clause 55)",
+      "typical_use": "High-speed LAN/data center copper interconnect",
+      "data_rate_gbps": 10.0,
+      "line_rate_gbps": 10.3125,
+      "encoding": "64b/65b PAM-16 (DSQ128) with LDPC-FEC",
+      "symbol_rate_mbaud": 800,
+      "bandwidth_mhz": 400,
+      "impedance_ohm": 100,
+      "cable_required": "Category 6A (ANSI/TIA-568-C.2) for 100m; Cat 6 for ≤55m",
+      "max_distance_m": {"cat6A": 100, "cat6": 55},
+      "signals": [
+        {"name": "BI_DA_P", "type": "diff_pair_p", "pair_with": "BI_DA_N", "rj45_pins": [1,2], "description": "Pair A bidirectional+"},
+        {"name": "BI_DA_N", "type": "diff_pair_n", "pair_with": "BI_DA_P", "rj45_pins": [1,2], "description": "Pair A bidirectional-"},
+        {"name": "BI_DB_P", "type": "diff_pair_p", "pair_with": "BI_DB_N", "rj45_pins": [3,6], "description": "Pair B bidirectional+"},
+        {"name": "BI_DB_N", "type": "diff_pair_n", "pair_with": "BI_DB_P", "rj45_pins": [3,6], "description": "Pair B bidirectional-"},
+        {"name": "BI_DC_P", "type": "diff_pair_p", "pair_with": "BI_DC_N", "rj45_pins": [4,5], "description": "Pair C bidirectional+"},
+        {"name": "BI_DC_N", "type": "diff_pair_n", "pair_with": "BI_DC_P", "rj45_pins": [4,5], "description": "Pair C bidirectional-"},
+        {"name": "BI_DD_P", "type": "diff_pair_p", "pair_with": "BI_DD_N", "rj45_pins": [7,8], "description": "Pair D bidirectional+"},
+        {"name": "BI_DD_N", "type": "diff_pair_n", "pair_with": "BI_DD_P", "rj45_pins": [7,8], "description": "Pair D bidirectional-"},
+        {"name": "SHIELD",  "type": "shield", "description": "Cable shield / drain"}
+      ],
+      "pair_groups": [
+        {"group": "PAIR_A", "signals": ["BI_DA_P","BI_DA_N"], "impedance_ohm": 100, "notes": "All pairs bidirectional — echo cancellation in PHY. MUST be adjacent."},
+        {"group": "PAIR_B", "signals": ["BI_DB_P","BI_DB_N"], "impedance_ohm": 100, "notes": "MUST be adjacent."},
+        {"group": "PAIR_C", "signals": ["BI_DC_P","BI_DC_N"], "impedance_ohm": 100, "notes": "MUST be adjacent."},
+        {"group": "PAIR_D", "signals": ["BI_DD_P","BI_DD_N"], "impedance_ohm": 100, "notes": "MUST be adjacent."}
+      ],
+      "d38999_contacts": 9,
+      "contact_size": "22D",
+      "contact_type_preferred": "quadrax_or_twinax",
+      "d38999_notes": [
+        "All 4 pairs bidirectional simultaneously (unlike 1000BASE-T which also uses all 4 pairs bidirectionally but at much lower per-pair bandwidth)",
+        "400 MHz bandwidth per pair — far exceeds what standard D38999 signal contacts handle. Twinax or Quadrax contacts strongly recommended.",
+        "For short runs (<1m) with validated cable assembly, high-quality signal contacts may work — requires signal integrity validation.",
+        "PHY-level echo cancellation and alien crosstalk cancellation are built into 10GBASE-T chips — cable crosstalk budget is tight.",
+        "All 4 pairs must be in adjacent cavity pairs, distributed across the insert to minimize alien crosstalk between pairs.",
+        "Shield must be terminated at both ends with 360° backshell",
+        "Latency is 2–4μs (higher than fiber-based 10GbE) due to FEC processing"
+      ],
+      "warnings": [
+        "10GBASE-T is the most electrically demanding copper Ethernet standard. Standard D38999 inserts are likely NOT adequate without qualified high-speed contacts.",
+        "4-pair alien crosstalk cancellation requires careful cable-to-connector transition design",
+        "SI validation (eye diagram, insertion loss, return loss, crosstalk) mandatory before production",
+        "Power consumption of 10GBASE-T PHY is higher than fiber alternatives — thermal consideration in sealed enclosures"
+      ]
+    },
+
+    "poe_power_over_ethernet": {
+      "name": "Power over Ethernet (PoE)",
+      "standard": "IEEE 802.3af/at/bt (Types 1/2/3/4)",
+      "typical_use": "Powering IP cameras, VoIP phones, WAPs, sensors over Ethernet cable",
+      "types": {
+        "Type1_802.3af": {
+          "max_pse_power_W": 15.4, "max_pd_power_W": 12.95,
+          "voltage_V": {"min": 44, "max": 57}, "max_current_mA": 350,
+          "pairs_used": "Mode A (pairs 2&3) or Mode B (pairs 1&4)"
+        },
+        "Type2_802.3at": {
+          "max_pse_power_W": 30.0, "max_pd_power_W": 25.5,
+          "voltage_V": {"min": 50, "max": 57}, "max_current_mA_per_pair": 600,
+          "pairs_used": "Mode A or Mode B (2-pair)"
+        },
+        "Type3_802.3bt": {
+          "max_pse_power_W": 60.0, "max_pd_power_W": 51.0,
+          "voltage_V": {"min": 52, "max": 57}, "max_current_mA_per_pair": 960,
+          "pairs_used": "4-pair mode (all 4 pairs)"
+        },
+        "Type4_802.3bt": {
+          "max_pse_power_W": 90.0, "max_pd_power_W": 71.3,
+          "voltage_V": {"min": 52, "max": 57}, "max_current_mA_per_pair": 960,
+          "pairs_used": "4-pair mode mandatory"
+        }
+      },
+      "power_delivery_method": "Common-mode current on differential pairs. Power does not interfere with data because differential signal is symmetric. Power extracted via center-tap of Ethernet transformer at each end.",
+      "signals": [
+        {"name": "BI_DA_P", "type": "diff_pair_p_and_power",  "pair_with": "BI_DA_N", "description": "Pair A data + common-mode power"},
+        {"name": "BI_DA_N", "type": "diff_pair_n_and_power",  "pair_with": "BI_DA_P", "description": "Pair A data - common-mode power"},
+        {"name": "BI_DB_P", "type": "diff_pair_p_and_power",  "pair_with": "BI_DB_N", "description": "Pair B data + common-mode power"},
+        {"name": "BI_DB_N", "type": "diff_pair_n_and_power",  "pair_with": "BI_DB_P", "description": "Pair B data - common-mode power"},
+        {"name": "BI_DC_P", "type": "diff_pair_p_and_power",  "pair_with": "BI_DC_N", "description": "Pair C (spare for 10/100, data for GbE)"},
+        {"name": "BI_DC_N", "type": "diff_pair_n_and_power",  "pair_with": "BI_DC_P"},
+        {"name": "BI_DD_P", "type": "diff_pair_p_and_power",  "pair_with": "BI_DD_N", "description": "Pair D (spare for 10/100, data for GbE)"},
+        {"name": "BI_DD_N", "type": "diff_pair_n_and_power",  "pair_with": "BI_DD_P"}
+      ],
+      "d38999_contacts": 9,
+      "contact_size_data": "22D",
+      "contact_size_power": "22D for Type 1/2 (≤600mA); upgrade to #20 for Type 3/4 at 960mA per pair in harsh environments",
+      "d38999_notes": [
+        "PoE data pairs carry both signal AND power — use standard signal contacts for Type 1/2 (350–600mA per pair per wire direction)",
+        "For Type 3/4 (960mA): at 57V, that's ~55W on two conductors. Verify thermal performance, especially in bundled harness.",
+        "All 4 pairs must be in adjacent cavity pairs (same rules as 10/100/1000BASE-T)",
+        "Power negotiation (PSE detection, classification) occurs over the data pairs — requires correct PCB-level PoE controller circuitry",
+        "Shield termination at both ends — PoE PSE/PD equipment requires this for EMC",
+        "Temperature rise in cable bundles is significant for 4PPoE — IEEE 802.3bt requires temperature derating for bundled cables"
+      ],
+      "warnings": [
+        "PoE voltage (44–57V DC) is above the 30V safety threshold in many jurisdictions — hazardous voltage labeling may be required",
+        "Do NOT connect PoE PSE equipment to non-PoE-aware devices without checking for compatibility (may damage older equipment)",
+        "4-pair PoE (Type 3/4) requires all 4 pairs energized — cable and connector must handle ~4× the current per wire of Type 1",
+        "Thermal management of cable bundles is important — high PoE current raises insulation temperature"
+      ]
+    },
+
+    "analog_4_20ma": {
+      "name": "4-20 mA Current Loop (Industrial Analog)",
+      "typical_use": "Industrial sensors, process control (temperature, pressure, flow), PLC I/O",
+      "type": "current_loop_single_ended",
+      "range_mA": {"min": 4, "max": 20, "fault": 0, "note": "4mA=0% range, 20mA=100% range, <4mA or >20mA indicates fault or loop break"},
+      "voltage_supply_V": {"typical": 24, "range": [12, 36]},
+      "max_loop_resistance_ohm": "Depends on supply voltage: (V_supply - V_sensor_min) / 0.020. Typical 250Ω for 24V supply.",
+      "signals_2wire": [
+        {"name": "LOOP_P", "type": "signal_positive", "description": "Loop supply (+24V side from controller or transmitter)"},
+        {"name": "LOOP_N", "type": "signal_return",   "description": "Loop return (0V side, current measured here)"}
+      ],
+      "signals_4wire": [
+        {"name": "PWR_P",  "type": "power", "description": "Supply voltage to sensor (+24V)"},
+        {"name": "PWR_N",  "type": "power_return", "description": "Supply return (0V)"},
+        {"name": "SIGNAL_P","type": "signal_positive", "description": "4-20mA signal output+ from transmitter"},
+        {"name": "SIGNAL_N","type": "signal_return",   "description": "4-20mA signal return"}
+      ],
+      "contacts_2wire": 2,
+      "contacts_4wire": 4,
+      "contact_size": "22D",
+      "d38999_notes": [
+        "Low current (4-20mA) — #22D contacts are adequate for the signal itself",
+        "Supply power wire may carry significant current for multi-channel systems — verify total load",
+        "For noise immunity in harsh environments, use shielded twisted pair (shield grounded at one end only)",
+        "Keep signal wires away from high-current switching loads to avoid induced noise",
+        "HART protocol can ride on 4-20mA loop (1.2kHz FSK) — same wiring applies"
+      ]
+    },
+
+    "analog_0_10v": {
+      "name": "0–10 V Analog Voltage",
+      "typical_use": "Industrial control signals, HVAC, lighting, DAC outputs",
+      "type": "single_ended_voltage",
+      "range_V": {"min": 0, "max": 10},
+      "source_impedance_ohm": {"typical": 100, "max_recommended": 1000},
+      "load_impedance_ohm": {"min_recommended": 10000},
+      "signals": [
+        {"name": "ANALOG_SIG", "type": "signal", "description": "Analog voltage output"},
+        {"name": "ANALOG_RTN", "type": "ground",  "description": "Signal return / analog ground"}
+      ],
+      "contacts": 2,
+      "contact_size": "22D",
+      "d38999_notes": [
+        "Single-ended — susceptible to ground noise. Keep analog return separate from digital and power ground where possible.",
+        "For long cable runs or noisy environments, convert to 4-20mA current loop for better noise immunity",
+        "Shield cable if signal accuracy matters",
+        "Current drawn is typically <10mA — #22D contact is adequate"
+      ]
+    },
+
+    "aes3_digital_audio": {
+      "name": "AES3 / AES/EBU Digital Audio",
+      "standard": "AES3-2003 (IEC 60958-4)",
+      "typical_use": "Professional audio equipment, broadcast, studio interconnect",
+      "data_rate_kbps": 3072,
+      "encoding": "Biphase-mark (differential Manchester)",
+      "impedance_ohm": 110,
+      "voltage_differential_V": {"min": 2.0, "max": 7.0},
+      "cable_type": "balanced_shielded_110_ohm",
+      "signals": [
+        {"name": "AES3_P", "type": "diff_pair_p", "pair_with": "AES3_N", "description": "AES3 positive (XLR pin 2)"},
+        {"name": "AES3_N", "type": "diff_pair_n", "pair_with": "AES3_P", "description": "AES3 negative (XLR pin 3)"},
+        {"name": "SHIELD", "type": "shield", "description": "Cable shield / drain (XLR pin 1)"}
+      ],
+      "pair_groups": [
+        {"group": "AES3_PAIR", "signals": ["AES3_P","AES3_N"], "type": "twisted_pair", "impedance_ohm": 110, "notes": "Must be adjacent in connector. 110Ω termination at receiver."}
+      ],
+      "contacts": 3,
+      "contact_size": "22D",
+      "d38999_notes": [
+        "AES3_P and AES3_N MUST be adjacent cavities",
+        "Cable impedance is 110Ω (different from 75Ω coax or 100Ω Ethernet) — use correct cable type",
+        "Receiver termination is 110Ω differential inside audio equipment — no external termination at connector",
+        "Carries 2 audio channels (stereo or dual mono) multiplexed with metadata",
+        "Multiple AES3 pairs can share a connector — each pair must be assigned to adjacent cavities"
+      ]
+    },
+
+    "analog_audio_balanced": {
+      "name": "Balanced Analog Audio (IEC 61938 / AES48)",
+      "typical_use": "Professional audio microphone, line-level, or speaker signals",
+      "type": "balanced_differential_analog",
+      "impedance_ohm": {"mic_in": 150, "line_in": 10000, "line_out": 150},
+      "voltage_level": {
+        "mic": "-60 to -20 dBu typical",
+        "line": "-10 dBu (consumer) to +4 dBu (professional)",
+        "speaker": "High current, depends on amplifier"
+      },
+      "signals": [
+        {"name": "AUDIO_P", "type": "diff_pair_p", "pair_with": "AUDIO_N", "description": "Audio hot (+, XLR pin 2)"},
+        {"name": "AUDIO_N", "type": "diff_pair_n", "pair_with": "AUDIO_P", "description": "Audio cold (-, XLR pin 3)"},
+        {"name": "SHIELD",  "type": "shield", "description": "Cable shield (XLR pin 1)"}
+      ],
+      "contacts": 3,
+      "contact_size": "22D",
+      "d38999_notes": [
+        "Audio P and N MUST be adjacent for balanced noise rejection",
+        "Phantom power (48V, 6.8 mA per conductor) can be carried on balanced audio pair — verify contact current rating",
+        "For speaker-level signals: may require larger contacts depending on amplifier current output",
+        "Keep away from digital switching signals to avoid intermodulation noise"
+      ]
+    },
+
+    "discrete_28vdc": {
+      "name": "MIL-STD-704 28 VDC Discrete (Discrete Signal)",
+      "typical_use": "Aircraft discrete signals: switch status, relay drive, lamp test, mode selection",
+      "type": "single_ended_discrete",
+      "logic_levels": {
+        "high_V": {"min": 18, "max": 32},
+        "low_V": {"min": -0.5, "max": 2},
+        "open": "treated as low or high depending on circuit (pull-up or pull-down)"
+      },
+      "typical_current_source_mA": {"min": 5, "max": 100},
+      "signals": [
+        {"name": "DISCRETE_SIG", "type": "signal", "description": "28V discrete signal line"},
+        {"name": "DISCRETE_RTN", "type": "ground",  "description": "Return (28V system ground)"}
+      ],
+      "contacts": 2,
+      "contact_size": "22D",
+      "d38999_notes": [
+        "#22D contact adequate for most discrete signals (5A rated, typical load <100mA)",
+        "Relay coil drive loads: verify contact current if driving relays directly (typ 100mA–500mA coil current)",
+        "28V discretes must be filtered/debounced in software or hardware for mechanical switch inputs",
+        "Keep high-speed data signal wires away from 28V discretes to avoid coupling"
+      ]
+    },
+
+    "thermocouple": {
+      "name": "Thermocouple Signal",
+      "typical_use": "Temperature measurement, engine monitoring, thermal management",
+      "type": "differential_microvolt",
+      "voltage_range_mV": {"K_type": ["-6.45 to 54.8 mV over -200°C to 1372°C"], "note": "Varies by thermocouple type"},
+      "source_impedance_ohm": {"typical": 1, "max": 100},
+      "signals": [
+        {"name": "TC_P", "type": "diff_pair_p", "pair_with": "TC_N", "description": "Thermocouple positive lead"},
+        {"name": "TC_N", "type": "diff_pair_n", "pair_with": "TC_P", "description": "Thermocouple negative lead"}
+      ],
+      "contacts": 2,
+      "contact_size": "22D",
+      "contact_material_note": "Standard copper/nickel contacts introduce thermoelectric EMF at each junction. For accurate measurement: use thermocouple-grade extension wire with matching alloy contacts, or use isothermal terminal blocks at connector with cold-junction compensation.",
+      "d38999_notes": [
+        "TC_P and TC_N should be in adjacent cavities to minimize differential loop area and EMI pickup",
+        "Thermocouple signal is microvolts to millivolts — extremely sensitive to EMI and contact material",
+        "Avoid placing thermocouple wires near high-current or switching power wires",
+        "Cold-junction compensation must account for connector temperature when using standard contacts",
+        "Twisted pair extension wire should remain twisted to within 5cm of connector entry"
+      ]
+    },
+
+    "pwm_discrete_signal": {
+      "name": "PWM / Digital Discrete Signal (5V/3.3V TTL)",
+      "typical_use": "Servo control, motor speed, LED dimming, digital discrete I/O",
+      "type": "single_ended_ttl_cmos",
+      "logic_high_V": {"min": 2.0, "max": 5.5},
+      "logic_low_V": {"min": -0.3, "max": 0.8},
+      "current_source_sink_mA": {"typical": 4, "max": 25},
+      "signals": [
+        {"name": "PWM_SIG", "type": "signal", "description": "PWM/digital signal line"},
+        {"name": "GND",     "type": "ground",  "description": "Signal ground reference"}
+      ],
+      "contacts": 2,
+      "contact_size": "22D",
+      "d38999_notes": [
+        "Single-ended signal — for long cables or noisy environments, convert to RS-422 differential",
+        "Ground reference MUST accompany the signal in the same connector",
+        "Keep PWM signal wires twisted with their return in the harness to minimize radiated emissions",
+        "High-frequency PWM (>100kHz) can be a significant EMI source — shield cable for frequencies >10kHz"
+      ]
+    }
+  },
+
+  "design_rules": [
+    {
+      "rule_id": "PR-001",
+      "category": "twisted_pair_adjacency",
+      "condition": "Any differential pair (diff pair) signal",
+      "action": "Assign P and N of same pair to physically adjacent connector cavities",
+      "applies_to": "BOTH plug and receptacle (use same cavity labels)",
+      "severity": "MANDATORY",
+      "details": "Non-adjacent pair assignment is a wiring error regardless of interface. Check the insert arrangement drawing for adjacency before assigning cavities."
+    },
+    {
+      "rule_id": "PR-002",
+      "category": "twisted_pair_adjacency",
+      "condition": "Mated connector pair (plug + receptacle)",
+      "action": "Use the same cavity labels for the differential pair on both the plug AND the receptacle wiring diagrams",
+      "severity": "MANDATORY",
+      "details": "Cavity labels (A, B, C, etc.) are shared between mating connectors. Adjacent cavities on the plug are adjacent on the receptacle. If cavity 'A' is adjacent to 'B' on the insert, assign pair to A+B on BOTH connectors."
+    },
+    {
+      "rule_id": "PR-003",
+      "category": "twisted_pair_adjacency",
+      "condition": "Multiple differential pairs in same connector",
+      "action": "Assign each pair to its own adjacent group. Keep pair groups separated by at least one ground contact.",
+      "severity": "RECOMMENDED",
+      "details": "Crosstalk between pairs is reduced when pair groups are separated by ground contacts. For high-speed pairs (USB 3.x, 10GbE, DisplayPort), use Twinax contacts per pair."
+    },
+    {
+      "rule_id": "PR-004",
+      "category": "current_distribution",
+      "condition": "Power rail current exceeds single-contact rating",
+      "action": "Parallel multiple contacts of same size. Apply derating, 25% margin, and N-1 survival check.",
+      "severity": "MANDATORY",
+      "details": "See wire_gauge_current_capacity.parallel_pin_distribution for worked examples and formula."
+    },
+    {
+      "rule_id": "PR-005",
+      "category": "current_distribution",
+      "condition": "Any power rail",
+      "action": "Number of return contacts MUST equal number of supply contacts. Same size, same wire length.",
+      "severity": "MANDATORY",
+      "details": "An imbalanced supply/return ratio creates a single-point bottleneck on the return path, causing voltage drop, overheating, and common-mode noise injection."
+    },
+    {
+      "rule_id": "PR-006",
+      "category": "separation",
+      "condition": "High-current power AND high-speed differential pairs in same connector",
+      "action": "Separate power contacts from signal contacts. Use ground contacts as physical buffer.",
+      "severity": "STRONGLY_RECOMMENDED",
+      "details": "Switching transients on power conductors couple into adjacent high-speed signal pairs. Place ground/return contacts between power group and signal group in the insert layout."
+    },
+    {
+      "rule_id": "PR-007",
+      "category": "mil_std_1553_specific",
+      "condition": "MIL-STD-1553 bus stub connector",
+      "action": "Do NOT install bus termination resistors at stub connector. Termination only at main bus physical ends.",
+      "severity": "MANDATORY",
+      "details": "Stub connectors must be left open-circuit (with dust caps) when not connected. Only two terminators in the entire system — at the physical ends of the main bus cable."
+    },
+    {
+      "rule_id": "PR-008",
+      "category": "arinc_429_specific",
+      "condition": "ARINC 429 cable shield",
+      "action": "Ground shield at ONE end only (typically the transmitter end or LRU chassis). Do not ground both ends.",
+      "severity": "RECOMMENDED",
+      "details": "Grounding both ends of an ARINC 429 shield creates a ground loop that can inject noise. Single-point grounding prevents this."
+    },
+    {
+      "rule_id": "PR-009",
+      "category": "contact_orientation",
+      "condition": "Any connector cavity assignment planning",
+      "action": "Always confirm whether the reference drawing shows mating face or wire/installation side, and whether it shows plug or receptacle.",
+      "severity": "MANDATORY",
+      "details": "Plug and receptacle mating faces appear mirrored. A drawing of the plug mating face has opposite left-right orientation from the plug wire side. Confusion causes systematic pair assignment errors on one connector."
+    },
+    {
+      "rule_id": "PR-010",
+      "category": "high_voltage_power",
+      "condition": "Power rail voltage > 30V (e.g. 48V PoE, 270V DC, 115V AC)",
+      "action": "Apply appropriate electrical safety standards (hazardous voltage labeling, insulation coordination, creepage/clearance verification)",
+      "severity": "MANDATORY",
+      "details": "MIL-DTL-38999 Series III is rated to 200V RMS. For higher voltages, verify applicable slash sheet and dielectric withstanding voltage specs."
+    }
+  ],
+
+  "protocol_cross_reference": {
+    "_note": "Cross-reference to companion files for protocols already fully documented elsewhere",
+    "see_connector_engineering_reference_json": [
+      "ethernet_1000base_t", "ethernet_100base_tx", "ethernet_1000base_t1",
+      "uart", "i2c", "spi", "rs232", "rs232_full",
+      "rs485", "rs485_full", "rs422", "can_bus"
+    ],
+    "see_high_speed_interface_wiring_reference_json": [
+      "usb2", "usb3", "usb_type_c", "hdmi", "displayport", "dvi", "vga", "dpi_parallel_rgb"
+    ],
+    "new_in_this_file": [
+      "mil_std_1553", "arinc_429", "afdx_arinc_664", "spacewire",
+      "lvds_generic", "ethernet_10gbase_t", "poe_power_over_ethernet",
+      "analog_4_20ma", "analog_0_10v", "aes3_digital_audio",
+      "analog_audio_balanced", "discrete_28vdc", "thermocouple", "pwm_discrete_signal"
+    ]
+  }
+}

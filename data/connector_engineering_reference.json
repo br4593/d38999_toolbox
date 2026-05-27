@@ -1,0 +1,449 @@
+{
+  "_description": "D38999 connector engineering reference data for AI agent. Contains current ratings, derating, protocol wiring requirements, and pin allocation guidelines.",
+  "_sources": [
+    "MIL-DTL-38999 Tables IV and V",
+    "IEEE 802.3ab (1000BASE-T), IEEE 802.3u (100BASE-TX)",
+    "TIA/EIA-568 wiring standards",
+    "SAE J1939 (CAN bus in vehicles)",
+    "TIA-485-A (RS-485), TIA-422-B (RS-422), TIA-232-F (RS-232)"
+  ],
+
+  "contact_current_ratings": {
+    "_note": "Single-contact continuous current at sea level, 25°C ambient, per MIL-DTL-38999. Actual values depend on manufacturer, altitude, temperature, and installation. Always verify with manufacturer datasheet.",
+    "ratings": {
+      "22D": {"amps": 5.0, "wire_gauge_awg": 22, "description": "Signal/low-power contact"},
+      "22": {"amps": 5.0, "wire_gauge_awg": 22, "description": "Signal/low-power contact"},
+      "20": {"amps": 7.5, "wire_gauge_awg": 20, "description": "General-purpose signal/light power"},
+      "16": {"amps": 13.0, "wire_gauge_awg": 16, "description": "Medium power contact"},
+      "12": {"amps": 23.0, "wire_gauge_awg": 12, "description": "High power contact"},
+      "8": {"amps": 46.0, "wire_gauge_awg": 8, "description": "Heavy power contact"},
+      "4": {"amps": 78.0, "wire_gauge_awg": 4, "description": "Very heavy power contact"},
+      "0": {"amps": 150.0, "wire_gauge_awg": 0, "description": "Maximum power contact"}
+    }
+  },
+
+  "derating": {
+    "_note": "When multiple contacts carry current simultaneously, thermal coupling reduces allowable current per contact. These are worst-case multipliers from MIL-DTL-38999 Table V. Actual derating depends on which specific contacts are energized, connector material, and installation.",
+    "factors_by_energized_contacts": {
+      "1": 1.00,
+      "2": 0.90,
+      "3": 0.85,
+      "5": 0.78,
+      "7": 0.74,
+      "10": 0.70,
+      "15": 0.66,
+      "20": 0.63,
+      "25": 0.60,
+      "30": 0.58,
+      "37": 0.56,
+      "50": 0.52,
+      "75": 0.48,
+      "100": 0.45
+    },
+    "temperature_derating": {
+      "_note": "Additional derating for ambient temperature above 25°C",
+      "25C": 1.00,
+      "50C": 0.85,
+      "75C": 0.70,
+      "100C": 0.55,
+      "125C": 0.40,
+      "150C": 0.25,
+      "175C": 0.10,
+      "200C": 0.00
+    },
+    "altitude_derating": {
+      "_note": "Current derating for altitude above sea level (reduced convection)",
+      "sea_level": 1.00,
+      "5000ft": 0.95,
+      "10000ft": 0.90,
+      "20000ft": 0.82,
+      "40000ft": 0.65,
+      "70000ft": 0.50
+    }
+  },
+
+  "parallel_contacts_engineering": {
+    "_principle": "Kirchhoff's Current Law: total current entering a node equals total current leaving. For parallel branches, current divides inversely proportional to branch resistance.",
+    "branch_resistance_components": [
+      "Wire resistance (gauge, length, temperature)",
+      "Contact resistance (mating force, plating, wear, contamination)",
+      "Crimp resistance (crimp quality, tool calibration, wire prep)",
+      "PCB trace resistance (if applicable)",
+      "Connector-to-connector interface resistance"
+    ],
+    "rules": [
+      "Never assume equal current sharing across parallel contacts",
+      "Use same contact size for all paralleled contacts in one rail",
+      "Use same wire gauge and wire length for all paralleled branches",
+      "Use same crimp process and tool for all paralleled contacts",
+      "Physically distribute paralleled contacts symmetrically in the insert",
+      "Always provide equal number of supply and return contacts",
+      "Design for N-1 survival: if one contact opens, remaining must not exceed 80% of their derated rating",
+      "Minimum 25% margin above calculated requirement when paralleling",
+      "Do not parallel contacts of different sizes for the same rail"
+    ],
+    "failure_modes": [
+      "Single contact open circuit → remaining contacts overloaded",
+      "Unequal crimp quality → unequal resistance → current imbalance",
+      "Temperature-dependent resistance → thermal runaway in highest-current path",
+      "Fretting corrosion from vibration → intermittent high resistance",
+      "Wire fatigue from flexing → increased resistance over time"
+    ],
+    "example_calculation": {
+      "scenario": "Need 20A continuous at 28VDC",
+      "naive_approach": "Size 20 rated 7.5A → 3 contacts (22.5A > 20A) — WRONG",
+      "correct_approach": "Size 20 derated for 3 energized contacts: 7.5A × 0.85 = 6.375A per contact. Need 20A / 6.375A = 3.14 → round up to 4. Apply 25% margin → 5 contacts. Plus 5 return contacts. Total: 10 power contacts.",
+      "better_approach": "Use 2× size 12 contacts (23A each, derated 0.90 for 2 = 20.7A each → 41.4A total capacity for 20A need). Plus 2 return contacts. Total: 4 power contacts. More compact, more reliable."
+    }
+  },
+
+  "protocol_wiring_requirements": {
+    "ethernet_1000base_t": {
+      "name": "1000BASE-T (Gigabit Ethernet)",
+      "standard": "IEEE 802.3ab",
+      "pairs_required": 4,
+      "conductors_total": 8,
+      "direction": "All 4 pairs bidirectional simultaneously",
+      "impedance": "100Ω differential per pair",
+      "bandwidth": "62.5 MHz per pair",
+      "max_distance": "100m (Cat 5e/6)",
+      "encoding": "4D-PAM-5 with TCM",
+      "signals": [
+        {"name": "BI_DA+", "pair": "A", "polarity": "+", "pin_rj45_568b": 1},
+        {"name": "BI_DA-", "pair": "A", "polarity": "-", "pin_rj45_568b": 2},
+        {"name": "BI_DB+", "pair": "B", "polarity": "+", "pin_rj45_568b": 3},
+        {"name": "BI_DB-", "pair": "B", "polarity": "-", "pin_rj45_568b": 6},
+        {"name": "BI_DC+", "pair": "C", "polarity": "+", "pin_rj45_568b": 4},
+        {"name": "BI_DC-", "pair": "C", "polarity": "-", "pin_rj45_568b": 5},
+        {"name": "BI_DD+", "pair": "D", "polarity": "+", "pin_rj45_568b": 7},
+        {"name": "BI_DD-", "pair": "D", "polarity": "-", "pin_rj45_568b": 8}
+      ],
+      "d38999_notes": [
+        "Strongly recommend Quadrax or Twinax contacts for controlled impedance",
+        "If using standard size 22D contacts, the cable assembly must be validated for 1GbE signal integrity",
+        "Keep all 4 pairs grouped together in adjacent cavities",
+        "Do not split pairs across different regions of the insert",
+        "Use shielded backshell and 360° shield termination for EMI environments",
+        "Each pair must maintain twist as close to the contact as possible",
+        "Maximum skew between pairs: <50ns for 1000BASE-T"
+      ],
+      "contact_size": "22D",
+      "contact_type_preferred": "quadrax_or_twinax",
+      "shield_required": true,
+      "spare_recommendation": "1 additional ground/drain wire contact"
+    },
+
+    "ethernet_100base_tx": {
+      "name": "100BASE-TX (Fast Ethernet)",
+      "standard": "IEEE 802.3u",
+      "pairs_required": 2,
+      "conductors_total": 4,
+      "direction": "1 pair TX, 1 pair RX",
+      "impedance": "100Ω differential per pair",
+      "bandwidth": "31.25 MHz",
+      "max_distance": "100m (Cat 5)",
+      "encoding": "4B5B + MLT-3",
+      "signals": [
+        {"name": "TX+", "pair": "TX", "polarity": "+", "pin_rj45_568b": 1},
+        {"name": "TX-", "pair": "TX", "polarity": "-", "pin_rj45_568b": 2},
+        {"name": "RX+", "pair": "RX", "polarity": "+", "pin_rj45_568b": 3},
+        {"name": "RX-", "pair": "RX", "polarity": "-", "pin_rj45_568b": 6}
+      ],
+      "d38999_notes": [
+        "2 twisted pairs through standard D38999 size 22D contacts is feasible for short runs",
+        "Maintain pair adjacency in the insert",
+        "For EMI environments, use shielded pairs and backshell",
+        "Less demanding than 1GbE — standard contacts acceptable for validated assemblies"
+      ],
+      "contact_size": "22D",
+      "contact_type_preferred": "standard_or_twinax",
+      "shield_required": false,
+      "spare_recommendation": "1 ground/drain contact"
+    },
+
+    "ethernet_1000base_t1": {
+      "name": "1000BASE-T1 (Automotive Single-Pair Ethernet)",
+      "standard": "IEEE 802.3bp",
+      "pairs_required": 1,
+      "conductors_total": 2,
+      "direction": "Bidirectional on single pair",
+      "impedance": "100Ω differential",
+      "bandwidth": "375 MHz",
+      "max_distance": "15m (Type A) / 40m (Type B)",
+      "encoding": "PAM-3 with 80B/81B and RS-FEC",
+      "signals": [
+        {"name": "BI_DA+", "pair": "A", "polarity": "+"},
+        {"name": "BI_DA-", "pair": "A", "polarity": "-"}
+      ],
+      "d38999_notes": [
+        "Single pair, but requires high bandwidth — validated twinax contact recommended",
+        "Primarily automotive/industrial; shorter distances than standard 1GbE"
+      ],
+      "contact_size": "22D",
+      "contact_type_preferred": "twinax",
+      "shield_required": true,
+      "spare_recommendation": "1 shield/drain contact"
+    },
+
+    "uart": {
+      "name": "UART (Universal Asynchronous Receiver/Transmitter)",
+      "signals_minimum": [
+        {"name": "TX", "description": "Transmit data (from this device)"},
+        {"name": "RX", "description": "Receive data (to this device)"},
+        {"name": "GND", "description": "Signal ground/reference"}
+      ],
+      "signals_with_flow_control": [
+        {"name": "TX", "description": "Transmit data"},
+        {"name": "RX", "description": "Receive data"},
+        {"name": "RTS", "description": "Request to Send (output)"},
+        {"name": "CTS", "description": "Clear to Send (input)"},
+        {"name": "GND", "description": "Signal ground/reference"}
+      ],
+      "conductors_minimum": 3,
+      "conductors_full": 5,
+      "voltage_levels": "TTL (3.3V or 5V) — NOT RS-232 voltage levels",
+      "typical_speeds": ["9600", "115200", "921600", "1000000"],
+      "max_distance_practical": "1-3m for TTL UART without transceiver",
+      "contact_size": "22D",
+      "d38999_notes": [
+        "TX of device A connects to RX of device B (crossover)",
+        "For cable lengths > 3m, convert to RS-422 or RS-485 differential",
+        "Keep TX/RX/GND grouped together",
+        "Separate from high-current power pins",
+        "No controlled impedance needed at typical baud rates"
+      ]
+    },
+
+    "i2c": {
+      "name": "I2C (Inter-Integrated Circuit)",
+      "signals": [
+        {"name": "SDA", "description": "Serial Data (bidirectional, open-drain)"},
+        {"name": "SCL", "description": "Serial Clock (open-drain)"},
+        {"name": "GND", "description": "Signal ground/reference"},
+        {"name": "VCC", "description": "Pull-up voltage / device power (optional through connector)"}
+      ],
+      "conductors_minimum": 3,
+      "conductors_full": 4,
+      "voltage_levels": "1.8V / 3.3V / 5V (open-drain with external pull-ups)",
+      "typical_speeds": ["100kHz (Standard)", "400kHz (Fast)", "1MHz (Fast+)", "3.4MHz (High-Speed)"],
+      "max_bus_capacitance": "400pF",
+      "max_distance_practical": "0.5-2m depending on speed and capacitance",
+      "contact_size": "22D",
+      "d38999_notes": [
+        "I2C is NOT designed for long cable runs — use only for short inter-board connections",
+        "Bus capacitance increases with cable length — may need I2C buffer/extender",
+        "Keep SDA and SCL adjacent with GND nearby",
+        "For distances > 1m at 400kHz+, strongly recommend differential I2C (PCA9615) or CAN/RS-485 instead",
+        "Pull-up resistors must be located appropriately for cable capacitance",
+        "Not recommended through circular connectors for production harnesses > 1m"
+      ],
+      "warning": "I2C through a connector cable is generally discouraged for distances > 1m. Consider RS-485 or CAN as alternatives for robust inter-box communication."
+    },
+
+    "spi": {
+      "name": "SPI (Serial Peripheral Interface)",
+      "signals": [
+        {"name": "SCLK", "description": "Serial Clock (master output)"},
+        {"name": "MOSI", "description": "Master Out Slave In (data to slave)"},
+        {"name": "MISO", "description": "Master In Slave Out (data from slave)"},
+        {"name": "CS", "description": "Chip Select (active low, one per slave)"},
+        {"name": "GND", "description": "Signal ground/reference"}
+      ],
+      "conductors_minimum": 5,
+      "conductors_per_additional_slave": 1,
+      "voltage_levels": "1.8V / 3.3V / 5V",
+      "typical_speeds": ["1MHz", "10MHz", "25MHz", "50MHz+"],
+      "max_distance_practical": "0.1-0.5m (very short, board-level)",
+      "contact_size": "22D",
+      "d38999_notes": [
+        "SPI is a board-level interface — NOT suitable for long harness runs",
+        "SCLK is the most EMI-sensitive line — needs ground guard",
+        "Group SCLK/MOSI/MISO/CS together with GND between",
+        "For cable lengths > 0.5m, add series damping resistors and reduce clock speed",
+        "For inter-box communication, strongly recommend RS-485 or CAN instead",
+        "If SPI through connector is unavoidable, limit speed to <1MHz and shield cable"
+      ],
+      "warning": "SPI is generally inappropriate for connector/cable applications. Use differential serial bus (RS-485, CAN, LVDS) for inter-box communication."
+    },
+
+    "rs232": {
+      "name": "RS-232 (TIA-232)",
+      "signals_minimum": [
+        {"name": "TXD", "description": "Transmitted Data (DTE output)"},
+        {"name": "RXD", "description": "Received Data (DTE input)"},
+        {"name": "GND", "description": "Signal Ground"}
+      ],
+      "signals_full": [
+        {"name": "TXD", "description": "Transmitted Data"},
+        {"name": "RXD", "description": "Received Data"},
+        {"name": "RTS", "description": "Request to Send"},
+        {"name": "CTS", "description": "Clear to Send"},
+        {"name": "DTR", "description": "Data Terminal Ready"},
+        {"name": "DSR", "description": "Data Set Ready"},
+        {"name": "DCD", "description": "Data Carrier Detect"},
+        {"name": "RI", "description": "Ring Indicator"},
+        {"name": "GND", "description": "Signal Ground"}
+      ],
+      "conductors_minimum": 3,
+      "conductors_full": 9,
+      "voltage_levels": "±3V to ±15V (typically ±5V to ±12V)",
+      "typical_speeds": ["9600", "19200", "38400", "57600", "115200"],
+      "max_distance": "15m at 19200 baud (TIA spec), 50+ ft practical at low speeds",
+      "contact_size": "22D",
+      "d38999_notes": [
+        "RS-232 is single-ended and ground-referenced — susceptible to ground loops and noise",
+        "Keep TXD/RXD/GND grouped together",
+        "For long runs or noisy environments, prefer RS-422/RS-485",
+        "RS-232 voltage levels (±12V) are NOT TTL-compatible — needs level converter",
+        "One ground per RS-232 port minimum"
+      ]
+    },
+
+    "rs485": {
+      "name": "RS-485 (TIA-485)",
+      "modes": {
+        "half_duplex": {
+          "signals": [
+            {"name": "A (D-)", "description": "Non-inverting data line"},
+            {"name": "B (D+)", "description": "Inverting data line"},
+            {"name": "GND/REF", "description": "Signal reference/common"},
+            {"name": "SHIELD", "description": "Cable shield drain (if shielded)"}
+          ],
+          "conductors": 3,
+          "conductors_with_shield": 4
+        },
+        "full_duplex": {
+          "signals": [
+            {"name": "TX+ (Y)", "description": "Transmit non-inverting"},
+            {"name": "TX- (Z)", "description": "Transmit inverting"},
+            {"name": "RX+ (A)", "description": "Receive non-inverting"},
+            {"name": "RX- (B)", "description": "Receive inverting"},
+            {"name": "GND/REF", "description": "Signal reference/common"},
+            {"name": "SHIELD", "description": "Cable shield drain (if shielded)"}
+          ],
+          "conductors": 5,
+          "conductors_with_shield": 6
+        }
+      },
+      "voltage_levels": "Differential ±1.5V to ±6V",
+      "impedance": "120Ω characteristic (typical twisted pair cable)",
+      "typical_speeds": ["9600", "115200", "1Mbps", "10Mbps"],
+      "max_distance": "1200m at 100kbps, 15m at 10Mbps",
+      "max_nodes": 32,
+      "termination": "120Ω at each end of the bus (2 terminators total)",
+      "contact_size": "22D",
+      "d38999_notes": [
+        "Use twisted pair for A/B (or TX+/TX- and RX+/RX-)",
+        "Keep differential pairs adjacent in the connector",
+        "Include signal reference/common wire — do not rely on chassis ground alone",
+        "Terminate at the two physical ends of the bus only",
+        "Bus topology only — avoid star/T-stub wiring",
+        "For shielded cable, include shield drain wire contact",
+        "If multipoint (multidrop), only 2 terminators regardless of node count"
+      ]
+    },
+
+    "rs422": {
+      "name": "RS-422 (TIA-422)",
+      "signals": [
+        {"name": "TX+ (Y)", "description": "Transmit non-inverting (driver output)"},
+        {"name": "TX- (Z)", "description": "Transmit inverting (driver output)"},
+        {"name": "RX+ (A)", "description": "Receive non-inverting (receiver input)"},
+        {"name": "RX- (B)", "description": "Receive inverting (receiver input)"},
+        {"name": "GND/REF", "description": "Signal reference/common"},
+        {"name": "SHIELD", "description": "Cable shield drain (if shielded)"}
+      ],
+      "conductors": 5,
+      "conductors_with_shield": 6,
+      "voltage_levels": "Differential ±2V to ±6V",
+      "impedance": "100-120Ω",
+      "typical_speeds": ["100kbps", "1Mbps", "10Mbps"],
+      "max_distance": "1200m at 100kbps",
+      "topology": "Point-to-point (1 driver, up to 10 receivers)",
+      "termination": "120Ω at receiver end",
+      "contact_size": "22D",
+      "d38999_notes": [
+        "Full duplex — always has separate TX and RX pairs",
+        "Keep TX pair adjacent, RX pair adjacent",
+        "Include signal reference/common",
+        "Terminate at receiver end only (unlike RS-485 which terminates both ends)",
+        "Better noise immunity than RS-232 for same distance",
+        "Suitable for long harness runs through D38999 connectors"
+      ]
+    },
+
+    "can_bus": {
+      "name": "CAN Bus (Controller Area Network)",
+      "standard": "ISO 11898-2 (high-speed CAN)",
+      "signals": [
+        {"name": "CAN_H", "description": "CAN High (dominant = 3.5V, recessive = 2.5V)"},
+        {"name": "CAN_L", "description": "CAN Low (dominant = 1.5V, recessive = 2.5V)"},
+        {"name": "GND/REF", "description": "Signal reference/common"},
+        {"name": "SHIELD", "description": "Cable shield drain (if shielded)"}
+      ],
+      "conductors": 3,
+      "conductors_with_shield": 4,
+      "voltage_levels": "Differential 0V to 3.5V (CAN_H - CAN_L = 0V recessive, 2V dominant)",
+      "impedance": "120Ω characteristic",
+      "typical_speeds": ["125kbps", "250kbps", "500kbps", "1Mbps"],
+      "max_distance": "40m at 1Mbps, 500m at 125kbps",
+      "max_nodes": 110,
+      "termination": "120Ω at each physical end of the bus",
+      "contact_size": "22D",
+      "d38999_notes": [
+        "CAN_H and CAN_L MUST be adjacent as a twisted pair",
+        "Include signal reference/common wire — critical for reliable communication",
+        "Bus topology only — avoid star wiring and long stubs",
+        "Keep CAN pair away from high-current power contacts to minimize EMI coupling",
+        "For shielded cable, include shield/drain wire contact",
+        "Two 120Ω terminators at physical bus ends only",
+        "If connector is mid-bus, it passes through (not terminated at connector)",
+        "CAN-FD uses same physical layer but higher data rate — same wiring rules apply"
+      ]
+    }
+  },
+
+  "pin_allocation_guidelines": {
+    "grouping_priority": [
+      "1. Power supply contacts (V+, V-/RTN) — grouped together, symmetrically distributed",
+      "2. Power return/ground contacts — paired with supply contacts",
+      "3. Chassis/frame ground — separate from signal ground when possible",
+      "4. Shield drain wires — near their associated signal pairs",
+      "5. High-speed differential pairs (Ethernet, etc.) — grouped, away from power",
+      "6. Differential serial buses (RS-485, RS-422, CAN) — pairs adjacent",
+      "7. Low-speed single-ended signals (UART, RS-232, discretes)",
+      "8. Spare contacts — distributed among groups for future flexibility"
+    ],
+    "separation_rules": [
+      "Keep high-current power contacts physically separated from high-speed signal contacts",
+      "Do not place a CAN/RS-485 differential pair between two power contacts",
+      "Place ground/return contacts between power and signal groups as guards",
+      "Keep all conductors of one differential pair in adjacent cavities",
+      "Never split a twisted pair across opposite sides of the connector"
+    ],
+    "spare_pin_strategy": {
+      "minimum_recommendation": "10% spare contacts or 2 spares, whichever is greater",
+      "preferred_recommendation": "20% spare contacts",
+      "power_spare": "Include at least 1 spare power-rated contact (same size as power contacts)",
+      "signal_spare": "Include at least 2 spare signal contacts near signal group",
+      "sealing": "All unused cavities in environmental connectors must have sealing plugs or dummy contacts"
+    },
+    "power_return_balance": {
+      "rule": "Number of return contacts must equal number of supply contacts for the same rail",
+      "exception": "If return is through chassis/shell (verified by design), dedicated return can be reduced — but this requires engineering justification",
+      "warning": "A single return contact bottleneck for multiple supply contacts is a common and dangerous design error"
+    }
+  },
+
+  "connector_selection_scoring": {
+    "criteria": [
+      {"name": "electrical_fit", "weight": 30, "description": "All required contacts available in correct sizes"},
+      {"name": "current_margin", "weight": 20, "description": "Adequate derating margin on power contacts"},
+      {"name": "signal_integrity", "weight": 15, "description": "Appropriate contact types for high-speed signals"},
+      {"name": "spare_contacts", "weight": 10, "description": "Sufficient spares for future expansion"},
+      {"name": "shell_size", "weight": 10, "description": "Smallest shell that meets requirements (weight/space)"},
+      {"name": "separation", "weight": 10, "description": "Physical separation possible between power and signals"},
+      {"name": "availability", "weight": 5, "description": "Standard/common arrangement vs exotic"}
+    ]
+  }
+}

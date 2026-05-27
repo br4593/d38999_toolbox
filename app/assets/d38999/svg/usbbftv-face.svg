@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 100" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- Shell size 15 outer ring -->
+  <circle cx="110" cy="48" r="36" stroke-width="2.5"/>
+  <circle cx="110" cy="48" r="32" stroke-width="1.5" opacity="0.5"/>
+  <!-- USB-B port (tall square with notched top) -->
+  <path d="M100 36 L100 60 L120 60 L120 36 L116 32 L104 32 Z" stroke-width="2"/>
+  <!-- 4 pins -->
+  <line x1="106" y1="42" x2="106" y2="50" stroke-width="1.2" opacity="0.6"/>
+  <line x1="110" y1="42" x2="110" y2="50" stroke-width="1.2" opacity="0.6"/>
+  <line x1="114" y1="42" x2="114" y2="50" stroke-width="1.2" opacity="0.6"/>
+  <!-- Keying notch -->
+  <rect x="106" y="14" width="8" height="5" rx="1.5" fill="currentColor" opacity="0.3"/>
+  <circle cx="110" cy="82" r="2" fill="currentColor" opacity="0.2" stroke="none"/>
+  <text x="110" y="96" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">USBBFTV Face (Shell 15)</text>
+</svg>

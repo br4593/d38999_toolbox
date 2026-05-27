@@ -150,6 +150,142 @@
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
       "file": "assets/d38999/svg/d38999-backshell-generic.svg"
+    },
+    {
+      "id": "rjf-face",
+      "type": "interface_face_drawing",
+      "manufacturer": "Repo-generated",
+      "series": "Rugged Ethernet (RJF)",
+      "interface": "RJ45",
+      "shellStyle": "bayonet receptacle face",
+      "shellSize": "18",
+      "source": "rj_field_catalog.pdf; Glenair rugged I/O product line",
+      "usage": [
+        "high-speed interface identifier",
+        "front-face port recognition"
+      ],
+      "copyrightStatus": "recreated_simplified_svg",
+      "status": "recreated",
+      "file": "assets/d38999/svg/rjf-face.svg"
+    },
+    {
+      "id": "rjftv-face",
+      "type": "interface_face_drawing",
+      "manufacturer": "Repo-generated",
+      "series": "Rugged Ethernet (RJFTV)",
+      "interface": "RJ45",
+      "shellStyle": "threaded receptacle face",
+      "shellSize": "19",
+      "source": "rj_field_catalog.pdf; Glenair rugged I/O product line",
+      "usage": [
+        "high-speed interface identifier",
+        "front-face port recognition"
+      ],
+      "copyrightStatus": "recreated_simplified_svg",
+      "status": "recreated",
+      "file": "assets/d38999/svg/rjftv-face.svg"
+    },
+    {
+      "id": "usbftv-face",
+      "type": "interface_face_drawing",
+      "manufacturer": "Repo-generated",
+      "series": "Rugged USB 2.0 (USBFTV)",
+      "interface": "USB-A 2.0",
+      "shellStyle": "threaded receptacle face",
+      "shellSize": "15",
+      "source": "USB Field_catalog.pdf; Glenair rugged I/O product line",
+      "usage": [
+        "high-speed interface identifier",
+        "front-face port recognition"
+      ],
+      "copyrightStatus": "recreated_simplified_svg",
+      "status": "recreated",
+      "file": "assets/d38999/svg/usbftv-face.svg"
+    },
+    {
+      "id": "usbbftv-face",
+      "type": "interface_face_drawing",
+      "manufacturer": "Repo-generated",
+      "series": "Rugged USB-B (USBBFTV)",
+      "interface": "USB-B",
+      "shellStyle": "threaded receptacle face",
+      "shellSize": "15",
+      "source": "USB Field_catalog.pdf; Glenair rugged I/O product line",
+      "usage": [
+        "high-speed interface identifier",
+        "front-face port recognition"
+      ],
+      "copyrightStatus": "recreated_simplified_svg",
+      "status": "recreated",
+      "file": "assets/d38999/svg/usbbftv-face.svg"
+    },
+    {
+      "id": "usb3ftv-face",
+      "type": "interface_face_drawing",
+      "manufacturer": "Repo-generated",
+      "series": "Rugged USB 3.0 (USB3FTV)",
+      "interface": "USB-A 3.0",
+      "shellStyle": "threaded receptacle face",
+      "shellSize": "15",
+      "source": "USB Field_catalog.pdf; Glenair rugged I/O product line",
+      "usage": [
+        "high-speed interface identifier",
+        "front-face port recognition"
+      ],
+      "copyrightStatus": "recreated_simplified_svg",
+      "status": "recreated",
+      "file": "assets/d38999/svg/usb3ftv-face.svg"
+    },
+    {
+      "id": "usb3cftv-face",
+      "type": "interface_face_drawing",
+      "manufacturer": "Repo-generated",
+      "series": "Rugged USB-C (USB3CFTV)",
+      "interface": "USB Type-C",
+      "shellStyle": "threaded receptacle face",
+      "shellSize": "11",
+      "source": "USB Field_catalog.pdf; Glenair rugged I/O product line",
+      "usage": [
+        "high-speed interface identifier",
+        "front-face port recognition"
+      ],
+      "copyrightStatus": "recreated_simplified_svg",
+      "status": "recreated",
+      "file": "assets/d38999/svg/usb3cftv-face.svg"
+    },
+    {
+      "id": "hdmiftv-face",
+      "type": "interface_face_drawing",
+      "manufacturer": "Repo-generated",
+      "series": "Rugged HDMI (HDMIFTV)",
+      "interface": "HDMI Type A",
+      "shellStyle": "threaded receptacle face",
+      "shellSize": "17",
+      "source": "Glenair rugged I/O product line",
+      "usage": [
+        "high-speed interface identifier",
+        "front-face port recognition"
+      ],
+      "copyrightStatus": "recreated_simplified_svg",
+      "status": "recreated",
+      "file": "assets/d38999/svg/hdmiftv-face.svg"
+    },
+    {
+      "id": "mdpftv-face",
+      "type": "interface_face_drawing",
+      "manufacturer": "Repo-generated",
+      "series": "Rugged Mini DisplayPort (MDPFTV)",
+      "interface": "Mini DisplayPort",
+      "shellStyle": "threaded receptacle face",
+      "shellSize": "13",
+      "source": "Glenair rugged I/O product line",
+      "usage": [
+        "high-speed interface identifier",
+        "front-face port recognition"
+      ],
+      "copyrightStatus": "recreated_simplified_svg",
+      "status": "recreated",
+      "file": "assets/d38999/svg/mdpftv-face.svg"
     }
   ]
 }

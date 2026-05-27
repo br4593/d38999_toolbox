@@ -979,6 +979,7 @@
     renderDecoded(null);
     renderComparison();
     selectTab("home");
+    initChat();
   }
 
   function populateFilters() {
@@ -1277,6 +1278,7 @@
     // When switching to catalog, re-render to reflect any selection change
     if (tabName === "catalog") renderCatalog();
     if (tabName === "mating") renderMatingPanel();
+    // Layout Designer initialises itself via layout-designer.js on first load
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -1318,29 +1320,112 @@
     });
   }
 
+  // Deduplicated rugged I/O interface entries for catalog display (lazy — converter loads after app.js)
+  let _ruggedIoCatalogEntries = null;
+  function ruggedIoCatalogEntries() {
+    if (_ruggedIoCatalogEntries !== null) return _ruggedIoCatalogEntries;
+    const converter = globalThis.D38999Converter;
+    if (!converter || !converter.RUGGED_IO_FAMILIES) { return []; }
+    const seen = new Set();
+    const entries = [];
+    for (const entry of converter.RUGGED_IO_FAMILIES) {
+      if (seen.has(entry.family)) continue;
+      seen.add(entry.family);
+      entries.push(entry);
+    }
+    _ruggedIoCatalogEntries = entries;
+    return entries;
+  }
+
+  function filteredRuggedIo() {
+    const shell = els.shellFilter.value;
+    const arrangementText = els.arrangementFilter.value.trim().toLowerCase();
+    return ruggedIoCatalogEntries().filter((entry) => {
+      if (shell && entry.shellSize !== shell) return false;
+      if (arrangementText) {
+        const hay = `${entry.family} ${entry.interface} ${entry.vendor}`.toLowerCase();
+        if (!hay.includes(arrangementText)) return false;
+      }
+      return true;
+    });
+  }
+
+  function buildRuggedIoCard(entry) {
+    const card = document.createElement("div");
+    card.className = "catalog-card catalog-card-rugged-io";
+    card.innerHTML = `
+      <div class="catalog-card-svg catalog-card-svg-face">
+        <img src="assets/d38999/svg/${entry.svg}" alt="${entry.family} face" class="catalog-face-img"/>
+      </div>
+      <div class="catalog-card-body">
+        <div class="catalog-card-id">${escapeHtml(entry.family)}</div>
+        <div class="catalog-card-meta">
+          <span>${escapeHtml(entry.interface)}</span>
+          <span>Shell ${escapeHtml(entry.shellSize)}</span>
+        </div>
+        <div class="catalog-card-meta" style="margin-top:2px">
+          <span class="rugged-io-badge">Rugged I/O</span>
+        </div>
+        <div class="catalog-card-footer">
+          <span class="catalog-service">${escapeHtml(entry.vendor)}</span>
+        </div>
+      </div>
+    `;
+    card.addEventListener("click", () => {
+      // Decode the family prefix to show the rugged I/O card in the decoder
+      els.partNumberInput.value = entry.prefix;
+      els.decodeButton.click();
+      selectTab("decoder");
+    });
+    return card;
+  }
+
   function renderCatalog() {
     const filtered = filteredArrangements();
     const sorted = sortedCatalog(filtered);
+    const ruggedFiltered = filteredRuggedIo();
 
     // Update count badge
+    const totalCount = filtered.length + ruggedFiltered.length;
+    const totalAll = arrangements.length + ruggedIoCatalogEntries().length;
     if (els.catalogCount) {
-      els.catalogCount.textContent = filtered.length === arrangements.length
-        ? `${arrangements.length} arrangements`
-        : `${filtered.length} of ${arrangements.length} arrangements`;
+      els.catalogCount.textContent = totalCount === totalAll
+        ? `${totalAll} items`
+        : `${totalCount} of ${totalAll} items`;
     }
 
     if (!els.catalogGrid) return;
     els.catalogGrid.innerHTML = "";
 
-    if (!sorted.length) {
+    if (!sorted.length && !ruggedFiltered.length) {
       // Use event delegation on the grid to avoid accumulating listeners on re-render
       els.catalogGrid.innerHTML = `<div class="catalog-empty">No arrangements match the current filters. <button type="button" class="clear-filters-inline-btn">Clear filters</button></div>`;
       return;
     }
 
-    for (const arr of sorted) {
-      const card = buildCatalogCard(arr);
-      els.catalogGrid.appendChild(card);
+    // Rugged I/O interface cards first
+    if (ruggedFiltered.length) {
+      const heading = document.createElement("div");
+      heading.className = "catalog-section-heading";
+      heading.textContent = "High-Speed Interface Connectors";
+      els.catalogGrid.appendChild(heading);
+      for (const entry of ruggedFiltered) {
+        els.catalogGrid.appendChild(buildRuggedIoCard(entry));
+      }
+    }
+
+    // Standard insert arrangement cards
+    if (sorted.length) {
+      if (ruggedFiltered.length) {
+        const heading = document.createElement("div");
+        heading.className = "catalog-section-heading";
+        heading.textContent = "Insert Arrangements";
+        els.catalogGrid.appendChild(heading);
+      }
+      for (const arr of sorted) {
+        const card = buildCatalogCard(arr);
+        els.catalogGrid.appendChild(card);
+      }
     }
   }
 
@@ -2199,6 +2284,10 @@
       setMessage(els.decodeMessage, decoded.message, true);
       return;
     }
+    if (decoded.rugged_io) {
+      setMessage(els.decodeMessage, `Recognized ${decoded.family} (${decoded.connector_type}). This is a D38999-style rugged I/O connector — not a standard insert arrangement.`);
+      return;
+    }
     if (!options.automatic && els.partNumberInput.value !== decoded.part_number) {
       els.partNumberInput.value = decoded.part_number;
     }
@@ -2216,6 +2305,34 @@
 
   function decodePartNumber(partNumber) {
     if (!partNumber) return { ok: false, message: "Enter a D38999 part number." };
+
+    // Check for D38999-style rugged I/O families (RJFTV, USBFTV, USB3FTV, USB3CFTV, HDMIFTV, MDPFTV)
+    const converter = globalThis.D38999Converter;
+    if (converter && converter.recognizeRuggedIo) {
+      const ruggedResult = converter.recognizeRuggedIo(partNumber);
+      if (ruggedResult.recognized) {
+        return {
+          ok: true,
+          rugged_io: true,
+          part_number: partNumber,
+          entered_part_number: partNumber,
+          family: ruggedResult.family,
+          vendor: ruggedResult.vendor,
+          interface: ruggedResult.interface,
+          shell_size: ruggedResult.shell_size,
+          d38999_relation: ruggedResult.d38999_relation,
+          connector_type: ruggedResult.connector_type,
+          mounting_type: ruggedResult.mounting_type,
+          svg: ruggedResult.svg,
+          face_svg: ruggedResult.face_svg,
+          suffix: ruggedResult.suffix,
+          note: ruggedResult.note,
+          arrangement_exists: false,
+          polarization_defaulted: false,
+        };
+      }
+    }
+
     const prefix = /^D38999\/(\d{2})(.+)$/.exec(partNumber);
     if (!prefix) return { ok: false, message: "Only D38999 shell-type part numbers are supported by this decoder." };
     const slashSheet = `/${prefix[1]}`;
@@ -2714,7 +2831,43 @@
       els.decodedPanel.innerHTML = `<div class="detail-item"><div class="value">${escapeHtml(decoded.message)}</div></div>`;
       return;
     }
+    if (decoded.rugged_io) {
+      els.decodedPanel.innerHTML = ruggedIoSummaryCard(decoded);
+      return;
+    }
     els.decodedPanel.innerHTML = decodedSummaryCard(decoded);
+  }
+
+  function ruggedIoSummaryCard(decoded) {
+    const faceSvg = decoded.face_svg || decoded.svg;
+    const mountSvg = decoded.svg !== faceSvg ? decoded.svg : "";
+    const faceHtml = faceSvg
+      ? `<img src="assets/d38999/svg/${faceSvg}" alt="${decoded.family} face" style="max-width:100px;max-height:100px;opacity:0.8"/>`
+      : "";
+    const mountHtml = mountSvg
+      ? `<img src="assets/d38999/svg/${mountSvg}" alt="${decoded.family} ${decoded.mounting_type || 'profile'}" style="max-width:160px;max-height:70px;opacity:0.75"/>`
+      : "";
+    const svgHtml = (faceHtml || mountHtml)
+      ? `<div class="rugged-io-svg-inline">${faceHtml}${mountHtml ? `<span style="display:inline-block;width:12px"></span>${mountHtml}` : ""}</div>`
+      : "";
+    return `
+      <div class="detail-item detail-summary rugged-io-decoded">
+        <div class="name">D38999-Style Rugged I/O Connector</div>
+        <div class="value mono">${escapeHtml(decoded.part_number)}</div>
+        <div class="rugged-io-info-grid">
+          <div class="rugged-field"><span class="rugged-label">Family:</span> <span class="rugged-value">${escapeHtml(decoded.family)}</span></div>
+          <div class="rugged-field"><span class="rugged-label">Vendor:</span> <span class="rugged-value">${escapeHtml(decoded.vendor)}</span></div>
+          <div class="rugged-field"><span class="rugged-label">Interface:</span> <span class="rugged-value">${escapeHtml(decoded.interface)}</span></div>
+          <div class="rugged-field"><span class="rugged-label">Shell Size:</span> <span class="rugged-value">${escapeHtml(decoded.shell_size)}</span></div>
+          <div class="rugged-field"><span class="rugged-label">Type:</span> <span class="rugged-value">${escapeHtml(decoded.connector_type)}</span></div>
+          <div class="rugged-field"><span class="rugged-label">Relation:</span> <span class="rugged-value">${escapeHtml(decoded.d38999_relation)}</span></div>
+          ${decoded.mounting_type ? `<div class="rugged-field"><span class="rugged-label">Mounting:</span> <span class="rugged-value">${escapeHtml(decoded.mounting_type)}</span></div>` : ""}
+          ${decoded.suffix ? `<div class="rugged-field"><span class="rugged-label">Config:</span> <span class="rugged-value">${escapeHtml(decoded.suffix)}</span></div>` : ""}
+        </div>
+        ${svgHtml}
+        <div class="rugged-io-note">${escapeHtml(decoded.note)}</div>
+      </div>
+    `;
   }
 
   function decodedSummaryCard(decoded) {
@@ -2748,6 +2901,10 @@
   function renderPartNumberGuide(decoded) {
     const pattern = (partRules.part_number_patterns || [])[0];
     if (!els.partNumberGuidePanel || !pattern) return;
+    if (decoded?.rugged_io) {
+      els.partNumberGuidePanel.innerHTML = "";
+      return;
+    }
     els.partNumberGuidePanel.innerHTML = interactivePnGuide(decoded, "compact");
   }
 
@@ -3661,6 +3818,451 @@
       '"': "&quot;",
       "'": "&#39;",
     }[char]));
+  }
+
+  // =========================================================================
+  // AI Chat Panel
+  // =========================================================================
+
+  function initChat() {
+    const toggle = document.getElementById("chatToggle");
+    const panel = document.getElementById("chatPanel");
+    const closeBtn = document.getElementById("chatClose");
+    const clearBtn = document.getElementById("chatClear");
+    const settingsBtn = document.getElementById("chatSettings");
+    const settingsPanel = document.getElementById("chatSettings-panel");
+    const form = document.getElementById("chatForm");
+    const input = document.getElementById("chatInput");
+    const messagesEl = document.getElementById("chatMessages");
+    const providerSel = document.getElementById("chatProvider");
+    const modelSel = document.getElementById("chatModel");
+    const apiKeyInput = document.getElementById("chatApiKey");
+    const baseUrlInput = document.getElementById("chatBaseUrl");
+    const proxyUrlInput = document.getElementById("chatProxyUrl");
+    const ollamaUrlInput = document.getElementById("chatOllamaUrl");
+
+    if (!toggle || !panel) return;
+
+    let messages = [];
+    let sending = false;
+
+    // --- Persistence ---
+    const STORAGE_KEY = "d38999_chat";
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          messages,
+          provider: providerSel.value,
+          model: modelSel.value,
+          apiKey: apiKeyInput.value,
+          baseUrl: baseUrlInput.value,
+          proxyUrl: proxyUrlInput.value,
+          ollamaUrl: ollamaUrlInput ? ollamaUrlInput.value : "",
+        }));
+      } catch (_) {}
+    }
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const s = JSON.parse(raw);
+        messages = s.messages || [];
+        if (s.provider) providerSel.value = s.provider;
+        if (s.model) modelSel.value = s.model;
+        if (s.apiKey) apiKeyInput.value = s.apiKey;
+        if (s.baseUrl) baseUrlInput.value = s.baseUrl;
+        if (s.proxyUrl) proxyUrlInput.value = s.proxyUrl;
+        if (s.ollamaUrl && ollamaUrlInput) ollamaUrlInput.value = s.ollamaUrl;
+        renderMessages();
+      } catch (_) {}
+    }
+
+    // --- Models list ---
+    const STATIC_MODELS = {
+      ollama_direct: ["gemma4", "llama3.1", "qwen2.5", "mistral", "gemma2"],
+      ollama: ["gemma4", "llama3.1", "qwen2.5", "mistral", "gemma2"],
+      openai: ["gpt-4o", "gpt-4o-mini", "gpt-4.1-mini", "gpt-4.1-nano"],
+      github: [
+        // OpenAI
+        "openai/gpt-4o", "openai/gpt-4o-mini",
+        "openai/gpt-4.1", "openai/gpt-4.1-mini", "openai/gpt-4.1-nano",
+        "openai/gpt-5", "openai/gpt-5-chat", "openai/gpt-5-mini", "openai/gpt-5-nano",
+        "openai/o1", "openai/o1-mini", "openai/o1-preview",
+        "openai/o3", "openai/o3-mini", "openai/o4-mini",
+        // xAI
+        "xai/grok-3", "xai/grok-3-mini",
+        // DeepSeek
+        "deepseek/deepseek-r1", "deepseek/deepseek-r1-0528", "deepseek/deepseek-v3-0324",
+        // Microsoft
+        "microsoft/mai-ds-r1",
+        "microsoft/phi-4", "microsoft/phi-4-mini-instruct", "microsoft/phi-4-mini-reasoning",
+        "microsoft/phi-4-multimodal-instruct", "microsoft/phi-4-reasoning",
+        // Meta
+        "meta/meta-llama-3.1-405b-instruct", "meta/meta-llama-3.1-8b-instruct",
+        "meta/llama-3.2-11b-vision-instruct", "meta/llama-3.2-90b-vision-instruct",
+        "meta/llama-3.3-70b-instruct",
+        "meta/llama-4-maverick-17b-128e-instruct-fp8", "meta/llama-4-scout-17b-16e-instruct",
+        // Mistral AI
+        "mistral-ai/mistral-medium-2505", "mistral-ai/mistral-small-2503",
+        "mistral-ai/codestral-2501", "mistral-ai/ministral-3b",
+        // Cohere
+        "cohere/cohere-command-a",
+        "cohere/cohere-command-r-plus-08-2024", "cohere/cohere-command-r-08-2024",
+        // AI21 Labs
+        "ai21-labs/ai21-jamba-1.5-large",
+      ],
+      gemini: ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash", "gemini-2.0-flash-lite"],
+      anthropic: ["claude-sonnet-4-20250514", "claude-3-5-haiku-20241022"],
+    };
+
+    // GitHub Models tier info (from catalog API rate_limit_tier field)
+    // "custom" = requires paid billing / special access
+    // "high"   = Pro/Team plan
+    // "low"    = free for all
+    const GITHUB_TIERS = {
+      custom: new Set([
+        "deepseek/deepseek-r1", "deepseek/deepseek-r1-0528", "microsoft/mai-ds-r1",
+        "openai/gpt-5", "openai/gpt-5-chat", "openai/gpt-5-mini", "openai/gpt-5-nano",
+        "openai/o1", "openai/o1-mini", "openai/o1-preview",
+        "openai/o3", "openai/o3-mini", "openai/o4-mini",
+        "xai/grok-3", "xai/grok-3-mini",
+      ]),
+      high: new Set([
+        "ai21-labs/ai21-jamba-1.5-large", "cohere/cohere-command-r-plus-08-2024",
+        "deepseek/deepseek-v3-0324",
+        "meta/llama-3.2-90b-vision-instruct", "meta/llama-3.3-70b-instruct",
+        "meta/llama-4-maverick-17b-128e-instruct-fp8", "meta/llama-4-scout-17b-16e-instruct",
+        "meta/meta-llama-3.1-405b-instruct",
+        "openai/gpt-4.1", "openai/gpt-4o",
+      ]),
+    };
+
+    function githubModelLabel(id) {
+      if (GITHUB_TIERS.custom.has(id)) return `${id}  [paid]`;
+      if (GITHUB_TIERS.high.has(id)) return `${id}  [pro]`;
+      return id;
+    }
+
+    function populateModels() {
+      const provider = providerSel.value;
+      const list = STATIC_MODELS[provider] || [];
+      if (provider === "github") {
+        // Group into optgroups by tier
+        const groups = { low: [], high: [], custom: [] };
+        list.forEach(m => {
+          if (GITHUB_TIERS.custom.has(m)) groups.custom.push(m);
+          else if (GITHUB_TIERS.high.has(m)) groups.high.push(m);
+          else groups.low.push(m);
+        });
+        const makeGroup = (label, models) => models.length
+          ? `<optgroup label="${label}">${models.map(m => `<option value="${m}">${m}</option>`).join("")}</optgroup>`
+          : "";
+        modelSel.innerHTML =
+          makeGroup("Free tier", groups.low) +
+          makeGroup("Pro / Team tier", groups.high) +
+          makeGroup("Paid (billing required)", groups.custom);
+      } else {
+        modelSel.innerHTML = list.map(m => `<option value="${m}">${m}</option>`).join("");
+      }
+      if (provider === "ollama_direct") {
+        fetchModelsOllama();
+      } else {
+        fetchModels(provider);
+      }
+    }
+
+    async function fetchModelsOllama() {
+      try {
+        const base = ollamaUrlInput ? ollamaUrlInput.value.replace(/\/$/, "") : "http://localhost:11434";
+        const resp = await fetch(`${base}/api/tags`);
+        if (!resp.ok) return;
+        const data = await resp.json();
+        const names = (data.models || []).map(m => m.name);
+        if (names.length) {
+          const prev = modelSel.value;
+          modelSel.innerHTML = names.map(m => `<option value="${m}">${m}</option>`).join("");
+          if (names.includes(prev)) modelSel.value = prev;
+        }
+      } catch (_) {}
+    }
+
+    async function fetchModels(provider) {
+      try {
+        const proxy = proxyUrlInput.value.replace(/\/$/, "");
+        const resp = await fetch(`${proxy}/api/models`);
+        if (!resp.ok) return;
+        const data = await resp.json();
+        const list = data[provider];
+        if (list && list.length) {
+          const prev = modelSel.value;
+          modelSel.innerHTML = list.map(m => `<option value="${m}">${m}</option>`).join("");
+          if (list.includes(prev)) modelSel.value = prev;
+        }
+      } catch (_) {}
+    }
+
+    providerSel.addEventListener("change", () => { populateModels(); saveState(); });
+
+    // --- Settings panel toggle (CSS-class based, not hidden attribute) ---
+    function openSettings() {
+      settingsPanel.classList.remove("chat-settings-panel--closed");
+      settingsBtn.classList.add("active");
+    }
+    function closeSettings() {
+      settingsPanel.classList.add("chat-settings-panel--closed");
+      settingsBtn.classList.remove("active");
+    }
+
+    // --- Save button ---
+    const saveBtn = document.getElementById("chatSaveSettings");
+    const savedMsg = document.getElementById("chatSavedMsg");
+    let savedTimer = null;
+    function doSave() {
+      saveState();
+      if (savedMsg) {
+        savedMsg.textContent = "Saved!";
+        clearTimeout(savedTimer);
+        savedTimer = setTimeout(() => { savedMsg.textContent = ""; }, 2000);
+      }
+    }
+    if (saveBtn) saveBtn.addEventListener("click", doSave);
+
+    // Auto-save on every settings field change
+    [apiKeyInput, baseUrlInput, proxyUrlInput, modelSel, ollamaUrlInput].forEach(el => {
+      if (el) el.addEventListener("change", saveState);
+    });
+
+    // --- Open / close / minimize ---
+    const minimizeBtn = document.getElementById("chatMinimize");
+    function openChat() {
+      panel.classList.remove("chat-panel--closed");
+      panel.classList.remove("minimized");
+      toggle.setAttribute("aria-label", "Close AI Chat");
+      toggle.setAttribute("title", "Close AI Chat");
+      toggle.classList.add("open");
+      input.focus();
+    }
+    function closeChat() {
+      panel.classList.add("chat-panel--closed");
+      toggle.setAttribute("aria-label", "Open AI Chat");
+      toggle.setAttribute("title", "AI Chat");
+      toggle.classList.remove("open");
+    }
+    toggle.addEventListener("click", () => {
+      const isOpen = !panel.classList.contains("chat-panel--closed") && !panel.classList.contains("minimized");
+      if (isOpen) { closeChat(); } else { openChat(); }
+    });
+    closeBtn.addEventListener("click", closeChat);
+    minimizeBtn.addEventListener("click", () => {
+      panel.classList.toggle("minimized");
+    });
+    clearBtn.addEventListener("click", () => {
+      messages = [];
+      renderMessages();
+      saveState();
+    });
+    settingsBtn.addEventListener("click", () => {
+      const isOpen = !settingsPanel.classList.contains("chat-settings-panel--closed");
+      if (isOpen) { closeSettings(); } else { openSettings(); }
+    });
+
+    // --- Render messages ---
+    function renderMessages() {
+      messagesEl.innerHTML = messages.map(m => {
+        const cls = m.role === "user" ? "user" : m.role === "error" ? "error" : "assistant";
+        const content = formatMessage(m.content || "");
+        return `<div class="chat-msg ${cls}">${content}</div>`;
+      }).join("");
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function formatMessage(text) {
+      // Escape HTML first
+      let safe = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      // Inline code
+      safe = safe.replace(/`([^`]+)`/g, "<code>$1</code>");
+      // Detect D38999 part numbers and make clickable
+      safe = safe.replace(/\b(D38999\/\w+)\b/g, '<span class="chat-pn-link" data-pn="$1">$1</span>');
+      return safe;
+    }
+
+    // --- Click on part numbers in chat ---
+    messagesEl.addEventListener("click", (e) => {
+      const link = e.target.closest(".chat-pn-link");
+      if (!link) return;
+      const pn = link.dataset.pn;
+      if (!pn) return;
+      // Navigate to decoder tab and decode
+      const partInput = document.getElementById("partNumberInput");
+      if (partInput) {
+        partInput.value = pn;
+        // Click decode button
+        const decBtn = document.getElementById("decodeButton");
+        if (decBtn) decBtn.click();
+        // Switch to decoder tab
+        const tabBtn = document.querySelector('[data-tab="decoder"]');
+        if (tabBtn) tabBtn.click();
+      }
+    });
+
+    // --- Auto-resize textarea ---
+    input.addEventListener("input", () => {
+      input.style.height = "auto";
+      input.style.height = Math.min(input.scrollHeight, 100) + "px";
+    });
+
+    // --- Submit ---
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text || sending) return;
+
+      // Inject context about current decoded part number if available
+      let contextPrefix = "";
+      const decoded = state && state.decoded;
+      if (decoded && decoded.raw) {
+        contextPrefix = `[Context: user is viewing decoded part number ${decoded.raw}] `;
+      }
+
+      messages.push({ role: "user", content: text });
+      input.value = "";
+      input.style.height = "auto";
+      renderMessages();
+      saveState();
+
+      sending = true;
+      const typingEl = document.createElement("div");
+      typingEl.className = "chat-typing";
+      typingEl.textContent = "Thinking…";
+      messagesEl.appendChild(typingEl);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      try {
+        const provider = providerSel.value;
+        const model = modelSel.value;
+        const historyMessages = messages
+          .map(m => m.role === "error" ? null : { role: m.role, content: m.role === "user" && m === messages[messages.length - 1] ? contextPrefix + m.content : m.content })
+          .filter(Boolean);
+
+        let data;
+
+        if (provider === "ollama_direct") {
+          // Call Ollama REST API directly from the browser — no proxy needed
+          const ollamaBase = (ollamaUrlInput ? ollamaUrlInput.value : "http://localhost:11434").replace(/\/$/, "");
+          const resp = await fetch(`${ollamaBase}/api/chat`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ model, messages: historyMessages, stream: false }),
+          });
+          if (!resp.ok) {
+            const txt = await resp.text();
+            data = { error: `Ollama error ${resp.status}: ${txt}` };
+          } else {
+            const raw = await resp.json();
+            const content = raw.message?.content || raw.response || "(empty response)";
+            data = { content };
+          }
+        } else {
+          // Route through the Python proxy
+          const proxy = proxyUrlInput.value.replace(/\/$/, "");
+          const payload = { messages: historyMessages, provider, model };
+          const key = apiKeyInput.value.trim();
+          if (key) payload.apiKey = key;
+          const base = baseUrlInput.value.trim();
+          if (base) payload.baseUrl = base;
+          const resp = await fetch(`${proxy}/api/chat`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          data = await resp.json();
+          if (!resp.ok) data = { error: data.error || `Error ${resp.status}` };
+        }
+
+        if (data.error) {
+          messages.push({ role: "error", content: data.error });
+        } else {
+          messages.push({ role: "assistant", content: data.content || "(no response)" });
+        }
+      } catch (err) {
+        messages.push({ role: "error", content: `Connection failed: ${err.message}. Is the proxy running?` });
+      } finally {
+        sending = false;
+        typingEl.remove();
+        renderMessages();
+        saveState();
+      }
+    });
+
+    // Enter to send, Shift+Enter for newline
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        form.dispatchEvent(new Event("submit"));
+      }
+    });
+
+    // Init
+    populateModels();
+    loadState();
+
+    // --- Drag to move ---
+    const header = panel.querySelector(".chat-header");
+    let dragOffset = { x: 0, y: 0 };
+    let dragging = false;
+
+    header.addEventListener("mousedown", (e) => {
+      if (e.target.closest("button")) return;
+      dragging = true;
+      const rect = panel.getBoundingClientRect();
+      dragOffset.x = e.clientX - rect.left;
+      dragOffset.y = e.clientY - rect.top;
+      e.preventDefault();
+    });
+    document.addEventListener("mousemove", (e) => {
+      if (!dragging) return;
+      const x = e.clientX - dragOffset.x;
+      const y = e.clientY - dragOffset.y;
+      panel.style.left = Math.max(0, x) + "px";
+      panel.style.top = Math.max(0, y) + "px";
+      panel.style.right = "auto";
+      panel.style.bottom = "auto";
+    });
+    document.addEventListener("mouseup", () => { dragging = false; });
+
+    // --- Resize from top-left corner handle ---
+    const resizeHandle = document.getElementById("chatResizeHandle");
+    if (resizeHandle) {
+      let resizing = false;
+      let startX, startY, startW, startH, startLeft, startTop;
+
+      resizeHandle.addEventListener("mousedown", (e) => {
+        resizing = true;
+        const rect = panel.getBoundingClientRect();
+        startX = e.clientX;
+        startY = e.clientY;
+        startW = rect.width;
+        startH = rect.height;
+        startLeft = rect.left;
+        startTop = rect.top;
+        e.preventDefault();
+        e.stopPropagation();
+      });
+      document.addEventListener("mousemove", (e) => {
+        if (!resizing) return;
+        const dx = startX - e.clientX;
+        const dy = startY - e.clientY;
+        const newW = Math.max(300, startW + dx);
+        const newH = Math.max(200, startH + dy);
+        panel.style.width = newW + "px";
+        panel.style.height = newH + "px";
+        panel.style.left = (startLeft - (newW - startW)) + "px";
+        panel.style.top = (startTop - (newH - startH)) + "px";
+        panel.style.right = "auto";
+        panel.style.bottom = "auto";
+      });
+      document.addEventListener("mouseup", () => { resizing = false; });
+    }
   }
 
   init();

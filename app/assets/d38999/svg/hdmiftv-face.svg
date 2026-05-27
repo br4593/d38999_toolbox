@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 100" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- Shell size 17 outer ring -->
+  <circle cx="110" cy="48" r="40" stroke-width="2.5"/>
+  <circle cx="110" cy="48" r="36" stroke-width="1.5" opacity="0.5"/>
+  <!-- HDMI port trapezoid -->
+  <path d="M93 36 L127 36 L124 60 L96 60 Z" stroke-width="2"/>
+  <!-- Pin row 1 (top - 10 pins) -->
+  <line x1="99" y1="40" x2="99" y2="46" stroke-width="0.9" opacity="0.5"/>
+  <line x1="102" y1="40" x2="102" y2="46" stroke-width="0.9" opacity="0.5"/>
+  <line x1="105" y1="40" x2="105" y2="46" stroke-width="0.9" opacity="0.5"/>
+  <line x1="108" y1="40" x2="108" y2="46" stroke-width="0.9" opacity="0.5"/>
+  <line x1="111" y1="40" x2="111" y2="46" stroke-width="0.9" opacity="0.5"/>
+  <line x1="114" y1="40" x2="114" y2="46" stroke-width="0.9" opacity="0.5"/>
+  <line x1="117" y1="40" x2="117" y2="46" stroke-width="0.9" opacity="0.5"/>
+  <line x1="120" y1="40" x2="120" y2="46" stroke-width="0.9" opacity="0.5"/>
+  <line x1="123" y1="40" x2="123" y2="46" stroke-width="0.9" opacity="0.5"/>
+  <!-- Pin row 2 (bottom - 9 pins) -->
+  <line x1="100" y1="50" x2="100" y2="56" stroke-width="0.9" opacity="0.5"/>
+  <line x1="103" y1="50" x2="103" y2="56" stroke-width="0.9" opacity="0.5"/>
+  <line x1="106" y1="50" x2="106" y2="56" stroke-width="0.9" opacity="0.5"/>
+  <line x1="109" y1="50" x2="109" y2="56" stroke-width="0.9" opacity="0.5"/>
+  <line x1="112" y1="50" x2="112" y2="56" stroke-width="0.9" opacity="0.5"/>
+  <line x1="115" y1="50" x2="115" y2="56" stroke-width="0.9" opacity="0.5"/>
+  <line x1="118" y1="50" x2="118" y2="56" stroke-width="0.9" opacity="0.5"/>
+  <line x1="121" y1="50" x2="121" y2="56" stroke-width="0.9" opacity="0.5"/>
+  <!-- Keying notch -->
+  <rect x="106" y="10" width="8" height="5" rx="1.5" fill="currentColor" opacity="0.3"/>
+  <!-- Coding indicator -->
+  <circle cx="110" cy="86" r="2" fill="currentColor" opacity="0.2" stroke="none"/>
+  <text x="110" y="98" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">HDMIFTV Face (Shell 17)</text>
+</svg>

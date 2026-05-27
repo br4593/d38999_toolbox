@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 110" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- Cable entry -->
+  <rect x="8" y="42" width="28" height="20" rx="3"/>
+  <!-- Coupling ring body (shell 19 - largest) -->
+  <rect x="36" y="22" width="80" height="60" rx="4"/>
+  <line x1="56" y1="24" x2="56" y2="80" opacity="0.4"/>
+  <line x1="72" y1="24" x2="72" y2="80" opacity="0.4"/>
+  <line x1="88" y1="24" x2="88" y2="80" opacity="0.4"/>
+  <!-- Shell size 19 body -->
+  <rect x="116" y="12" width="100" height="80" rx="6"/>
+  <!-- RJ45 port rectangle -->
+  <rect x="143" y="36" width="30" height="24" rx="2" stroke-width="2"/>
+  <!-- 8 pin lines -->
+  <line x1="147" y1="38" x2="147" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="150.5" y1="38" x2="150.5" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="154" y1="38" x2="154" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="157.5" y1="38" x2="157.5" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="161" y1="38" x2="161" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="164.5" y1="38" x2="164.5" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="168" y1="38" x2="168" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="171.5" y1="38" x2="171.5" y2="45" stroke-width="1" opacity="0.6" transform="translate(-2,0)"/>
+  <!-- Keying notch -->
+  <rect x="162" y="4" width="8" height="6" rx="1.5" fill="currentColor" opacity="0.3"/>
+  <text x="166" y="100" text-anchor="middle" font-size="9" stroke="none" fill="currentColor" opacity="0.6" font-family="system-ui,sans-serif">Shell 19</text>
+  <text x="166" y="108" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">RJFTV Plug</text>
+</svg>

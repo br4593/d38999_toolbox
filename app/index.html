@@ -48,6 +48,10 @@
       <svg class="tab-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3" y="1" width="10" height="14" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="M5.5 5.5h5M5.5 8h5M5.5 10.5h3"/></svg>
       <span>Manual</span>
     </button>
+    <button class="tab-button" type="button" data-tab="layout">
+      <svg class="tab-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4"/><circle cx="8" cy="8" r="1.8" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="3.2" r="1" fill="currentColor"/><circle cx="8" cy="12.8" r="1" fill="currentColor"/><circle cx="3.2" cy="8" r="1" fill="currentColor"/><circle cx="12.8" cy="8" r="1" fill="currentColor"/></svg>
+      <span>Layout</span>
+    </button>
   </nav>
 
   <section id="homePanel" class="home-panel tab-panel active" aria-label="Start Here">
@@ -102,6 +106,13 @@
           </div>
           <strong>Manual</strong>
           <span>Learn the code system.</span>
+        </button>
+        <button type="button" class="home-task-card" data-home-target="layout">
+          <div class="home-task-icon" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="11" stroke="currentColor" stroke-width="2"/><circle cx="16" cy="16" r="3.5" stroke="currentColor" stroke-width="2"/><circle cx="16" cy="6.5" r="2" fill="currentColor"/><circle cx="16" cy="25.5" r="2" fill="currentColor"/><circle cx="6.5" cy="16" r="2" fill="currentColor"/><circle cx="25.5" cy="16" r="2" fill="currentColor"/></svg>
+          </div>
+          <strong>Layout Designer</strong>
+          <span>Design and validate a pin layout.</span>
         </button>
       </div>
     </div>
@@ -372,8 +383,246 @@
     </div>
   </section>
 
+  <!-- AI Chat Panel -->
+  <button id="chatToggle" class="chat-toggle" type="button" aria-label="Open AI Chat" title="AI Chat">
+    <svg viewBox="0 0 24 24" fill="none" width="28" height="28"><path d="M21 12a9 9 0 01-9 9 9 9 0 01-7.74-4.36L3 21l1.5-4.5A9 9 0 1121 12z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="8" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="16" cy="12" r="1" fill="currentColor"/></svg>
+  </button>
+  <div id="chatPanel" class="chat-panel chat-panel--closed">
+    <div class="chat-header">
+      <strong>D38999 AI Assistant</strong>
+      <div class="chat-header-actions">
+        <button id="chatSettings" class="chat-settings-toggle-btn" type="button" title="Configure AI provider and model" aria-label="Settings">⚙ Settings</button>
+        <button id="chatMinimize" class="chat-icon-btn" type="button" title="Minimize" aria-label="Minimize">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="none"><path d="M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+        <button id="chatClear" class="chat-icon-btn" type="button" title="Clear chat history" aria-label="Clear chat history">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="none"><path d="M2 4h12M5 4V2.5A1.5 1.5 0 016.5 1h3A1.5 1.5 0 0111 2.5V4M6 7v5M10 7v5M3 4l1 9.5A1 1 0 005 14.5h6a1 1 0 001-1L13 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button id="chatClose" class="chat-icon-btn chat-close-btn" type="button" title="Close chat" aria-label="Close chat">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="none"><path d="M4 12l8-8M4 4l8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="chat-resize-handle" id="chatResizeHandle"></div>
+    <div id="chatSettings-panel" class="chat-settings-panel chat-settings-panel--closed">
+      <label>Provider
+        <select id="chatProvider">
+          <option value="ollama_direct" selected>Ollama – direct (no proxy)</option>
+          <option value="ollama">Ollama – via proxy</option>
+          <option value="openai">OpenAI-compatible</option>
+          <option value="github">GitHub Models</option>
+          <option value="gemini">Google Gemini</option>
+          <option value="anthropic">Anthropic</option>
+        </select>
+      </label>
+      <label>Model
+        <select id="chatModel"></select>
+      </label>
+      <label class="chat-key-label">API Key
+        <input id="chatApiKey" type="password" placeholder="Not needed for Ollama" autocomplete="off">
+      </label>
+      <label class="chat-key-label">Base URL <small>(OpenAI-compat only)</small>
+        <input id="chatBaseUrl" type="text" placeholder="https://api.openai.com/v1">
+      </label>
+      <label class="chat-key-label">Ollama URL <small>(direct mode)</small>
+        <input id="chatOllamaUrl" type="text" placeholder="http://localhost:11434" value="http://localhost:11434" autocomplete="off">
+      </label>
+      <label>Proxy URL <small>(proxy mode only)</small>
+        <input id="chatProxyUrl" type="text" placeholder="http://127.0.0.1:8765" value="http://127.0.0.1:8765">
+      </label>
+      <div class="chat-save-row">
+        <button type="button" id="chatSaveSettings" class="chat-save-btn">Save Settings</button>
+        <span id="chatSavedMsg" class="chat-saved-msg"></span>
+      </div>
+    </div>
+    <div id="chatMessages" class="chat-messages"></div>
+    <form id="chatForm" class="chat-input-form">
+      <textarea id="chatInput" rows="1" placeholder="Ask about D38999 connectors…" autocomplete="off"></textarea>
+      <button type="submit" class="chat-send-btn" aria-label="Send">
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none"><path d="M2 8l12-5-5 12-2-5-5-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+      </button>
+    </form>
+  </div>
+
+  <div id="layoutPanel" class="tab-panel ld-panel">
+
+    <!-- Safety Banner -->
+    <div class="ld-safety-banner" role="alert">
+      &#9888;&nbsp;<strong>Suggestion only &mdash; not a substitute for professional engineering review.</strong>
+      Always verify against datasheets, insert drawings, and applicable standards before manufacturing or field use.
+    </div>
+
+    <div class="ld-workspace">
+
+      <!-- LEFT: Input form -->
+      <aside class="ld-sidebar panel">
+        <div class="ld-sidebar-header">
+          <h2>Layout</h2>
+          <div class="ld-ai-status" id="ld-ai-status"></div>
+        </div>
+        <div id="ld-ai-notice" class="ld-ai-notice" hidden></div>
+
+        <div class="ld-section">
+          <div class="ld-section-label">Connector</div>
+          <!-- Auto-suggested arrangement shown after generate -->
+          <div id="ld-arr-suggest" class="ld-arr-suggest" hidden></div>
+          <!-- Override: hidden by default, power users can expand -->
+          <details class="ld-override" id="ld-arr-override">
+            <summary>Override arrangement</summary>
+            <select id="ld-arrangement"><option value="">&#8212; auto &#8212;</option></select>
+          </details>
+          <div class="ld-two-col">
+            <div>
+              <label for="ld-role">I&rsquo;m wiring&hellip;</label>
+              <select id="ld-role">
+                <option value="plug">A cable (plug)</option>
+                <option value="receptacle">A panel (receptacle)</option>
+              </select>
+            </div>
+            <div>
+              <label for="ld-view">Diagram view</label>
+              <select id="ld-view">
+                <option value="mating">Mating face</option>
+                <option value="wire">Wire side</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="ld-section">
+          <div class="ld-section-label">Power <span class="ld-hint">name &amp; current draw</span></div>
+          <div id="ld-power-list" class="ld-dynamic-list"></div>
+          <button type="button" class="ld-add-btn" id="ld-add-power">+ Add power rail</button>
+        </div>
+
+        <div class="ld-section">
+          <div class="ld-section-label">Signals <span class="ld-hint">protocol &rarr; pins auto-allocated</span></div>
+          <div id="ld-signal-list" class="ld-dynamic-list"></div>
+          <button type="button" class="ld-add-btn" id="ld-add-signal">+ Add signal group</button>
+        </div>
+
+        <div class="ld-section ld-section-options">
+          <label class="ld-check-label"><input type="checkbox" id="ld-spare-enable" checked> Reserve spare pins (10&ndash;20%)</label>
+          <label class="ld-check-label"><input type="checkbox" id="ld-seal-unused" checked> Seal empty cavities</label>
+          <label class="ld-check-label"><input type="checkbox" id="ld-emi-mode"> EMI-priority placement</label>
+        </div>
+
+        <button type="button" class="ld-primary-btn" id="ld-generate-btn">&#9889; Generate Layout</button>
+        <button type="button" class="ld-secondary-btn" id="ld-reset-btn">Start over</button>
+      </aside>
+
+      <!-- CENTER: Results -->
+      <main class="ld-main">
+
+        <!-- Summary bar (always visible when generated) -->
+        <section class="panel ld-summary-panel" id="ld-summary-panel" hidden>
+          <div class="ld-summary-grid" id="ld-summary-grid"></div>
+        </section>
+
+        <!-- Tab nav -->
+        <nav class="ld-result-tabs" id="ld-result-tabs" hidden>
+          <button class="ld-tab-btn" data-ld-tab="visual">&#9679; Visual</button>
+          <button class="ld-tab-btn" data-ld-tab="table">Pin Table</button>
+          <button class="ld-tab-btn" data-ld-tab="validation">Validation</button>
+          <button class="ld-tab-btn" data-ld-tab="advice">AI Review</button>
+          <button class="ld-tab-btn" data-ld-tab="export">Export</button>
+        </nav>
+
+        <!-- Visual panel -->
+        <section class="panel ld-visual-panel" id="ld-visual-panel" hidden>
+          <div class="ld-visual-header">
+            <h2>Visual Layout</h2>
+            <span class="ld-geometry-badge" id="ld-geometry-badge"></span>
+            <div class="ld-visual-toolbar">
+              <label for="ld-vis-labels">Labels</label>
+              <select id="ld-vis-labels">
+                <option value="signal">Signal</option>
+                <option value="cavity">Cavity ID</option>
+                <option value="both">Both</option>
+                <option value="none">None</option>
+              </select>
+              <button type="button" class="ld-icon-btn" id="ld-zoom-in" title="Zoom in">+</button>
+              <button type="button" class="ld-icon-btn" id="ld-zoom-out" title="Zoom out">−</button>
+              <button type="button" class="ld-icon-btn" id="ld-zoom-fit" title="Fit view">⊝</button>
+            </div>
+          </div>
+          <div class="ld-canvas-wrap" id="ld-canvas-wrap">
+            <svg id="ld-canvas" class="ld-canvas" xmlns="http://www.w3.org/2000/svg"
+                 role="img" aria-label="Connector pin layout"></svg>
+          </div>
+          <div class="ld-legend" id="ld-legend"></div>
+          <p class="ld-mirror-warning">&#9888; Mating-face and wire-side views are mirrored. Plug and receptacle views are also mirrored. Always verify against the official insert drawing.</p>
+        </section>
+
+        <!-- Table panel -->
+        <section class="panel ld-table-panel" id="ld-table-panel" hidden>
+          <div class="ld-table-header-row">
+            <h2>Pin Assignment Table</h2>
+            <div class="ld-table-toolbar">
+              <input type="text" id="ld-table-search" placeholder="Search cavity / signal…" class="ld-table-search">
+              <button type="button" class="ld-secondary-btn" id="ld-ai-review-btn">AI Review</button>
+            </div>
+          </div>
+          <div class="ld-table-scroll">
+            <table class="ld-pin-table" id="ld-pin-table">
+              <thead>
+                <tr>
+                  <th>Cav</th>
+                  <th>Signal</th>
+                  <th>Group</th>
+                  <th>Protocol</th>
+                  <th>Size</th>
+                  <th>V</th>
+                  <th>Status</th>
+                  <th>Notes</th>
+                  <th title="Validation">&#10003;</th>
+                </tr>
+              </thead>
+              <tbody id="ld-pin-tbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Validation panel -->
+        <section class="panel ld-validation-panel" id="ld-validation-panel" hidden>
+          <h2>Validation</h2>
+          <div id="ld-validation-body"></div>
+        </section>
+
+        <!-- AI Advice panel -->
+        <section class="panel ld-advice-panel" id="ld-advice-panel" hidden>
+          <h2>AI Review</h2>
+          <div id="ld-advice-body" class="ld-advice-body"></div>
+        </section>
+
+        <!-- Export panel -->
+        <section class="panel ld-export-panel" id="ld-export-panel" hidden>
+          <h2>Export</h2>
+          <p class="ld-export-warning">&#9888; Suggestion only — verify with professional engineering review before use.</p>
+          <div class="ld-export-btns">
+            <button type="button" class="ld-export-btn" id="ld-export-json">Export JSON</button>
+            <button type="button" class="ld-export-btn" id="ld-export-csv">Export CSV</button>
+            <button type="button" class="ld-export-btn" id="ld-export-svg">Export SVG</button>
+            <button type="button" class="ld-export-btn" id="ld-export-report">Print Report</button>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- RIGHT: Cavity detail editor -->
+      <aside class="ld-right panel" id="ld-right-panel">
+        <h2>Cavity Editor</h2>
+        <div id="ld-cavity-editor">
+          <p class="ld-placeholder">Click a cavity in the visual layout or pin table to edit it.</p>
+        </div>
+      </aside>
+
+    </div><!-- /.ld-workspace -->
+  </div><!-- /#layoutPanel -->
+
   <script src="app-data.js"></script>
   <script src="app.js"></script>
   <script src="converter.js"></script>
+  <script src="layout-designer.js"></script>
 </body>
 </html>

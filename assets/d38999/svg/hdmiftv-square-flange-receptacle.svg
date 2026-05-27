@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 120" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- Panel (dashed) -->
+  <rect x="168" y="4" width="6" height="112" fill="currentColor" opacity="0.08" stroke="none"/>
+  <line x1="171" y1="4" x2="171" y2="116" stroke-dasharray="5 4" opacity="0.5" stroke-width="1.5"/>
+  <!-- Shell body (shell 17) -->
+  <rect x="56" y="18" width="110" height="78" rx="6"/>
+  <!-- Square flange plate -->
+  <rect x="174" y="8" width="68" height="98" rx="3" stroke-width="2"/>
+  <!-- 4 mounting holes -->
+  <circle cx="188" cy="22" r="4.5" stroke-width="1.5"/>
+  <circle cx="228" cy="22" r="4.5" stroke-width="1.5"/>
+  <circle cx="188" cy="92" r="4.5" stroke-width="1.5"/>
+  <circle cx="228" cy="92" r="4.5" stroke-width="1.5"/>
+  <!-- HDMI port trapezoid -->
+  <path d="M86 42 L120 42 L117 64 L89 64 Z" stroke-width="2"/>
+  <!-- Pin indicators -->
+  <line x1="94" y1="46" x2="94" y2="52" stroke-width="0.9" opacity="0.5"/>
+  <line x1="98" y1="46" x2="98" y2="52" stroke-width="0.9" opacity="0.5"/>
+  <line x1="102" y1="46" x2="102" y2="52" stroke-width="0.9" opacity="0.5"/>
+  <line x1="106" y1="46" x2="106" y2="52" stroke-width="0.9" opacity="0.5"/>
+  <line x1="110" y1="46" x2="110" y2="52" stroke-width="0.9" opacity="0.5"/>
+  <!-- Keying notch -->
+  <rect x="108" y="10" width="8" height="6" rx="1.5" fill="currentColor" opacity="0.3"/>
+  <!-- Wire leads -->
+  <line x1="246" y1="46" x2="268" y2="46" stroke-width="1.5" opacity="0.6"/>
+  <line x1="246" y1="56" x2="268" y2="56" stroke-width="1.5" opacity="0.6"/>
+  <line x1="246" y1="66" x2="268" y2="66" stroke-width="1.5" opacity="0.6"/>
+  <text x="150" y="116" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">HDMIFTV Square Flange Receptacle</text>
+</svg>

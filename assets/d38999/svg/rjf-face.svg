@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 100" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- Shell size 18 outer ring (bayonet coupling - MIL-DTL-26482 style) -->
+  <circle cx="110" cy="48" r="40" stroke-width="2.5"/>
+  <circle cx="110" cy="48" r="36" stroke-width="1.5" opacity="0.5"/>
+  <!-- Bayonet lugs (3 at 120° spacing) -->
+  <rect x="108" y="9" width="4" height="6" rx="1" fill="currentColor" opacity="0.25" stroke="none"/>
+  <rect x="131" y="67" width="6" height="4" rx="1" fill="currentColor" opacity="0.25" stroke="none" transform="rotate(-30 134 69)"/>
+  <rect x="83" y="67" width="6" height="4" rx="1" fill="currentColor" opacity="0.25" stroke="none" transform="rotate(30 86 69)"/>
+  <!-- RJ45 port rectangle -->
+  <rect x="95" y="36" width="30" height="24" rx="2" stroke-width="2"/>
+  <!-- 8 pins -->
+  <line x1="99" y1="38" x2="99" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="102.5" y1="38" x2="102.5" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="106" y1="38" x2="106" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="109.5" y1="38" x2="109.5" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="113" y1="38" x2="113" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="116.5" y1="38" x2="116.5" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="120" y1="38" x2="120" y2="45" stroke-width="1" opacity="0.6"/>
+  <line x1="121" y1="38" x2="121" y2="45" stroke-width="1" opacity="0.6"/>
+  <!-- Latch tab -->
+  <rect x="103" y="52" width="14" height="4" rx="1" stroke-width="1" opacity="0.4"/>
+  <!-- Coding indicator -->
+  <circle cx="110" cy="86" r="2" fill="currentColor" opacity="0.2" stroke="none"/>
+  <text x="110" y="98" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">RJF Face (Shell 18, Bayonet)</text>
+</svg>

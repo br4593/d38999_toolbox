@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 96" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- D38999-style shell -->
+  <circle cx="110" cy="48" r="38" stroke-width="2.5"/>
+  <circle cx="110" cy="48" r="34" stroke-width="1.5" opacity="0.5"/>
+  <!-- RJ45 port in center -->
+  <rect x="95" y="36" width="30" height="24" rx="2" stroke-width="2"/>
+  <line x1="99" y1="38" x2="99" y2="44" stroke-width="1.2" opacity="0.6"/>
+  <line x1="103" y1="38" x2="103" y2="44" stroke-width="1.2" opacity="0.6"/>
+  <line x1="107" y1="38" x2="107" y2="44" stroke-width="1.2" opacity="0.6"/>
+  <line x1="111" y1="38" x2="111" y2="44" stroke-width="1.2" opacity="0.6"/>
+  <line x1="115" y1="38" x2="115" y2="44" stroke-width="1.2" opacity="0.6"/>
+  <line x1="119" y1="38" x2="119" y2="44" stroke-width="1.2" opacity="0.6"/>
+  <line x1="123" y1="38" x2="123" y2="44" stroke-width="1.2" opacity="0.6"/>
+  <line x1="127" y1="38" x2="127" y2="44" stroke-width="1.2" opacity="0.6" transform="translate(-6,0)"/>
+  <!-- Coupling ring detail -->
+  <path d="M72 48 Q72 20 110 20 Q148 20 148 48 Q148 76 110 76 Q72 76 72 48" stroke-width="0" fill="none"/>
+  <!-- Keying notch -->
+  <rect x="106" y="12" width="8" height="5" rx="1" fill="currentColor" opacity="0.3"/>
+  <text x="110" y="92" text-anchor="middle" font-size="11" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">Rugged RJ45 (RJFTV style)</text>
+</svg>

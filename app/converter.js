@@ -408,10 +408,104 @@
     return rows;
   }
 
+  // D38999-style rugged I/O connector families (not standard D38999 insert arrangements)
+  const RUGGED_IO_FAMILIES = [
+    { prefix: "RJFTV", family: "RJFTV", vendor: "Amphenol Socapex", interface: "RJ45 Ethernet", shellSize: "19", relation: "MIL-DTL-38999 Series III style rugged RJ45", svg: "rjftv-face.svg" },
+    { prefix: "C-RJFTV", family: "C-RJFTV", vendor: "Cinch", interface: "RJ45 Ethernet", shellSize: "19", relation: "D38999 Series III style rugged RJ45", svg: "rjftv-face.svg" },
+    { prefix: "CRJFTV", family: "C-RJFTV", vendor: "Cinch", interface: "RJ45 Ethernet", shellSize: "19", relation: "D38999 Series III style rugged RJ45", svg: "rjftv-face.svg" },
+    { prefix: "RJF", family: "RJF", vendor: "Amphenol Socapex", interface: "RJ45 Ethernet", shellSize: "18", relation: "MIL-DTL-26482 bayonet style rugged RJ45", svg: "rjf-face.svg" },
+    { prefix: "USB3CFTV", family: "USB3CFTV", vendor: "Amphenol Socapex", interface: "USB-C / USB 3.2", shellSize: "11", relation: "Size 11 D38999-style rugged USB-C", svg: "usb3cftv-face.svg" },
+    { prefix: "USB3FTV", family: "USB3FTV", vendor: "Amphenol Socapex", interface: "USB 3.x Type-A", shellSize: "15", relation: "MIL-DTL-38999 Series III style rugged USB 3", svg: "usb3ftv-face.svg" },
+    { prefix: "USBFTV", family: "USBFTV", vendor: "Amphenol Socapex", interface: "USB 2.0 Type-A", shellSize: "15", relation: "MIL-DTL-38999 Series III style rugged USB", svg: "usbftv-face.svg" },
+    { prefix: "USBBFTV", family: "USBBFTV", vendor: "Amphenol Socapex", interface: "USB-B", shellSize: "15", relation: "MIL-DTL-38999 Series III style rugged USB-B", svg: "usbbftv-face.svg" },
+    { prefix: "USBF", family: "USBFTV", vendor: "Amphenol Socapex", interface: "USB 2.0", shellSize: "15", relation: "MIL-DTL-38999 Series III style rugged USB", svg: "usbftv-face.svg" },
+    { prefix: "HDMIFTV", family: "HDMIFTV", vendor: "Amphenol Socapex", interface: "HDMI 2.0", shellSize: "17", relation: "D38999-style rugged HDMI", svg: "hdmiftv-face.svg" },
+    { prefix: "MDPFTV", family: "MDPFTV", vendor: "Amphenol Socapex", interface: "Mini DisplayPort", shellSize: "13", relation: "D38999-style rugged Mini DisplayPort", svg: "mdpftv-face.svg" },
+  ];
+
+  // Map shell type digit to mounting style name and SVG suffix
+  const SHELL_TYPE_MAP = {
+    "6": { mount: "Plug", suffix: "plug" },
+    "7": { mount: "Jam Nut Receptacle", suffix: "jam-nut-receptacle" },
+    "2": { mount: "Square Flange Receptacle", suffix: "square-flange-receptacle" },
+  };
+
+  // Map family prefix to available mounting SVGs
+  const FAMILY_SVG_MAP = {
+    "RJFTV":    { plug: "rjftv-plug.svg", "jam-nut-receptacle": "rjftv-jam-nut-receptacle.svg", "square-flange-receptacle": "rjftv-square-flange-receptacle.svg", "reduced-flange-receptacle": "rjftv-reduced-flange-receptacle.svg", "through-bulkhead": "rjftv-through-bulkhead.svg", "standoff-receptacle": "rjftv-standoff-receptacle.svg", face: "rjftv-face.svg" },
+    "C-RJFTV":  { plug: "rjftv-plug.svg", "jam-nut-receptacle": "rjftv-jam-nut-receptacle.svg", "square-flange-receptacle": "rjftv-square-flange-receptacle.svg", face: "rjftv-face.svg" },
+    "RJF":      { plug: "rjf-plug.svg", "jam-nut-receptacle": "rjf-jam-nut-receptacle.svg", face: "rjf-face.svg" },
+    "USB3CFTV": { plug: "usb3cftv-plug.svg", "jam-nut-receptacle": "usb3cftv-jam-nut-receptacle.svg", "square-flange-receptacle": "usb3cftv-square-flange-receptacle.svg", "standoff-receptacle": "usb3cftv-standoff-receptacle.svg", face: "usb3cftv-face.svg" },
+    "USB3FTV":  { plug: "usb3ftv-plug.svg", "jam-nut-receptacle": "usb3ftv-jam-nut-receptacle.svg", "square-flange-receptacle": "usb3ftv-square-flange-receptacle.svg", "reduced-flange-receptacle": "usb3ftv-reduced-flange-receptacle.svg", "standoff-receptacle": "usb3ftv-standoff-receptacle.svg", face: "usb3ftv-face.svg" },
+    "USBFTV":   { plug: "usbftv-plug.svg", "jam-nut-receptacle": "usbftv-jam-nut-receptacle.svg", "square-flange-receptacle": "usbftv-square-flange-receptacle.svg", "through-bulkhead": "usbftv-through-bulkhead.svg", face: "usbftv-face.svg" },
+    "USBBFTV":  { face: "usbbftv-face.svg" },
+    "HDMIFTV":  { plug: "hdmiftv-plug.svg", "jam-nut-receptacle": "hdmiftv-jam-nut-receptacle.svg", "square-flange-receptacle": "hdmiftv-square-flange-receptacle.svg", "reduced-flange-receptacle": "hdmiftv-reduced-flange-receptacle.svg", "standoff-receptacle": "hdmiftv-standoff-receptacle.svg", face: "hdmiftv-face.svg" },
+    "MDPFTV":   { plug: "mdpftv-plug.svg", "jam-nut-receptacle": "mdpftv-jam-nut-receptacle.svg", "square-flange-receptacle": "mdpftv-square-flange-receptacle.svg", face: "mdpftv-face.svg" },
+  };
+
+  function recognizeRuggedIo(value) {
+    // Strip leading "D38999/" if user typed it in the decoder field
+    const cleaned = String(value || "").replace(/^D38999\//i, "");
+    const upper = cleaned.toUpperCase().replace(/[\s-]+/g, "");
+    // Sort by prefix length descending so longer prefixes match first (e.g. USB3CFTV before USB3FTV before USBFTV)
+    for (const entry of RUGGED_IO_FAMILIES) {
+      const prefix = entry.prefix.toUpperCase().replace(/[\s-]+/g, "");
+      if (upper.startsWith(prefix)) {
+        const suffix = cleaned.slice(entry.prefix.length).replace(/^[\s-]+/, "");
+        // Detect shell type from first character of suffix (6=plug, 7=jam nut, 2=square flange)
+        const shellTypeChar = suffix.charAt(0);
+        const shellTypeInfo = SHELL_TYPE_MAP[shellTypeChar] || null;
+        const familySvgs = FAMILY_SVG_MAP[entry.family] || {};
+        // Select appropriate SVG: mounting-specific if available, otherwise face view
+        let selectedSvg = entry.svg;
+        let mountingType = "";
+        if (shellTypeInfo && familySvgs[shellTypeInfo.suffix]) {
+          selectedSvg = familySvgs[shellTypeInfo.suffix];
+          mountingType = shellTypeInfo.mount;
+        }
+        // Check for stand-off deviation codes
+        if (suffix.includes("F459")) {
+          if (familySvgs["standoff-receptacle"]) selectedSvg = familySvgs["standoff-receptacle"];
+          mountingType = "Stand-off (PCB)";
+        } else if (suffix.includes("F312") || suffix.includes("F311") || suffix.includes("F059") || suffix.includes("F058")) {
+          if (familySvgs["reduced-flange-receptacle"]) selectedSvg = familySvgs["reduced-flange-receptacle"];
+          mountingType = "Reduced Flange";
+        }
+        return {
+          recognized: true,
+          input: value,
+          family: entry.family,
+          vendor: entry.vendor,
+          interface: entry.interface,
+          shell_size: entry.shellSize,
+          d38999_relation: entry.relation,
+          svg: selectedSvg,
+          face_svg: familySvgs.face || entry.svg,
+          mounting_type: mountingType,
+          suffix: suffix,
+          connector_type: mountingType ? `D38999-style ${mountingType}` : "D38999-style rugged I/O",
+          note: "This is a D38999-style derivative connector, not a standard MIL-DTL-38999 insert arrangement. Verify exact PN with manufacturer catalog.",
+        };
+      }
+    }
+    return { recognized: false };
+  }
+
   function convertInput(value) {
     const trimmed = String(value || "").trim();
     if (!trimmed) {
       throw new Error("Enter a part number.");
+    }
+
+    // Check for rugged I/O family first
+    const ruggedResult = recognizeRuggedIo(trimmed);
+    if (ruggedResult.recognized) {
+      return {
+        mode: "rugged_io",
+        query: trimmed,
+        ruggedInfo: ruggedResult,
+        results: [],
+      };
     }
 
     try {
@@ -494,6 +588,39 @@
 
   function renderResults(panel, payload) {
     panel.innerHTML = "";
+
+    // Handle rugged I/O connector recognition
+    if (payload.mode === "rugged_io" && payload.ruggedInfo) {
+      const info = payload.ruggedInfo;
+      const faceSvg = info.face_svg || info.svg;
+      const mountSvg = info.svg !== faceSvg ? info.svg : "";
+      const block = document.createElement("div");
+      block.className = "result-block rugged-io-result";
+      block.innerHTML = `
+        <div class="rugged-io-header">
+          <h3 class="rugged-io-family">${info.family}</h3>
+          <span class="rugged-io-type">${info.connector_type}</span>
+        </div>
+        <dl class="decode-grid">
+          <div><dt>Input</dt><dd>${info.input}</dd></div>
+          <div><dt>Vendor</dt><dd>${info.vendor}</dd></div>
+          <div><dt>Family</dt><dd>${info.family}</dd></div>
+          <div><dt>Interface</dt><dd>${info.interface}</dd></div>
+          <div><dt>Shell Size</dt><dd>${info.shell_size}</dd></div>
+          <div><dt>D38999 Relation</dt><dd>${info.d38999_relation}</dd></div>
+          ${info.mounting_type ? `<div><dt>Mounting</dt><dd>${info.mounting_type}</dd></div>` : ""}
+          ${info.suffix ? `<div><dt>Suffix/Config</dt><dd>${info.suffix}</dd></div>` : ""}
+        </dl>
+        <div class="rugged-io-note">${info.note}</div>
+        <div class="rugged-io-svg">
+          ${faceSvg ? `<img src="assets/d38999/svg/${faceSvg}" alt="${info.family} face" style="max-width:100px;max-height:100px;opacity:0.8"/>` : ""}
+          ${mountSvg ? `<img src="assets/d38999/svg/${mountSvg}" alt="${info.family} profile" style="max-width:160px;max-height:80px;opacity:0.7;margin-left:12px"/>` : ""}
+        </div>
+      `;
+      panel.appendChild(block);
+      return;
+    }
+
     const template = document.getElementById("conversionTemplate");
 
     payload.results.forEach((result) => {
@@ -587,6 +714,8 @@
     reverseParseManufacturerPin,
     convertInput,
     convertParsed,
+    recognizeRuggedIo,
+    RUGGED_IO_FAMILIES,
   };
 
   globalThis.D38999Converter = api;

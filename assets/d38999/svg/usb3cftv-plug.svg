@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 110" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- Cable entry -->
+  <rect x="8" y="44" width="24" height="16" rx="3"/>
+  <!-- Coupling ring body -->
+  <rect x="32" y="30" width="68" height="44" rx="4"/>
+  <line x1="50" y1="32" x2="50" y2="72" opacity="0.4"/>
+  <line x1="64" y1="32" x2="64" y2="72" opacity="0.4"/>
+  <line x1="78" y1="32" x2="78" y2="72" opacity="0.4"/>
+  <!-- Shell size 11 body -->
+  <rect x="100" y="22" width="80" height="60" rx="6"/>
+  <!-- USB-C port (pill shape) -->
+  <rect x="128" y="43" width="24" height="14" rx="7" stroke-width="2"/>
+  <!-- Keying notch -->
+  <rect x="136" y="14" width="8" height="6" rx="1.5" fill="currentColor" opacity="0.3"/>
+  <!-- Shell size label -->
+  <text x="140" y="100" text-anchor="middle" font-size="9" stroke="none" fill="currentColor" opacity="0.6" font-family="system-ui,sans-serif">Shell 11</text>
+  <text x="140" y="108" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">USB3CFTV Plug</text>
+</svg>
