@@ -979,7 +979,6 @@
     renderDecoded(null);
     renderComparison();
     selectTab("home");
-    initChat();
   }
 
   function populateFilters() {

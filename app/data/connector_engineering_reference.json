@@ -2,8 +2,9 @@
   "_description": "D38999 connector engineering reference data for AI agent. Contains current ratings, derating, protocol wiring requirements, and pin allocation guidelines.",
   "_sources": [
     "MIL-DTL-38999 Tables IV and V",
-    "IEEE 802.3ab (1000BASE-T), IEEE 802.3u (100BASE-TX)",
+    "IEEE 802.3ab (1000BASE-T), IEEE 802.3u (100BASE-TX), IEEE 802.3bz (2.5GBASE-T / 5GBASE-T), IEEE 802.3bw / 802.3bp (100BASE-T1 / 1000BASE-T1)",
     "TIA/EIA-568 wiring standards",
+    "TIA-968 / registered jack pinouts for RJ11, RJ14, RJ25, and RJ48C",
     "SAE J1939 (CAN bus in vehicles)",
     "TIA-485-A (RS-485), TIA-422-B (RS-422), TIA-232-F (RS-232)"
   ],
@@ -183,6 +184,206 @@
       "contact_type_preferred": "twinax",
       "shield_required": true,
       "spare_recommendation": "1 shield/drain contact"
+    },
+
+    "ethernet_100base_t1": {
+      "name": "100BASE-T1 (Automotive Single-Pair Ethernet)",
+      "standard": "IEEE 802.3bw",
+      "pairs_required": 1,
+      "conductors_total": 2,
+      "direction": "Bidirectional on single pair",
+      "impedance": "100Ω differential",
+      "bandwidth": "66 MHz",
+      "max_distance": "15m",
+      "encoding": "PAM-3",
+      "signals": [
+        {"name": "BI_DA+", "pair": "A", "polarity": "+"},
+        {"name": "BI_DA-", "pair": "A", "polarity": "-"}
+      ],
+      "d38999_notes": [
+        "Single balanced pair with automotive-style PHYs; maintain pair adjacency all the way through the connector.",
+        "Short-distance standard intended for embedded vehicle and platform networks rather than structured cabling.",
+        "Validated twinax or controlled-impedance pair routing is recommended if the connector is part of the channel.",
+        "Keep the single pair isolated from high-current power contacts and switching discretes."
+      ],
+      "contact_size": "22D",
+      "contact_type_preferred": "twinax",
+      "shield_required": true,
+      "spare_recommendation": "1 shield/drain contact"
+    },
+
+    "ethernet_2500base_t": {
+      "name": "2.5GBASE-T (2.5 Gigabit Ethernet)",
+      "standard": "IEEE 802.3bz",
+      "pairs_required": 4,
+      "conductors_total": 8,
+      "direction": "All 4 pairs bidirectional simultaneously",
+      "impedance": "100Ω differential per pair",
+      "bandwidth": "100 MHz per pair",
+      "max_distance": "100m (Cat 5e or Cat 6)",
+      "encoding": "64b/66b PAM-16",
+      "signals": [
+        {"name": "BI_DA+", "pair": "A", "polarity": "+", "pin_rj45_568b": 1},
+        {"name": "BI_DA-", "pair": "A", "polarity": "-", "pin_rj45_568b": 2},
+        {"name": "BI_DB+", "pair": "B", "polarity": "+", "pin_rj45_568b": 3},
+        {"name": "BI_DB-", "pair": "B", "polarity": "-", "pin_rj45_568b": 6},
+        {"name": "BI_DC+", "pair": "C", "polarity": "+", "pin_rj45_568b": 4},
+        {"name": "BI_DC-", "pair": "C", "polarity": "-", "pin_rj45_568b": 5},
+        {"name": "BI_DD+", "pair": "D", "polarity": "+", "pin_rj45_568b": 7},
+        {"name": "BI_DD-", "pair": "D", "polarity": "-", "pin_rj45_568b": 8}
+      ],
+      "d38999_notes": [
+        "Uses the same 4-pair RJ45 pinout as 1000BASE-T, but with tighter SI margin and higher spectral loading.",
+        "Cat 5e is acceptable in structured cabling, but rugged harness performance still depends on the full cable-to-contact transition.",
+        "Keep all 4 pairs grouped in adjacent cavities and preserve twist to the contact as closely as practical.",
+        "Twinax or quadrax contacts are preferred when the connector is part of a qualified multigig channel.",
+        "Compatible with PoE, so thermal performance must be checked if power is also present on the link."
+      ],
+      "contact_size": "22D",
+      "contact_type_preferred": "quadrax_or_twinax",
+      "shield_required": true,
+      "spare_recommendation": "1 additional ground/drain wire contact"
+    },
+
+    "ethernet_5gbase_t": {
+      "name": "5GBASE-T (5 Gigabit Ethernet)",
+      "standard": "IEEE 802.3bz",
+      "pairs_required": 4,
+      "conductors_total": 8,
+      "direction": "All 4 pairs bidirectional simultaneously",
+      "impedance": "100Ω differential per pair",
+      "bandwidth": "200 MHz per pair",
+      "max_distance": "100m (Cat 6; Cat 5e only with qualified channel performance)",
+      "encoding": "64b/66b PAM-16 128-DSQ",
+      "signals": [
+        {"name": "BI_DA+", "pair": "A", "polarity": "+", "pin_rj45_568b": 1},
+        {"name": "BI_DA-", "pair": "A", "polarity": "-", "pin_rj45_568b": 2},
+        {"name": "BI_DB+", "pair": "B", "polarity": "+", "pin_rj45_568b": 3},
+        {"name": "BI_DB-", "pair": "B", "polarity": "-", "pin_rj45_568b": 6},
+        {"name": "BI_DC+", "pair": "C", "polarity": "+", "pin_rj45_568b": 4},
+        {"name": "BI_DC-", "pair": "C", "polarity": "-", "pin_rj45_568b": 5},
+        {"name": "BI_DD+", "pair": "D", "polarity": "+", "pin_rj45_568b": 7},
+        {"name": "BI_DD-", "pair": "D", "polarity": "-", "pin_rj45_568b": 8}
+      ],
+      "d38999_notes": [
+        "Uses the same 4-pair RJ45 pinout as 1000BASE-T and 2.5GBASE-T, but with substantially higher insertion-loss and crosstalk sensitivity.",
+        "Cat 6 structured cabling is the normal baseline for full-distance 5GBASE-T operation.",
+        "Preserve pair adjacency and pair-to-pair spacing through the insert; avoid splitting Ethernet pairs across the connector face.",
+        "Twinax or quadrax contacts are strongly preferred if the connector must be part of the certified 5G channel.",
+        "Validate the complete assembly for alien crosstalk, return loss, and thermal rise if PoE is also expected."
+      ],
+      "contact_size": "22D",
+      "contact_type_preferred": "quadrax_or_twinax",
+      "shield_required": true,
+      "spare_recommendation": "1 additional ground/drain wire contact"
+    },
+
+    "rj11_pots": {
+      "name": "RJ11 POTS (single-line analog telephone)",
+      "standard": "TIA-968 / RJ11C using 6P2C or 6P4C hardware",
+      "pairs_required": 1,
+      "conductors_total": 2,
+      "direction": "Bidirectional analog voice line",
+      "nominal_line_impedance": "600Ω voice circuit",
+      "line_power": "Nominal -48V DC loop battery with ringing voltage superimposed",
+      "signals": [
+        {"name": "RING1", "pair": "L1", "polarity": "-", "pin_rj11_6p6c": 3},
+        {"name": "TIP1", "pair": "L1", "polarity": "+", "pin_rj11_6p6c": 4}
+      ],
+      "d38999_notes": [
+        "Standard #22D contacts are adequate for POTS signaling and loop current.",
+        "Keep tip and ring adjacent as a twisted pair to reduce hum pickup and crosstalk.",
+        "Protect the line from high-energy surges and ringing transients in the attached equipment, not in the connector body.",
+        "Keep analog telephone pairs separated from high-speed digital interfaces inside mixed-signal inserts."
+      ],
+      "contact_size": "22D",
+      "contact_type_preferred": "standard_signal",
+      "shield_required": false,
+      "spare_recommendation": "1 shield or chassis contact in EMI-heavy environments"
+    },
+
+    "rj14_pots": {
+      "name": "RJ14 POTS (two-line analog telephone)",
+      "standard": "TIA-968 / RJ14C using 6P4C hardware",
+      "pairs_required": 2,
+      "conductors_total": 4,
+      "direction": "Bidirectional analog voice lines",
+      "nominal_line_impedance": "600Ω voice circuit per line",
+      "line_power": "Nominal -48V DC loop battery with ringing voltage superimposed",
+      "signals": [
+        {"name": "TIP2", "pair": "L2", "polarity": "+", "pin_rj11_6p6c": 2},
+        {"name": "RING1", "pair": "L1", "polarity": "-", "pin_rj11_6p6c": 3},
+        {"name": "TIP1", "pair": "L1", "polarity": "+", "pin_rj11_6p6c": 4},
+        {"name": "RING2", "pair": "L2", "polarity": "-", "pin_rj11_6p6c": 5}
+      ],
+      "d38999_notes": [
+        "Treat each line as its own twisted pair and keep each pair adjacent through the connector.",
+        "Use separate pair routing for Line 1 and Line 2 to minimize near-end crosstalk.",
+        "Standard #22D contacts are adequate; surge and ring-voltage protection remain an equipment-level design task."
+      ],
+      "contact_size": "22D",
+      "contact_type_preferred": "standard_signal",
+      "shield_required": false,
+      "spare_recommendation": "1 shield or chassis contact in EMI-heavy environments"
+    },
+
+    "rj25_pots": {
+      "name": "RJ25 POTS (three-line analog telephone)",
+      "standard": "TIA-968 / RJ25C using 6P6C hardware",
+      "pairs_required": 3,
+      "conductors_total": 6,
+      "direction": "Bidirectional analog voice lines",
+      "nominal_line_impedance": "600Ω voice circuit per line",
+      "line_power": "Nominal -48V DC loop battery with ringing voltage superimposed",
+      "signals": [
+        {"name": "TIP3", "pair": "L3", "polarity": "+", "pin_rj11_6p6c": 1},
+        {"name": "TIP2", "pair": "L2", "polarity": "+", "pin_rj11_6p6c": 2},
+        {"name": "RING1", "pair": "L1", "polarity": "-", "pin_rj11_6p6c": 3},
+        {"name": "TIP1", "pair": "L1", "polarity": "+", "pin_rj11_6p6c": 4},
+        {"name": "RING2", "pair": "L2", "polarity": "-", "pin_rj11_6p6c": 5},
+        {"name": "RING3", "pair": "L3", "polarity": "-", "pin_rj11_6p6c": 6}
+      ],
+      "d38999_notes": [
+        "Maintain pair adjacency for all three analog lines and avoid routing them through noisy digital regions.",
+        "Standard #22D contacts are adequate for voice and ringing currents.",
+        "Use twisted pairs and keep line identification consistent across both mating halves to avoid pair reversal during field wiring."
+      ],
+      "contact_size": "22D",
+      "contact_type_preferred": "standard_signal",
+      "shield_required": false,
+      "spare_recommendation": "1 shield or chassis contact in EMI-heavy environments"
+    },
+
+    "rj48c_t1_e1": {
+      "name": "RJ48C (T1 / E1 / DS1 balanced telecom pair set)",
+      "standard": "TIA-968 RJ48C wiring for 8P8C balanced telecom services",
+      "pairs_required": 2,
+      "conductors_total": 4,
+      "direction": "1 receive pair + 1 transmit pair",
+      "impedance": "100Ω differential per pair",
+      "supported_services": [
+        "T1 / DS1 1.544 Mbps",
+        "E1 2.048 Mbps (equipment dependent pin usage)",
+        "Other balanced 4-wire telecom services using RJ48C conventions"
+      ],
+      "signals": [
+        {"name": "RX_RING", "pair": "RX", "polarity": "-", "pin_rj48c": 1},
+        {"name": "RX_TIP", "pair": "RX", "polarity": "+", "pin_rj48c": 2},
+        {"name": "TX_RING", "pair": "TX", "polarity": "-", "pin_rj48c": 4},
+        {"name": "TX_TIP", "pair": "TX", "polarity": "+", "pin_rj48c": 5},
+        {"name": "SHIELD", "type": "shield", "pin_rj48c": [7, 8]}
+      ],
+      "d38999_notes": [
+        "Keep the RX pair adjacent and the TX pair adjacent through the connector.",
+        "Shielded twisted pair is the normal cable construction for RJ48 telecom circuits.",
+        "Pins 3 and 6 are reserved in the common RJ48C pinout; pins 7 and 8 are typically shield continuity.",
+        "RJ48X adds loopback shorting bars for maintenance; that function is not part of a generic D38999 contact assignment.",
+        "Standard signal contacts are generally adequate at T1/E1 data rates, but shield continuity and pair layout still matter for noise immunity."
+      ],
+      "contact_size": "22D",
+      "contact_type_preferred": "standard_or_twinax",
+      "shield_required": true,
+      "spare_recommendation": "1 dedicated shield or chassis contact if the backshell does not provide continuous shield termination"
     },
 
     "uart": {

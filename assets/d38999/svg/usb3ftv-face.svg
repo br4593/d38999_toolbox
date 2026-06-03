@@ -1,23 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 100" fill="none" stroke="currentColor" stroke-width="2.5">
-  <!-- Shell size 15 outer ring -->
   <circle cx="110" cy="48" r="36" stroke-width="2.5"/>
   <circle cx="110" cy="48" r="32" stroke-width="1.5" opacity="0.5"/>
-  <!-- USB-A port rectangle -->
-  <rect x="96" y="38" width="28" height="20" rx="2" stroke-width="2"/>
-  <!-- Inner contact plate -->
-  <rect x="100" y="42" width="20" height="12" rx="1" stroke-width="1.2" opacity="0.5"/>
-  <!-- 4 signal + 5 power differential pairs indicated -->
-  <line x1="103" y1="44" x2="103" y2="48" stroke-width="1" opacity="0.5"/>
-  <line x1="107" y1="44" x2="107" y2="48" stroke-width="1" opacity="0.5"/>
-  <line x1="111" y1="44" x2="111" y2="48" stroke-width="1" opacity="0.5"/>
-  <line x1="115" y1="44" x2="115" y2="48" stroke-width="1" opacity="0.5"/>
-  <line x1="103" y1="50" x2="103" y2="52" stroke-width="0.8" opacity="0.4"/>
-  <line x1="107" y1="50" x2="107" y2="52" stroke-width="0.8" opacity="0.4"/>
-  <line x1="111" y1="50" x2="111" y2="52" stroke-width="0.8" opacity="0.4"/>
-  <line x1="115" y1="50" x2="115" y2="52" stroke-width="0.8" opacity="0.4"/>
-  <!-- Keying notch -->
-  <rect x="106" y="14" width="8" height="5" rx="1.5" fill="currentColor" opacity="0.3"/>
-  <!-- Coding indicator -->
+  <!-- USB 3.x Type-A receptacle -->
+  <path d="M95 34 H125 V54 L121 60 H99 L95 54 Z" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="98" y="42" width="2.5" height="4.5" rx="0.8" stroke-width="1" opacity="0.35"/>
+  <rect x="119.5" y="42" width="2.5" height="4.5" rx="0.8" stroke-width="1" opacity="0.35"/>
+  <!-- SuperSpeed tongue -->
+  <path d="M101 56 V46.5 H119 V56 Z" fill="currentColor" opacity="0.14" stroke="none"/>
+  <line x1="101" y1="46.5" x2="119" y2="46.5" stroke-width="1.1" opacity="0.45"/>
+  <!-- Rear SuperSpeed contact row -->
+  <rect x="102.0" y="40.4" width="1.7" height="3.1" rx="0.6" fill="currentColor" opacity="0.44" stroke="none"/>
+  <rect x="105.6" y="40.4" width="1.7" height="3.1" rx="0.6" fill="currentColor" opacity="0.44" stroke="none"/>
+  <rect x="109.2" y="40.4" width="1.7" height="3.1" rx="0.6" fill="currentColor" opacity="0.44" stroke="none"/>
+  <rect x="112.8" y="40.4" width="1.7" height="3.1" rx="0.6" fill="currentColor" opacity="0.44" stroke="none"/>
+  <rect x="116.4" y="40.4" width="1.7" height="3.1" rx="0.6" fill="currentColor" opacity="0.44" stroke="none"/>
+  <!-- Front USB 2.0 contact row -->
+  <rect x="103.2" y="47.3" width="2.1" height="4.1" rx="0.7" fill="currentColor" opacity="0.58" stroke="none"/>
+  <rect x="107.4" y="47.3" width="2.1" height="4.1" rx="0.7" fill="currentColor" opacity="0.58" stroke="none"/>
+  <rect x="111.6" y="47.3" width="2.1" height="4.1" rx="0.7" fill="currentColor" opacity="0.58" stroke="none"/>
+  <rect x="115.8" y="47.3" width="2.1" height="4.1" rx="0.7" fill="currentColor" opacity="0.58" stroke="none"/>
+  <rect x="106" y="14" width="8" height="5" rx="1.5" fill="currentColor" opacity="0.3" stroke="none"/>
   <circle cx="110" cy="82" r="2" fill="currentColor" opacity="0.2" stroke="none"/>
   <text x="110" y="96" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">USB3FTV Face (Shell 15)</text>
 </svg>

@@ -1,15 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 100" fill="none" stroke="currentColor" stroke-width="2.5">
-  <!-- Shell size 15 outer ring -->
   <circle cx="110" cy="48" r="36" stroke-width="2.5"/>
   <circle cx="110" cy="48" r="32" stroke-width="1.5" opacity="0.5"/>
-  <!-- USB-B port (tall square with notched top) -->
-  <path d="M100 36 L100 60 L120 60 L120 36 L116 32 L104 32 Z" stroke-width="2"/>
-  <!-- 4 pins -->
-  <line x1="106" y1="42" x2="106" y2="50" stroke-width="1.2" opacity="0.6"/>
-  <line x1="110" y1="42" x2="110" y2="50" stroke-width="1.2" opacity="0.6"/>
-  <line x1="114" y1="42" x2="114" y2="50" stroke-width="1.2" opacity="0.6"/>
-  <!-- Keying notch -->
-  <rect x="106" y="14" width="8" height="5" rx="1.5" fill="currentColor" opacity="0.3"/>
+  <!-- USB-B receptacle with chamfered top corners -->
+  <path d="M101 37 L106 32 H114 L119 37 V60 H101 Z" stroke-width="2" stroke-linejoin="round"/>
+  <!-- Internal tongue -->
+  <path d="M104 57 V45 H116 V57 Z" fill="currentColor" opacity="0.14" stroke="none"/>
+  <line x1="104" y1="45" x2="116" y2="45" stroke-width="1.1" opacity="0.45"/>
+  <!-- 4 USB 2.0 contacts -->
+  <rect x="105.0" y="45.8" width="1.9" height="4.2" rx="0.6" fill="currentColor" opacity="0.58" stroke="none"/>
+  <rect x="108.7" y="45.8" width="1.9" height="4.2" rx="0.6" fill="currentColor" opacity="0.58" stroke="none"/>
+  <rect x="112.4" y="45.8" width="1.9" height="4.2" rx="0.6" fill="currentColor" opacity="0.58" stroke="none"/>
+  <rect x="116.1" y="45.8" width="1.9" height="4.2" rx="0.6" fill="currentColor" opacity="0.58" stroke="none"/>
+  <rect x="106" y="14" width="8" height="5" rx="1.5" fill="currentColor" opacity="0.3" stroke="none"/>
   <circle cx="110" cy="82" r="2" fill="currentColor" opacity="0.2" stroke="none"/>
   <text x="110" y="96" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">USBBFTV Face (Shell 15)</text>
 </svg>

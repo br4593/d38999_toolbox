@@ -393,15 +393,67 @@
         {"group": "TMDS_DATA0", "signals": ["HDMI_D0_P", "HDMI_D0_N"], "shield": "HDMI_D0_SHIELD", "impedance_ohm": 100},
         {"group": "TMDS_CLOCK", "signals": ["HDMI_CLK_P", "HDMI_CLK_N"], "shield": "HDMI_CLK_SHIELD", "impedance_ohm": 100}
       ],
+      "auxiliary_channels": {
+        "cec": {
+          "pins": [13, 17],
+          "signals": ["HDMI_CEC", "HDMI_GND"],
+          "description": "Single-wire Consumer Electronics Control bus referenced to HDMI ground.",
+          "notes": [
+            "Low-speed control channel; normal signal contacts are acceptable.",
+            "Keep CEC away from TMDS/FRL pairs and noisy power conductors."
+          ]
+        },
+        "ddc": {
+          "pins": [15, 16, 17, 18],
+          "signals": ["HDMI_DDC_SCL", "HDMI_DDC_SDA", "HDMI_GND", "HDMI_5V"],
+          "description": "EDID / HDCP management channel implemented as I2C plus a low-current +5V supply.",
+          "notes": [
+            "Group SCL, SDA, and ground together; +5V remains low current but is required for hot-plug and EDID behavior.",
+            "Normal signal contacts are acceptable for DDC and +5V when the TMDS/FRL pairs use qualified high-speed contacts."
+          ]
+        },
+        "arc_hec_earc_bundle": {
+          "pins": [14, 17, 19],
+          "signals": ["HDMI_UTILITY", "HDMI_GND", "HDMI_HPD"],
+          "description": "Shared auxiliary conductor set used for ARC, HEC, and eARC features depending on HDMI version and equipment implementation.",
+          "feature_map": {
+            "arc": {
+              "introduced_in": "HDMI 1.4",
+              "purpose": "Audio Return Channel from sink back to source",
+              "notes": [
+                "Uses the utility / HPD conductor group centered on pins 14 and 19 with pin 17 as the associated ground/reference.",
+                "Do not repurpose HDMI_UTILITY if audio return may be required later."
+              ]
+            },
+            "hec": {
+              "introduced_in": "HDMI 1.4",
+              "purpose": "HDMI Ethernet Channel over the shared HEAC conductors",
+              "notes": [
+                "Also uses the same pin 14 / pin 19 conductor group with pin 17 reference.",
+                "Rare in deployed products; validate endpoint support before allocating contacts for HEC."
+              ]
+            },
+            "earc": {
+              "introduced_in": "HDMI 2.1",
+              "purpose": "Enhanced Audio Return Channel with higher-performance discovery and audio transport requirements",
+              "notes": [
+                "Reuses the same utility / HPD conductor group with tighter implementation requirements than legacy ARC.",
+                "Preserve pin 14, pin 19, and nearby ground continuity through the ruggedized transition if eARC compatibility matters."
+              ]
+            }
+          }
+        }
+      },
       "d38999_contact_recommendation": "controlled_impedance_required",
       "d38999_guidance": {
         "contact_type": "Twinax or Quadrax contacts required for all 4 TMDS/FRL pairs",
-        "low_speed_contacts": "Normal signal contacts acceptable for DDC_SDA, DDC_SCL, CEC, HPD, +5V",
+        "low_speed_contacts": "Normal signal contacts acceptable for DDC_SDA, DDC_SCL, CEC, HDMI_UTILITY, HPD, and +5V",
         "layout_rules": [
           "Each TMDS/FRL pair in its own Twinax or Quadrax contact cavity",
           "Keep per-pair shields/returns",
           "DDC (I2C) SDA/SCL grouped together with ground nearby",
           "CEC separate from high-speed pairs",
+          "If ARC, HEC, or eARC is required, reserve the HDMI_UTILITY / HDMI_HPD conductor group and keep HDMI_GND nearby as its reference/return",
           "HPD and +5V separate from TMDS",
           "+5V current is low (50mA max) — #22D contact sufficient",
           "Shell/shield continuity for EMC"
@@ -424,6 +476,7 @@
         "HDMI is high-speed and impedance-sensitive — DO NOT route through random contacts",
         "DDC is I2C-like but full HDMI is NOT 'just I2C + video'",
         "HPD and +5V are essential for source/sink detection — cannot be omitted",
+        "Pins 14 and 19 are part of the optional ARC / HEC / eARC conductor set — do not treat HDMI_UTILITY as a generic spare signal if those features may be needed",
         "HDMI 2.1 FRL is much more demanding than TMDS — may not be achievable through D38999",
         "Signal integrity validation (eye diagram) required for any production implementation",
         "If user only needs rugged video, consider DisplayPort, HD-SDI, or Ethernet video instead",
@@ -804,7 +857,7 @@
     "usb2": ["USB2_VBUS", "USB2_D_P", "USB2_D_N", "USB2_GND", "USB2_SHIELD"],
     "usb3": ["USB2_D_P", "USB2_D_N", "USB3_TX_P", "USB3_TX_N", "USB3_RX_P", "USB3_RX_N", "USB3_VBUS", "USB3_GND", "USB3_SHIELD"],
     "usb_c_minimal": ["USBC_VBUS", "USBC_GND", "USBC_CC1", "USBC_CC2", "USBC_D_P", "USBC_D_N", "USBC_SBU1", "USBC_SBU2"],
-    "hdmi": ["HDMI_D2_P", "HDMI_D2_N", "HDMI_D1_P", "HDMI_D1_N", "HDMI_D0_P", "HDMI_D0_N", "HDMI_CLK_P", "HDMI_CLK_N", "HDMI_DDC_SDA", "HDMI_DDC_SCL", "HDMI_CEC", "HDMI_HPD", "HDMI_5V", "HDMI_GND"],
+    "hdmi": ["HDMI_D2_P", "HDMI_D2_N", "HDMI_D1_P", "HDMI_D1_N", "HDMI_D0_P", "HDMI_D0_N", "HDMI_CLK_P", "HDMI_CLK_N", "HDMI_DDC_SDA", "HDMI_DDC_SCL", "HDMI_CEC", "HDMI_UTILITY", "HDMI_HPD", "HDMI_5V", "HDMI_GND"],
     "displayport": ["DP_LANE0_P", "DP_LANE0_N", "DP_LANE1_P", "DP_LANE1_N", "DP_LANE2_P", "DP_LANE2_N", "DP_LANE3_P", "DP_LANE3_N", "DP_AUX_P", "DP_AUX_N", "DP_HPD", "DP_PWR", "DP_GND"],
     "dvi_d_single": ["DVI_D2_P", "DVI_D2_N", "DVI_D1_P", "DVI_D1_N", "DVI_D0_P", "DVI_D0_N", "DVI_CLK_P", "DVI_CLK_N", "DVI_DDC_SDA", "DVI_DDC_SCL", "DVI_HPD", "DVI_5V", "DVI_GND"],
     "vga": ["VGA_R", "VGA_R_RTN", "VGA_G", "VGA_G_RTN", "VGA_B", "VGA_B_RTN", "VGA_HSYNC", "VGA_VSYNC", "VGA_DDC_SDA", "VGA_DDC_SCL", "VGA_5V", "VGA_GND"],

@@ -51,10 +51,22 @@
         "notes": "4 pairs, PAM-16, 400 MHz, Cat 6A for 100m, 10 Gbps full duplex"
       },
       {
+        "title": "IEEE 802.3bz / 802.3bw / 802.3bp",
+        "organization": "IEEE",
+        "reliability": "official",
+        "notes": "2.5GBASE-T, 5GBASE-T, 100BASE-T1, and 1000BASE-T1 pair topology and channel guidance"
+      },
+      {
         "title": "IEEE 802.3bt-2018 (PoE++)",
         "organization": "IEEE",
         "reliability": "official",
         "notes": "Power over Ethernet, up to 90W PSE, 71.3W at PD, 960 mA per pair"
+      },
+      {
+        "title": "TIA-968 registered jack pin assignments",
+        "organization": "TIA",
+        "reliability": "official",
+        "notes": "RJ11, RJ14, RJ25, and RJ48C pair ordering and central-pair conventions"
       },
       {
         "title": "Wikipedia: American Wire Gauge",
@@ -277,8 +289,15 @@
       "lvds_single":       {"pairs": 1, "signals_per_pair": [["LVDS+","LVDS-"]]},
       "lvds_fpd_link_18bit":{"pairs": 4, "signals_per_pair": [["D0+","D0-"],["D1+","D1-"],["D2+","D2-"],["CLK+","CLK-"]]},
       "ethernet_100base_tx":{"pairs": 2, "signals_per_pair": [["TX+","TX-"], ["RX+","RX-"]]},
+      "ethernet_100base_t1":{"pairs": 1, "signals_per_pair": [["BI_DA+","BI_DA-"]], "note": "Single bidirectional automotive Ethernet pair"},
       "ethernet_1000base_t":{"pairs": 4, "signals_per_pair": [["BI_DA+","BI_DA-"],["BI_DB+","BI_DB-"],["BI_DC+","BI_DC-"],["BI_DD+","BI_DD-"]]},
+      "ethernet_2500base_t":{"pairs": 4, "signals_per_pair": [["BI_DA+","BI_DA-"],["BI_DB+","BI_DB-"],["BI_DC+","BI_DC-"],["BI_DD+","BI_DD-"]], "note": "Same 4-pair topology as 1000BASE-T with tighter channel margin"},
+      "ethernet_5gbase_t": {"pairs": 4, "signals_per_pair": [["BI_DA+","BI_DA-"],["BI_DB+","BI_DB-"],["BI_DC+","BI_DC-"],["BI_DD+","BI_DD-"]], "note": "Same 4-pair topology as 1000BASE-T with higher SI sensitivity"},
       "ethernet_10gbase_t": {"pairs": 4, "signals_per_pair": [["BI_DA+","BI_DA-"],["BI_DB+","BI_DB-"],["BI_DC+","BI_DC-"],["BI_DD+","BI_DD-"]]},
+      "rj11_pots":        {"pairs": 1, "signals_per_pair": [["TIP1","RING1"]], "note": "Center pair on 6P hardware"},
+      "rj14_pots":        {"pairs": 2, "signals_per_pair": [["TIP1","RING1"], ["TIP2","RING2"]], "note": "Two analog lines on 6P4C hardware"},
+      "rj25_pots":        {"pairs": 3, "signals_per_pair": [["TIP1","RING1"], ["TIP2","RING2"], ["TIP3","RING3"]], "note": "Three analog lines on 6P6C hardware"},
+      "rj48c_t1_e1":      {"pairs": 2, "signals_per_pair": [["RX_TIP","RX_RING"], ["TX_TIP","TX_RING"]], "note": "Balanced telecom receive and transmit pairs"},
       "usb2":              {"pairs": 1, "signals_per_pair": [["D+","D-"]]},
       "usb3":              {"pairs": 3, "signals_per_pair": [["D+","D-"],["SSTX+","SSTX-"],["SSRX+","SSRX-"]]},
       "hdmi_tmds":         {"pairs": 4, "signals_per_pair": [["D2+","D2-"],["D1+","D1-"],["D0+","D0-"],["CLK+","CLK-"]]},
@@ -874,7 +893,9 @@
   "protocol_cross_reference": {
     "_note": "Cross-reference to companion files for protocols already fully documented elsewhere",
     "see_connector_engineering_reference_json": [
-      "ethernet_1000base_t", "ethernet_100base_tx", "ethernet_1000base_t1",
+      "ethernet_1000base_t", "ethernet_100base_tx", "ethernet_100base_t1", "ethernet_1000base_t1",
+      "ethernet_2500base_t", "ethernet_5gbase_t",
+      "rj11_pots", "rj14_pots", "rj25_pots", "rj48c_t1_e1",
       "uart", "i2c", "spi", "rs232", "rs232_full",
       "rs485", "rs485_full", "rs422", "can_bus"
     ],
