@@ -5435,3 +5435,31 @@ h2 { letter-spacing: .06em; }
    or moon (bp-dark) so the button keeps a recognisable meaning. */
 [data-theme="blueprint-dark"] .header-theme-button .theme-icon-moon { display: block; }
 [data-theme="blueprint-dark"] .header-theme-button .theme-icon-sun  { display: none; }
+
+.app-disclaimer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  background: linear-gradient(90deg, rgba(255,176,32,0.18), rgba(255,176,32,0.08));
+  border-bottom: 1px solid rgba(255,176,32,0.45);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.35;
+}
+.app-disclaimer-icon {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  color: #c97a00;
+}
+[data-theme="dark"] .app-disclaimer-icon,
+[data-theme="blueprint-dark"] .app-disclaimer-icon { color: #ffb020; }
+.app-disclaimer-text { flex: 1; }
+.app-disclaimer-strong {
+  font-weight: 700;
+  margin-inline-end: 4px;
+  color: #a35a00;
+}
+[data-theme="dark"] .app-disclaimer-strong,
+[data-theme="blueprint-dark"] .app-disclaimer-strong { color: #ffb020; }
