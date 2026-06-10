@@ -64,7 +64,55 @@
   }
 
   function cleanManufacturer(value) {
-    return String(value || "").toUpperCase().replace(/\s+/g, "");
+    return String(value || "").toUpperCase().replace(/[\s-]+/g, "");
+  }
+
+  function stripDashes(value) {
+    return String(value || "").replace(/-/g, "");
+  }
+
+  function parseShellInsertContactKey(tail) {
+    for (const shellNumber of numericShellSizes) {
+      if (!tail.startsWith(shellNumber)) continue;
+      const rest = tail.slice(shellNumber.length);
+      // Full form: insert + contact + key (e.g. "35PN")
+      const match = rest.match(/^(\d{1,3})([A-Z])([A-Z])$/);
+      if (match) {
+        return {
+          shellSizeCode: shellCodeByNumber[shellNumber],
+          insert: match[1],
+          contact: match[2],
+          key: match[3],
+        };
+      }
+      // No-key form: insert + contact only — assume normal keying (e.g. "35P" from PCB PNs)
+      const matchNoKey = rest.match(/^(\d{1,3})([A-Z])$/);
+      if (matchNoKey) {
+        return {
+          shellSizeCode: shellCodeByNumber[shellNumber],
+          insert: matchNoKey[1],
+          contact: matchNoKey[2],
+          key: "N",
+        };
+      }
+    }
+    return null;
+  }
+
+  // Strip Amphenol deviation and option suffixes before tail parsing.
+  // Handles: F404, F459, F472, F485, F404LF, F404LFC, -LC, -LF, quadrax/PCB modifiers CI/LI/GQ/Q/G.
+  function stripAmphenolSuffixes(tail) {
+    return tail
+      .replace(/-LC$/i, "")
+      .replace(/F\d{3}(?:LFC|LF)?$/i, "")
+      .replace(/-LF$/i, "");
+  }
+
+  // Derive the PCB-variant base prefix from a crimp prefix.
+  // Crimp: "TV07RW-" → clean "TV07RW" → PCB base "TV07W" (remove the R before the finish letter).
+  function pcbBaseFromCrimpPrefix(cleanPrefix) {
+    // The R appears immediately before the finish class letter at the end of the prefix.
+    return cleanPrefix.replace(/R([A-Z]+)$/, "$1");
   }
 
   function paddedShellSize(code) {
@@ -106,23 +154,26 @@
       throw new Error(`Unsupported D38999 shell type /${shellType}`);
     }
 
-    let rest = restRaw;
-    const serviceClass = knownClasses.find((code) => rest.startsWith(code));
-    if (!serviceClass) {
-      throw new Error("Cannot parse service class");
+    // Try class candidates longest-first; only accept one whose remainder
+    // parses as <shell-size-code><insert><contact>[<key>]. This handles
+    // overlapping prefixes like "A" vs "AA"/"AB" (double-letter classes
+    // use a trailing hyphen that cleanD38999 has already stripped).
+    const sortedClasses = knownClasses.slice().sort((a, b) => b.length - a.length);
+    let serviceClass = null;
+    let shellSizeCode = null;
+    let tail = null;
+    for (const code of sortedClasses) {
+      if (!restRaw.startsWith(code)) continue;
+      const afterClass = restRaw.slice(code.length);
+      if (!afterClass || !shellSizeNumbers[afterClass[0]]) continue;
+      const m = afterClass.slice(1).match(/^(\d{1,2})([A-Z])([A-Z])?$/);
+      if (!m) continue;
+      serviceClass = code;
+      shellSizeCode = afterClass[0];
+      tail = m;
+      break;
     }
-    rest = rest.slice(serviceClass.length);
-
-    const shellSizeCode = rest[0];
-    if (!shellSizeNumbers[shellSizeCode]) {
-      throw new Error("Cannot parse shell-size code");
-    }
-    rest = rest.slice(1);
-
-    const tail = rest.match(/^(\d{1,2})([A-Z])([A-Z])?$/);
-    if (!tail) {
-      throw new Error("Cannot parse insert/contact/key fields");
-    }
+    if (!serviceClass) throw new Error("Cannot parse service class");
 
     return makeParsed(value, shellType, serviceClass, shellSizeCode, tail[1], tail[2], tail[3] || "N");
   }
@@ -250,13 +301,32 @@
     rules.filter((rule) => getFormat(rule) === "amphenol_prefix").forEach((rule) => {
       Object.entries(getStyles(rule)).forEach(([shellType, style]) => {
         Object.entries(style.prefix_by_finish || {}).forEach(([serviceClass, prefix]) => {
-          if (!compact.startsWith(prefix)) return;
-          const tail = compact.slice(prefix.length);
-          const match = tail.match(/^(\d{1,2})-(\d{1,2})([A-Z])([A-Z])$/);
-          if (!match) return;
-          const shellSizeCode = shellCodeByNumber[match[1]];
-          if (!shellSizeCode) return;
-          const parsed = makeParsed(compact, shellType, serviceClass, shellSizeCode, match[2], match[3], match[4]);
+          const cleanPrefix = stripDashes(prefix);
+          let rawTail = null;
+
+          if (compact.startsWith(cleanPrefix)) {
+            // Standard crimp match: e.g. TV07RW1735PN
+            rawTail = compact.slice(cleanPrefix.length);
+          } else {
+            // PCB variant: no R in prefix, optional CI/LI modifier after finish letter.
+            // e.g. TV07RW- → PCB base TV07W, then CI/LI stripped → TV07WCI2111PF459 → tail 2111PF459
+            const pcbBase = pcbBaseFromCrimpPrefix(cleanPrefix);
+            if (pcbBase !== cleanPrefix && compact.startsWith(pcbBase)) {
+              let rest = compact.slice(pcbBase.length);
+              if (rest.startsWith("GQW") || rest.startsWith("GQF")) rest = rest.slice(2); // ground+quadrax
+              else if (rest.startsWith("GQ")) rest = rest.slice(2);
+              else if (rest.startsWith("RQ")) rest = rest.slice(2); // crimp quadrax
+              if (rest.startsWith("CI") || rest.startsWith("LI")) rest = rest.slice(2);
+              else if (rest.startsWith("G") || rest.startsWith("Q")) rest = rest.slice(1);
+              rawTail = rest;
+            }
+          }
+
+          if (!rawTail) return;
+          const tail = stripAmphenolSuffixes(rawTail);
+          const parsedTail = parseShellInsertContactKey(tail);
+          if (!parsedTail) return;
+          const parsed = makeParsed(compact, shellType, serviceClass, parsedTail.shellSizeCode, parsedTail.insert, parsedTail.contact, parsedTail.key);
           pushIfUnique(rows, { parsed, source: `${rule.manufacturer} ${rule.product_line}` });
         });
       });
@@ -291,11 +361,9 @@
         const tail = compact.slice(prefix.length);
         Object.keys(getFinishes(rule)).forEach((serviceClass) => {
           if (!tail.startsWith(serviceClass)) return;
-          const match = tail.slice(serviceClass.length).match(/^(\d{1,2})-(\d{1,2})([A-Z])([A-Z])$/);
-          if (!match) return;
-          const shellSizeCode = shellCodeByNumber[match[1]];
-          if (!shellSizeCode) return;
-          const parsed = makeParsed(compact, shellType, serviceClass, shellSizeCode, match[2], match[3], match[4]);
+          const parsedTail = parseShellInsertContactKey(tail.slice(serviceClass.length));
+          if (!parsedTail) return;
+          const parsed = makeParsed(compact, shellType, serviceClass, parsedTail.shellSizeCode, parsedTail.insert, parsedTail.contact, parsedTail.key);
           if (ruleSupports(rule, parsed)) {
             pushIfUnique(rows, { parsed, source: `${rule.manufacturer} ${rule.product_line}` });
           }
@@ -307,17 +375,15 @@
   function reverseParseGlenair(compact, rows) {
     rules.filter((rule) => getFormat(rule) === "glenair").forEach((rule) => {
       Object.entries(getStyles(rule)).forEach(([shellType, style]) => {
-        const prefix = `${rule.base}-${style}`;
+        const prefix = stripDashes(`${rule.base}-${style}`);
         if (!compact.startsWith(prefix)) return;
         const tail = compact.slice(prefix.length);
         const finishEntries = Object.entries(getFinishes(rule)).sort((a, b) => b[1].length - a[1].length);
         finishEntries.forEach(([serviceClass, finishCode]) => {
           if (!tail.startsWith(finishCode)) return;
-          const match = tail.slice(finishCode.length).match(/^(\d{1,2})-(\d{1,2})([A-Z])([A-Z])$/);
-          if (!match) return;
-          const shellSizeCode = shellCodeByNumber[match[1]];
-          if (!shellSizeCode) return;
-          const parsed = makeParsed(compact, shellType, serviceClass, shellSizeCode, match[2], match[3], match[4]);
+          const parsedTail = parseShellInsertContactKey(tail.slice(finishCode.length));
+          if (!parsedTail) return;
+          const parsed = makeParsed(compact, shellType, serviceClass, parsedTail.shellSizeCode, parsedTail.insert, parsedTail.contact, parsedTail.key);
           if (ruleSupports(rule, parsed)) {
             pushIfUnique(rows, { parsed, source: `${rule.manufacturer} ${rule.product_line}` });
           }
@@ -344,7 +410,7 @@
   function reverseParseSouriau(compact, rows) {
     rules.filter((rule) => getFormat(rule) === "souriau").forEach((rule) => {
       Object.entries(getStyles(rule)).forEach(([shellType, style]) => {
-        const prefix = `8D${style}-`;
+        const prefix = `8D${style}`;
         if (!compact.startsWith(prefix)) return;
         const parsedTail = parseTailWithKnownShellNumber(compact.slice(prefix.length));
         if (!parsedTail) return;
@@ -693,8 +759,8 @@
         </dl>
         <div class="rugged-io-note">${info.note}</div>
         <div class="rugged-io-svg">
-          ${faceSvg ? `<img src="assets/d38999/svg/${faceSvg}" alt="${info.family} face" style="max-width:100px;max-height:100px;opacity:0.8"/>` : ""}
-          ${mountSvg ? `<img src="assets/d38999/svg/${mountSvg}" alt="${info.family} profile" style="max-width:160px;max-height:80px;opacity:0.7;margin-left:12px"/>` : ""}
+          ${faceSvg ? `<img src="assets/svg/${faceSvg}" alt="${info.family} face" style="max-width:100px;max-height:100px;opacity:0.8"/>` : ""}
+          ${mountSvg ? `<img src="assets/svg/${mountSvg}" alt="${info.family} profile" style="max-width:160px;max-height:80px;opacity:0.7;margin-left:12px"/>` : ""}
         </div>
       `;
       panel.appendChild(block);
