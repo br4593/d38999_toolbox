@@ -5,7 +5,7 @@ covers vs. what must be researched/added. Source of truth for current coverage:
 
 - Data: `data/rugged_io_d38999_style_connectors.json` (+ `app/data/` mirror)
 - Families: `RUGGED_IO_FAMILIES` / `FAMILY_SVG_MAP` in `app/converter.js`
-- SVGs: `assets/d38999/svg/` (+ `app/assets/d38999/svg/` after `build_app.py`)
+- SVGs: `assets/svg/` (+ `app/assets/svg/` after `build_app.py`)
 - Visual asset index: `data/d38999_visual_assets.json`
 
 Legend: ✅ present · ⚠️ partial / needs verification · ❌ missing

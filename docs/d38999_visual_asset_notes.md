@@ -14,7 +14,7 @@
 
 ## Created simplified SVGs
 
-The repo now includes simplified technical SVGs in `assets/d38999/svg/` for:
+The repo now includes simplified technical SVGs in `assets/svg/` for:
 
 - generic plug
 - generic receptacle

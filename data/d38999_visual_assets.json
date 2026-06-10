@@ -15,7 +15,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/d38999-plug-generic.svg"
+      "file": "assets/svg/d38999-plug-generic.svg"
     },
     {
       "id": "d38999-receptacle-generic",
@@ -30,7 +30,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/d38999-receptacle-generic.svg"
+      "file": "assets/svg/d38999-receptacle-generic.svg"
     },
     {
       "id": "series_iii_straight_plug_outline",
@@ -47,7 +47,7 @@
       ],
       "copyrightStatus": "recreate_simplified_svg_recommended",
       "status": "recreated",
-      "file": "assets/d38999/svg/d38999-straight-plug.svg"
+      "file": "assets/svg/d38999-straight-plug.svg"
     },
     {
       "id": "series_iii_wall_mount_receptacle_outline",
@@ -63,7 +63,7 @@
       ],
       "copyrightStatus": "recreate_simplified_svg_recommended",
       "status": "recreated",
-      "file": "assets/d38999/svg/d38999-wall-mount-receptacle.svg"
+      "file": "assets/svg/d38999-wall-mount-receptacle.svg"
     },
     {
       "id": "series_iii_jam_nut_receptacle_outline",
@@ -79,7 +79,7 @@
       ],
       "copyrightStatus": "recreate_simplified_svg_recommended",
       "status": "recreated",
-      "file": "assets/d38999/svg/d38999-jam-nut-receptacle.svg"
+      "file": "assets/svg/d38999-jam-nut-receptacle.svg"
     },
     {
       "id": "series_iii_keying_helper",
@@ -93,7 +93,7 @@
       ],
       "copyrightStatus": "recreate_simplified_svg_recommended",
       "status": "recreated",
-      "file": "assets/d38999/svg/d38999-keying-helper.svg",
+      "file": "assets/svg/d38999-keying-helper.svg",
       "notes": "Important to show that the receptacle mating face is printed and the plug view is opposite."
     },
     {
@@ -108,7 +108,7 @@
       ],
       "copyrightStatus": "recreate_simplified_svg_recommended",
       "status": "recreated",
-      "file": "assets/d38999/svg/d38999-shell-size-helper.svg"
+      "file": "assets/svg/d38999-shell-size-helper.svg"
     },
     {
       "id": "insert_arrangement_placeholder",
@@ -122,7 +122,7 @@
       ],
       "copyrightStatus": "safe_if_redrawn_from_extracted_geometry",
       "status": "recreated",
-      "file": "assets/d38999/svg/d38999-insert-placeholder.svg"
+      "file": "assets/svg/d38999-insert-placeholder.svg"
     },
     {
       "id": "dummy_receptacle_warning",
@@ -149,7 +149,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/d38999-backshell-generic.svg"
+      "file": "assets/svg/d38999-backshell-generic.svg"
     },
     {
       "id": "rjf-face",
@@ -166,7 +166,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/rjf-face.svg"
+      "file": "assets/svg/rjf-face.svg"
     },
     {
       "id": "rjftv-face",
@@ -183,7 +183,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/rjftv-face.svg"
+      "file": "assets/svg/rjftv-face.svg"
     },
     {
       "id": "usbftv-face",
@@ -200,7 +200,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/usbftv-face.svg"
+      "file": "assets/svg/usbftv-face.svg"
     },
     {
       "id": "usbbftv-face",
@@ -217,7 +217,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/usbbftv-face.svg"
+      "file": "assets/svg/usbbftv-face.svg"
     },
     {
       "id": "usb3ftv-face",
@@ -234,7 +234,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/usb3ftv-face.svg"
+      "file": "assets/svg/usb3ftv-face.svg"
     },
     {
       "id": "usb3cftv-face",
@@ -251,7 +251,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/usb3cftv-face.svg"
+      "file": "assets/svg/usb3cftv-face.svg"
     },
     {
       "id": "hdmiftv-face",
@@ -268,7 +268,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/hdmiftv-face.svg"
+      "file": "assets/svg/hdmiftv-face.svg"
     },
     {
       "id": "mdpftv-face",
@@ -285,7 +285,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/mdpftv-face.svg"
+      "file": "assets/svg/mdpftv-face.svg"
     },
     {
       "id": "glenair-superseal-usb3-face",
@@ -302,7 +302,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-superseal-usb3-face.svg"
+      "file": "assets/svg/glenair-superseal-usb3-face.svg"
     },
     {
       "id": "glenair-superseal-usb3-profile",
@@ -319,7 +319,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-superseal-usb3-profile.svg"
+      "file": "assets/svg/glenair-superseal-usb3-profile.svg"
     },
     {
       "id": "glenair-superseal-usb3-plug-profile",
@@ -336,7 +336,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-superseal-usb3-plug-profile.svg"
+      "file": "assets/svg/glenair-superseal-usb3-plug-profile.svg"
     },
     {
       "id": "glenair-superseal-usbc-face",
@@ -353,7 +353,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-superseal-usbc-face.svg"
+      "file": "assets/svg/glenair-superseal-usbc-face.svg"
     },
     {
       "id": "glenair-superseal-usbc-profile",
@@ -370,7 +370,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-superseal-usbc-profile.svg"
+      "file": "assets/svg/glenair-superseal-usbc-profile.svg"
     },
     {
       "id": "glenair-supernine-rj45-face",
@@ -387,7 +387,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-supernine-rj45-face.svg"
+      "file": "assets/svg/glenair-supernine-rj45-face.svg"
     },
     {
       "id": "glenair-supernine-rj45-profile",
@@ -404,7 +404,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-supernine-rj45-profile.svg"
+      "file": "assets/svg/glenair-supernine-rj45-profile.svg"
     },
     {
       "id": "glenair-supernine-rj45-plug",
@@ -421,7 +421,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-supernine-rj45-plug.svg"
+      "file": "assets/svg/glenair-supernine-rj45-plug.svg"
     },
     {
       "id": "glenair-supernine-rj45-jam-nut-receptacle",
@@ -438,7 +438,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-supernine-rj45-jam-nut-receptacle.svg"
+      "file": "assets/svg/glenair-supernine-rj45-jam-nut-receptacle.svg"
     },
     {
       "id": "glenair-supernine-rj45-wall-mount-receptacle",
@@ -455,7 +455,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-supernine-rj45-wall-mount-receptacle.svg"
+      "file": "assets/svg/glenair-supernine-rj45-wall-mount-receptacle.svg"
     },
     {
       "id": "glenair-supernine-rj45-tvs-face",
@@ -472,7 +472,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-supernine-rj45-tvs-face.svg"
+      "file": "assets/svg/glenair-supernine-rj45-tvs-face.svg"
     },
     {
       "id": "glenair-supernine-rj45-tvs-profile",
@@ -489,7 +489,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-supernine-rj45-tvs-profile.svg"
+      "file": "assets/svg/glenair-supernine-rj45-tvs-profile.svg"
     },
     {
       "id": "glenair-supernine-usb-face",
@@ -506,7 +506,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-supernine-usb-face.svg"
+      "file": "assets/svg/glenair-supernine-usb-face.svg"
     },
     {
       "id": "glenair-supernine-usb-profile",
@@ -523,7 +523,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-supernine-usb-profile.svg"
+      "file": "assets/svg/glenair-supernine-usb-profile.svg"
     },
     {
       "id": "glenair-supernine-usb-plug",
@@ -540,7 +540,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-supernine-usb-plug.svg"
+      "file": "assets/svg/glenair-supernine-usb-plug.svg"
     },
     {
       "id": "glenair-supernine-usb-jam-nut-receptacle",
@@ -557,7 +557,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-supernine-usb-jam-nut-receptacle.svg"
+      "file": "assets/svg/glenair-supernine-usb-jam-nut-receptacle.svg"
     },
     {
       "id": "glenair-supernine-usb-wall-mount-receptacle",
@@ -574,7 +574,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-supernine-usb-wall-mount-receptacle.svg"
+      "file": "assets/svg/glenair-supernine-usb-wall-mount-receptacle.svg"
     },
     {
       "id": "glenair-supernine-hdmi-face",
@@ -591,7 +591,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-supernine-hdmi-face.svg"
+      "file": "assets/svg/glenair-supernine-hdmi-face.svg"
     },
     {
       "id": "glenair-supernine-hdmi-profile",
@@ -608,7 +608,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-supernine-hdmi-profile.svg"
+      "file": "assets/svg/glenair-supernine-hdmi-profile.svg"
     },
     {
       "id": "glenair-superseal-dp-face",
@@ -625,7 +625,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-superseal-dp-face.svg"
+      "file": "assets/svg/glenair-superseal-dp-face.svg"
     },
     {
       "id": "glenair-superseal-dp-profile",
@@ -642,7 +642,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-superseal-dp-profile.svg"
+      "file": "assets/svg/glenair-superseal-dp-profile.svg"
     },
     {
       "id": "glenair-supernine-hdmi-plug",
@@ -659,7 +659,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-supernine-hdmi-plug.svg"
+      "file": "assets/svg/glenair-supernine-hdmi-plug.svg"
     },
     {
       "id": "glenair-supernine-hdmi-jam-nut-receptacle",
@@ -676,7 +676,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-supernine-hdmi-jam-nut-receptacle.svg"
+      "file": "assets/svg/glenair-supernine-hdmi-jam-nut-receptacle.svg"
     },
     {
       "id": "glenair-supernine-hdmi-wall-mount-receptacle",
@@ -693,7 +693,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-supernine-hdmi-wall-mount-receptacle.svg"
+      "file": "assets/svg/glenair-supernine-hdmi-wall-mount-receptacle.svg"
     },
     {
       "id": "glenair-superseal-dp-jam-nut-receptacle",
@@ -710,7 +710,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-superseal-dp-jam-nut-receptacle.svg"
+      "file": "assets/svg/glenair-superseal-dp-jam-nut-receptacle.svg"
     },
     {
       "id": "glenair-superseal-dp-wall-mount-receptacle",
@@ -727,7 +727,7 @@
       ],
       "copyrightStatus": "recreated_simplified_svg",
       "status": "recreated",
-      "file": "assets/d38999/svg/glenair-superseal-dp-wall-mount-receptacle.svg"
+      "file": "assets/svg/glenair-superseal-dp-wall-mount-receptacle.svg"
     }
   ]
 }

@@ -2,9 +2,13 @@
 Bake embedded data into the self-contained offline d38999 Toolbox web app.
 
 The checked-in web app lives directly in ``app/``. Canonical JSON data comes
-from ``data/*.json``. This script refreshes ``app/data/*``, ``app/assets/svg/*``,
+from ``data/*.json``. This script refreshes ``app/assets/svg/*``
 and regenerates ``app/app-data.js`` so the page works from ``file://`` or a
 static host without runtime fetches.
+
+The app reads ALL data from the embedded ``app-data.js`` bundle and never
+fetches a JSON file at runtime, so no ``app/data/*.json`` mirror is produced;
+any previously generated mirror is removed during the build.
 """
 
 from __future__ import annotations
@@ -12,11 +16,18 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import shutil
 import sys
 from pathlib import Path
 
-# The app reads lightweight environment fields from d38999_valid_part_numbers.json.
-# The full environment audit stays in data/ only so the static bundle does not ship an unused large blob.
+# DATA_FILES lists the canonical data/ sources the embedded bundle is built from;
+# it is used only as a presence check (every source must exist before embedding).
+# The full environment audit (d38999_environment_classification.json) stays in data/
+# only — the app consumes the lightweight environment fields already embedded in
+# d38999_valid_part_numbers.json, so the large audit blob is never shipped.
+# connector_engineering_reference.json and high_speed_interface_wiring_reference.json
+# are intentionally absent here: they are never embedded or fetched (they remain in
+# data/ as source references cited by pinout_rules.json metadata).
 DATA_FILES = [
     "insert_arrangements.json",
     "part_number_rules.json",
@@ -31,8 +42,6 @@ DATA_FILES = [
     "d38999_valid_part_numbers.json",
     "d38999_visual_assets.json",
     "rugged_io_d38999_style_connectors.json",
-    "connector_engineering_reference.json",
-    "high_speed_interface_wiring_reference.json",
     "pinout_rules.json",
     "contact_current_ratings.json",
 ]
@@ -53,19 +62,18 @@ def read_json(path: Path) -> object:
 
 def build(project_root: Path) -> Path:
     data_dir = project_root / "data"
-    svg_dir = data_dir / "svg"
-    visual_svg_dir = project_root / "assets" / "d38999" / "svg"
+    svg_dir = project_root / "assets" / "svg"
     app_dir = project_root / "app"
     app_data_dir = app_dir / "data"
-    app_svg_dir = app_dir / "assets" / "svg"
-    app_visual_svg_dir = app_dir / "assets" / "d38999" / "svg"
+    app_assets_dir = app_dir / "assets"
+    app_svg_dir = app_assets_dir / "svg"
     rules_path = project_root / "scripts" / "d38999_rules.py"
     cname_path = project_root / "CNAME"
 
     if not rules_path.exists():
         raise FileNotFoundError(f"Missing converter rules at {rules_path}")
     if not svg_dir.exists():
-        raise FileNotFoundError(f"Missing data/svg/ directory at {svg_dir}")
+        raise FileNotFoundError(f"Missing assets/svg/ directory at {svg_dir}")
 
     missing = [name for name in DATA_FILES if not (data_dir / name).exists()]
     if missing:
@@ -78,27 +86,19 @@ def build(project_root: Path) -> Path:
 
     docs_rules = load_module(rules_path, "d38999_rules")
 
-    app_data_dir.mkdir(parents=True, exist_ok=True)
+    # The runtime app reads all data from the embedded app-data.js bundle (no JSON
+    # is fetched at runtime), so the old app/data/ mirror was pure duplicate weight.
+    # Rebuild the app asset tree from scratch so stale files never linger and the
+    # shipped app keeps a single app/assets/svg/ graphics folder.
+    if app_data_dir.exists():
+        shutil.rmtree(app_data_dir)
+    if app_assets_dir.exists():
+        shutil.rmtree(app_assets_dir)
     app_svg_dir.mkdir(parents=True, exist_ok=True)
-    app_visual_svg_dir.mkdir(parents=True, exist_ok=True)
-
-    for name in DATA_FILES:
-        source = data_dir / name
-        target = app_data_dir / name
-        target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
-
-    obsolete_environment_report = app_data_dir / "d38999_environment_classification.json"
-    if obsolete_environment_report.exists():
-        obsolete_environment_report.unlink()
 
     for svg_path in sorted(svg_dir.glob("*.svg")):
         target = app_svg_dir / svg_path.name
         target.write_text(svg_path.read_text(encoding="utf-8"), encoding="utf-8")
-
-    if visual_svg_dir.exists():
-        for svg_path in sorted(visual_svg_dir.glob("*.svg")):
-            target = app_visual_svg_dir / svg_path.name
-            target.write_text(svg_path.read_text(encoding="utf-8"), encoding="utf-8")
 
     if cname_path.exists():
         (app_dir / "CNAME").write_text(cname_path.read_text(encoding="utf-8"), encoding="utf-8")

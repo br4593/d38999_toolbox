@@ -16,7 +16,13 @@
       return [[number, code], [padded, code]];
     })
   );
-  const numericShellSizes = Object.values(shellSizeNumbers).sort((a, b) => b.length - a.length);
+  const numericShellSizes = Array.from(
+    new Set(
+      Object.values(shellSizeNumbers).flatMap((number) =>
+        number === "9" ? ["09", "9"] : [number]
+      )
+    )
+  ).sort((a, b) => b.length - a.length);
 
   function getFormat(rule) {
     return rule.format || "";

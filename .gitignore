@@ -30,6 +30,9 @@ Thumbs.db
 *.local.*
 .tmp_*.py
 
+# Resume cache for the QPL crawler (regenerable, large JSONL).
+data/.cache/
+
 # Generated extraction debug images (huge, regenerable)
 **/debug/
 **/chrome-validation-profile-*/

@@ -4,6 +4,11 @@ Comprehensive offline smoke test for every connector the d38999 Toolbox knows
 about: standard MIL-DTL-38999 insert-arrangement part numbers AND the
 D38999-style rugged I/O families (RJ45 / USB / USB-C / HDMI / DisplayPort etc.).
 
+NOTE: For a deeper exhaustive forward-then-reverse round-trip test that drives
+the real ``app/converter.js`` reverse parser via Node, see
+``scripts/exhaustive_roundtrip_test.py`` (importable as
+``run_exhaustive_roundtrip()``). Both should be run in CI.
+
 It runs with the Python standard library only (no Node, no browser) by:
   * parsing the canonical ``RUGGED_IO_FAMILIES`` table directly out of
     ``app/converter.js`` and faithfully re-implementing ``recognizeRuggedIo``,
@@ -33,8 +38,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 APP = ROOT / "app"
-SRC_SVG = ROOT / "assets" / "d38999" / "svg"
-APP_SVG = APP / "assets" / "d38999" / "svg"
+SRC_SVG = ROOT / "assets" / "svg"
+APP_SVG = APP / "assets" / "svg"
 
 STD_PN_SAMPLE = 600  # number of standard PNs validated unless --full
 

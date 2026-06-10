@@ -1,0 +1,864 @@
+{
+  "summary": {
+    "scraped_total": 35279,
+    "app_total": 7750,
+    "in_both": 5964,
+    "only_on_website": 29315,
+    "only_in_app": 1786,
+    "coverage_pct": 16.91,
+    "secondary_source_count": null,
+    "secondary_source_key": null
+  },
+  "by_slash_sheet": {
+    "20": {
+      "website_count": 7959,
+      "app_count": 3232,
+      "missing_from_app": 4868,
+      "in_both": 3091,
+      "only_in_app": 141,
+      "coverage_pct": 38.84
+    },
+    "21": {
+      "website_count": 2382,
+      "app_count": 30,
+      "missing_from_app": 2378,
+      "in_both": 4,
+      "only_in_app": 26,
+      "coverage_pct": 0.17
+    },
+    "22": {
+      "website_count": 0,
+      "app_count": 24,
+      "missing_from_app": 0,
+      "in_both": 0,
+      "only_in_app": 24,
+      "coverage_pct": 0.0
+    },
+    "23": {
+      "website_count": 2379,
+      "app_count": 20,
+      "missing_from_app": 2378,
+      "in_both": 1,
+      "only_in_app": 19,
+      "coverage_pct": 0.04
+    },
+    "24": {
+      "website_count": 8037,
+      "app_count": 952,
+      "missing_from_app": 7163,
+      "in_both": 874,
+      "only_in_app": 78,
+      "coverage_pct": 10.87
+    },
+    "25": {
+      "website_count": 2382,
+      "app_count": 3,
+      "missing_from_app": 2381,
+      "in_both": 1,
+      "only_in_app": 2,
+      "coverage_pct": 0.04
+    },
+    "26": {
+      "website_count": 9562,
+      "app_count": 1975,
+      "missing_from_app": 7717,
+      "in_both": 1845,
+      "only_in_app": 130,
+      "coverage_pct": 19.3
+    },
+    "27": {
+      "website_count": 2376,
+      "app_count": 1,
+      "missing_from_app": 2376,
+      "in_both": 0,
+      "only_in_app": 1,
+      "coverage_pct": 0.0
+    },
+    "29": {
+      "website_count": 5,
+      "app_count": 8,
+      "missing_from_app": 5,
+      "in_both": 0,
+      "only_in_app": 8,
+      "coverage_pct": 0.0
+    },
+    "30": {
+      "website_count": 1,
+      "app_count": 6,
+      "missing_from_app": 1,
+      "in_both": 0,
+      "only_in_app": 6,
+      "coverage_pct": 0.0
+    },
+    "31": {
+      "website_count": 1,
+      "app_count": 10,
+      "missing_from_app": 1,
+      "in_both": 0,
+      "only_in_app": 10,
+      "coverage_pct": 0.0
+    },
+    "32": {
+      "website_count": 0,
+      "app_count": 46,
+      "missing_from_app": 0,
+      "in_both": 0,
+      "only_in_app": 46,
+      "coverage_pct": 0.0
+    },
+    "33": {
+      "website_count": 1,
+      "app_count": 90,
+      "missing_from_app": 0,
+      "in_both": 1,
+      "only_in_app": 89,
+      "coverage_pct": 100.0
+    },
+    "40": {
+      "website_count": 34,
+      "app_count": 278,
+      "missing_from_app": 8,
+      "in_both": 26,
+      "only_in_app": 252,
+      "coverage_pct": 76.47
+    },
+    "42": {
+      "website_count": 48,
+      "app_count": 222,
+      "missing_from_app": 15,
+      "in_both": 33,
+      "only_in_app": 189,
+      "coverage_pct": 68.75
+    },
+    "43": {
+      "website_count": 0,
+      "app_count": 2,
+      "missing_from_app": 0,
+      "in_both": 0,
+      "only_in_app": 2,
+      "coverage_pct": 0.0
+    },
+    "44": {
+      "website_count": 36,
+      "app_count": 239,
+      "missing_from_app": 9,
+      "in_both": 27,
+      "only_in_app": 212,
+      "coverage_pct": 75.0
+    },
+    "46": {
+      "website_count": 68,
+      "app_count": 433,
+      "missing_from_app": 11,
+      "in_both": 57,
+      "only_in_app": 376,
+      "coverage_pct": 83.82
+    },
+    "47": {
+      "website_count": 4,
+      "app_count": 73,
+      "missing_from_app": 1,
+      "in_both": 3,
+      "only_in_app": 70,
+      "coverage_pct": 75.0
+    },
+    "49": {
+      "website_count": 4,
+      "app_count": 98,
+      "missing_from_app": 3,
+      "in_both": 1,
+      "only_in_app": 97,
+      "coverage_pct": 25.0
+    },
+    "50": {
+      "website_count": 0,
+      "app_count": 8,
+      "missing_from_app": 0,
+      "in_both": 0,
+      "only_in_app": 8,
+      "coverage_pct": 0.0
+    }
+  },
+  "by_slash_sheet_class": {
+    "20": {
+      "F": {
+        "website_count": 1497,
+        "app_count": 1518,
+        "missing_from_app": 1,
+        "coverage_pct": 99.93
+      },
+      "G": {
+        "website_count": 293,
+        "app_count": 294,
+        "missing_from_app": 0,
+        "coverage_pct": 100.0
+      },
+      "J": {
+        "website_count": 943,
+        "app_count": 447,
+        "missing_from_app": 508,
+        "coverage_pct": 46.13
+      },
+      "K": {
+        "website_count": 655,
+        "app_count": 102,
+        "missing_from_app": 556,
+        "coverage_pct": 15.11
+      },
+      "L": {
+        "website_count": 235,
+        "app_count": 0,
+        "missing_from_app": 235,
+        "coverage_pct": 0.0
+      },
+      "M": {
+        "website_count": 1072,
+        "app_count": 158,
+        "missing_from_app": 925,
+        "coverage_pct": 13.71
+      },
+      "S": {
+        "website_count": 334,
+        "app_count": 50,
+        "missing_from_app": 289,
+        "coverage_pct": 13.47
+      },
+      "T": {
+        "website_count": 447,
+        "app_count": 20,
+        "missing_from_app": 431,
+        "coverage_pct": 3.58
+      },
+      "W": {
+        "website_count": 1452,
+        "app_count": 605,
+        "missing_from_app": 930,
+        "coverage_pct": 35.95
+      },
+      "Z": {
+        "website_count": 1031,
+        "app_count": 38,
+        "missing_from_app": 993,
+        "coverage_pct": 3.69
+      }
+    },
+    "21": {
+      "H": {
+        "website_count": 2374,
+        "app_count": 0,
+        "missing_from_app": 2374,
+        "coverage_pct": 0.0
+      },
+      "N": {
+        "website_count": 3,
+        "app_count": 14,
+        "missing_from_app": 1,
+        "coverage_pct": 66.67
+      },
+      "Y": {
+        "website_count": 5,
+        "app_count": 16,
+        "missing_from_app": 3,
+        "coverage_pct": 40.0
+      }
+    },
+    "22": {
+      "A": {
+        "website_count": 0,
+        "app_count": 3,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "B": {
+        "website_count": 0,
+        "app_count": 4,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "C": {
+        "website_count": 0,
+        "app_count": 3,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "D": {
+        "website_count": 0,
+        "app_count": 3,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "E": {
+        "website_count": 0,
+        "app_count": 4,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "F": {
+        "website_count": 0,
+        "app_count": 2,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "G": {
+        "website_count": 0,
+        "app_count": 1,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "H": {
+        "website_count": 0,
+        "app_count": 2,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "J": {
+        "website_count": 0,
+        "app_count": 2,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      }
+    },
+    "23": {
+      "H": {
+        "website_count": 2372,
+        "app_count": 0,
+        "missing_from_app": 2372,
+        "coverage_pct": 0.0
+      },
+      "N": {
+        "website_count": 2,
+        "app_count": 4,
+        "missing_from_app": 2,
+        "coverage_pct": 0.0
+      },
+      "Y": {
+        "website_count": 5,
+        "app_count": 16,
+        "missing_from_app": 4,
+        "coverage_pct": 20.0
+      }
+    },
+    "24": {
+      "F": {
+        "website_count": 1371,
+        "app_count": 114,
+        "missing_from_app": 1257,
+        "coverage_pct": 8.32
+      },
+      "G": {
+        "website_count": 302,
+        "app_count": 2,
+        "missing_from_app": 302,
+        "coverage_pct": 0.0
+      },
+      "J": {
+        "website_count": 1248,
+        "app_count": 87,
+        "missing_from_app": 1161,
+        "coverage_pct": 6.97
+      },
+      "K": {
+        "website_count": 515,
+        "app_count": 110,
+        "missing_from_app": 417,
+        "coverage_pct": 19.03
+      },
+      "L": {
+        "website_count": 172,
+        "app_count": 0,
+        "missing_from_app": 172,
+        "coverage_pct": 0.0
+      },
+      "M": {
+        "website_count": 1307,
+        "app_count": 60,
+        "missing_from_app": 1248,
+        "coverage_pct": 4.51
+      },
+      "S": {
+        "website_count": 210,
+        "app_count": 57,
+        "missing_from_app": 167,
+        "coverage_pct": 20.48
+      },
+      "T": {
+        "website_count": 563,
+        "app_count": 69,
+        "missing_from_app": 505,
+        "coverage_pct": 10.3
+      },
+      "W": {
+        "website_count": 1294,
+        "app_count": 407,
+        "missing_from_app": 925,
+        "coverage_pct": 28.52
+      },
+      "Z": {
+        "website_count": 1055,
+        "app_count": 46,
+        "missing_from_app": 1009,
+        "coverage_pct": 4.36
+      }
+    },
+    "25": {
+      "H": {
+        "website_count": 2376,
+        "app_count": 0,
+        "missing_from_app": 2376,
+        "coverage_pct": 0.0
+      },
+      "N": {
+        "website_count": 5,
+        "app_count": 3,
+        "missing_from_app": 4,
+        "coverage_pct": 20.0
+      },
+      "Y": {
+        "website_count": 1,
+        "app_count": 0,
+        "missing_from_app": 1,
+        "coverage_pct": 0.0
+      }
+    },
+    "26": {
+      "F": {
+        "website_count": 1666,
+        "app_count": 289,
+        "missing_from_app": 1386,
+        "coverage_pct": 16.81
+      },
+      "G": {
+        "website_count": 285,
+        "app_count": 4,
+        "missing_from_app": 283,
+        "coverage_pct": 0.7
+      },
+      "J": {
+        "website_count": 1119,
+        "app_count": 415,
+        "missing_from_app": 727,
+        "coverage_pct": 35.03
+      },
+      "K": {
+        "website_count": 859,
+        "app_count": 197,
+        "missing_from_app": 671,
+        "coverage_pct": 21.89
+      },
+      "L": {
+        "website_count": 508,
+        "app_count": 0,
+        "missing_from_app": 508,
+        "coverage_pct": 0.0
+      },
+      "M": {
+        "website_count": 1089,
+        "app_count": 249,
+        "missing_from_app": 865,
+        "coverage_pct": 20.57
+      },
+      "S": {
+        "website_count": 555,
+        "app_count": 118,
+        "missing_from_app": 465,
+        "coverage_pct": 16.22
+      },
+      "T": {
+        "website_count": 663,
+        "app_count": 58,
+        "missing_from_app": 606,
+        "coverage_pct": 8.6
+      },
+      "W": {
+        "website_count": 1653,
+        "app_count": 582,
+        "missing_from_app": 1103,
+        "coverage_pct": 33.27
+      },
+      "Z": {
+        "website_count": 1165,
+        "app_count": 63,
+        "missing_from_app": 1103,
+        "coverage_pct": 5.32
+      }
+    },
+    "27": {
+      "H": {
+        "website_count": 2376,
+        "app_count": 0,
+        "missing_from_app": 2376,
+        "coverage_pct": 0.0
+      },
+      "Y": {
+        "website_count": 0,
+        "app_count": 1,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      }
+    },
+    "29": {
+      "F": {
+        "website_count": 5,
+        "app_count": 0,
+        "missing_from_app": 5,
+        "coverage_pct": 0.0
+      },
+      "W": {
+        "website_count": 0,
+        "app_count": 8,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      }
+    },
+    "30": {
+      "W": {
+        "website_count": 1,
+        "app_count": 6,
+        "missing_from_app": 1,
+        "coverage_pct": 0.0
+      }
+    },
+    "31": {
+      "J": {
+        "website_count": 0,
+        "app_count": 3,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "W": {
+        "website_count": 1,
+        "app_count": 7,
+        "missing_from_app": 1,
+        "coverage_pct": 0.0
+      }
+    },
+    "32": {
+      "F": {
+        "website_count": 0,
+        "app_count": 5,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "J": {
+        "website_count": 0,
+        "app_count": 1,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "K": {
+        "website_count": 0,
+        "app_count": 1,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "M": {
+        "website_count": 0,
+        "app_count": 9,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "T": {
+        "website_count": 0,
+        "app_count": 6,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "W": {
+        "website_count": 0,
+        "app_count": 18,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "Z": {
+        "website_count": 0,
+        "app_count": 6,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      }
+    },
+    "33": {
+      "F": {
+        "website_count": 0,
+        "app_count": 9,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "H": {
+        "website_count": 0,
+        "app_count": 2,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "J": {
+        "website_count": 0,
+        "app_count": 9,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "K": {
+        "website_count": 0,
+        "app_count": 12,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "M": {
+        "website_count": 0,
+        "app_count": 16,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "N": {
+        "website_count": 0,
+        "app_count": 1,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "R": {
+        "website_count": 0,
+        "app_count": 1,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "T": {
+        "website_count": 0,
+        "app_count": 7,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "W": {
+        "website_count": 1,
+        "app_count": 18,
+        "missing_from_app": 0,
+        "coverage_pct": 100.0
+      },
+      "Z": {
+        "website_count": 0,
+        "app_count": 15,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      }
+    },
+    "40": {
+      "F": {
+        "website_count": 11,
+        "app_count": 62,
+        "missing_from_app": 6,
+        "coverage_pct": 45.45
+      },
+      "W": {
+        "website_count": 23,
+        "app_count": 216,
+        "missing_from_app": 2,
+        "coverage_pct": 91.3
+      }
+    },
+    "42": {
+      "F": {
+        "website_count": 24,
+        "app_count": 65,
+        "missing_from_app": 10,
+        "coverage_pct": 58.33
+      },
+      "W": {
+        "website_count": 24,
+        "app_count": 157,
+        "missing_from_app": 5,
+        "coverage_pct": 79.17
+      }
+    },
+    "43": {
+      "N": {
+        "website_count": 0,
+        "app_count": 2,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      }
+    },
+    "44": {
+      "F": {
+        "website_count": 24,
+        "app_count": 59,
+        "missing_from_app": 7,
+        "coverage_pct": 70.83
+      },
+      "W": {
+        "website_count": 12,
+        "app_count": 180,
+        "missing_from_app": 2,
+        "coverage_pct": 83.33
+      }
+    },
+    "46": {
+      "F": {
+        "website_count": 44,
+        "app_count": 165,
+        "missing_from_app": 11,
+        "coverage_pct": 75.0
+      },
+      "W": {
+        "website_count": 24,
+        "app_count": 268,
+        "missing_from_app": 0,
+        "coverage_pct": 100.0
+      }
+    },
+    "47": {
+      "C": {
+        "website_count": 0,
+        "app_count": 3,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "F": {
+        "website_count": 1,
+        "app_count": 4,
+        "missing_from_app": 1,
+        "coverage_pct": 0.0
+      },
+      "W": {
+        "website_count": 3,
+        "app_count": 66,
+        "missing_from_app": 0,
+        "coverage_pct": 100.0
+      }
+    },
+    "49": {
+      "F": {
+        "website_count": 2,
+        "app_count": 38,
+        "missing_from_app": 2,
+        "coverage_pct": 0.0
+      },
+      "W": {
+        "website_count": 2,
+        "app_count": 60,
+        "missing_from_app": 1,
+        "coverage_pct": 50.0
+      }
+    },
+    "50": {
+      "B": {
+        "website_count": 0,
+        "app_count": 1,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "C": {
+        "website_count": 0,
+        "app_count": 1,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "D": {
+        "website_count": 0,
+        "app_count": 1,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "E": {
+        "website_count": 0,
+        "app_count": 1,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "F": {
+        "website_count": 0,
+        "app_count": 1,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "G": {
+        "website_count": 0,
+        "app_count": 1,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "H": {
+        "website_count": 0,
+        "app_count": 1,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      },
+      "J": {
+        "website_count": 0,
+        "app_count": 1,
+        "missing_from_app": 0,
+        "coverage_pct": 0.0
+      }
+    }
+  },
+  "missing_pns_sample": [
+    "D38999/20FG16P",
+    "D38999/20JC26SN",
+    "D38999/20JC35HA",
+    "D38999/20JC35HB",
+    "D38999/20JC35HC",
+    "D38999/20JC35HD",
+    "D38999/20JC35HE",
+    "D38999/20JC35JB",
+    "D38999/20JC35JD",
+    "D38999/20JC35JE",
+    "D38999/20JC35PD",
+    "D38999/20JC35PE",
+    "D38999/20JC35SE",
+    "D38999/20JC8JA",
+    "D38999/20JC8JB",
+    "D38999/20JC8JC",
+    "D38999/20JC8JD",
+    "D38999/20JC8JE",
+    "D38999/20JC8JN",
+    "D38999/20JC8PA",
+    "D38999/20JC8PB",
+    "D38999/20JC8PC",
+    "D38999/20JC8PD",
+    "D38999/20JC8PE",
+    "D38999/20JC8PN",
+    "D38999/20JC8SA",
+    "D38999/20JC8SB",
+    "D38999/20JC8SC",
+    "D38999/20JC8SD",
+    "D38999/20JC8SE",
+    "D38999/20JC98HA",
+    "D38999/20JC98HB",
+    "D38999/20JC98HC",
+    "D38999/20JC98HD",
+    "D38999/20JC98HE",
+    "D38999/20JC98JB",
+    "D38999/20JC98JC",
+    "D38999/20JC98JD",
+    "D38999/20JC98JE",
+    "D38999/20JC98PA",
+    "D38999/20JC98PB",
+    "D38999/20JC98PC",
+    "D38999/20JC98PD",
+    "D38999/20JC98PE",
+    "D38999/20JC98SB",
+    "D38999/20JC98SC",
+    "D38999/20JC98SD",
+    "D38999/20JC98SE",
+    "D38999/20JD15HB",
+    "D38999/20JD15HC"
+  ],
+  "only_in_app_sample": [
+    "D38999/20FA23SN",
+    "D38999/20FA35AA",
+    "D38999/20FA35AB",
+    "D38999/20FA35AN",
+    "D38999/20FA35BA",
+    "D38999/20FA35BB",
+    "D38999/20FA35BC",
+    "D38999/20FA35BN",
+    "D38999/20FC35AB",
+    "D38999/20FC35BA",
+    "D38999/20FD35AA",
+    "D38999/20FE35AN",
+    "D38999/20FE8BN",
+    "D38999/20FF11AN",
+    "D38999/20FF11BN",
+    "D38999/20FF35BN",
+    "D38999/20FG16BN",
+    "D38999/20FG35BA",
+    "D38999/20FG35BD",
+    "D38999/20FH35AD"
+  ]
+}

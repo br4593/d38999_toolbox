@@ -47,7 +47,7 @@ flowchart TD
     AppHtml[app/index.html]
     AppCss[app/styles.css]
     AppDataCopies[app/data/*.json]
-    AppSvg[app/assets/svg/* + app/assets/d38999/svg/*]
+    AppSvg[app/assets/svg/* + app/assets/svg/*]
 
     DocsReciprocal[docs/reciprocal_connector_logic.md]
     DocsBuild[docs/build_part_number_validation.md]

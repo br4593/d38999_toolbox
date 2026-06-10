@@ -1,0 +1,180 @@
+D38999 PN Coverage Report
+=========================
+Scraped from federalconnectors.com:   35,279
+In app database:                       7,750
+In both:                               5,964 (16.9% of website)
+Missing from app (website only):      29,315
+In app but not on website:             1,786
+
+Coverage by Slash Sheet:
+Sheet   Website      App  Missing  OnlyApp  Coverage
+/20        7959     3232     4868      141     38.8%
+/21        2382       30     2378       26      0.2%
+/22           0       24        0       24      0.0%
+/23        2379       20     2378       19      0.0%
+/24        8037      952     7163       78     10.9%
+/25        2382        3     2381        2      0.0%
+/26        9562     1975     7717      130     19.3%
+/27        2376        1     2376        1      0.0%
+/29           5        8        5        8      0.0%
+/30           1        6        1        6      0.0%
+/31           1       10        1       10      0.0%
+/32           0       46        0       46      0.0%
+/33           1       90        0       89    100.0%
+/40          34      278        8      252     76.5%
+/42          48      222       15      189     68.8%
+/43           0        2        0        2      0.0%
+/44          36      239        9      212     75.0%
+/46          68      433       11      376     83.8%
+/47           4       73        1       70     75.0%
+/49           4       98        3       97     25.0%
+/50           0        8        0        8      0.0%
+
+Coverage by Slash Sheet + Class (classes with >0 on website):
+  /20:
+    Class   Website      App  Missing  Coverage
+    F          1497     1518        1     99.9%
+    G           293      294        0    100.0%
+    J           943      447      508     46.1%
+    K           655      102      556     15.1%
+    L           235        0      235      0.0%
+    M          1072      158      925     13.7%
+    S           334       50      289     13.5%
+    T           447       20      431      3.6%
+    W          1452      605      930     36.0%
+    Z          1031       38      993      3.7%
+  /21:
+    Class   Website      App  Missing  Coverage
+    H          2374        0     2374      0.0%
+    N             3       14        1     66.7%
+    Y             5       16        3     40.0%
+  /22:
+    Class   Website      App  Missing  Coverage
+  /23:
+    Class   Website      App  Missing  Coverage
+    H          2372        0     2372      0.0%
+    N             2        4        2      0.0%
+    Y             5       16        4     20.0%
+  /24:
+    Class   Website      App  Missing  Coverage
+    F          1371      114     1257      8.3%
+    G           302        2      302      0.0%
+    J          1248       87     1161      7.0%
+    K           515      110      417     19.0%
+    L           172        0      172      0.0%
+    M          1307       60     1248      4.5%
+    S           210       57      167     20.5%
+    T           563       69      505     10.3%
+    W          1294      407      925     28.5%
+    Z          1055       46     1009      4.4%
+  /25:
+    Class   Website      App  Missing  Coverage
+    H          2376        0     2376      0.0%
+    N             5        3        4     20.0%
+    Y             1        0        1      0.0%
+  /26:
+    Class   Website      App  Missing  Coverage
+    F          1666      289     1386     16.8%
+    G           285        4      283      0.7%
+    J          1119      415      727     35.0%
+    K           859      197      671     21.9%
+    L           508        0      508      0.0%
+    M          1089      249      865     20.6%
+    S           555      118      465     16.2%
+    T           663       58      606      8.6%
+    W          1653      582     1103     33.3%
+    Z          1165       63     1103      5.3%
+  /27:
+    Class   Website      App  Missing  Coverage
+    H          2376        0     2376      0.0%
+  /29:
+    Class   Website      App  Missing  Coverage
+    F             5        0        5      0.0%
+  /30:
+    Class   Website      App  Missing  Coverage
+    W             1        6        1      0.0%
+  /31:
+    Class   Website      App  Missing  Coverage
+    W             1        7        1      0.0%
+  /32:
+    Class   Website      App  Missing  Coverage
+  /33:
+    Class   Website      App  Missing  Coverage
+    W             1       18        0    100.0%
+  /40:
+    Class   Website      App  Missing  Coverage
+    F            11       62        6     45.5%
+    W            23      216        2     91.3%
+  /42:
+    Class   Website      App  Missing  Coverage
+    F            24       65       10     58.3%
+    W            24      157        5     79.2%
+  /43:
+    Class   Website      App  Missing  Coverage
+  /44:
+    Class   Website      App  Missing  Coverage
+    F            24       59        7     70.8%
+    W            12      180        2     83.3%
+  /46:
+    Class   Website      App  Missing  Coverage
+    F            44      165       11     75.0%
+    W            24      268        0    100.0%
+  /47:
+    Class   Website      App  Missing  Coverage
+    F             1        4        1      0.0%
+    W             3       66        0    100.0%
+  /49:
+    Class   Website      App  Missing  Coverage
+    F             2       38        2      0.0%
+    W             2       60        1     50.0%
+  /50:
+    Class   Website      App  Missing  Coverage
+
+Sample missing PNs (first 25):
+  D38999/20FG16P
+  D38999/20JC26SN
+  D38999/20JC35HA
+  D38999/20JC35HB
+  D38999/20JC35HC
+  D38999/20JC35HD
+  D38999/20JC35HE
+  D38999/20JC35JB
+  D38999/20JC35JD
+  D38999/20JC35JE
+  D38999/20JC35PD
+  D38999/20JC35PE
+  D38999/20JC35SE
+  D38999/20JC8JA
+  D38999/20JC8JB
+  D38999/20JC8JC
+  D38999/20JC8JD
+  D38999/20JC8JE
+  D38999/20JC8JN
+  D38999/20JC8PA
+  D38999/20JC8PB
+  D38999/20JC8PC
+  D38999/20JC8PD
+  D38999/20JC8PE
+  D38999/20JC8PN
+
+Sample 'in app but not on website' PNs (first 20):
+  D38999/20FA23SN
+  D38999/20FA35AA
+  D38999/20FA35AB
+  D38999/20FA35AN
+  D38999/20FA35BA
+  D38999/20FA35BB
+  D38999/20FA35BC
+  D38999/20FA35BN
+  D38999/20FC35AB
+  D38999/20FC35BA
+  D38999/20FD35AA
+  D38999/20FE35AN
+  D38999/20FE8BN
+  D38999/20FF11AN
+  D38999/20FF11BN
+  D38999/20FF35BN
+  D38999/20FG16BN
+  D38999/20FG35BA
+  D38999/20FG35BD
+  D38999/20FH35AD

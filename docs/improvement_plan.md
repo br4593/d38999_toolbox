@@ -6,7 +6,7 @@ Scope: GUI, UX/UI, flow, design, color, content. Single-page offline app (`app/`
 ## Guiding constraints
 
 - **Offline-first, dependency-free.** No CDNs, no fetch, no frameworks. Everything ships in `app/`.
-- **`app/` is source of truth.** Generated artifacts (`app/app-data.js`, `app/data/*.json`, `app/assets/svg/*`) come from `scripts/build_app.py`. Don't hand-edit generated files.
+- **`app/` is source of truth.** Generated artifacts (`app/app-data.js`, `app/assets/svg/*`) come from `scripts/build_app.py`. Don't hand-edit generated files.
 - **Validate without Node.** Node is not installed; use `python3 scripts/smoke_test_connectors.py` + Python JSON parse checks instead of `node tests/validate_app.js`.
 - **No regressions to decoder accuracy.** Visual/UX changes must not alter decode/validation logic.
 
@@ -148,6 +148,47 @@ Goal: lower the barrier for non-expert users without changing decode/validation 
 
 ### Sequencing within Phase 6
 6.A (text) → 6.B (density) → 6.C (workflow) → 6.D (polish). Validate each with `python3 scripts/build_app.py` + `python3 scripts/smoke_test_connectors.py` and a manual light/dark pass.
+
+---
+
+## Phase 7 — Data consolidation & structure simplification
+
+Goal: shrink the shipped bundle and de-duplicate datasets **without changing decode/validation behaviour or data keys**. Grounded in how the app loads data: `app/index.html` loads only `app-data.js` + `app.js` + `converter.js`; the runtime reads everything from the embedded `window.D38999_TOOLBOX_DATA` and never `fetch()`es a JSON file.
+
+### 7.A Zero-risk cleanup (DONE)
+- Deleted stray 0-byte root files `Binary`, `Mutex`, `Queue`.
+- Dropped `connector_engineering_reference.json` + `high_speed_interface_wiring_reference.json` from `DATA_FILES` in `scripts/build_app.py` (never embedded, never fetched; `HIGH_SPEED_PROTOCOLS` is hardcoded in `layout-designer.js`). Originals stay in `data/` as cited references; `build_app.py` now also prunes any stale copies from `app/data/`.
+- Validated: build + `smoke_test_connectors.py --full` + `manufacturer_catalog_smoke_test.py --full` → 0 failures.
+
+### 7.B Remove the `app/data/` runtime duplication (DONE)
+- `app/data/*.json` was a 100% duplicate of the embedded bundle (every file had a `data/` counterpart) and nothing fetched it at runtime. `build_app.py` no longer generates the mirror and now `shutil.rmtree`s any stale `app/data/` on build; the directory was removed (17 tracked files staged for deletion).
+- Proof functionality is unchanged: `app/app-data.js` is **byte-identical** before/after (sha256 `c04928b5…`), because the embed reads from canonical `data/`, not the mirror. SVG assets under `app/assets/` are untouched. Root `index.html` only meta-refreshes to `./app/`, so no direct-file access depended on the mirror.
+- Validated: build (idempotent — mirror does not reappear) + `smoke_test_connectors.py --full` + `manufacturer_catalog_smoke_test.py --full` → 0 failures.
+
+### 7.C Retire the Layout Designer (DONE)
+- The 71 KB `app/layout-designer.js` was never referenced by `app/index.html` (dead in the shipped app), so the feature was removed: deleted `app/layout-designer.js`, the `#layoutPanel` markup block in `app/index.html`, the `.ld-*` CSS section + dark-theme `.ld-*` overrides in `app/styles.css`, and the stale init comment in `app/app.js`.
+- Follow-on exposed: `pinout_rules.json` (embedded `pinout.pinoutRules`) was only consumed by the Layout Designer, so it is now runtime-orphaned — a candidate to drop from the embedded bundle in 7.E. `high_speed_interface_wiring_reference.json` (already dropped in 7.A) was likewise only a companion reference.
+- Validated: build + `smoke_test_connectors.py --full` + `manufacturer_catalog_smoke_test.py --full` → 0 failures; no editor errors in the touched files.
+
+### 7.G Merge the two SVG asset trees into one (DONE)
+- The shipped app carried two parallel SVG folders: `app/assets/svg/` (63 insert-arrangement files `d38999_NN-NN.svg`) and `app/assets/d38999/svg/` (77 connector face/profile/shell graphics). Only the second was live — the insert viewer renders each arrangement **inline** via `createElementNS`, and no code referenced `assets/svg/` (the 63 paths existed only as the dead `"svg"` field inside embedded `insert_arrangements.json`).
+- Collapsed to a single `app/assets/svg/` holding just the 77 used graphics: renamed source `assets/d38999/svg/` → `assets/svg/`; rewrote the contiguous `assets/d38999/svg/` prefix to `assets/svg/` across `app/app.js` (11 refs), `app/converter.js` (2), and the `file` fields in `data/d38999_visual_assets.json` (43) + 3 research docs; updated `scripts/build_app.py` to copy the single `assets/svg/` source and `rmtree` `app/assets/` each build (idempotent, no stale files); fixed the `SRC_SVG`/`APP_SVG` path constants in `scripts/smoke_test_connectors.py`.
+- Verified: `app/assets/` now contains only `svg/` (77 files); zero residual `assets/d38999` strings in `app/`/`data/`/`scripts/`; all 20 code-referenced + all `visual_assets` SVG paths resolve on disk.
+- Validated: build + `smoke_test_connectors.py --full` + `manufacturer_catalog_smoke_test.py --full` → 0 failures (5 + 4 benign warnings); no editor errors.
+- Known follow-up (data pipeline, out of scope): `scripts/extract_arrangements.py` still writes insert SVGs to `app/assets/svg/` and a stale `app/data/`; both are reset by the next `build_app.py` (rebuilds `app/assets/` clean, prunes `app/data/`). The dead `"svg"` field in `insert_arrangements.json` remains harmless metadata.
+
+### 7.D Slim large embedded datasets
+- `federalconnectors_secondary_source.json` (2.6 MB): emit a build-time slim variant carrying only the fields the app reads (`entries[].normalizedPartNumber`/`partNumber` + `importableOverlaps`), dropping raw crawl metadata.
+- `d38999_valid_part_numbers.json` (14.5 MB): audit render/validate fields vs. provenance-only fields; move provenance to a build-time sidecar so the embedded copy stays lean.
+
+### 7.E Consolidate the PN-source family
+- `d38999_verified_part_numbers.json`, `d38999_part_number_examples.json`, `d38999_federalconnectors_secondary_source.json`, and `qpl_1122_part_numbers.json` all feed `build_valid_d38999_pns.py`. Keep them as source-of-truth inputs in `data/`, but once 7.D's provenance sidecar exists, stop embedding the cross-check sources separately — `validPartNumbers` becomes the single merged runtime DB.
+
+### 7.F Repo hygiene for the 54 MB environment audit
+- `d38999_environment_classification.json` is regenerable from `scripts/d38999_environment.py` and already excluded from the app. Option: gitignore + document regeneration, or store gzipped, to drop 54 MB from the working tree.
+
+### Sequencing within Phase 7
+7.A (done) → 7.C (done) → 7.B (done) → 7.G (done) → 7.D → 7.E → 7.F. Validate every step with `python3 scripts/build_app.py`, `smoke_test_connectors.py --full`, `manufacturer_catalog_smoke_test.py --full`, and `environment_smoke_test.py` (for 7.F).
 
 ---
 
