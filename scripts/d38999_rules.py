@@ -1,3 +1,37 @@
+"""D38999 → manufacturer P/N conversion rules.
+
+Documented catalog gaps (verified against the manufacturer PDFs in the
+session catalogs directory; not implemented because no clear ordering
+pattern exists in the published catalog text):
+
+* Glenair ``233-100`` Series III environmental — catalog uses ``233-100``
+  only as the hermetic connector-type code (with shell styles H2/H7/H5/H8)
+  and ``233-105`` as the environmental connector-type code (already
+  implemented). There is no ``233-100`` environmental variant in the
+  Glenair MIL-DTL-38999 Series I–IV PDF, so a separate env rule would be
+  invented; we instead keep ``233-105 Series III environmental``.
+* Amphenol composite hermetic (``CTV…H``) — the Amphenol Series III
+  catalog only documents composite ``CTV/CTVP`` parts for /20, /24, /26
+  (commercial environmental). Hermetic /21, /23, /25, /27 are listed only
+  as stainless ``TVPS02Y/TVS07Y/TVSIY/TVSHIY``. No composite hermetic
+  ordering table is published, so no rule is added.
+* Amphenol ``TVPS00H…`` — no such prefix appears in the Amphenol Series
+  III catalog; ``TVPS00R…`` is environmental (already implemented under
+  ``TV Series III aluminum commercial``).
+* ITT Cannon ``KJB`` composite ``/24`` (jam nut) — the composite KJB
+  ordering page in ``ITT-Cannon-38999-Series-I-II-III.pdf`` explicitly
+  lists only shell styles 0 (wall mount) and 6 (straight plug). The
+  shared KJA/KJB aluminum/stainless page additionally documents /24
+  (``KJB7``) but only for the metal-shell finishes F/G/W/Z, which are
+  already covered by ``KJA Series III aluminum/stainless``. No composite
+  /24 ordering pattern is published.
+* Conesys AE4 hermetic ``/41`` (wall mount) is documented in the catalog
+  ToC but the part-number development table omits /41 in favor of
+  /43 / /45 / /47-or-/48. The existing ``Aero-Electric AE4 Series IV
+  hermetic`` rule already includes /41 through /48 per the catalog ToC,
+  with the table typo noted.
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -264,11 +298,11 @@ RULES: list[dict[str, Any]] = [
         "supported_contacts": list("PSABHJ"),
         "supported_keys": list("NABCDE"),
         "styles": {
-            "20": {"description": "Wall mount receptacle", "prefix_by_finish": {"F": "TVPS00RF-", "W": "TVP00RW-", "T": "TVP00DT-", "Z": "TVP00ZN-", "K": "TVPS00RK-", "S": "TVPS00RS-"}},
-            "24": {"description": "Jam nut receptacle", "prefix_by_finish": {"F": "TVS07RF-", "W": "TV07RW-", "T": "TV07DT-", "Z": "TV07ZN-", "K": "TVS07RK-", "S": "TVS07RS-"}},
-            "26": {"description": "Straight plug", "prefix_by_finish": {"F": "TVS06RF-", "W": "TV06RW-", "T": "TV06DT-", "Z": "TV06ZN-", "K": "TVS06RK-", "S": "TVS06RS-"}},
+            "20": {"description": "Wall mount receptacle", "prefix_by_finish": {"F": "TVPS00RF-", "W": "TVP00RW-", "T": "TVP00DT-", "Z": "TVP00DZ-", "K": "TVPS00RK-", "S": "TVPS00RS-", "B": "TVPS00RB-", "L": "TVPS00RL-"}},
+            "24": {"description": "Jam nut receptacle", "prefix_by_finish": {"F": "TVS07RF-", "W": "TV07RW-", "T": "TV07DT-", "Z": "TV07DZ-", "K": "TVS07RK-", "S": "TVS07RS-", "B": "TVS07RB-", "L": "TVS07RL-"}},
+            "26": {"description": "Straight plug", "prefix_by_finish": {"F": "TVS06RF-", "W": "TV06RW-", "T": "TV06DT-", "Z": "TV06DZ-", "K": "TVS06RK-", "S": "TVS06RS-", "B": "TVS06RB-", "L": "TVS06RL-"}},
         },
-        "notes": "TV aluminum shell commercial prefixes from Amphenol Socapex catalog_tv_ctv-1771941.pdf page 62. Class Z = black zinc nickel (ZN suffix), K = passivated stainless, S = nickel stainless.",
+        "notes": "TV/TVS Series III commercial prefixes from Amphenol_D38999_Series_III.pdf page 43-44. Class W=OD cadmium, T=Durmalon, Z=black zinc-nickel (Amphenol prints as DZ suffix, NOT ZN), K=passivated SS firewall, S=Ni-plated SS firewall, B=marine bronze, L=Ni-plated SS non-firewall.",
     },
     {
         "manufacturer": "Amphenol",
@@ -297,8 +331,9 @@ RULES: list[dict[str, Any]] = [
             "21": {"description": "Square flange hermetic receptacle", "prefix_by_finish": {"Y": "TVPS02Y-", "N": "TVPS02YN-"}},
             "23": {"description": "Jam nut hermetic receptacle", "prefix_by_finish": {"Y": "TVS07Y-", "N": "TVS07YN-"}},
             "25": {"description": "Solder mount hermetic receptacle", "prefix_by_finish": {"Y": "TVSIY-", "N": "TVSIYN-"}},
+            "27": {"description": "Weld mount hermetic receptacle", "prefix_by_finish": {"Y": "TVSHIY-", "N": "TVSHIYN-"}},
         },
-        "notes": "TVS hermetic receptacles. Class Y = stainless passivated; class N = stainless nickel plated. Source: catalog_tv_ctv-1771941.pdf pages 58 and 62.",
+        "notes": "TVS hermetic receptacles. Class Y = stainless passivated; class N = stainless nickel plated. /27 weld mount uses TVSHIY/TVSHIYN per Amphenol_D38999_Series_III.pdf page 70. Source: catalog_tv_ctv-1771941.pdf pages 58 and 62.",
     },
     {
         "manufacturer": "Conesys",
