@@ -68,7 +68,13 @@ MIL_SHELL_TYPES = {
 }
 
 KNOWN_CLASSES = [
+    "AA",
+    "AB",
+    "A",
+    "B",
     "C",
+    "D",
+    "E",
     "F",
     "G",
     "H",
@@ -77,8 +83,11 @@ KNOWN_CLASSES = [
     "L",
     "M",
     "N",
+    "R",
     "S",
     "T",
+    "U",
+    "V",
     "W",
     "Y",
     "Z",
@@ -132,23 +141,30 @@ def parse_d38999_pin(pin: str) -> ParsedPin:
     if series is None:
         raise ValueError(f"Unsupported D38999 shell type /{shell_type}")
 
+    # Try each known class candidate in longest-first order and accept the
+    # first one whose remainder also parses cleanly. This handles overlapping
+    # prefixes like "A" vs "AA" / "AB" (per the standard, double-letter
+    # classes use a trailing hyphen that ``cleanD38999`` removes).
     service_class = None
+    shell_size_code = None
+    tail_match = None
+    rest_after_class = rest
     for code in sorted(KNOWN_CLASSES, key=len, reverse=True):
-        if rest.startswith(code):
-            service_class = code
-            rest = rest[len(code):]
-            break
+        if not rest.startswith(code):
+            continue
+        candidate_rest = rest[len(code):]
+        if not candidate_rest or candidate_rest[0] not in SHELL_SIZE_NUMBERS:
+            continue
+        candidate_tail = re.match(r"^(\d{1,2})([A-Z])([A-Z])?$", candidate_rest[1:])
+        if not candidate_tail:
+            continue
+        service_class = code
+        shell_size_code = candidate_rest[0]
+        tail_match = candidate_tail
+        rest_after_class = candidate_rest[1:]
+        break
     if service_class is None:
         raise ValueError(f"Cannot parse service class in {original!r}")
-
-    if not rest or rest[0] not in SHELL_SIZE_NUMBERS:
-        raise ValueError(f"Cannot parse shell-size code in {original!r}")
-    shell_size_code = rest[0]
-    rest = rest[1:]
-
-    tail_match = re.match(r"^(\d{1,2})([A-Z])([A-Z])?$", rest)
-    if not tail_match:
-        raise ValueError(f"Cannot parse insert/contact/key fields in {original!r}")
 
     insert, contact, key = tail_match.groups()
     key = key or "N"
@@ -244,15 +260,45 @@ RULES: list[dict[str, Any]] = [
         "product_line": "TV Series III aluminum commercial",
         "format": "amphenol_prefix",
         "series": "III",
-        "confidence": "exact for listed aluminum finishes",
+        "confidence": "exact from catalog_tv_ctv-1771941.pdf page 62",
         "supported_contacts": list("PSABHJ"),
         "supported_keys": list("NABCDE"),
         "styles": {
-            "20": {"description": "Wall mount receptacle", "prefix_by_finish": {"F": "TVPS00RF-", "W": "TVP00RW-", "T": "TVP00DT-", "Z": "TVP00DZ-"}},
-            "24": {"description": "Jam nut receptacle", "prefix_by_finish": {"F": "TVS07RF-", "W": "TV07RW-", "T": "TV07DT-", "Z": "TV07DZ-"}},
-            "26": {"description": "Straight plug", "prefix_by_finish": {"F": "TVS06RF-", "W": "TV06RW-", "T": "TV06DT-", "Z": "TV06DZ-"}},
+            "20": {"description": "Wall mount receptacle", "prefix_by_finish": {"F": "TVPS00RF-", "W": "TVP00RW-", "T": "TVP00DT-", "Z": "TVP00ZN-", "K": "TVPS00RK-", "S": "TVPS00RS-"}},
+            "24": {"description": "Jam nut receptacle", "prefix_by_finish": {"F": "TVS07RF-", "W": "TV07RW-", "T": "TV07DT-", "Z": "TV07ZN-", "K": "TVS07RK-", "S": "TVS07RS-"}},
+            "26": {"description": "Straight plug", "prefix_by_finish": {"F": "TVS06RF-", "W": "TV06RW-", "T": "TV06DT-", "Z": "TV06ZN-", "K": "TVS06RK-", "S": "TVS06RS-"}},
         },
-        "notes": "Commercial prefixes are from the Amphenol Series III how-to-order table. Composite, stainless and hermetic family names are documented, but the exact finish-specific commercial prefixes were not complete enough in the extracted text to automate safely.",
+        "notes": "TV aluminum shell commercial prefixes from Amphenol Socapex catalog_tv_ctv-1771941.pdf page 62. Class Z = black zinc nickel (ZN suffix), K = passivated stainless, S = nickel stainless.",
+    },
+    {
+        "manufacturer": "Amphenol",
+        "product_line": "CTV Series III composite commercial",
+        "format": "amphenol_prefix",
+        "series": "III",
+        "confidence": "exact from catalog_tv_ctv-1771941.pdf page 62",
+        "supported_contacts": list("PSABHJ"),
+        "supported_keys": list("NABCDE"),
+        "styles": {
+            "20": {"description": "Wall mount receptacle", "prefix_by_finish": {"J": "CTVP00RW-", "M": "CTVPS00RF-"}},
+            "24": {"description": "Jam nut receptacle", "prefix_by_finish": {"J": "CTV07RW-", "M": "CTVS07RF-"}},
+            "26": {"description": "Straight plug", "prefix_by_finish": {"J": "CTV06RW-", "M": "CTVS06RF-"}},
+        },
+        "notes": "CTV composite shell. Class J = olive drab cadmium 175°C; class M = electroless nickel 200°C. Source: catalog_tv_ctv-1771941.pdf page 62.",
+    },
+    {
+        "manufacturer": "Amphenol",
+        "product_line": "TV Series III hermetic",
+        "format": "amphenol_prefix",
+        "series": "III",
+        "confidence": "exact from catalog_tv_ctv-1771941.pdf page 62",
+        "supported_contacts": list("PXC"),
+        "supported_keys": list("NABCDE"),
+        "styles": {
+            "21": {"description": "Square flange hermetic receptacle", "prefix_by_finish": {"Y": "TVPS02Y-", "N": "TVPS02YN-"}},
+            "23": {"description": "Jam nut hermetic receptacle", "prefix_by_finish": {"Y": "TVS07Y-", "N": "TVS07YN-"}},
+            "25": {"description": "Solder mount hermetic receptacle", "prefix_by_finish": {"Y": "TVSIY-", "N": "TVSIYN-"}},
+        },
+        "notes": "TVS hermetic receptacles. Class Y = stainless passivated; class N = stainless nickel plated. Source: catalog_tv_ctv-1771941.pdf pages 58 and 62.",
     },
     {
         "manufacturer": "Conesys",
@@ -413,11 +459,23 @@ RULES: list[dict[str, Any]] = [
         "format": "te_dts",
         "series": "III",
         "confidence": "exact from TE Deutsch QRG",
-        "supported_contacts": list("PSABHJCDXZ"),
+        "supported_contacts": list("PSABHJ"),
         "supported_keys": list("NABCDE"),
-        "finishes": {code: code for code in "FGTWZKSLYNH"},
-        "styles": {"20": "20", "24": "24", "26": "26", "21": "20", "23": "24", "25": "21", "27": "23"},
-        "notes": "DTS commercial uses numeric shell size. Hermetic styles remap to DTS 20/24/21/23 per TE table.",
+        "finishes": {code: code for code in "FGTWZKSL"},
+        "styles": {"20": "20", "24": "24", "26": "26"},
+        "notes": "DTS commercial uses numeric shell size matching the D38999 slash-sheet.",
+    },
+    {
+        "manufacturer": "TE Deutsch",
+        "product_line": "DTS Series III hermetic",
+        "format": "te_dts",
+        "series": "III",
+        "confidence": "exact from TE Deutsch QRG; prefix overloaded with environmental siblings — disambiguated by hermetic finishes (Y/N/H)",
+        "supported_contacts": list("PSCDXZ"),
+        "supported_keys": list("NABCDE"),
+        "finishes": {code: code for code in "YNH"},
+        "styles": {"21": "20", "23": "24", "25": "21", "27": "23"},
+        "notes": "Hermetic DTS reuses environmental prefixes (/21→DTS20, /23→DTS24, /25→DTS21, /27→DTS23). Restricted to hermetic finishes Y/N/H so reverse-parse can recover the correct slash sheet.",
     },
     {
         "manufacturer": "TE Deutsch",
