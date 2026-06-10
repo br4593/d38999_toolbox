@@ -780,12 +780,25 @@
       const normalized = node.querySelector(".normalized");
       const sourceLine = node.querySelector(".source-line");
       const copyD38999 = node.querySelector(".copy-d38999");
+      const openInDecoder = node.querySelector(".open-in-decoder");
       const decodeGrid = node.querySelector(".decode-grid");
       const tbody = node.querySelector("tbody");
 
       normalized.textContent = result.parsed.normalized;
       sourceLine.textContent = payload.mode === "manufacturer" ? `Matched ${result.source}` : milShellTypes[result.parsed.shellType] || "D38999";
       copyD38999.addEventListener("click", () => copyText(result.parsed.normalized, copyD38999));
+      if (openInDecoder) {
+        openInDecoder.addEventListener("click", () => {
+          const pn = result.parsed.normalized;
+          if (!pn) return;
+          const partInput = document.getElementById("partNumberInput");
+          if (partInput) partInput.value = pn;
+          const tabBtn = document.querySelector('[data-tab="decoder"]');
+          if (tabBtn) tabBtn.click();
+          const decBtn = document.getElementById("decodeButton");
+          if (decBtn) decBtn.click();
+        });
+      }
 
       decodedFields(result.parsed).forEach(([label, value]) => {
         const wrapper = document.createElement("div");
