@@ -1,6 +1,22 @@
 (function () {
   "use strict";
 
+  // i18n bridge: app.js reads translated UI-chrome strings through T()/Tf().
+  // Falls back to the literal key/fallback when i18n.js is absent.
+  const I18N = window.D38999_I18N || {
+    t: function (k, f) { return f != null ? f : k; },
+    onChange: function () {},
+    getLang: function () { return "en"; },
+    isRTL: function () { return false; },
+    apply: function () {},
+  };
+  function T(key, fallback) { return I18N.t(key, fallback); }
+  function Tf(key, params) {
+    return T(key).replace(/\{(\w+)\}/g, function (_match, name) {
+      return params && params[name] != null ? params[name] : "";
+    });
+  }
+
   const toolboxData = window.D38999_TOOLBOX_DATA || {};
   const DATA = toolboxData.pinout || window.D38999_DATA || {};
   const converterData = toolboxData.converter || {};
@@ -229,12 +245,12 @@
   };
 
   const SHELL_PROFILE_ASSET = {
-    plug: "assets/d38999/svg/d38999-straight-plug.svg",
-    wall_receptacle: "assets/d38999/svg/d38999-wall-mount-receptacle.svg",
-    jamnut_receptacle: "assets/d38999/svg/d38999-jam-nut-receptacle.svg",
-    box_receptacle: "assets/d38999/svg/d38999-receptacle-generic.svg",
-    cover: "assets/d38999/svg/d38999-backshell-generic.svg",
-    inline_receptacle: "assets/d38999/svg/d38999-receptacle-generic.svg",
+    plug: "assets/svg/d38999-straight-plug.svg",
+    wall_receptacle: "assets/svg/d38999-wall-mount-receptacle.svg",
+    jamnut_receptacle: "assets/svg/d38999-jam-nut-receptacle.svg",
+    box_receptacle: "assets/svg/d38999-receptacle-generic.svg",
+    cover: "assets/svg/d38999-backshell-generic.svg",
+    inline_receptacle: "assets/svg/d38999-receptacle-generic.svg",
   };
 
   const els = {
@@ -802,15 +818,15 @@
       case "EXACT_PN_MATCH":
       case "VERIFIED_EXISTS":
       case "SECONDARY_SOURCE_EXACT":
-        return "Exact part-number match";
+        return T("val.exact");
       case "VALID_FORMAT_BUT_NOT_CONFIRMED":
-        return "Format valid, listing unconfirmed";
+        return T("val.formatValid");
       case "INVALID_COMBINATION":
-        return "Unsupported combination";
+        return T("val.unsupported");
       case "MANUFACTURER_SPECIFIC_UNCERTAIN":
-        return "Needs manufacturer review";
+        return T("val.needsReview");
       default:
-        return "Missing catalog data";
+        return T("val.missingData");
     }
   }
 
@@ -839,7 +855,7 @@
       return exactCatalogHitHtml(validation, options.partNumber || "", { hidePartNumber: options.hidePartNumber !== false });
     }
     const bits = [validationLabel(validation.status)];
-    if (Number.isFinite(options.confidence)) bits.push(`confidence ${(options.confidence * 100).toFixed(0)}%`);
+    if (Number.isFinite(options.confidence)) bits.push(Tf("val.confidence", { pct: (options.confidence * 100).toFixed(0) }));
     return validationBadgeHtml(validation.status, bits.join(" | "));
   }
 
@@ -887,13 +903,13 @@
       .filter((filterKey) => environmentScore(part, filterKey) >= 3);
     if (!keys.length) return "";
     return `
-      <div class="exact-catalog-hit-subtitle">Environment fit</div>
+      <div class="exact-catalog-hit-subtitle">${escapeHtml(T("env.fit"))}</div>
       <div class="environment-badge-row">
         ${keys.map((filterKey) => {
           const score = environmentScore(part, filterKey);
           const conditional = score === 3;
           const label = conditional
-            ? `${environmentFilterLabel(filterKey, true)} (conditional)`
+            ? Tf("env.conditional", { label: environmentFilterLabel(filterKey, true) })
             : environmentFilterLabel(filterKey, true);
           return `<span class="environment-badge${conditional ? " conditional" : ""}">${escapeHtml(label)}</span>`;
         }).join("")}
@@ -912,7 +928,7 @@
     const secondary = validation?.secondaryPart;
     if (!exactPart && !verified && !secondary) return "";
     const hidePartNumber = Boolean(options.hidePartNumber);
-    const title = "Exact part-number match";
+    const title = T("val.exact");
     return `<div class="exact-catalog-hit">
       <div class="exact-catalog-hit-title">${escapeHtml(title)}</div>
       ${hidePartNumber ? "" : `<div class="exact-catalog-hit-part mono">${escapeHtml(partNumberOverride || exactPart?.partNumber || verified?.partNumber || secondary?.partNumber || "")}</div>`}
@@ -979,8 +995,8 @@
   function init() {
     const converterRuleCount = (converterData.rules || []).length;
     els.dataStatus.textContent = converterRuleCount
-      ? `${arrangements.length} arrangements loaded | ${converterRuleCount} converter rules loaded`
-      : `${arrangements.length} arrangements loaded`;
+      ? Tf("status.dataBoth", { count: arrangements.length, rules: converterRuleCount })
+      : Tf("status.dataArrangements", { count: arrangements.length });
     populateFilters();
     bindEvents();
     renderPartNumberGuide(null);
@@ -991,27 +1007,56 @@
     renderDecoded(null);
     renderComparison();
     initRouting();
+    I18N.onChange(rerenderForLanguage);
+  }
+
+  // Repaint JS-generated content when the language changes. Static DOM text is
+  // already handled by i18n.js (applyTranslations) before listeners fire; this
+  // only refreshes content that app.js renders dynamically.
+  function rerenderForLanguage() {
+    const converterRuleCount = (converterData.rules || []).length;
+    els.dataStatus.textContent = converterRuleCount
+      ? Tf("status.dataBoth", { count: arrangements.length, rules: converterRuleCount })
+      : Tf("status.dataArrangements", { count: arrangements.length });
+    renderRecentStrips();
+    const ruggedActive = Boolean(state.decoded && state.decoded.ok && state.decoded.rugged_io);
+    if (state.selectedArrangement && !ruggedActive) {
+      els.selectedStatus.textContent = Tf("status.selected", {
+        id: state.selectedArrangement.id,
+        count: state.selectedArrangement.contact_count,
+      });
+      renderSourceInfo();
+      renderPinDetail();
+    }
+    renderDecoded(state.decoded);
+    renderPartNumberGuide(state.decoded);
+    renderComparison();
+    if (state.activeTab === "catalog") renderCatalog();
+    if (state.activeTab === "io") renderIoCatalog();
+    if (state.activeTab === "mating") renderMatingPanel();
+    if (state.activeTab === "build" && state.buildRendered) renderBuildConnector();
+    if (state.activeTab === "manual" && state.manualRendered) renderManual();
   }
 
   function populateFilters() {
     const slashSheets = Object.keys(defs.slash_sheets || {}).sort(naturalCompare);
-    fillSelect(els.slashSheetFilter, [["", "All / insert arrangements"], ...slashSheets.map((value) => [value, `D38999${value}`])]);
+    fillSelect(els.slashSheetFilter, [["", T("filter.allInsert")], ...slashSheets.map((value) => [value, `D38999${value}`])]);
 
     const shellSizes = unique(arrangements.map((arr) => arr.shell_size)).sort((a, b) => Number(a) - Number(b));
-    fillSelect(els.shellFilter, [["", "All"], ...shellSizes.map((value) => [value, value])]);
+    fillSelect(els.shellFilter, [["", T("common.all")], ...shellSizes.map((value) => [value, value])]);
 
     const counts = unique(arrangements.map((arr) => String(arr.contact_count))).sort((a, b) => Number(a) - Number(b));
-    fillSelect(els.countFilter, [["", "All"], ...counts.map((value) => [value, value])]);
+    fillSelect(els.countFilter, [["", T("common.all")], ...counts.map((value) => [value, value])]);
 
     const sizes = unique(
       arrangements.flatMap((arr) => arr.contact_size_notes || []).map((note) => note.size)
     ).sort(naturalCompare);
-    fillSelect(els.sizeFilter, [["", "All"], ...sizes.map((value) => [value, value])]);
+    fillSelect(els.sizeFilter, [["", T("common.all")], ...sizes.map((value) => [value, value])]);
 
     const types = unique(
       arrangements.flatMap((arr) => arr.contacts || []).map((contact) => contact.type)
     ).sort(naturalCompare);
-    fillSelect(els.typeFilter, [["", "All"], ...types.map((value) => [value, value])]);
+    fillSelect(els.typeFilter, [["", T("common.all")], ...types.map((value) => [value, value])]);
 
     const arrangementOptions = arrangements.map((arr) => [arr.id, arr.id]);
     fillSelect(els.compareA, arrangementOptions);
@@ -1087,16 +1132,30 @@
   function bindThemeToggle() {
     const toggle = document.getElementById("themeToggle");
     if (!toggle) return;
+    const THEMES = ["light", "dark", "blueprint", "blueprint-dark"];
+    const LABELS = {
+      "light":           "Theme: Light (click for Dark)",
+      "dark":            "Theme: Dark (click for Blueprint)",
+      "blueprint":       "Theme: Blueprint (click for Blueprint Dark)",
+      "blueprint-dark":  "Theme: Blueprint Dark (click for Light)",
+    };
     const apply = (theme) => {
+      if (!THEMES.includes(theme)) theme = "light";
       document.documentElement.setAttribute("data-theme", theme);
-      toggle.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+      const isDarkLike = theme === "dark" || theme === "blueprint-dark";
+      toggle.setAttribute("aria-pressed", isDarkLike ? "true" : "false");
+      toggle.setAttribute("title", LABELS[theme]);
+      toggle.setAttribute("aria-label", LABELS[theme]);
     };
     toggle.addEventListener("click", () => {
-      const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      const current = document.documentElement.getAttribute("data-theme") || "light";
+      const idx = THEMES.indexOf(current);
+      const next = THEMES[(idx + 1) % THEMES.length] || "light";
       apply(next);
       try { localStorage.setItem("d38999.theme", next); } catch (e) { /* storage unavailable */ }
     });
-    // Track system changes only while the user has no explicit preference.
+    // Track system changes only while the user has no explicit preference,
+    // and only between the two non-blueprint base themes.
     if (window.matchMedia) {
       const mq = window.matchMedia("(prefers-color-scheme: dark)");
       const onChange = (event) => {
@@ -1159,7 +1218,7 @@
       return `
         <span class="recent-item${isFav ? " is-fav" : ""}">
           <button type="button" class="example-chip recent-chip" data-recent-pn="${escapeHtml(pn)}" title="${escapeHtml(pn)}">${escapeHtml(display)}</button>
-          <button type="button" class="recent-star" data-fav-pn="${escapeHtml(pn)}" aria-label="${isFav ? "Remove favorite" : "Add favorite"}" aria-pressed="${isFav}">${isFav ? "\u2605" : "\u2606"}</button>
+          <button type="button" class="recent-star" data-fav-pn="${escapeHtml(pn)}" aria-label="${isFav ? T("recent.removeFav") : T("recent.addFav")}" aria-pressed="${isFav}">${isFav ? "\u2605" : "\u2606"}</button>
         </span>`;
     }).join("");
   }
@@ -1333,19 +1392,19 @@
   function openShortcutsOverlay() {
     if (document.getElementById("shortcutsOverlay")) return;
     const rows = [
-      ["/", "Focus the global search box"],
-      ["?", "Show or hide this shortcuts panel"],
-      ["1 – 8", "Jump to Home, Decode, Mating, Arrangements, I/O Connectors, Converter, Build or Manual"],
-      ["[ &nbsp; ]", "Step to the previous / next insert arrangement"],
-      ["Esc", "Close this panel or clear focus"],
+      ["/", T("sc.search")],
+      ["?", T("sc.toggle")],
+      ["1 – 8", T("sc.tabs")],
+      ["[ &nbsp; ]", T("sc.step")],
+      ["Esc", T("sc.close")],
     ];
     const overlay = document.createElement("div");
     overlay.className = "shortcuts-overlay";
     overlay.id = "shortcutsOverlay";
     overlay.innerHTML =
-      '<div class="shortcuts-card" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">' +
-      '<div class="shortcuts-head"><h2>Keyboard shortcuts</h2>' +
-      '<button class="shortcuts-close" type="button" aria-label="Close">\u00d7</button></div>' +
+      '<div class="shortcuts-card" role="dialog" aria-modal="true" aria-label="' + escapeHtml(T("header.shortcutsAria")) + '">' +
+      '<div class="shortcuts-head"><h2>' + escapeHtml(T("header.shortcutsAria")) + '</h2>' +
+      '<button class="shortcuts-close" type="button" aria-label="' + escapeHtml(T("common.close")) + '">\u00d7</button></div>' +
       '<table class="shortcuts-table"><tbody>' +
       rows
         .map((row) => {
@@ -1503,7 +1562,13 @@
 
     els.compareA.addEventListener("change", renderComparison);
     els.compareB.addEventListener("change", renderComparison);
-    els.labelsToggle.addEventListener("change", renderViewer);
+    els.labelsToggle.addEventListener("click", togglePinLabels);
+    els.labelsToggle.addEventListener("keydown", (ev) => {
+      if (ev.key === " " || ev.key === "Enter") {
+        ev.preventDefault();
+        togglePinLabels();
+      }
+    });
     els.outlineToggle.addEventListener("change", renderViewer);
     els.resetViewButton.addEventListener("click", resetView);
     els.pinSearchInput.addEventListener("input", searchPin);
@@ -1687,7 +1752,6 @@
     if (tabName === "catalog") renderCatalog();
     if (tabName === "io") renderIoCatalog();
     if (tabName === "mating") renderMatingPanel();
-    // Layout Designer initialises itself via layout-designer.js on first load
     window.scrollTo({ top: 0, behavior: "smooth" });
     syncRouteHash();
   }
@@ -1861,7 +1925,7 @@
     const card = document.createElement("div");
     card.className = "catalog-card catalog-card-rugged-io";
     const svgContent = entry.svg
-      ? `<img src="assets/d38999/svg/${entry.svg}" alt="${escapeHtml(entry.family)} face" class="catalog-face-img"/>`
+      ? `<img src="assets/svg/${entry.svg}" alt="${escapeHtml(entry.family)} face" class="catalog-face-img"/>`
       : `<div class="catalog-face-placeholder"><span>${escapeHtml(entry.family)}</span></div>`;
     const vendorLabel = ioVendorLabel(entry);
     const examples = ioExamplePns(entry);
@@ -1872,7 +1936,7 @@
       : "";
     const views = ioFamilyViews(entry);
     const viewsHtml = views.length > 1
-      ? `<div class="io-views-row"><span class="io-views-label">Views:</span>${views
+      ? `<div class="io-views-row"><span class="io-views-label">${escapeHtml(T("io.views"))}</span>${views
           .map((v) => `<span class="io-view-tag">${escapeHtml(v)}</span>`)
           .join("")}</div>`
       : "";
@@ -1884,7 +1948,7 @@
         <div class="catalog-card-id">${escapeHtml(entry.family)}</div>
         <div class="catalog-card-meta">
           <span>${escapeHtml(entry.interface)}</span>
-          <span>Shell ${escapeHtml(entry.shellSize)}</span>
+          <span>${escapeHtml(T("card.shell"))} ${escapeHtml(entry.shellSize)}</span>
         </div>
         <div class="catalog-card-meta" style="margin-top:2px">
           <span class="rugged-io-badge${vendorLabel === "Glenair" ? " glenair-badge" : ""}">${escapeHtml(vendorLabel)}</span>
@@ -1913,15 +1977,15 @@
     if (!entries.length) return;
     if (els.ioCategoryFilter) {
       const cats = IO_CATEGORY_ORDER.filter((c) => entries.some((e) => ioCategoryFor(e) === c));
-      fillSelect(els.ioCategoryFilter, [["", "All interfaces"], ...cats.map((c) => [c, c])]);
+      fillSelect(els.ioCategoryFilter, [["", T("io.allInterfaces")], ...cats.map((c) => [c, c])]);
     }
     if (els.ioVendorFilter) {
       const vendors = Array.from(new Set(entries.map(ioVendorLabel))).sort();
-      fillSelect(els.ioVendorFilter, [["", "All vendors"], ...vendors.map((v) => [v, v])]);
+      fillSelect(els.ioVendorFilter, [["", T("io.allVendors")], ...vendors.map((v) => [v, v])]);
     }
     if (els.ioShellFilter) {
       const shells = Array.from(new Set(entries.map((e) => e.shellSize))).sort((a, b) => Number(a) - Number(b));
-      fillSelect(els.ioShellFilter, [["", "Any"], ...shells.map((s) => [s, `Shell ${s}`])]);
+      fillSelect(els.ioShellFilter, [["", T("common.any")], ...shells.map((s) => [s, Tf("rugged.shellCaption", { size: s })])]);
     }
     _ioFiltersPopulated = true;
   }
@@ -1941,12 +2005,12 @@
     const totalAll = ruggedIoCatalogEntries().length;
     if (els.ioCount) {
       els.ioCount.textContent = entries.length === totalAll
-        ? `${totalAll} connectors`
-        : `${entries.length} of ${totalAll} connectors`;
+        ? Tf("io.countAll", { total: totalAll })
+        : Tf("io.countFiltered", { shown: entries.length, total: totalAll });
     }
     els.ioGrid.innerHTML = "";
     if (!entries.length) {
-      els.ioGrid.innerHTML = `<div class="catalog-empty">No I/O connectors match the current filters. <button type="button" class="io-clear-inline-btn">Clear filters</button></div>`;
+      els.ioGrid.innerHTML = `<div class="catalog-empty">${escapeHtml(T("io.empty"))}<button type="button" class="io-clear-inline-btn">${escapeHtml(T("common.clearFilters"))}</button></div>`;
       return;
     }
     // Group cards by interface category with section headings.
@@ -1978,8 +2042,8 @@
     const totalAll = arrangements.length;
     if (els.catalogCount) {
       els.catalogCount.textContent = totalCount === totalAll
-        ? `${totalAll} items`
-        : `${totalCount} of ${totalAll} items`;
+        ? Tf("catalog.countAll", { total: totalAll })
+        : Tf("catalog.countFiltered", { shown: totalCount, total: totalAll });
     }
 
     if (!els.catalogGrid) return;
@@ -1987,7 +2051,7 @@
 
     if (!sorted.length) {
       // Use event delegation on the grid to avoid accumulating listeners on re-render
-      els.catalogGrid.innerHTML = `<div class="catalog-empty">No arrangements match the current filters. <button type="button" class="clear-filters-inline-btn">Clear filters</button></div>`;
+      els.catalogGrid.innerHTML = `<div class="catalog-empty">${escapeHtml(T("catalog.empty"))}<button type="button" class="clear-filters-inline-btn">${escapeHtml(T("common.clearFilters"))}</button></div>`;
       return;
     }
 
@@ -2010,19 +2074,19 @@
       .join("");
 
     card.innerHTML = `
-      <div class="catalog-card-svg" title="Click to enlarge">
+      <div class="catalog-card-svg" title="${escapeHtml(T("card.enlarge"))}">
         <svg class="mini-connector-svg catalog-mini-svg" viewBox="${viewBox.join(" ")}" xmlns="http://www.w3.org/2000/svg" aria-label="Arrangement ${escapeHtml(arr.id)}">${svgMarkup}</svg>
       </div>
       <div class="catalog-card-body">
         <div class="catalog-card-id mono">${escapeHtml(arr.id)}</div>
         <div class="catalog-card-meta">
-          <span>${arr.contact_count} contacts</span>
-          <span>Shell ${escapeHtml(arr.shell_size)}</span>
+          <span>${escapeHtml(Tf("card.contacts", { count: arr.contact_count }))}</span>
+          <span>${escapeHtml(T("card.shell"))} ${escapeHtml(arr.shell_size)}</span>
         </div>
         <div class="catalog-size-pills">${sizePills}</div>
         <div class="catalog-card-footer">
-          <span class="catalog-service">Svc ${escapeHtml(arr.service_rating || "?")}</span>
-          <button type="button" class="catalog-open-btn">Decoder →</button>
+          <span class="catalog-service">${escapeHtml(T("card.svc"))} ${escapeHtml(arr.service_rating || "?")}</span>
+          <button type="button" class="catalog-open-btn">${escapeHtml(T("card.openDecoder"))}</button>
         </div>
       </div>
     `;
@@ -2078,29 +2142,29 @@
         <div class="lightbox-info-pane">
           <div class="lightbox-header">
             <div class="lightbox-id mono">${escapeHtml(arr.id)}</div>
-            <button type="button" class="lightbox-close" aria-label="Close">✕</button>
+            <button type="button" class="lightbox-close" aria-label="${escapeHtml(T("common.close"))}">✕</button>
           </div>
           <div class="lightbox-stat-grid">
             <div class="lightbox-stat">
-              <div class="lightbox-stat-label">Contacts</div>
+              <div class="lightbox-stat-label">${escapeHtml(T("common.contacts"))}</div>
               <div class="lightbox-stat-value">${arr.contact_count}</div>
             </div>
             <div class="lightbox-stat">
-              <div class="lightbox-stat-label">Shell</div>
+              <div class="lightbox-stat-label">${escapeHtml(T("card.shell"))}</div>
               <div class="lightbox-stat-value">${escapeHtml(arr.shell_size)}</div>
             </div>
             <div class="lightbox-stat">
-              <div class="lightbox-stat-label">Service</div>
+              <div class="lightbox-stat-label">${escapeHtml(T("lightbox.service"))}</div>
               <div class="lightbox-stat-value">${escapeHtml(arr.service_rating || "—")}</div>
             </div>
             <div class="lightbox-stat">
-              <div class="lightbox-stat-label">Source p.</div>
+              <div class="lightbox-stat-label">${escapeHtml(T("lightbox.sourcePage"))}</div>
               <div class="lightbox-stat-value">${arr.source_page || "—"}</div>
             </div>
           </div>
           <div class="lightbox-pills">${sizePills}</div>
           <div class="lightbox-actions">
-            <button type="button" class="lightbox-primary-btn">Open in Decoder →</button>
+            <button type="button" class="lightbox-primary-btn">${escapeHtml(T("lightbox.openDecoder"))}</button>
           </div>
         </div>
       </div>
@@ -2134,7 +2198,7 @@
   }
 
   function sizeSummary(arr) {
-    return (arr.contact_size_notes || []).map((note) => `${note.count}x #${note.size}`).join(", ") || "size unknown";
+    return (arr.contact_size_notes || []).map((note) => `${note.count}x #${note.size}`).join(", ") || T("size.unknown");
   }
 
   function contactCurrentForSize(sizeToken) {
@@ -2208,7 +2272,7 @@
     renderViewer();
     renderSourceInfo();
     renderPinDetail();
-    els.selectedStatus.textContent = `${arrangement.id} | ${arrangement.contact_count} contacts`;
+    els.selectedStatus.textContent = Tf("status.selected", { id: arrangement.id, count: arrangement.contact_count });
     // Update active highlight in catalog grid without full re-render
     document.querySelectorAll(".catalog-card").forEach((card) => {
       const idEl = card.querySelector(".catalog-card-id");
@@ -2221,7 +2285,7 @@
   function renderSourceInfo() {
     const arr = state.selectedArrangement;
     if (!arr) return;
-    els.viewerTitle.textContent = `Insert Arrangement ${arr.id}`;
+    els.viewerTitle.textContent = Tf("viewer.insertArrangementTitle", { id: arr.id });
     const review = reviewById.get(arr.id);
     const warning = review?.issues?.length ? ` | review: ${review.issues.length} issue(s)` : "";
     const decodedNote = state.decoded?.ok && state.decoded.arrangement_id === arr.id
@@ -2548,17 +2612,24 @@
   }
 
   function shouldRenderLabel(contact) {
-    const labelMode = els.labelsToggle.value;
-    if (labelMode === "all") return true;
-    if (labelMode === "off") return false;
-    if (labelMode === "smart") {
-      if (state.selectedContactIndex === contact._index || state.pinMatches.has(contact._key)) return true;
-      const count = state.selectedArrangement?.contact_count || currentContacts().length || 0;
-      if (count <= 30) return true;
-      if (count <= 60) return ["8", "10", "12"].includes(gaugeToken(contact));
-      return false;
-    }
-    return state.selectedContactIndex === contact._index || state.pinMatches.has(contact._key);
+    if (!labelsAreOn()) return false;
+    return true;
+  }
+
+  function labelsAreOn() {
+    const el = els.labelsToggle;
+    if (!el) return false;
+    if (el.dataset && typeof el.dataset.state === "string") return el.dataset.state === "on";
+    return el.value === "on" || el.value === "all";
+  }
+
+  function togglePinLabels() {
+    const el = els.labelsToggle;
+    if (!el) return;
+    const next = labelsAreOn() ? "off" : "on";
+    el.dataset.state = next;
+    el.setAttribute("aria-checked", next === "on" ? "true" : "false");
+    renderViewer();
   }
 
   function gaugeToken(contact) {
@@ -2575,15 +2646,15 @@
   function contactSymbolRadius(contact) {
     const base = pinRadius(contact);
     const scale = {
-      "22d": 0.46,
-      "20": 0.68,
-      "16": 0.94,
-      "12": 1.16,
-      "10": 1.44,
-      "8": 1.8,
-      unknown: 0.85,
-    }[gaugeToken(contact)] || 0.85;
-    return Math.max(0.45, base * scale);
+      "22d": 0.50,
+      "20": 0.74,
+      "16": 1.04,
+      "12": 1.34,
+      "10": 1.66,
+      "8": 2.05,
+      unknown: 0.92,
+    }[gaugeToken(contact)] || 0.92;
+    return Math.max(0.5, base * scale);
   }
 
   function appendContactSymbol(group, contact, radius) {
@@ -2726,12 +2797,12 @@
     const outlineRadius = arrangement?.outline?.radius || 24;
     const n = arrangement?.contact_count || 1;
     let factor;
-    if (n <= 5) factor = 0.058;
-    else if (n <= 30) factor = 0.044;
-    else if (n <= 80) factor = 0.034;
-    else factor = 0.027;
+    if (n <= 5) factor = 0.068;
+    else if (n <= 30) factor = 0.052;
+    else if (n <= 80) factor = 0.040;
+    else factor = 0.032;
     const radius = outlineRadius * factor;
-    return Math.max(Math.max(0.55, outlineRadius * 0.02), Math.min(Math.min(2.8, outlineRadius * 0.085), radius));
+    return Math.max(Math.max(0.6, outlineRadius * 0.023), Math.min(Math.min(3.2, outlineRadius * 0.10), radius));
   }
 
   function labelFontSize(contact) {
@@ -2845,15 +2916,15 @@
     const contacts = currentContacts();
     const contact = contacts[state.selectedContactIndex];
     if (!contact) {
-      els.pinDetailHeader.textContent = "Select a pin.";
+      els.pinDetailHeader.textContent = T("decoder.selectPin");
       return;
     }
     const source = labelSource(contact);
     els.pinDetailHeader.innerHTML = `
-      <div>Pin <strong>${escapeHtml(contact.label)}</strong></div>
-      <div>Contact #${escapeHtml(contact.size)} | ${escapeHtml(contact.type)} | ${escapeHtml(contact.confidence)}</div>
-      <div>Label source ${escapeHtml(source)}</div>
-      ${contact.extracted_label ? `<div>Corrected extracted label ${escapeHtml(contact.extracted_label)}</div>` : ""}
+      <div>${escapeHtml(T("common.pin"))} <strong>${escapeHtml(contact.label)}</strong></div>
+      <div>${escapeHtml(T("pin.contact"))} #${escapeHtml(contact.size)} | ${escapeHtml(contact.type)} | ${escapeHtml(contact.confidence)}</div>
+      <div>${escapeHtml(T("pin.labelSource"))} ${escapeHtml(source)}</div>
+      ${contact.extracted_label ? `<div>${escapeHtml(T("pin.correctedLabel"))} ${escapeHtml(contact.extracted_label)}</div>` : ""}
     `;
   }
 
@@ -2890,9 +2961,9 @@
     matches.forEach((contact) => state.pinMatches.add(contact._key));
     if (matches.length) {
       selectContact(matches[0]._index, true);
-      setMessage(els.searchMessage, `${matches.length} pin match(es) (${matchMode}).`);
+      setMessage(els.searchMessage, Tf("search.matches", { count: matches.length, mode: matchMode }));
     } else {
-      setMessage(els.searchMessage, "Pin not found in this insert arrangement.", true);
+      setMessage(els.searchMessage, T("search.notFound"), true);
       renderViewer();
     }
   }
@@ -2902,7 +2973,7 @@
     state.currentPartNumber = partNumber;
     const decoded = decodePartNumber(partNumber);
     if (options.automatic && !decoded.ok && isIncompletePartNumber(partNumber)) {
-      setMessage(els.decodeMessage, "Type shell type, class, shell size, insert, contacts, and keying.");
+      setMessage(els.decodeMessage, T("decode.hint"));
       return;
     }
     state.decoded = decoded;
@@ -2919,26 +2990,26 @@
     syncRouteHash();
     if (decoded.rugged_io) {
       renderRuggedIoViewer(decoded);
-      setMessage(els.decodeMessage, `Recognized ${decoded.family} (${decoded.connector_type}). This is a D38999-style rugged I/O connector — not a standard insert arrangement.`);
+      setMessage(els.decodeMessage, Tf("decode.recognizedRugged", { family: decoded.family, type: decoded.connector_type }));
       return;
     }
     if (!options.automatic && els.partNumberInput.value !== decoded.part_number) {
       els.partNumberInput.value = decoded.part_number;
     }
     const defaultNote = decoded.polarization_defaulted
-      ? " Showing keying N by default; type A, B, C, D, or E after the contact letter to choose alternate keying."
+      ? T("decode.defaultKeyingNote")
       : "";
     const arr = arrangementById(decoded.arrangement_id);
     if (arr) {
       selectArrangement(arr, true);
-      setMessage(els.decodeMessage, `Decoded ${decoded.part_number}.${defaultNote}`);
+      setMessage(els.decodeMessage, Tf("decode.decoded", { pn: decoded.part_number }) + defaultNote);
     } else {
-      setMessage(els.decodeMessage, `Decoded ${decoded.part_number}, but insert arrangement "${decoded.arrangement_id}" was not found in the data.${defaultNote}`, "warn");
+      setMessage(els.decodeMessage, Tf("decode.decodedNoArr", { pn: decoded.part_number, id: decoded.arrangement_id }) + defaultNote, "warn");
     }
   }
 
   function decodePartNumber(partNumber) {
-    if (!partNumber) return { ok: false, message: "Enter a D38999 part number." };
+    if (!partNumber) return { ok: false, message: T("decode.enterPn") };
 
     // Check for D38999-style rugged I/O families (RJFTV, USBFTV, USB3FTV, USB3CFTV, HDMIFTV, MDPFTV)
     const converter = globalThis.D38999Converter;
@@ -2968,10 +3039,10 @@
     }
 
     const prefix = /^D38999\/(\d{2})(.+)$/.exec(partNumber);
-    if (!prefix) return { ok: false, message: "Only D38999 shell-type part numbers are supported by this decoder." };
+    if (!prefix) return { ok: false, message: T("decode.onlyShellType") };
     const slashSheet = `/${prefix[1]}`;
     const body = prefix[2];
-    if (body.length < 4) return { ok: false, message: "Part number is too short for the series III/IV field order." };
+    if (body.length < 4) return { ok: false, message: T("decode.tooShort") };
 
     const classMap = defs.classes || {};
     const shellMap = defs.shell_size_codes_series_iii_iv || {};
@@ -3022,7 +3093,7 @@
     attempts.sort((a, b) => b.score - a.score);
     const best = attempts[0];
     if (!best) {
-      return { ok: false, message: "Could not split class, shell-size code, and insert arrangement using source-defined codes." };
+      return { ok: false, message: T("decode.cannotSplit") };
     }
 
     const parsed = best.parsed;
@@ -3459,7 +3530,7 @@
 
   function renderDecoded(decoded) {
     if (!decoded) {
-      els.decodedPanel.innerHTML = `<div class="detail-item"><div class="value">No part number decoded.</div></div>`;
+      els.decodedPanel.innerHTML = `<div class="detail-item"><div class="value">${escapeHtml(T("decoded.empty"))}</div></div>`;
       return;
     }
     if (!decoded.ok) {
@@ -3492,14 +3563,14 @@
     }
     const faceSvg = decoded.face_svg || decoded.svg;
     const mountSvg = decoded.svg && decoded.svg !== faceSvg ? decoded.svg : "";
-    const captionBits = [decoded.interface, decoded.shell_size ? `Shell ${decoded.shell_size}` : "", decoded.mounting_type || ""].filter(Boolean);
+    const captionBits = [decoded.interface, decoded.shell_size ? Tf("rugged.shellCaption", { size: decoded.shell_size }) : "", decoded.mounting_type || ""].filter(Boolean);
     layer.innerHTML = `
       <div class="rugged-face-stage">
         ${faceSvg
-          ? `<img class="rugged-face-img" src="assets/d38999/svg/${escapeHtml(faceSvg)}" alt="${escapeHtml(decoded.family)} front face"/>`
-          : `<div class="rugged-face-placeholder">${escapeHtml(decoded.family)} front face unavailable</div>`}
+          ? `<img class="rugged-face-img" src="assets/svg/${escapeHtml(faceSvg)}" alt="${escapeHtml(decoded.family)} front face"/>`
+          : `<div class="rugged-face-placeholder">${escapeHtml(Tf("rugged.faceUnavailable", { family: decoded.family }))}</div>`}
         ${mountSvg
-          ? `<img class="rugged-mount-img" src="assets/d38999/svg/${escapeHtml(mountSvg)}" alt="${escapeHtml(decoded.family)} ${escapeHtml(decoded.mounting_type || "profile")}"/>`
+          ? `<img class="rugged-mount-img" src="assets/svg/${escapeHtml(mountSvg)}" alt="${escapeHtml(decoded.family)} ${escapeHtml(decoded.mounting_type || "profile")}"/>`
           : ""}
       </div>
       <div class="rugged-face-caption">
@@ -3507,7 +3578,7 @@
         ${captionBits.length ? `<span class="rugged-face-meta">${escapeHtml(captionBits.join(" • "))}</span>` : ""}
       </div>
     `;
-    els.viewerTitle.textContent = `${decoded.family} — front face`;
+    els.viewerTitle.textContent = Tf("rugged.frontFace", { family: decoded.family });
     if (els.sourceInfo) {
       els.sourceInfo.textContent = `${decoded.vendor || ""}${decoded.vendor ? " • " : ""}${decoded.d38999_relation || ""}`.trim();
     }
@@ -3517,28 +3588,28 @@
     const faceSvg = decoded.face_svg || decoded.svg;
     const mountSvg = decoded.svg !== faceSvg ? decoded.svg : "";
     const faceHtml = faceSvg
-      ? `<img src="assets/d38999/svg/${faceSvg}" alt="${decoded.family} face" style="max-width:100px;max-height:100px;opacity:0.8"/>`
+      ? `<img src="assets/svg/${faceSvg}" alt="${decoded.family} face" style="max-width:100px;max-height:100px;opacity:0.8"/>`
       : "";
     const mountHtml = mountSvg
-      ? `<img src="assets/d38999/svg/${mountSvg}" alt="${decoded.family} ${decoded.mounting_type || 'profile'}" style="max-width:160px;max-height:70px;opacity:0.75"/>`
+      ? `<img src="assets/svg/${mountSvg}" alt="${decoded.family} ${decoded.mounting_type || 'profile'}" style="max-width:160px;max-height:70px;opacity:0.75"/>`
       : "";
     const svgHtml = (faceHtml || mountHtml)
       ? `<div class="rugged-io-svg-inline">${faceHtml}${mountHtml ? `<span style="display:inline-block;width:12px"></span>${mountHtml}` : ""}</div>`
       : "";
     return `
       <div class="detail-item detail-summary rugged-io-decoded">
-        <div class="name">D38999-Style Rugged I/O Connector</div>
+        <div class="name">${escapeHtml(T("rugged.name"))}</div>
         <div class="value mono">${escapeHtml(decoded.part_number)}</div>
         <div class="rugged-io-info-grid">
-          <div class="rugged-field"><span class="rugged-label">Family:</span> <span class="rugged-value">${escapeHtml(decoded.family)}</span></div>
-          <div class="rugged-field"><span class="rugged-label">Vendor:</span> <span class="rugged-value">${escapeHtml(decoded.vendor)}</span></div>
-          <div class="rugged-field"><span class="rugged-label">Interface:</span> <span class="rugged-value">${escapeHtml(decoded.interface)}</span></div>
-          ${decoded.interface_gender ? `<div class="rugged-field"><span class="rugged-label">Interface gender:</span> <span class="rugged-value">${escapeHtml(decoded.interface_gender)}</span></div>` : ""}
-          <div class="rugged-field"><span class="rugged-label">Shell Size:</span> <span class="rugged-value">${escapeHtml(decoded.shell_size)}</span></div>
-          <div class="rugged-field"><span class="rugged-label">Type:</span> <span class="rugged-value">${escapeHtml(decoded.connector_type)}</span></div>
-          <div class="rugged-field"><span class="rugged-label">Relation:</span> <span class="rugged-value">${escapeHtml(decoded.d38999_relation)}</span></div>
-          ${decoded.mounting_type ? `<div class="rugged-field"><span class="rugged-label">Mounting:</span> <span class="rugged-value">${escapeHtml(decoded.mounting_type)}</span></div>` : ""}
-          ${decoded.suffix ? `<div class="rugged-field"><span class="rugged-label">Config:</span> <span class="rugged-value">${escapeHtml(decoded.suffix)}</span></div>` : ""}
+          <div class="rugged-field"><span class="rugged-label">${escapeHtml(T("rugged.family"))}</span> <span class="rugged-value">${escapeHtml(decoded.family)}</span></div>
+          <div class="rugged-field"><span class="rugged-label">${escapeHtml(T("rugged.vendor"))}</span> <span class="rugged-value">${escapeHtml(decoded.vendor)}</span></div>
+          <div class="rugged-field"><span class="rugged-label">${escapeHtml(T("rugged.interface"))}</span> <span class="rugged-value">${escapeHtml(decoded.interface)}</span></div>
+          ${decoded.interface_gender ? `<div class="rugged-field"><span class="rugged-label">${escapeHtml(T("rugged.interfaceGender"))}</span> <span class="rugged-value">${escapeHtml(decoded.interface_gender)}</span></div>` : ""}
+          <div class="rugged-field"><span class="rugged-label">${escapeHtml(T("rugged.shellSize"))}</span> <span class="rugged-value">${escapeHtml(decoded.shell_size)}</span></div>
+          <div class="rugged-field"><span class="rugged-label">${escapeHtml(T("rugged.type"))}</span> <span class="rugged-value">${escapeHtml(decoded.connector_type)}</span></div>
+          <div class="rugged-field"><span class="rugged-label">${escapeHtml(T("rugged.relation"))}</span> <span class="rugged-value">${escapeHtml(decoded.d38999_relation)}</span></div>
+          ${decoded.mounting_type ? `<div class="rugged-field"><span class="rugged-label">${escapeHtml(T("rugged.mounting"))}</span> <span class="rugged-value">${escapeHtml(decoded.mounting_type)}</span></div>` : ""}
+          ${decoded.suffix ? `<div class="rugged-field"><span class="rugged-label">${escapeHtml(T("rugged.config"))}</span> <span class="rugged-value">${escapeHtml(decoded.suffix)}</span></div>` : ""}
         </div>
         ${svgHtml}
         <div class="rugged-io-note">${escapeHtml(decoded.note)}</div>
@@ -3555,24 +3626,24 @@
     const validationEvidence = buildValidationEvidenceText(validation);
     return `
       <div class="detail-item detail-summary">
-        <div class="name">Part number</div>
+        <div class="name">${escapeHtml(T("decoder.partNumberLabel"))}</div>
         <div class="value mono">${escapeHtml(items.map((item) => item.token).join(""))}</div>
         ${connectorSummaryDetailHtml(decoded, { validation })}
         ${validationSummaryHtml(validation, { partNumber: decoded.part_number })}
-        <div class="decoded-status-note">${escapeHtml(validationEvidence || "Decoded from the current D38999 rules and extracted catalog data.")}</div>
+        <div class="decoded-status-note">${escapeHtml(validationEvidence || T("decoded.fallbackEvidence"))}</div>
         <div class="decoded-action-row">
-          <button type="button" class="primary-action decoded-action-btn" data-decoded-action="mating">Find mate</button>
-          <button type="button" class="decoded-action-btn" data-decoded-action="build">Build connector</button>
-          <button type="button" class="decoded-action-btn" data-decoded-action="catalog">Browse family</button>
-          <button type="button" class="decoded-action-btn" data-decoded-action="converter">Convert</button>
-          <button type="button" class="decoded-action-btn" data-decoded-action="csv" title="Download the decoded breakdown as CSV">Export CSV</button>
-          <button type="button" class="decoded-action-btn" data-decoded-action="print" title="Print or save the decoded result as PDF">Print</button>
+          <button type="button" class="primary-action decoded-action-btn" data-decoded-action="mating">${escapeHtml(T("decoded.action.mate"))}</button>
+          <button type="button" class="decoded-action-btn" data-decoded-action="build">${escapeHtml(T("decoded.action.build"))}</button>
+          <button type="button" class="decoded-action-btn" data-decoded-action="catalog">${escapeHtml(T("decoded.action.browse"))}</button>
+          <button type="button" class="decoded-action-btn" data-decoded-action="converter">${escapeHtml(T("converter.convert"))}</button>
+          <button type="button" class="decoded-action-btn" data-decoded-action="csv" title="${escapeHtml(T("decoded.action.csvTitle"))}">${escapeHtml(T("decoded.action.csv"))}</button>
+          <button type="button" class="decoded-action-btn" data-decoded-action="print" title="${escapeHtml(T("decoded.action.printTitle"))}">${escapeHtml(T("decoded.action.print"))}</button>
         </div>
         <div class="manual-stat-grid">
           ${items.map((item) => decodedFieldChip(item)).join("")}
         </div>
-        <div class="detail-item"><div class="label">Insert drawing</div><div class="value">${escapeHtml(arrangement ? `${decoded.arrangement_id} | ${arrangement.contact_count} contacts | ${sizeSummary(arrangement)}` : `${decoded.arrangement_id || "unknown"} | needs manual verification`)}</div></div>
-        ${uniqueSources.length ? `<div class="summary-source-note">Sources: ${escapeHtml(uniqueSources.join(" | "))}</div>` : ""}
+        <div class="detail-item"><div class="label">${escapeHtml(T("decoded.insertDrawing"))}</div><div class="value">${escapeHtml(arrangement ? Tf("decoded.insertSummary", { id: decoded.arrangement_id, count: arrangement.contact_count, sizes: sizeSummary(arrangement) }) : Tf("decoded.insertNeedsVerify", { id: decoded.arrangement_id || T("common.unknownLc") }))}</div></div>
+        ${uniqueSources.length ? `<div class="summary-source-note">${escapeHtml(Tf("decoded.sources", { list: uniqueSources.join(" | ") }))}</div>` : ""}
       </div>
     `;
   }
@@ -4084,7 +4155,7 @@
   function decodedFieldChip(item) {
     const why = item.use ? `<p class="field-why-text">${escapeHtml(item.use)}</p>` : "";
     const source = item.source
-      ? `<p class="field-source-badge"><span>Source</span> ${escapeHtml(item.source)}</p>`
+      ? `<p class="field-source-badge"><span>${escapeHtml(T("common.source"))}</span> ${escapeHtml(item.source)}</p>`
       : "";
     const hasDisclosure = Boolean(why || source);
     return `
@@ -4092,7 +4163,7 @@
         <div class="decoded-field-head">
           <strong class="mono">${escapeHtml(item.token)}</strong>
           <span>${escapeHtml(item.label || "")}</span>
-          ${hasDisclosure ? `<button type="button" class="field-why-toggle" data-why-toggle aria-expanded="false" aria-label="Why does ${escapeHtml(item.label)} mean this?">Why?</button>` : ""}
+          ${hasDisclosure ? `<button type="button" class="field-why-toggle" data-why-toggle aria-expanded="false" aria-label="${escapeHtml(Tf("decoded.whyAria", { label: item.label }))}">${escapeHtml(T("decoded.why"))}</button>` : ""}
         </div>
         ${item.summary ? `<em>${escapeHtml(item.summary)}</em>` : ""}
         ${hasDisclosure ? `<div class="field-why" hidden>${why}${source}</div>` : ""}
@@ -4108,13 +4179,13 @@
   function exportDecodedCsv(decoded) {
     if (!decoded?.ok) return;
     const items = manualFieldItems(decoded);
-    const rows = [["Field", "Code", "Meaning", "Why it matters", "Source"]];
+    const rows = [[T("csv.field"), T("csv.code"), T("csv.meaning"), T("csv.why"), T("common.source")]];
     items.forEach((item) => rows.push([item.label, item.token, item.summary, item.use, item.source || ""]));
     const arrangement = decoded.arrangement_id ? arrangementById(decoded.arrangement_id) : null;
     if (arrangement) {
-      rows.push(["Insert arrangement", decoded.arrangement_id, `${arrangement.contact_count} contacts`, sizeSummary(arrangement), ""]);
+      rows.push([T("csv.insertArrangement"), decoded.arrangement_id, Tf("card.contacts", { count: arrangement.contact_count }), sizeSummary(arrangement), ""]);
     }
-    rows.unshift(["Part number", decoded.part_number, "", "", ""]);
+    rows.unshift([T("csv.partNumber"), decoded.part_number, "", "", ""]);
     const csv = rows.map((row) => row.map(csvEscape).join(",")).join("\r\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
@@ -4453,13 +4524,13 @@
     const a = arrangementById(els.compareA.value) || arrangements[0];
     const b = arrangementById(els.compareB.value) || arrangements[1] || arrangements[0];
     if (!a || !b) return;
-    const sizeDiff = sizeSummary(a) === sizeSummary(b) ? "same size summary" : `${sizeSummary(a)} vs ${sizeSummary(b)}`;
+    const sizeDiff = sizeSummary(a) === sizeSummary(b) ? T("compare.sameSize") : `${sizeSummary(a)} vs ${sizeSummary(b)}`;
     els.comparisonPanel.innerHTML = `
       ${compareCard(a)}
       ${compareCard(b)}
       <div class="compare-card">
-        <strong>Difference</strong>
-        <div>${Math.abs(a.contact_count - b.contact_count)} contact count delta</div>
+        <strong>${escapeHtml(T("compare.difference"))}</strong>
+        <div>${escapeHtml(Tf("compare.contactDelta", { delta: Math.abs(a.contact_count - b.contact_count) }))}</div>
         <div>${escapeHtml(sizeDiff)}</div>
       </div>
     `;
@@ -4470,7 +4541,7 @@
     return `
       <div class="compare-card">
         <strong class="mono">${escapeHtml(arr.id)}</strong>
-        <div>${arr.contact_count} contacts | ${escapeHtml(sizeSummary(arr))}</div>
+        <div>${escapeHtml(Tf("compare.cardMeta", { count: arr.contact_count, sizes: sizeSummary(arr) }))}</div>
         <svg class="mini-connector-svg" viewBox="${viewBox.join(" ")}">${miniSvgMarkup(arr)}</svg>
       </div>
     `;
