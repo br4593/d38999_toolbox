@@ -493,7 +493,27 @@ def infer_coupling_type(slash_doc: dict[str, Any] | None, series: str) -> str:
     return "unknown"
 
 
-def infer_shell_material(description: str) -> str:
+# Per MIL-DTL-38999 Table II (and the manufacturer catalogs), several class
+# codes describe only the surface treatment ("Electrodeposited nickel") without
+# naming the base shell material in the same paragraph that the standard
+# definitions extractor captures. Without this override, those classes fall to
+# "unknown" even though the spec is unambiguous: L/N/S are stainless steel
+# firewall/non-firewall variants, R is corrosion resistant steel, B is marine
+# bronze (Amphenol Series III). Keep this map narrow — only add a class once
+# its base material is verified against dtl38999.pdf Table II or a published
+# manufacturer catalog page.
+CLASS_SHELL_MATERIAL_OVERRIDES: dict[str, str] = {
+    "L": "stainless steel",
+    "N": "stainless steel",
+    "S": "stainless steel",
+    "R": "corrosion resistant steel",
+    "B": "marine bronze",
+}
+
+
+def infer_shell_material(description: str, class_code: str | None = None) -> str:
+    if class_code and class_code in CLASS_SHELL_MATERIAL_OVERRIDES:
+        return CLASS_SHELL_MATERIAL_OVERRIDES[class_code]
     lowered = description.lower()
     if "aluminum nickel bronze" in lowered:
         return "aluminum nickel bronze"
@@ -512,7 +532,7 @@ def fallback_class_metadata(class_code: str) -> dict[str, Any]:
     class_definition = CLASS_DEFINITIONS.get(class_code, {})
     description = str(class_definition.get("description", ""))
     return {
-        "shell_material": infer_shell_material(description),
+        "shell_material": infer_shell_material(description, class_code),
         "finish": description or "unknown",
         "temperature_range": DEFAULT_TEMPERATURE_RANGE,
         "temperature_specific": False,

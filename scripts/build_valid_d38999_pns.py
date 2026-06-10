@@ -40,6 +40,15 @@ SHELL_SIZE_NUMBER_TO_CODE = {
     "25": "J",
 }
 
+# Documented MIL-DTL-38999 contact style letters (Table III, section 1.4.2).
+# Any standard D38999 part number must end in (contactStyle)(keying) where
+# contactStyle is one of these. PNs scraped from secondary sources whose
+# trailing two characters do not match (e.g. digits, undocumented letters)
+# are dropped from the validated dataset to avoid downstream classifiers
+# claiming things the spec does not define.
+KNOWN_CONTACT_STYLES = set("PSHJXZCDRMGUAB")
+KNOWN_SHELL_SIZE_CODES = set(SHELL_SIZE_NUMBER_TO_CODE.values())
+
 
 def read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
@@ -85,7 +94,16 @@ def decode_part_number(part_number: str) -> dict[str, str] | None:
 
 
 def is_d38999_part_number(part_number: str) -> bool:
-    return decode_part_number(canonical_part_number(part_number)) is not None
+    decoded = decode_part_number(canonical_part_number(part_number))
+    if decoded is None:
+        return False
+    contact_style = decoded.get("contactStyle")
+    if contact_style is not None and contact_style not in KNOWN_CONTACT_STYLES:
+        return False
+    shell_size_code = decoded.get("shellSizeCode")
+    if shell_size_code is not None and shell_size_code and shell_size_code not in KNOWN_SHELL_SIZE_CODES:
+        return False
+    return True
 
 
 def base_record(part_number: str) -> dict[str, Any]:
@@ -94,15 +112,18 @@ def base_record(part_number: str) -> dict[str, Any]:
         "partNumber": canonical,
         "normalizedPartNumber": normalize_part_number(canonical),
         "decoded": decode_part_number(canonical),
+        "nsn": "",
         "sourcePresence": {
             "manufacturerVerified": False,
             "catalogExample": False,
             "federalConnectorsExact": False,
             "federalConnectorsImportable": False,
             "qpl": False,
+            "qplQualified": False,
         },
         "qpls": [],
         "manufacturers": [],
+        "qualifiedSources": [],
         "sources": [],
         "evidenceLevel": "",
     }
@@ -123,6 +144,8 @@ def evidence_level(source_presence: dict[str, bool]) -> str:
         return "manufacturer_verified_exact"
     if source_presence["qpl"] and source_presence["federalConnectorsExact"]:
         return "qpl_and_secondary_exact"
+    if source_presence.get("qplQualified"):
+        return "qpl_qualified_source"
     if source_presence["qpl"]:
         return "qpl_listed"
     if source_presence["federalConnectorsImportable"]:
@@ -210,9 +233,65 @@ def load_federal_connectors(records: dict[str, dict[str, Any]]) -> None:
         )
 
 
+def load_qpl_details(records: dict[str, dict[str, Any]]) -> str | None:
+    """Ingest the rich QPL detail crawl (per-part NSN + qualified sources)."""
+    path = DATA_DIR / "qpl_1122_part_details.json"
+    if not path.exists():
+        return None
+    payload = read_json(path)
+    qpl_id = str(payload.get("qpl", "1122"))
+    source_url = payload.get("source", "")
+    scraped_at = payload.get("scraped_at", "")
+    for entry in payload.get("parts", []):
+        part_number = entry.get("partNumber", "")
+        if not is_d38999_part_number(part_number):
+            continue
+        normalized = normalize_part_number(part_number)
+        record = records.setdefault(normalized, base_record(part_number))
+        record["sourcePresence"]["qpl"] = True
+        append_unique(record["qpls"], qpl_id)
+        nsn = (entry.get("nsn") or "").strip()
+        if nsn:
+            record["nsn"] = nsn
+        qualified = []
+        for src in entry.get("qualifiedSources") or []:
+            qualified.append(
+                {
+                    "cage": src.get("cage", ""),
+                    "company": src.get("company", ""),
+                    "country": src.get("country", ""),
+                    "mfgPart": src.get("mfgPart", ""),
+                    "status": src.get("status", ""),
+                }
+            )
+        if qualified:
+            record["qualifiedSources"] = qualified
+            record["sourcePresence"]["qplQualified"] = True
+        append_unique(
+            record["sources"],
+            {
+                "type": "qpl_detail",
+                "qpl": qpl_id,
+                "source": source_url,
+                "scrapedAt": scraped_at,
+                "file": path.name,
+                "qualifiedSourceCount": len(qualified),
+                "nsn": nsn,
+            },
+        )
+    return path.name
+
+
 def load_qpl_files(records: dict[str, dict[str, Any]]) -> list[str]:
     qpl_files = sorted(DATA_DIR.glob("qpl_*_part_numbers.json"))
+    used: list[str] = []
     for path in qpl_files:
+        details_path = path.with_name(
+            path.name.replace("_part_numbers.json", "_part_details.json")
+        )
+        if details_path.exists():
+            # Richer detail crawl supersedes the bare list; handled separately.
+            continue
         payload = read_json(path)
         qpl_id = str(payload.get("qpl", ""))
         qpl_source = payload.get("source", "")
@@ -234,7 +313,8 @@ def load_qpl_files(records: dict[str, dict[str, Any]]) -> list[str]:
                     "file": path.name,
                 },
             )
-    return [path.name for path in qpl_files]
+        used.append(path.name)
+    return used
 
 
 def finalize(records: dict[str, dict[str, Any]], qpl_files: list[str]) -> tuple[dict[str, Any], dict[str, Any]]:
@@ -258,7 +338,10 @@ def finalize(records: dict[str, dict[str, Any]], qpl_files: list[str]) -> tuple[
             "federalConnectorsExact": sum(1 for record in part_numbers if record["sourcePresence"]["federalConnectorsExact"]),
             "federalConnectorsImportable": sum(1 for record in part_numbers if record["sourcePresence"]["federalConnectorsImportable"]),
             "qpl": sum(1 for record in part_numbers if record["sourcePresence"]["qpl"]),
+            "qplQualified": sum(1 for record in part_numbers if record["sourcePresence"].get("qplQualified")),
         },
+        "partsWithNsn": sum(1 for record in part_numbers if record.get("nsn")),
+        "partsWithQualifiedSource": sum(1 for record in part_numbers if record.get("qualifiedSources")),
         "evidenceLevelCounts": dict(sorted(counts.items())),
         "qplFiles": qpl_files,
         "environmentTagCounts": environment_tag_counts,
@@ -287,6 +370,9 @@ def build_outputs() -> tuple[dict[str, Any], dict[str, Any]]:
     load_examples(records)
     load_federal_connectors(records)
     qpl_files = load_qpl_files(records)
+    qpl_details_file = load_qpl_details(records)
+    if qpl_details_file:
+        qpl_files = qpl_files + [qpl_details_file]
     return finalize(records, qpl_files)
 
 

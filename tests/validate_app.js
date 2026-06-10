@@ -3,6 +3,18 @@ const http = require("http");
 const path = require("path");
 const { execFileSync, spawn } = require("child_process");
 
+if (typeof WebSocket === "undefined") {
+  try {
+    global.WebSocket = require("ws");
+  } catch {
+    console.error(
+      "WebSocket is not available in this Node runtime and the 'ws' polyfill is not installed.\n" +
+        "Run 'npm install --no-save ws' (or upgrade to Node >=22) before invoking tests/validate_app.js."
+    );
+    process.exit(2);
+  }
+}
+
 const projectRoot = path.resolve(__dirname, "..");
 const appUrl = `file:///${path.join(projectRoot, "app", "index.html").replace(/\\/g, "/")}`;
 const debugDir = path.join(projectRoot, "output", "debug");
@@ -133,15 +145,15 @@ async function main() {
     "data/d38999_visual_assets.json",
   ];
   const requiredSvgFiles = [
-    "assets/d38999/svg/d38999-plug-generic.svg",
-    "assets/d38999/svg/d38999-receptacle-generic.svg",
-    "assets/d38999/svg/d38999-wall-mount-receptacle.svg",
-    "assets/d38999/svg/d38999-jam-nut-receptacle.svg",
-    "assets/d38999/svg/d38999-straight-plug.svg",
-    "assets/d38999/svg/d38999-backshell-generic.svg",
-    "assets/d38999/svg/d38999-keying-helper.svg",
-    "assets/d38999/svg/d38999-shell-size-helper.svg",
-    "assets/d38999/svg/d38999-insert-placeholder.svg",
+    "assets/svg/d38999-plug-generic.svg",
+    "assets/svg/d38999-receptacle-generic.svg",
+    "assets/svg/d38999-wall-mount-receptacle.svg",
+    "assets/svg/d38999-jam-nut-receptacle.svg",
+    "assets/svg/d38999-straight-plug.svg",
+    "assets/svg/d38999-backshell-generic.svg",
+    "assets/svg/d38999-keying-helper.svg",
+    "assets/svg/d38999-shell-size-helper.svg",
+    "assets/svg/d38999-insert-placeholder.svg",
   ];
 
   requiredDataFiles.forEach((relativePath) => {
@@ -159,7 +171,7 @@ async function main() {
   assert(extractedRules.catalogGroundingPolicy.statusValues.includes("VERIFIED_EXISTS"), "Catalog grounding includes VERIFIED_EXISTS");
   assert(extractedRules.catalogGroundingPolicy.statusValues.includes("VALID_FORMAT_BUT_NOT_CONFIRMED"), "Catalog grounding includes VALID_FORMAT_BUT_NOT_CONFIRMED");
   assert((verifiedPartNumbers.verifiedPartNumbers || []).length >= 5, "At least five exact verified part numbers are available");
-  assert((visualAssets.visualAssets || []).some((item) => item.file === "assets/d38999/svg/d38999-keying-helper.svg"), "Visual asset metadata references the created keying helper SVG");
+  assert((visualAssets.visualAssets || []).some((item) => item.file === "assets/svg/d38999-keying-helper.svg"), "Visual asset metadata references the created keying helper SVG");
 
   fs.mkdirSync(downloadsDir, { recursive: true });
   fs.mkdirSync(profileDir, { recursive: true });
@@ -365,7 +377,7 @@ async function main() {
       const activeSheet = panel.querySelector(".mating-sel-btn.active");
       const pairingArrow = Boolean(panel.querySelector(".mating-pair-arrow"));
       const openBtn = panel.querySelector(".mating-decode-btn");
-      const validationBadges = panel.querySelectorAll(".mating-validation");
+      const validationBadges = panel.querySelectorAll(".mating-validation, .exact-catalog-hit");
       const sourceCards = panel.querySelectorAll(".mating-source-card");
       return {
         panelExists: true,
