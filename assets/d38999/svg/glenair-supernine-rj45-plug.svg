@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 120" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- SuperNine RJ45 G6 Plug with Accessory Threads -->
+  <!-- Coupling nut (knurled ring) at mating face -->
+  <rect x="22" y="30" width="26" height="60" rx="4" stroke-width="2"/>
+  <path d="M26 32 v56 M32 32 v56 M38 32 v56 M44 32 v56" stroke-width="0.8" opacity="0.4"/>
+  <!-- Shell body -->
+  <rect x="48" y="34" width="120" height="52" rx="6"/>
+  <!-- Accessory thread / backshell adapter (rear) -->
+  <rect x="168" y="38" width="44" height="44" rx="4" stroke-width="1.6" opacity="0.6"/>
+  <path d="M174 40 v40 M182 40 v40 M190 40 v40 M198 40 v40 M206 40 v40" stroke-width="0.8" opacity="0.35"/>
+  <!-- RJ45 jack on plug face -->
+  <rect x="28" y="44" width="16" height="32" rx="2" stroke-width="1.6"/>
+  <!-- Master key -->
+  <rect x="100" y="26" width="9" height="8" rx="1.5" fill="currentColor" opacity="0.3" stroke="none"/>
+  <!-- Cable exit -->
+  <line x1="212" y1="52" x2="248" y2="52" stroke-width="1.5" opacity="0.6"/>
+  <line x1="212" y1="60" x2="248" y2="60" stroke-width="1.5" opacity="0.6"/>
+  <line x1="212" y1="68" x2="248" y2="68" stroke-width="1.5" opacity="0.6"/>
+  <text x="140" y="112" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">SuperNine RJ45 — G6 Plug, Accessory Threads</text>
+</svg>

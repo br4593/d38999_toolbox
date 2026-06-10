@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 120" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- SuperNine USB side / profile elevation (USB 2.0/3.0 Type-A) -->
+  <!-- Mating face (left) coupling shell -->
+  <rect x="30" y="36" width="26" height="48" rx="3" stroke-width="1.6" opacity="0.55"/>
+  <!-- Main D38999-style shell body -->
+  <rect x="56" y="30" width="120" height="60" rx="7"/>
+  <!-- Accessory thread bands (rear) -->
+  <rect x="176" y="36" width="40" height="48" rx="4" stroke-width="1.6" opacity="0.55"/>
+  <path d="M180 38 v44 M188 38 v44 M196 38 v44 M204 38 v44 M212 38 v44" stroke-width="0.8" opacity="0.35"/>
+  <!-- USB Type-A port shown on mating face -->
+  <rect x="36" y="48" width="20" height="24" rx="2" stroke-width="1.8"/>
+  <rect x="38" y="50" width="16" height="6" rx="1" fill="currentColor" opacity="0.18" stroke="none"/>
+  <!-- Master keyway hint (top) -->
+  <rect x="108" y="22" width="9" height="8" rx="1.5" fill="currentColor" opacity="0.3" stroke="none"/>
+  <!-- Rear contact leads -->
+  <line x1="216" y1="46" x2="250" y2="46" stroke-width="1.5" opacity="0.6"/>
+  <line x1="216" y1="60" x2="250" y2="60" stroke-width="1.5" opacity="0.6"/>
+  <line x1="216" y1="74" x2="250" y2="74" stroke-width="1.5" opacity="0.6"/>
+  <text x="140" y="112" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">SuperNine USB — Side Profile (Shell 15/17)</text>
+</svg>

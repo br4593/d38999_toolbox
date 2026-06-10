@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 100" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- Shell size 17 outer ring -->
+  <circle cx="110" cy="48" r="38" stroke-width="2.5"/>
+  <circle cx="110" cy="48" r="34" stroke-width="1.5" opacity="0.5"/>
+  <!-- Standard DisplayPort shape (asymmetric trapezoid, one chamfered corner) -->
+  <path d="M92 38 L126 38 L128 56 L96 56 L92 52 Z" stroke-width="2"/>
+  <!-- 20 pins in two rows -->
+  <line x1="96" y1="41" x2="96" y2="45" stroke-width="0.8" opacity="0.5"/>
+  <line x1="99" y1="41" x2="99" y2="45" stroke-width="0.8" opacity="0.5"/>
+  <line x1="102" y1="41" x2="102" y2="45" stroke-width="0.8" opacity="0.5"/>
+  <line x1="105" y1="41" x2="105" y2="45" stroke-width="0.8" opacity="0.5"/>
+  <line x1="108" y1="41" x2="108" y2="45" stroke-width="0.8" opacity="0.5"/>
+  <line x1="111" y1="41" x2="111" y2="45" stroke-width="0.8" opacity="0.5"/>
+  <line x1="114" y1="41" x2="114" y2="45" stroke-width="0.8" opacity="0.5"/>
+  <line x1="117" y1="41" x2="117" y2="45" stroke-width="0.8" opacity="0.5"/>
+  <line x1="120" y1="41" x2="120" y2="45" stroke-width="0.8" opacity="0.5"/>
+  <line x1="123" y1="41" x2="123" y2="45" stroke-width="0.8" opacity="0.5"/>
+  <line x1="96" y1="50" x2="96" y2="53" stroke-width="0.8" opacity="0.5"/>
+  <line x1="99" y1="50" x2="99" y2="53" stroke-width="0.8" opacity="0.5"/>
+  <line x1="102" y1="50" x2="102" y2="53" stroke-width="0.8" opacity="0.5"/>
+  <line x1="105" y1="50" x2="105" y2="53" stroke-width="0.8" opacity="0.5"/>
+  <line x1="108" y1="50" x2="108" y2="53" stroke-width="0.8" opacity="0.5"/>
+  <line x1="111" y1="50" x2="111" y2="53" stroke-width="0.8" opacity="0.5"/>
+  <line x1="114" y1="50" x2="114" y2="53" stroke-width="0.8" opacity="0.5"/>
+  <line x1="117" y1="50" x2="117" y2="53" stroke-width="0.8" opacity="0.5"/>
+  <line x1="120" y1="50" x2="120" y2="53" stroke-width="0.8" opacity="0.5"/>
+  <line x1="123" y1="50" x2="123" y2="53" stroke-width="0.8" opacity="0.5"/>
+  <!-- Keying notch -->
+  <rect x="106" y="12" width="8" height="5" rx="1.5" fill="currentColor" opacity="0.3"/>
+  <circle cx="110" cy="84" r="2" fill="currentColor" opacity="0.2" stroke="none"/>
+  <text x="110" y="98" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">SuperSeal DisplayPort 1.4 Face (Shell 17)</text>
+</svg>

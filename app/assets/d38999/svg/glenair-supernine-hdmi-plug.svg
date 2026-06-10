@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 120" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- SuperNine HDMI 2.0 — 233-368 Plug (G6), Accepts HDMI Plug -->
+  <!-- Coupling nut (knurled ring) at mating face -->
+  <rect x="22" y="28" width="26" height="64" rx="4" stroke-width="2"/>
+  <path d="M26 30 v60 M32 30 v60 M38 30 v60 M44 30 v60" stroke-width="0.8" opacity="0.4"/>
+  <!-- Shell body (size 17) -->
+  <rect x="48" y="30" width="120" height="60" rx="6"/>
+  <!-- Accessory thread / backshell adapter (rear) -->
+  <rect x="168" y="36" width="44" height="48" rx="4" stroke-width="1.6" opacity="0.6"/>
+  <path d="M174 38 v44 M182 38 v44 M190 38 v44 M198 38 v44 M206 38 v44" stroke-width="0.8" opacity="0.35"/>
+  <!-- HDMI Type-A trapezoid receptacle on plug face -->
+  <path d="M28 48 H48 V62 L42 70 H34 L28 62 Z" stroke-width="1.8" stroke-linejoin="round"/>
+  <line x1="32" y1="52" x2="44" y2="52" stroke-width="2" opacity="0.18"/>
+  <!-- Master key -->
+  <rect x="100" y="22" width="9" height="8" rx="1.5" fill="currentColor" opacity="0.3" stroke="none"/>
+  <!-- Cable exit -->
+  <line x1="212" y1="50" x2="248" y2="50" stroke-width="1.5" opacity="0.6"/>
+  <line x1="212" y1="60" x2="248" y2="60" stroke-width="1.5" opacity="0.6"/>
+  <line x1="212" y1="70" x2="248" y2="70" stroke-width="1.5" opacity="0.6"/>
+  <text x="140" y="112" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">SuperNine HDMI 2.0 — G6 Plug (233-368)</text>
+</svg>

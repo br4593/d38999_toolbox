@@ -252,6 +252,13 @@
     catalogCount: $("catalogCount"),
     catalogSort: $("catalogSort"),
     clearFiltersButton: $("clearFiltersButton"),
+    ioGrid: $("ioGrid"),
+    ioCount: $("ioCount"),
+    ioCategoryFilter: $("ioCategoryFilter"),
+    ioVendorFilter: $("ioVendorFilter"),
+    ioShellFilter: $("ioShellFilter"),
+    ioSearch: $("ioSearch"),
+    ioClearButton: $("ioClearButton"),
     compareA: $("compareA"),
     compareB: $("compareB"),
     comparisonPanel: $("comparisonPanel"),
@@ -978,7 +985,7 @@
     }
     renderDecoded(null);
     renderComparison();
-    selectTab("home");
+    initRouting();
   }
 
   function populateFilters() {
@@ -1072,7 +1079,347 @@
     }
   }
 
+  function bindThemeToggle() {
+    const toggle = document.getElementById("themeToggle");
+    if (!toggle) return;
+    const apply = (theme) => {
+      document.documentElement.setAttribute("data-theme", theme);
+      toggle.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+    };
+    toggle.addEventListener("click", () => {
+      const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      apply(next);
+      try { localStorage.setItem("d38999.theme", next); } catch (e) { /* storage unavailable */ }
+    });
+    // Track system changes only while the user has no explicit preference.
+    if (window.matchMedia) {
+      const mq = window.matchMedia("(prefers-color-scheme: dark)");
+      const onChange = (event) => {
+        let saved = null;
+        try { saved = localStorage.getItem("d38999.theme"); } catch (e) { /* ignore */ }
+        if (!saved) apply(event.matches ? "dark" : "light");
+      };
+      if (mq.addEventListener) mq.addEventListener("change", onChange);
+      else if (mq.addListener) mq.addListener(onChange);
+    }
+    apply(document.documentElement.getAttribute("data-theme") || "light");
+  }
+
+  /* ---------------------------------------------------------------------
+     Phase 2 — cross-tool flow: deep-linking, recent/favorites, global search
+     --------------------------------------------------------------------- */
+
+  const ROUTE_TABS = new Set(["home", "decoder", "mating", "catalog", "io", "converter", "build", "manual"]);
+  const RECENT_KEY = "d38999.recent";
+  const FAV_KEY = "d38999.favorites";
+  const RECENT_MAX = 12;
+
+  function loadStoredList(key) {
+    try {
+      const raw = JSON.parse(localStorage.getItem(key) || "[]");
+      return Array.isArray(raw) ? raw.filter((x) => typeof x === "string") : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveStoredList(key, list) {
+    try { localStorage.setItem(key, JSON.stringify(list)); } catch (e) { /* storage unavailable */ }
+  }
+
+  function pushRecentPartNumber(pn) {
+    if (!pn) return;
+    const next = [pn, ...loadStoredList(RECENT_KEY).filter((x) => x !== pn)].slice(0, RECENT_MAX);
+    saveStoredList(RECENT_KEY, next);
+    renderRecentStrips();
+  }
+
+  function toggleFavoritePartNumber(pn) {
+    if (!pn) return;
+    const favs = loadStoredList(FAV_KEY);
+    const next = favs.includes(pn) ? favs.filter((x) => x !== pn) : [pn, ...favs];
+    saveStoredList(FAV_KEY, next);
+    renderRecentStrips();
+  }
+
+  function recentStripHtml() {
+    const favs = loadStoredList(FAV_KEY);
+    const recents = loadStoredList(RECENT_KEY).filter((pn) => !favs.includes(pn));
+    const ordered = [...favs, ...recents];
+    if (!ordered.length) return "";
+    const favSet = new Set(favs);
+    return ordered.map((pn) => {
+      const isFav = favSet.has(pn);
+      const display = pn.replace(/^D38999\//, "");
+      return `
+        <span class="recent-item${isFav ? " is-fav" : ""}">
+          <button type="button" class="example-chip recent-chip" data-recent-pn="${escapeHtml(pn)}" title="${escapeHtml(pn)}">${escapeHtml(display)}</button>
+          <button type="button" class="recent-star" data-fav-pn="${escapeHtml(pn)}" aria-label="${isFav ? "Remove favorite" : "Add favorite"}" aria-pressed="${isFav}">${isFav ? "\u2605" : "\u2606"}</button>
+        </span>`;
+    }).join("");
+  }
+
+  function renderRecentStrips() {
+    const html = recentStripHtml();
+    const hasItems = Boolean(html);
+    for (const [stripId, sectionId] of [["recentChips", "recentSection"], ["homeRecent", "homeRecentSection"]]) {
+      const strip = document.getElementById(stripId);
+      const section = document.getElementById(sectionId);
+      if (strip) strip.innerHTML = html;
+      if (section) section.hidden = !hasItems;
+    }
+  }
+
+  function bindRecentStrips() {
+    const handler = (event) => {
+      const decodeBtn = event.target.closest("[data-recent-pn]");
+      if (decodeBtn) {
+        els.partNumberInput.value = decodeBtn.dataset.recentPn;
+        decodeFromInput();
+        selectTab("decoder");
+        return;
+      }
+      const favBtn = event.target.closest("[data-fav-pn]");
+      if (favBtn) toggleFavoritePartNumber(favBtn.dataset.favPn);
+    };
+    ["recentChips", "homeRecent"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener("click", handler);
+    });
+    renderRecentStrips();
+  }
+
+  function sendToConverter(value) {
+    const input = document.getElementById("pnInput");
+    const form = document.getElementById("converterForm");
+    if (!input || !form) return;
+    input.value = value || "";
+    selectTab("converter");
+    form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+  }
+
+  function bindGlobalSearch() {
+    const input = document.getElementById("globalSearch");
+    if (!input) return;
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        routeGlobalSearch(input.value);
+      }
+    });
+  }
+
+  function routeGlobalSearch(raw) {
+    const q = String(raw || "").trim();
+    if (!q) return;
+    // Arrangement id like 17-26
+    if (/^\d{1,2}-\d{1,3}$/.test(q)) {
+      const arr = arrangementById(q);
+      els.arrangementFilter.value = q;
+      renderCatalog();
+      if (arr) selectArrangement(arr, true);
+      selectTab("catalog");
+      return;
+    }
+    // D38999 or shorthand recognized by the decoder
+    const norm = normalizePartNumber(q);
+    const decoded = decodePartNumber(norm);
+    if (decoded.ok) {
+      els.partNumberInput.value = norm;
+      decodeFromInput();
+      selectTab("decoder");
+      return;
+    }
+    // Otherwise treat as a manufacturer part number
+    sendToConverter(q);
+  }
+
+  function computeRouteHash() {
+    const tab = state.activeTab || "home";
+    const pn = state.decoded?.ok ? state.decoded.part_number : "";
+    if (tab === "decoder" && pn) return `decoder/${encodeURIComponent(pn)}`;
+    if (tab === "mating" && pn) return `mating/${encodeURIComponent(pn)}`;
+    if (tab === "converter" && state.lastConverterInput) return `converter/${encodeURIComponent(state.lastConverterInput)}`;
+    return tab;
+  }
+
+  function syncRouteHash() {
+    if (!state.routingReady) return;
+    const next = `#${computeRouteHash()}`;
+    if (next === location.hash) return;
+    state.suppressHashRoute = true;
+    location.hash = next;
+    setTimeout(() => { state.suppressHashRoute = false; }, 0);
+  }
+
+  function applyRouteHash(rawHash) {
+    const hash = String(rawHash || "").replace(/^#/, "");
+    if (!hash) return false;
+    const slash = hash.indexOf("/");
+    const tab = (slash === -1 ? hash : hash.slice(0, slash)).toLowerCase();
+    const payload = slash === -1 ? "" : decodeURIComponent(hash.slice(slash + 1));
+    if (!ROUTE_TABS.has(tab)) return false;
+
+    if ((tab === "decoder" || tab === "mating") && payload) {
+      els.partNumberInput.value = payload;
+      decodeFromInput();
+      selectTab(tab);
+      return true;
+    }
+    if (tab === "converter" && payload) {
+      sendToConverter(payload);
+      return true;
+    }
+    selectTab(tab);
+    return true;
+  }
+
+  function initRouting() {
+    state.routingReady = true;
+    window.addEventListener("hashchange", () => {
+      if (state.suppressHashRoute) return;
+      applyRouteHash(location.hash);
+    });
+    if (!applyRouteHash(location.hash)) selectTab("home");
+  }
+
+  const SHORTCUT_TAB_MAP = {
+    "1": "home",
+    "2": "decoder",
+    "3": "mating",
+    "4": "catalog",
+    "5": "io",
+    "6": "converter",
+    "7": "build",
+    "8": "manual",
+  };
+
+  function sortedArrangementList() {
+    return arrangements.slice().sort((a, b) => {
+      const pa = String(a.id).split("-").map((n) => parseInt(n, 10) || 0);
+      const pb = String(b.id).split("-").map((n) => parseInt(n, 10) || 0);
+      return (pa[0] - pb[0]) || (pa[1] - pb[1]);
+    });
+  }
+
+  function stepArrangement(direction) {
+    const list = sortedArrangementList();
+    if (!list.length) return;
+    const current = state.selectedArrangement?.id;
+    let idx = current ? list.findIndex((a) => a.id === current) : -1;
+    idx = (idx + direction + list.length) % list.length;
+    const next = list[idx];
+    if (state.activeTab !== "catalog") {
+      els.arrangementFilter.value = "";
+      renderCatalog();
+      selectTab("catalog");
+    }
+    selectArrangement(next, true);
+  }
+
+  function closeShortcutsOverlay() {
+    const existing = document.getElementById("shortcutsOverlay");
+    if (!existing) return false;
+    existing.remove();
+    document.getElementById("shortcutsButton")?.focus();
+    return true;
+  }
+
+  function openShortcutsOverlay() {
+    if (document.getElementById("shortcutsOverlay")) return;
+    const rows = [
+      ["/", "Focus the global search box"],
+      ["?", "Show or hide this shortcuts panel"],
+      ["1 – 8", "Jump to Home, Decode, Mating, Arrangements, I/O Connectors, Converter, Build or Manual"],
+      ["[ &nbsp; ]", "Step to the previous / next insert arrangement"],
+      ["Esc", "Close this panel or clear focus"],
+    ];
+    const overlay = document.createElement("div");
+    overlay.className = "shortcuts-overlay";
+    overlay.id = "shortcutsOverlay";
+    overlay.innerHTML =
+      '<div class="shortcuts-card" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">' +
+      '<div class="shortcuts-head"><h2>Keyboard shortcuts</h2>' +
+      '<button class="shortcuts-close" type="button" aria-label="Close">\u00d7</button></div>' +
+      '<table class="shortcuts-table"><tbody>' +
+      rows
+        .map((row) => {
+          const keys = row[0]
+            .split(" ")
+            .map((k) => (k === "&nbsp;" ? " " : `<kbd>${k}</kbd>`))
+            .join("");
+          return `<tr><td>${keys}</td><td>${row[1]}</td></tr>`;
+        })
+        .join("") +
+      "</tbody></table></div>";
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay || event.target.closest(".shortcuts-close")) {
+        closeShortcutsOverlay();
+      }
+    });
+    document.body.appendChild(overlay);
+  }
+
+  function toggleShortcutsOverlay() {
+    if (!closeShortcutsOverlay()) openShortcutsOverlay();
+  }
+
+  function bindKeyboardShortcuts() {
+    document.getElementById("shortcutsButton")?.addEventListener("click", toggleShortcutsOverlay);
+    document.addEventListener("keydown", (event) => {
+      const target = event.target;
+      const typing =
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.tagName === "SELECT" ||
+          target.isContentEditable);
+      if (event.key === "Escape") {
+        if (closeShortcutsOverlay()) return;
+        if (typing && typeof target.blur === "function") target.blur();
+        return;
+      }
+      if (typing || event.metaKey || event.ctrlKey || event.altKey) return;
+      if (event.key === "/") {
+        event.preventDefault();
+        document.getElementById("globalSearch")?.focus();
+        return;
+      }
+      if (event.key === "?") {
+        event.preventDefault();
+        toggleShortcutsOverlay();
+        return;
+      }
+      if (event.key === "[") {
+        event.preventDefault();
+        stepArrangement(-1);
+        return;
+      }
+      if (event.key === "]") {
+        event.preventDefault();
+        stepArrangement(1);
+        return;
+      }
+      if (SHORTCUT_TAB_MAP[event.key]) {
+        event.preventDefault();
+        selectTab(SHORTCUT_TAB_MAP[event.key]);
+      }
+    });
+  }
+
   function bindEvents() {
+    bindThemeToggle();
+    bindGlobalSearch();
+    bindRecentStrips();
+    bindKeyboardShortcuts();
+    const convForm = document.getElementById("converterForm");
+    const convInput = document.getElementById("pnInput");
+    if (convForm && convInput) {
+      convForm.addEventListener("submit", () => {
+        state.lastConverterInput = convInput.value.trim();
+        syncRouteHash();
+      });
+    }
     els.decodeButton.addEventListener("click", decodeFromInput);
     els.partNumberInput.addEventListener("input", () => decodeFromInput({ automatic: true }));
     els.partNumberInput.addEventListener("focus", () => {
@@ -1121,6 +1468,24 @@
     // Clear filters button
     if (els.clearFiltersButton) {
       els.clearFiltersButton.addEventListener("click", clearFilters);
+    }
+
+    // I/O Connectors catalog filters
+    for (const element of [
+      els.ioCategoryFilter,
+      els.ioVendorFilter,
+      els.ioShellFilter,
+      els.ioSearch,
+    ]) {
+      if (!element) continue;
+      element.addEventListener("input", renderIoCatalog);
+      element.addEventListener("change", renderIoCatalog);
+    }
+    if (els.ioClearButton) els.ioClearButton.addEventListener("click", clearIoFilters);
+    if (els.ioGrid) {
+      els.ioGrid.addEventListener("click", (event) => {
+        if (event.target.closest(".io-clear-inline-btn")) clearIoFilters();
+      });
     }
 
     // Catalog sort
@@ -1240,6 +1605,18 @@
   }
 
   function onDecodedPanelClick(event) {
+    const whyToggle = event.target.closest("[data-why-toggle]");
+    if (whyToggle) {
+      const chip = whyToggle.closest(".decoded-field-chip");
+      const panel = chip?.querySelector(".field-why");
+      if (panel) {
+        const open = panel.hasAttribute("hidden");
+        if (open) panel.removeAttribute("hidden");
+        else panel.setAttribute("hidden", "");
+        whyToggle.setAttribute("aria-expanded", open ? "true" : "false");
+      }
+      return;
+    }
     const button = event.target.closest("[data-decoded-action]");
     if (!button || !state.decoded?.ok) return;
     const action = button.dataset.decodedAction;
@@ -1260,6 +1637,18 @@
       els.arrangementFilter.value = state.decoded.arrangement_id || "";
       renderCatalog();
       selectTab("catalog");
+      return;
+    }
+    if (action === "converter") {
+      sendToConverter(state.decoded.part_number);
+      return;
+    }
+    if (action === "csv") {
+      exportDecodedCsv(state.decoded);
+      return;
+    }
+    if (action === "print") {
+      window.print();
     }
   }
 
@@ -1267,7 +1656,10 @@
     state.activeTab = tabName;
     document.body.classList.toggle("is-home", tabName === "home");
     document.querySelectorAll(".tab-button").forEach((button) => {
-      button.classList.toggle("active", button.dataset.tab === tabName);
+      const isActive = button.dataset.tab === tabName;
+      button.classList.toggle("active", isActive);
+      if (isActive) button.setAttribute("aria-current", "page");
+      else button.removeAttribute("aria-current");
     });
     document.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.remove("active"));
     const panel = $(`${tabName}Panel`);
@@ -1276,9 +1668,11 @@
     if (tabName === "manual" && !state.manualRendered) renderManual();
     // When switching to catalog, re-render to reflect any selection change
     if (tabName === "catalog") renderCatalog();
+    if (tabName === "io") renderIoCatalog();
     if (tabName === "mating") renderMatingPanel();
     // Layout Designer initialises itself via layout-designer.js on first load
     window.scrollTo({ top: 0, behavior: "smooth" });
+    syncRouteHash();
   }
 
   function filteredArrangements() {
@@ -1336,25 +1730,87 @@
     return entries;
   }
 
-  function filteredRuggedIo() {
-    const shell = els.shellFilter.value;
-    const arrangementText = els.arrangementFilter.value.trim().toLowerCase();
+  // ---- I/O Connectors catalog (rugged USB / RJ45 / HDMI / DisplayPort) ----
+
+  const IO_CATEGORY_ORDER = ["RJ45 / Ethernet", "USB", "USB-C", "HDMI", "DisplayPort", "Other"];
+
+  function ioCategoryFor(entry) {
+    const i = String(entry.interface || "").toLowerCase();
+    if (i.includes("rj45") || i.includes("ethernet")) return "RJ45 / Ethernet";
+    if (i.includes("type-c") || i.includes("usb-c")) return "USB-C";
+    if (i.includes("usb")) return "USB";
+    if (i.includes("hdmi")) return "HDMI";
+    if (i.includes("displayport")) return "DisplayPort";
+    return "Other";
+  }
+
+  function ioVendorLabel(entry) {
+    const v = String(entry.vendor || "").trim();
+    if (/glenair/i.test(v)) return "Glenair";
+    if (/cinch/i.test(v)) return "Cinch";
+    if (/amphenol/i.test(v)) return "Amphenol";
+    if (/te |deutsch|connectivity/i.test(v)) return "TE / Deutsch";
+    return v || "Other";
+  }
+
+  function ioNormToken(value) {
+    return String(value || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+  }
+
+  // Best-effort join to the richer rugged_io dataset for example part numbers.
+  let _ioRichIndex = null;
+  function ioRichIndex() {
+    if (_ioRichIndex) return _ioRichIndex;
+    _ioRichIndex = new Map();
+    const rich = (toolboxData.ruggedIo && toolboxData.ruggedIo.rugged_io_d38999_style_connectors) || [];
+    for (const r of rich) {
+      const key = ioNormToken(r.family);
+      if (key && !_ioRichIndex.has(key)) _ioRichIndex.set(key, r);
+    }
+    return _ioRichIndex;
+  }
+
+  function ioExamplePns(entry) {
+    const rich = ioRichIndex().get(ioNormToken(entry.family));
+    if (!rich) return [];
+    const verified = (rich.verified_purchasable_pns || []).map((p) => p.pn);
+    const list = (rich.example_pns && rich.example_pns.length) ? rich.example_pns : verified;
+    return list.slice(0, 3);
+  }
+
+  function filteredIoConnectors() {
+    const category = els.ioCategoryFilter ? els.ioCategoryFilter.value : "";
+    const vendor = els.ioVendorFilter ? els.ioVendorFilter.value : "";
+    const shell = els.ioShellFilter ? els.ioShellFilter.value : "";
+    const text = els.ioSearch ? els.ioSearch.value.trim().toLowerCase() : "";
     return ruggedIoCatalogEntries().filter((entry) => {
+      if (category && ioCategoryFor(entry) !== category) return false;
+      if (vendor && ioVendorLabel(entry) !== vendor) return false;
       if (shell && entry.shellSize !== shell) return false;
-      if (arrangementText) {
-        const hay = `${entry.family} ${entry.interface} ${entry.vendor}`.toLowerCase();
-        if (!hay.includes(arrangementText)) return false;
+      if (text) {
+        const hay = `${entry.family} ${entry.interface} ${entry.vendor} ${entry.relation}`.toLowerCase();
+        if (!hay.includes(text)) return false;
       }
       return true;
     });
   }
 
-  function buildRuggedIoCard(entry) {
+  function buildIoCard(entry) {
     const card = document.createElement("div");
     card.className = "catalog-card catalog-card-rugged-io";
+    const svgContent = entry.svg
+      ? `<img src="assets/d38999/svg/${entry.svg}" alt="${escapeHtml(entry.family)} face" class="catalog-face-img"/>`
+      : `<div class="catalog-face-placeholder"><span>${escapeHtml(entry.family)}</span></div>`;
+    const vendorLabel = ioVendorLabel(entry);
+    const examples = ioExamplePns(entry);
+    const exampleHtml = examples.length
+      ? `<div class="io-example-row">${examples
+          .map((pn) => `<button type="button" class="io-pn-chip" data-io-pn="${escapeHtml(pn)}">${escapeHtml(pn)}</button>`)
+          .join("")}</div>`
+      : "";
     card.innerHTML = `
       <div class="catalog-card-svg catalog-card-svg-face">
-        <img src="assets/d38999/svg/${entry.svg}" alt="${entry.family} face" class="catalog-face-img"/>
+        ${svgContent}
       </div>
       <div class="catalog-card-body">
         <div class="catalog-card-id">${escapeHtml(entry.family)}</div>
@@ -1363,30 +1819,94 @@
           <span>Shell ${escapeHtml(entry.shellSize)}</span>
         </div>
         <div class="catalog-card-meta" style="margin-top:2px">
-          <span class="rugged-io-badge">Rugged I/O</span>
+          <span class="rugged-io-badge${vendorLabel === "Glenair" ? " glenair-badge" : ""}">${escapeHtml(vendorLabel)}</span>
         </div>
+        ${exampleHtml}
         <div class="catalog-card-footer">
           <span class="catalog-service">${escapeHtml(entry.vendor)}</span>
         </div>
       </div>
     `;
-    card.addEventListener("click", () => {
-      // Decode the family prefix to show the rugged I/O card in the decoder
-      els.partNumberInput.value = entry.prefix;
+    card.addEventListener("click", (event) => {
+      const chip = event.target.closest("[data-io-pn]");
+      const pn = chip ? chip.dataset.ioPn : entry.prefix;
+      els.partNumberInput.value = pn;
       els.decodeButton.click();
       selectTab("decoder");
     });
     return card;
   }
 
+  let _ioFiltersPopulated = false;
+  function populateIoFilters() {
+    if (_ioFiltersPopulated) return;
+    const entries = ruggedIoCatalogEntries();
+    if (!entries.length) return;
+    if (els.ioCategoryFilter) {
+      const cats = IO_CATEGORY_ORDER.filter((c) => entries.some((e) => ioCategoryFor(e) === c));
+      fillSelect(els.ioCategoryFilter, [["", "All interfaces"], ...cats.map((c) => [c, c])]);
+    }
+    if (els.ioVendorFilter) {
+      const vendors = Array.from(new Set(entries.map(ioVendorLabel))).sort();
+      fillSelect(els.ioVendorFilter, [["", "All vendors"], ...vendors.map((v) => [v, v])]);
+    }
+    if (els.ioShellFilter) {
+      const shells = Array.from(new Set(entries.map((e) => e.shellSize))).sort((a, b) => Number(a) - Number(b));
+      fillSelect(els.ioShellFilter, [["", "Any"], ...shells.map((s) => [s, `Shell ${s}`])]);
+    }
+    _ioFiltersPopulated = true;
+  }
+
+  function clearIoFilters() {
+    if (els.ioCategoryFilter) els.ioCategoryFilter.value = "";
+    if (els.ioVendorFilter) els.ioVendorFilter.value = "";
+    if (els.ioShellFilter) els.ioShellFilter.value = "";
+    if (els.ioSearch) els.ioSearch.value = "";
+    renderIoCatalog();
+  }
+
+  function renderIoCatalog() {
+    populateIoFilters();
+    if (!els.ioGrid) return;
+    const entries = filteredIoConnectors();
+    const totalAll = ruggedIoCatalogEntries().length;
+    if (els.ioCount) {
+      els.ioCount.textContent = entries.length === totalAll
+        ? `${totalAll} connectors`
+        : `${entries.length} of ${totalAll} connectors`;
+    }
+    els.ioGrid.innerHTML = "";
+    if (!entries.length) {
+      els.ioGrid.innerHTML = `<div class="catalog-empty">No I/O connectors match the current filters. <button type="button" class="io-clear-inline-btn">Clear filters</button></div>`;
+      return;
+    }
+    // Group cards by interface category with section headings.
+    const byCategory = new Map();
+    for (const entry of entries) {
+      const cat = ioCategoryFor(entry);
+      if (!byCategory.has(cat)) byCategory.set(cat, []);
+      byCategory.get(cat).push(entry);
+    }
+    for (const cat of IO_CATEGORY_ORDER) {
+      const group = byCategory.get(cat);
+      if (!group || !group.length) continue;
+      const heading = document.createElement("div");
+      heading.className = "catalog-section-heading";
+      heading.textContent = cat;
+      els.ioGrid.appendChild(heading);
+      for (const entry of group) {
+        els.ioGrid.appendChild(buildIoCard(entry));
+      }
+    }
+  }
+
   function renderCatalog() {
     const filtered = filteredArrangements();
     const sorted = sortedCatalog(filtered);
-    const ruggedFiltered = filteredRuggedIo();
 
     // Update count badge
-    const totalCount = filtered.length + ruggedFiltered.length;
-    const totalAll = arrangements.length + ruggedIoCatalogEntries().length;
+    const totalCount = filtered.length;
+    const totalAll = arrangements.length;
     if (els.catalogCount) {
       els.catalogCount.textContent = totalCount === totalAll
         ? `${totalAll} items`
@@ -1396,35 +1916,16 @@
     if (!els.catalogGrid) return;
     els.catalogGrid.innerHTML = "";
 
-    if (!sorted.length && !ruggedFiltered.length) {
+    if (!sorted.length) {
       // Use event delegation on the grid to avoid accumulating listeners on re-render
       els.catalogGrid.innerHTML = `<div class="catalog-empty">No arrangements match the current filters. <button type="button" class="clear-filters-inline-btn">Clear filters</button></div>`;
       return;
     }
 
-    // Rugged I/O interface cards first
-    if (ruggedFiltered.length) {
-      const heading = document.createElement("div");
-      heading.className = "catalog-section-heading";
-      heading.textContent = "High-Speed Interface Connectors";
-      els.catalogGrid.appendChild(heading);
-      for (const entry of ruggedFiltered) {
-        els.catalogGrid.appendChild(buildRuggedIoCard(entry));
-      }
-    }
-
     // Standard insert arrangement cards
-    if (sorted.length) {
-      if (ruggedFiltered.length) {
-        const heading = document.createElement("div");
-        heading.className = "catalog-section-heading";
-        heading.textContent = "Insert Arrangements";
-        els.catalogGrid.appendChild(heading);
-      }
-      for (const arr of sorted) {
-        const card = buildCatalogCard(arr);
-        els.catalogGrid.appendChild(card);
-      }
+    for (const arr of sorted) {
+      const card = buildCatalogCard(arr);
+      els.catalogGrid.appendChild(card);
     }
   }
 
@@ -1585,6 +2086,7 @@
       const isActive = idEl && idEl.textContent === arrangement.id;
       card.classList.toggle("active", isActive);
     });
+    syncRouteHash();
   }
 
   function renderSourceInfo() {
@@ -1622,6 +2124,7 @@
   function renderViewer() {
     const arr = state.selectedArrangement;
     if (!arr) return;
+    clearRuggedIoViewer();
     const svg = els.connectorSvg;
     svg.innerHTML = "";
     svg.setAttribute("class", "connector-svg");
@@ -2283,7 +2786,10 @@
       setMessage(els.decodeMessage, decoded.message, true);
       return;
     }
+    pushRecentPartNumber(decoded.part_number);
+    syncRouteHash();
     if (decoded.rugged_io) {
+      renderRuggedIoViewer(decoded);
       setMessage(els.decodeMessage, `Recognized ${decoded.family} (${decoded.connector_type}). This is a D38999-style rugged I/O connector — not a standard insert arrangement.`);
       return;
     }
@@ -2837,6 +3343,46 @@
     els.decodedPanel.innerHTML = decodedSummaryCard(decoded);
   }
 
+  function clearRuggedIoViewer() {
+    const layer = document.getElementById("ruggedFaceLayer");
+    if (layer) layer.remove();
+    if (els.connectorSvg) els.connectorSvg.style.display = "";
+  }
+
+  function renderRuggedIoViewer(decoded) {
+    const frame = els.viewerFrame;
+    if (!frame) return;
+    if (els.connectorSvg) els.connectorSvg.style.display = "none";
+    let layer = document.getElementById("ruggedFaceLayer");
+    if (!layer) {
+      layer = document.createElement("div");
+      layer.id = "ruggedFaceLayer";
+      layer.className = "rugged-face-layer";
+      frame.appendChild(layer);
+    }
+    const faceSvg = decoded.face_svg || decoded.svg;
+    const mountSvg = decoded.svg && decoded.svg !== faceSvg ? decoded.svg : "";
+    const captionBits = [decoded.interface, decoded.shell_size ? `Shell ${decoded.shell_size}` : "", decoded.mounting_type || ""].filter(Boolean);
+    layer.innerHTML = `
+      <div class="rugged-face-stage">
+        ${faceSvg
+          ? `<img class="rugged-face-img" src="assets/d38999/svg/${escapeHtml(faceSvg)}" alt="${escapeHtml(decoded.family)} front face"/>`
+          : `<div class="rugged-face-placeholder">${escapeHtml(decoded.family)} front face unavailable</div>`}
+        ${mountSvg
+          ? `<img class="rugged-mount-img" src="assets/d38999/svg/${escapeHtml(mountSvg)}" alt="${escapeHtml(decoded.family)} ${escapeHtml(decoded.mounting_type || "profile")}"/>`
+          : ""}
+      </div>
+      <div class="rugged-face-caption">
+        <span class="rugged-face-pn mono">${escapeHtml(decoded.part_number || "")}</span>
+        ${captionBits.length ? `<span class="rugged-face-meta">${escapeHtml(captionBits.join(" • "))}</span>` : ""}
+      </div>
+    `;
+    els.viewerTitle.textContent = `${decoded.family} — front face`;
+    if (els.sourceInfo) {
+      els.sourceInfo.textContent = `${decoded.vendor || ""}${decoded.vendor ? " • " : ""}${decoded.d38999_relation || ""}`.trim();
+    }
+  }
+
   function ruggedIoSummaryCard(decoded) {
     const faceSvg = decoded.face_svg || decoded.svg;
     const mountSvg = decoded.svg !== faceSvg ? decoded.svg : "";
@@ -2857,6 +3403,7 @@
           <div class="rugged-field"><span class="rugged-label">Family:</span> <span class="rugged-value">${escapeHtml(decoded.family)}</span></div>
           <div class="rugged-field"><span class="rugged-label">Vendor:</span> <span class="rugged-value">${escapeHtml(decoded.vendor)}</span></div>
           <div class="rugged-field"><span class="rugged-label">Interface:</span> <span class="rugged-value">${escapeHtml(decoded.interface)}</span></div>
+          ${decoded.interface_gender ? `<div class="rugged-field"><span class="rugged-label">Interface gender:</span> <span class="rugged-value">${escapeHtml(decoded.interface_gender)}</span></div>` : ""}
           <div class="rugged-field"><span class="rugged-label">Shell Size:</span> <span class="rugged-value">${escapeHtml(decoded.shell_size)}</span></div>
           <div class="rugged-field"><span class="rugged-label">Type:</span> <span class="rugged-value">${escapeHtml(decoded.connector_type)}</span></div>
           <div class="rugged-field"><span class="rugged-label">Relation:</span> <span class="rugged-value">${escapeHtml(decoded.d38999_relation)}</span></div>
@@ -2887,9 +3434,12 @@
           <button type="button" class="primary-action decoded-action-btn" data-decoded-action="mating">Find mate</button>
           <button type="button" class="decoded-action-btn" data-decoded-action="build">Build connector</button>
           <button type="button" class="decoded-action-btn" data-decoded-action="catalog">Browse family</button>
+          <button type="button" class="decoded-action-btn" data-decoded-action="converter">Convert</button>
+          <button type="button" class="decoded-action-btn" data-decoded-action="csv" title="Download the decoded breakdown as CSV">Export CSV</button>
+          <button type="button" class="decoded-action-btn" data-decoded-action="print" title="Print or save the decoded result as PDF">Print</button>
         </div>
         <div class="manual-stat-grid">
-          ${items.map((item) => optionChip(item.token, item.label, item.summary, true)).join("")}
+          ${items.map((item) => decodedFieldChip(item)).join("")}
         </div>
         <div class="detail-item"><div class="label">Insert drawing</div><div class="value">${escapeHtml(arrangement ? `${decoded.arrangement_id} | ${arrangement.contact_count} contacts | ${sizeSummary(arrangement)}` : `${decoded.arrangement_id || "unknown"} | needs manual verification`)}</div></div>
         ${uniqueSources.length ? `<div class="summary-source-note">Sources: ${escapeHtml(uniqueSources.join(" | "))}</div>` : ""}
@@ -2928,6 +3478,7 @@
     const sections = [
       ["Interactive PN Decoder", interactivePnGuide(preview, "manual")],
       ["PN Parts And Options", manualPnPartSections(preview)],
+      ["Quick Reference", manualQuickReference()],
       ["Source Coverage", manualCoverage()],
     ];
     els.manualContent.innerHTML = sections.map(([title, body]) => `
@@ -3380,6 +3931,52 @@
     `;
   }
 
+  function decodedFieldChip(item) {
+    const why = item.use ? `<p class="field-why-text">${escapeHtml(item.use)}</p>` : "";
+    const source = item.source
+      ? `<p class="field-source-badge"><span>Source</span> ${escapeHtml(item.source)}</p>`
+      : "";
+    const hasDisclosure = Boolean(why || source);
+    return `
+      <div class="option-chip decoded-field-chip active">
+        <div class="decoded-field-head">
+          <strong class="mono">${escapeHtml(item.token)}</strong>
+          <span>${escapeHtml(item.label || "")}</span>
+          ${hasDisclosure ? `<button type="button" class="field-why-toggle" data-why-toggle aria-expanded="false" aria-label="Why does ${escapeHtml(item.label)} mean this?">Why?</button>` : ""}
+        </div>
+        ${item.summary ? `<em>${escapeHtml(item.summary)}</em>` : ""}
+        ${hasDisclosure ? `<div class="field-why" hidden>${why}${source}</div>` : ""}
+      </div>
+    `;
+  }
+
+  function csvEscape(value) {
+    const text = String(value == null ? "" : value);
+    return /[",\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+  }
+
+  function exportDecodedCsv(decoded) {
+    if (!decoded?.ok) return;
+    const items = manualFieldItems(decoded);
+    const rows = [["Field", "Code", "Meaning", "Why it matters", "Source"]];
+    items.forEach((item) => rows.push([item.label, item.token, item.summary, item.use, item.source || ""]));
+    const arrangement = decoded.arrangement_id ? arrangementById(decoded.arrangement_id) : null;
+    if (arrangement) {
+      rows.push(["Insert arrangement", decoded.arrangement_id, `${arrangement.contact_count} contacts`, sizeSummary(arrangement), ""]);
+    }
+    rows.unshift(["Part number", decoded.part_number, "", "", ""]);
+    const csv = rows.map((row) => row.map(csvEscape).join(",")).join("\r\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${String(decoded.part_number || "d38999").replace(/[^A-Za-z0-9]+/g, "_")}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
   function shellTypeOptions(active) {
     const docs = (dlaDocs.documents || [])
       .filter((item) =>
@@ -3394,11 +3991,16 @@
       const text = getShellStyleDescription(shellStyle);
       return optionChip(doc.slash_sheet || "", title, text, active.ok && active.slash_sheet === doc.slash_sheet);
     }).join("");
+    const activeProfile = active.ok ? (SHELL_PROFILE_TYPE[active.slash_sheet] || "plug") : "plug";
+    const profileKeys = ["plug", "wall_receptacle", "jamnut_receptacle", "box_receptacle", "inline_receptacle", "cover"];
+    const profileGrid = profileKeys.map((key) => `
+      <div class="shell-profile-item${key === activeProfile ? " active" : ""}">
+        ${SHELL_PROFILES[key]}
+      </div>
+    `).join("");
     return `
-      <div class="field-graphic shell-type-graphic" aria-hidden="true">
-        <span class="shell-ring"></span>
-        <span class="shell-plug"></span>
-        <span class="shell-label">/26</span>
+      <div class="field-graphic shell-type-graphic shell-profiles-grid" aria-hidden="true">
+        ${profileGrid}
       </div>
       <div class="option-grid compact-options">${chips}</div>
     `;
@@ -3504,6 +4106,16 @@
     const text = String(value || "").replace(/\s+/g, " ").trim();
     if (text.length <= maxLength) return text;
     return `${text.slice(0, Math.max(0, maxLength - 3)).trim()}...`;
+  }
+
+  function manualQuickReference() {
+    return `
+      <div class="manual-note"><strong>View orientation:</strong> All insert drawings in this toolbox show the <em>front face of the pin insert</em> (mating face). This is how you see the connector when looking into it from the cable side of the mating connector.</div>
+      <div class="manual-note"><strong>Wire-side view:</strong> When wiring from behind the connector, the view is mirrored left-to-right. Pin labels stay the same but their physical left/right positions swap. The Layout Designer provides an explicit mating-face vs. wire-side toggle.</div>
+      <div class="manual-note"><strong>Mating rule:</strong> A plug (P contacts) mates with a receptacle (S contacts) of the same shell size, insert arrangement, and keying. The mating tool automatically finds the reciprocal connector.</div>
+      <div class="manual-note"><strong>Shell type ≠ shell size:</strong> The slash sheet (e.g. /26) identifies the body style (plug, jam-nut, wall-mount). The shell size is determined by the later letter code (e.g. E = shell 17).</div>
+      <div class="manual-note"><strong>Keying positions:</strong> N (normal) is the standard key angle. Alternate keying (A–E) rotates the key/keyway to prevent wrong mating between connectors on the same panel.</div>
+    `;
   }
 
   function manualCoverage() {

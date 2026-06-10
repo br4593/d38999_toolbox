@@ -63,5 +63,55 @@
         "file":  "TE_Deutsch_D38999_Series_III.pdf",
         "url":  "https://d38999.federalconnectors.com/datasheets/TE/TE_Deutsch_D38999_Series_III.pdf",
         "bytes":  454588
+    },
+    {
+        "file":  "glenair-superseal-usb-3.0-ruggedized-solutions.pdf",
+        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/usb-3.0-ruggedized-solutions.pdf",
+        "bytes":  1315590
+    },
+    {
+        "file":  "glenair-superseal-usb-3.0-performance-specifications.pdf",
+        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/usb-3.0-performance-specifications.pdf",
+        "bytes":  126766
+    },
+    {
+        "file":  "glenair-superseal-usb-3.0-product-selection-guide.pdf",
+        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/usb-3.0-product-selection-guide.pdf",
+        "bytes":  664266
+    },
+    {
+        "file":  "glenair-superseal-usb3-233-350.pdf",
+        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-350.pdf",
+        "bytes":  723234
+    },
+    {
+        "file":  "glenair-superseal-usb3-233-352.pdf",
+        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-352.pdf",
+        "bytes":  671032
+    },
+    {
+        "file":  "glenair-superseal-usb3-233-353.pdf",
+        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-353.pdf",
+        "bytes":  649089
+    },
+    {
+        "file":  "glenair-superseal-usb3-233-354.pdf",
+        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-354.pdf",
+        "bytes":  722696
+    },
+    {
+        "file":  "glenair-superseal-usb3-233-355.pdf",
+        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-355.pdf",
+        "bytes":  759651
+    },
+    {
+        "file":  "glenair-superseal-usb3-233-357.pdf",
+        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-357.pdf",
+        "bytes":  642995
+    },
+    {
+        "file":  "glenair-superseal-usb3-233-358.pdf",
+        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-358.pdf",
+        "bytes":  339633
     }
 ]

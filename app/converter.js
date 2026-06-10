@@ -410,17 +410,56 @@
 
   // D38999-style rugged I/O connector families (not standard D38999 insert arrangements)
   const RUGGED_IO_FAMILIES = [
-    { prefix: "RJFTV", family: "RJFTV", vendor: "Amphenol Socapex", interface: "RJ45 Ethernet", shellSize: "19", relation: "MIL-DTL-38999 Series III style rugged RJ45", svg: "rjftv-face.svg" },
-    { prefix: "C-RJFTV", family: "C-RJFTV", vendor: "Cinch", interface: "RJ45 Ethernet", shellSize: "19", relation: "D38999 Series III style rugged RJ45", svg: "rjftv-face.svg" },
-    { prefix: "CRJFTV", family: "C-RJFTV", vendor: "Cinch", interface: "RJ45 Ethernet", shellSize: "19", relation: "D38999 Series III style rugged RJ45", svg: "rjftv-face.svg" },
-    { prefix: "RJF", family: "RJF", vendor: "Amphenol Socapex", interface: "RJ45 Ethernet", shellSize: "18", relation: "MIL-DTL-26482 bayonet style rugged RJ45", svg: "rjf-face.svg" },
-    { prefix: "USB3CFTV", family: "USB3CFTV", vendor: "Amphenol Socapex", interface: "USB-C / USB 3.2", shellSize: "11", relation: "Size 11 D38999-style rugged USB-C", svg: "usb3cftv-face.svg" },
-    { prefix: "USB3FTV", family: "USB3FTV", vendor: "Amphenol Socapex", interface: "USB 3.x Type-A", shellSize: "15", relation: "MIL-DTL-38999 Series III style rugged USB 3", svg: "usb3ftv-face.svg" },
-    { prefix: "USBFTV", family: "USBFTV", vendor: "Amphenol Socapex", interface: "USB 2.0 Type-A", shellSize: "15", relation: "MIL-DTL-38999 Series III style rugged USB", svg: "usbftv-face.svg" },
-    { prefix: "USBBFTV", family: "USBBFTV", vendor: "Amphenol Socapex", interface: "USB-B", shellSize: "15", relation: "MIL-DTL-38999 Series III style rugged USB-B", svg: "usbbftv-face.svg" },
-    { prefix: "USBF", family: "USBFTV", vendor: "Amphenol Socapex", interface: "USB 2.0", shellSize: "15", relation: "MIL-DTL-38999 Series III style rugged USB", svg: "usbftv-face.svg" },
-    { prefix: "HDMIFTV", family: "HDMIFTV", vendor: "Amphenol Socapex", interface: "HDMI 2.0", shellSize: "17", relation: "D38999-style rugged HDMI", svg: "hdmiftv-face.svg" },
-    { prefix: "MDPFTV", family: "MDPFTV", vendor: "Amphenol Socapex", interface: "Mini DisplayPort", shellSize: "13", relation: "D38999-style rugged Mini DisplayPort", svg: "mdpftv-face.svg" },
+    { prefix: "RJFTV", family: "RJFTV", vendor: "Amphenol Socapex", interface: "RJ45 Ethernet", shellSize: "19", relation: "MIL-DTL-38999 Series III style rugged RJ45", gender: "Varies by PN (RJ45 jack = female, plug = male)", svg: "rjftv-face.svg" },
+    { prefix: "C-RJFTV", family: "C-RJFTV", vendor: "Cinch", interface: "RJ45 Ethernet", shellSize: "19", relation: "D38999 Series III style rugged RJ45", gender: "Varies by PN (RJ45 jack = female, plug = male)", svg: "rjftv-face.svg" },
+    { prefix: "CRJFTV", family: "C-RJFTV", vendor: "Cinch", interface: "RJ45 Ethernet", shellSize: "19", relation: "D38999 Series III style rugged RJ45", gender: "Varies by PN (RJ45 jack = female, plug = male)", svg: "rjftv-face.svg" },
+    { prefix: "RJF", family: "RJF", vendor: "Amphenol Socapex", interface: "RJ45 Ethernet", shellSize: "18", relation: "MIL-DTL-26482 bayonet style rugged RJ45", gender: "Varies by PN (RJ45 jack = female, plug = male)", svg: "rjf-face.svg" },
+    { prefix: "USB3CFTV", family: "USB3CFTV", vendor: "Amphenol Socapex", interface: "USB-C / USB 3.2", shellSize: "11", relation: "Size 11 D38999-style rugged USB-C", gender: "Varies by PN (USB-C receptacle = female, plug = male)", svg: "usb3cftv-face.svg" },
+    { prefix: "USB3FTV", family: "USB3FTV", vendor: "Amphenol Socapex", interface: "USB 3.x Type-A", shellSize: "15", relation: "MIL-DTL-38999 Series III style rugged USB 3", gender: "Varies by PN (USB Type-A receptacle = female, plug = male)", svg: "usb3ftv-face.svg" },
+    { prefix: "USBFTV", family: "USBFTV", vendor: "Amphenol Socapex", interface: "USB 2.0 Type-A", shellSize: "15", relation: "MIL-DTL-38999 Series III style rugged USB", gender: "Varies by PN (USB Type-A receptacle = female, plug = male)", svg: "usbftv-face.svg" },
+    { prefix: "USBBFTV", family: "USBBFTV", vendor: "Amphenol Socapex", interface: "USB-B", shellSize: "15", relation: "MIL-DTL-38999 Series III style rugged USB-B", gender: "Varies by PN (USB-B receptacle = female, plug = male)", svg: "usbbftv-face.svg" },
+    { prefix: "USBF", family: "USBFTV", vendor: "Amphenol Socapex", interface: "USB 2.0", shellSize: "15", relation: "MIL-DTL-38999 Series III style rugged USB", gender: "Varies by PN (USB Type-A receptacle = female, plug = male)", svg: "usbftv-face.svg" },
+    { prefix: "HDMIFTV", family: "HDMIFTV", vendor: "Amphenol Socapex", interface: "HDMI 2.0", shellSize: "17", relation: "D38999-style rugged HDMI", gender: "Varies by PN (HDMI receptacle = female, plug = male)", svg: "hdmiftv-face.svg" },
+    { prefix: "MDPFTV", family: "MDPFTV", vendor: "Amphenol Socapex", interface: "Mini DisplayPort", shellSize: "13", relation: "D38999-style rugged Mini DisplayPort", gender: "Varies by PN (Mini DisplayPort receptacle = female, plug = male)", svg: "mdpftv-face.svg" },
+    // Glenair SuperNine / SuperSeal rugged I/O families
+    { prefix: "233-312", family: "SuperNine-RJ45", vendor: "Glenair", interface: "RJ45 Ethernet Cat5e/6A", shellSize: "19", relation: "SuperNine MIL-DTL-38999 Series III type rugged RJ45 plug", gender: "Male RJ45 plug", svg: "glenair-supernine-rj45-face.svg" },
+    { prefix: "233-300", family: "SuperNine-RJ45", vendor: "Glenair", interface: "RJ45 Ethernet Cat5e/6A", shellSize: "19", relation: "SuperNine MIL-DTL-38999 Series III type rugged RJ45 plug coupler", gender: "Female RJ45 jack", svg: "glenair-supernine-rj45-face.svg" },
+    { prefix: "233-301", family: "SuperNine-RJ45", vendor: "Glenair", interface: "RJ45 Ethernet Cat5e/6A", shellSize: "19", relation: "SuperNine MIL-DTL-38999 Series III type RJ45 receptacle, crimp contacts", gender: "Female RJ45 jack", svg: "glenair-supernine-rj45-face.svg" },
+    { prefix: "233-302", family: "SuperNine-RJ45", vendor: "Glenair", interface: "RJ45 Ethernet Cat5e/6A", shellSize: "19", relation: "SuperNine MIL-DTL-38999 Series III type RJ45 receptacle, PC tails", gender: "Female RJ45 jack", svg: "glenair-supernine-rj45-face.svg" },
+    { prefix: "233-303", family: "SuperNine-RJ45", vendor: "Glenair", interface: "RJ45 Ethernet Cat5e/6A", shellSize: "19", relation: "SuperNine MIL-DTL-38999 Series III type RJ45 receptacle, solder cups", gender: "Female RJ45 jack", svg: "glenair-supernine-rj45-face.svg" },
+    { prefix: "233-304", family: "SuperNine-RJ45", vendor: "Glenair", interface: "RJ45 Ethernet Cat5e/6A", shellSize: "19", relation: "SuperNine MIL-DTL-38999 Series III type RJ45 plug/receptacle adapter", gender: "Male RJ45 plug one side, female RJ45 jack other", svg: "glenair-supernine-rj45-face.svg" },
+    { prefix: "233-305", family: "SuperNine-RJ45", vendor: "Glenair", interface: "RJ45 / Quadrax", shellSize: "19", relation: "SuperNine MIL-DTL-38999 Series III type RJ45/Quadrax interface adapter", gender: "Female RJ45 jack (RJ45 side)", svg: "glenair-supernine-rj45-face.svg" },
+    { prefix: "233-330", family: "SuperNine-RJ45", vendor: "Glenair", interface: "RJ45 Ethernet Cat5e/6A", shellSize: "19", relation: "SuperNine MIL-DTL-38999 Series III type RJ45 feedthru receptacle", gender: "Female RJ45 jack (both sides)", svg: "glenair-supernine-rj45-face.svg" },
+    { prefix: "244-001", family: "SuperNine-RJ45-TVS", vendor: "Glenair", interface: "RJ45 Ethernet Cat5e TVS", shellSize: "19", relation: "SuperNine MIL-DTL-38999 Series III type RJ45 TVS jam-nut receptacle", gender: "Female RJ45 jack", svg: "glenair-supernine-rj45-tvs-face.svg" },
+    { prefix: "244-002", family: "SuperNine-RJ45-TVS", vendor: "Glenair", interface: "RJ45 Ethernet Cat5e TVS", shellSize: "19", relation: "SuperNine MIL-DTL-38999 Series III type RJ45 TVS wall mount receptacle", gender: "Female RJ45 jack", svg: "glenair-supernine-rj45-tvs-face.svg" },
+    { prefix: "244-003", family: "SuperNine-RJ45-TVS", vendor: "Glenair", interface: "RJ45 Ethernet Cat5e TVS", shellSize: "19", relation: "SuperNine MIL-DTL-38999 Series III type RJ45 TVS jam-nut receptacle", gender: "Female RJ45 jack", svg: "glenair-supernine-rj45-tvs-face.svg" },
+    { prefix: "244-004", family: "SuperNine-RJ45-TVS", vendor: "Glenair", interface: "RJ45 Ethernet Cat5e TVS", shellSize: "19", relation: "SuperNine MIL-DTL-38999 Series III type RJ45 TVS wall mount receptacle", gender: "Female RJ45 jack", svg: "glenair-supernine-rj45-tvs-face.svg" },
+    { prefix: "233-340", family: "SuperNine-USB", vendor: "Glenair", interface: "USB 2.0 / USB 3.0", shellSize: "15", relation: "SuperNine MIL-DTL-38999 Series III type USB coupler", gender: "Female USB Type-A (both sides)", svg: "glenair-supernine-usb-face.svg" },
+    { prefix: "233-342", family: "SuperNine-USB", vendor: "Glenair", interface: "USB 2.0 / USB 3.0", shellSize: "15", relation: "SuperNine MIL-DTL-38999 Series III type USB receptacle, PC tails", gender: "Female USB Type-A", svg: "glenair-supernine-usb-face.svg" },
+    { prefix: "233-343", family: "SuperNine-USB", vendor: "Glenair", interface: "USB 2.0 / USB 3.0", shellSize: "15", relation: "SuperNine MIL-DTL-38999 Series III type USB receptacle, solder cup", gender: "Female USB Type-A", svg: "glenair-supernine-usb-face.svg" },
+    { prefix: "233-344", family: "SuperNine-USB", vendor: "Glenair", interface: "USB 2.0 / USB 3.0", shellSize: "15", relation: "SuperNine MIL-DTL-38999 Series III type USB receptacle adapter, MIL-STD-1560", gender: "Female USB Type-A", svg: "glenair-supernine-usb-face.svg" },
+    { prefix: "233-345", family: "SuperNine-USB", vendor: "Glenair", interface: "USB 2.0 / USB 3.0", shellSize: "15", relation: "SuperNine MIL-DTL-38999 Series III type USB receptacle, crimp contacts", gender: "Female USB Type-A", svg: "glenair-supernine-usb-face.svg" },
+    { prefix: "233-370", family: "SuperNine-USB", vendor: "Glenair", interface: "USB 2.0 / USB 3.0", shellSize: "17", relation: "SuperNine MIL-DTL-38999 Series III type USB feedthru receptacle", gender: "Female USB Type-A (both sides)", svg: "glenair-supernine-usb-face.svg" },
+    { prefix: "233-350", family: "SuperSeal-USB3", vendor: "Glenair", interface: "USB 3.0 / USB 3.2 Gen 1 Type-A", shellSize: "15", relation: "SuperSeal 38999 type USB 3.0 panel mount receptacle", gender: "Female USB 3.0 Type-A", svg: "glenair-superseal-usb3-face.svg", mountSvg: "glenair-superseal-usb3-profile.svg", mountType: "Size 15 panel-mount receptacle" },
+    { prefix: "233-352", family: "SuperSeal-USB3", vendor: "Glenair", interface: "USB 3.0 / USB 3.2 Gen 1 Type-A", shellSize: "15", relation: "SuperSeal 38999 type USB 3.0 receptacle, PC tails", gender: "Female USB 3.0 Type-A", svg: "glenair-superseal-usb3-face.svg", mountSvg: "glenair-superseal-usb3-profile.svg", mountType: "Size 15 panel-mount receptacle" },
+    { prefix: "233-353", family: "SuperSeal-USB3", vendor: "Glenair", interface: "USB 3.0 / USB 3.2 Gen 1 Type-A", shellSize: "15", relation: "SuperSeal 38999 type USB 3.0 receptacle, solder cup", gender: "Female USB 3.0 Type-A", svg: "glenair-superseal-usb3-face.svg", mountSvg: "glenair-superseal-usb3-profile.svg", mountType: "Size 15 panel-mount receptacle" },
+    { prefix: "233-354", family: "SuperSeal-USB3", vendor: "Glenair", interface: "USB 3.0 / USB 3.2 Gen 1 Type-A", shellSize: "15", relation: "SuperSeal 38999 type USB 3.0 receptacle, breakout board", gender: "Female USB 3.0 Type-A", svg: "glenair-superseal-usb3-face.svg", mountSvg: "glenair-superseal-usb3-profile.svg", mountType: "Size 15 panel-mount receptacle" },
+    { prefix: "233-355", family: "SuperSeal-USB3", vendor: "Glenair", interface: "USB 3.0 / USB 3.2 Gen 1 Type-A", shellSize: "15", relation: "SuperSeal 38999 type USB 3.0 female-to-female feedthru", gender: "Female USB 3.0 Type-A (both sides)", svg: "glenair-superseal-usb3-face.svg", mountSvg: "glenair-superseal-usb3-profile.svg", mountType: "Size 15 panel-mount feed-thru" },
+    { prefix: "233-357", family: "SuperSeal-USB3", vendor: "Glenair", interface: "USB 3.0 / USB 3.2 Gen 1 Type-A", shellSize: "15", relation: "SuperSeal 38999 type USB 3.0 receptacle with threaded standoff", gender: "Female USB 3.0 Type-A", svg: "glenair-superseal-usb3-face.svg", mountSvg: "glenair-superseal-usb3-profile.svg", mountType: "Size 15 panel-mount receptacle, threaded standoff" },
+    { prefix: "233-358", family: "SuperSeal-USB3", vendor: "Glenair", interface: "USB 3.0 / USB 3.2 Gen 1 Type-A", shellSize: "15", relation: "SuperSeal 38999 type USB 3.0 plug adapter for cordset", gender: "Male USB 3.0 Type-A plug (via cordset)", svg: "glenair-superseal-usb3-face.svg", mountSvg: "glenair-superseal-usb3-plug-profile.svg", mountType: "USB cordset plug adapter" },
+    { prefix: "233-380", family: "SuperSeal-USB32C", vendor: "Glenair", interface: "USB 3.2 Gen 2 Type-C", shellSize: "13", relation: "SuperSeal 38999 type USB 3.2 Gen 2 Type-C receptacle, female-to-female", gender: "Female USB Type-C (both sides)", svg: "glenair-superseal-usbc-face.svg", mountSvg: "glenair-superseal-usbc-profile.svg", mountType: "Size 13 panel-mount receptacle" },
+    { prefix: "233-381", family: "SuperSeal-USB32C", vendor: "Glenair", interface: "USB 3.2 Gen 2 Type-C", shellSize: "13", relation: "SuperSeal 38999 type USB 3.2 Gen 2 Type-C feedthrough", gender: "Female USB Type-C (both sides)", svg: "glenair-superseal-usbc-face.svg", mountSvg: "glenair-superseal-usbc-profile.svg", mountType: "Size 13 panel-mount feed-thru" },
+    { prefix: "233-382", family: "SuperSeal-USB32C", vendor: "Glenair", interface: "USB 3.2 Gen 2 Type-C", shellSize: "13", relation: "SuperSeal 38999 type USB 3.2 Gen 2 Type-C receptacle, PC tails", gender: "Female USB Type-C", svg: "glenair-superseal-usbc-face.svg", mountSvg: "glenair-superseal-usbc-profile.svg", mountType: "Size 13 panel-mount receptacle" },
+    { prefix: "233-384", family: "SuperSeal-USB32C", vendor: "Glenair", interface: "USB 3.2 Gen 2 Type-C", shellSize: "13", relation: "SuperSeal 38999 type USB 3.2 Gen 2 Type-C receptacle, breakout board", gender: "Female USB Type-C", svg: "glenair-superseal-usbc-face.svg", mountSvg: "glenair-superseal-usbc-profile.svg", mountType: "Size 13 panel-mount receptacle" },
+    { prefix: "233-388", family: "SuperSeal-USB32C", vendor: "Glenair", interface: "USB 3.2 Gen 2 Type-C", shellSize: "13", relation: "SuperSeal 38999 type USB 3.2 Gen 2 Type-C drive-thru plug", gender: "Male USB Type-C plug", svg: "glenair-superseal-usbc-face.svg", mountSvg: "glenair-superseal-usbc-profile.svg", mountType: "Size 13 drive-thru plug" },
+    { prefix: "233-360", family: "SuperNine-HDMI", vendor: "Glenair", interface: "HDMI 2.0", shellSize: "17", relation: "SuperNine MIL-DTL-38999 Series III type HDMI 2.0 panel mount coupler", gender: "Female HDMI Type-A (both sides)", svg: "glenair-supernine-hdmi-face.svg" },
+    { prefix: "233-362", family: "SuperNine-HDMI", vendor: "Glenair", interface: "HDMI 2.0", shellSize: "17", relation: "SuperNine MIL-DTL-38999 Series III type HDMI 2.0 receptacle, PC tails", gender: "Female HDMI Type-A", svg: "glenair-supernine-hdmi-face.svg" },
+    { prefix: "233-363", family: "SuperNine-HDMI", vendor: "Glenair", interface: "HDMI 2.0", shellSize: "17", relation: "SuperNine MIL-DTL-38999 Series III type HDMI 2.0 receptacle, solder cups", gender: "Female HDMI Type-A", svg: "glenair-supernine-hdmi-face.svg" },
+    { prefix: "233-364", family: "SuperNine-HDMI", vendor: "Glenair", interface: "HDMI 2.0", shellSize: "17", relation: "SuperNine MIL-DTL-38999 Series III type HDMI 2.0 receptacle, breakout board", gender: "Female HDMI Type-A", svg: "glenair-supernine-hdmi-face.svg" },
+    { prefix: "233-365", family: "SuperNine-HDMI", vendor: "Glenair", interface: "HDMI 2.0", shellSize: "17", relation: "SuperNine MIL-DTL-38999 Series III type HDMI 2.0 feedthru coupler", gender: "Female HDMI Type-A (both sides)", svg: "glenair-supernine-hdmi-face.svg" },
+    { prefix: "233-368", family: "SuperNine-HDMI", vendor: "Glenair", interface: "HDMI 2.0", shellSize: "17", relation: "SuperNine MIL-DTL-38999 Series III type HDMI 2.0 plug", gender: "Female HDMI Type-A receptacle", svg: "glenair-supernine-hdmi-face.svg" },
+    { prefix: "233-376", family: "SuperSeal-DP", vendor: "Glenair", interface: "DisplayPort 1.4", shellSize: "17", relation: "SuperSeal 38999 type DisplayPort 1.4 receptacle with shielded DisplayPort coupler", gender: "Female DisplayPort (both sides)", svg: "glenair-superseal-dp-face.svg" },
+    { prefix: "233-379", family: "SuperSeal-DP", vendor: "Glenair", interface: "DisplayPort 1.4", shellSize: "17", relation: "SuperSeal 38999 type DisplayPort 1.4 receptacle, DisplayPort to PC tail termination", gender: "Female DisplayPort", svg: "glenair-superseal-dp-face.svg" },
   ];
 
   // Map shell type digit to mounting style name and SVG suffix
@@ -441,6 +480,16 @@
     "USBBFTV":  { face: "usbbftv-face.svg" },
     "HDMIFTV":  { plug: "hdmiftv-plug.svg", "jam-nut-receptacle": "hdmiftv-jam-nut-receptacle.svg", "square-flange-receptacle": "hdmiftv-square-flange-receptacle.svg", "reduced-flange-receptacle": "hdmiftv-reduced-flange-receptacle.svg", "standoff-receptacle": "hdmiftv-standoff-receptacle.svg", face: "hdmiftv-face.svg" },
     "MDPFTV":   { plug: "mdpftv-plug.svg", "jam-nut-receptacle": "mdpftv-jam-nut-receptacle.svg", "square-flange-receptacle": "mdpftv-square-flange-receptacle.svg", face: "mdpftv-face.svg" },
+    // Glenair SuperNine / SuperSeal families: face + side profile (+ mount variants where drawn).
+    // Mount tokens for these appear after the series code (00/D0 wall, CM/07 jam-nut, G6 plug),
+    // so they are matched by the Glenair mount-token detection below, not by suffix char 0.
+    "SuperNine-RJ45":     { face: "glenair-supernine-rj45-face.svg", side: "glenair-supernine-rj45-profile.svg", plug: "glenair-supernine-rj45-plug.svg", "jam-nut-receptacle": "glenair-supernine-rj45-jam-nut-receptacle.svg", "wall-mount-receptacle": "glenair-supernine-rj45-wall-mount-receptacle.svg" },
+    "SuperNine-RJ45-TVS": { face: "glenair-supernine-rj45-tvs-face.svg", side: "glenair-supernine-rj45-tvs-profile.svg", "jam-nut-receptacle": "glenair-supernine-rj45-jam-nut-receptacle.svg", "wall-mount-receptacle": "glenair-supernine-rj45-wall-mount-receptacle.svg" },
+    "SuperNine-USB":      { face: "glenair-supernine-usb-face.svg", side: "glenair-supernine-usb-profile.svg", plug: "glenair-supernine-usb-plug.svg", "jam-nut-receptacle": "glenair-supernine-usb-jam-nut-receptacle.svg", "wall-mount-receptacle": "glenair-supernine-usb-wall-mount-receptacle.svg" },
+    "SuperSeal-USB3":     { face: "glenair-superseal-usb3-face.svg", side: "glenair-superseal-usb3-profile.svg", plug: "glenair-superseal-usb3-plug-profile.svg" },
+    "SuperSeal-USB32C":   { face: "glenair-superseal-usbc-face.svg", side: "glenair-superseal-usbc-profile.svg" },
+    "SuperNine-HDMI":     { face: "glenair-supernine-hdmi-face.svg", side: "glenair-supernine-hdmi-profile.svg", plug: "glenair-supernine-hdmi-plug.svg", "jam-nut-receptacle": "glenair-supernine-hdmi-jam-nut-receptacle.svg", "wall-mount-receptacle": "glenair-supernine-hdmi-wall-mount-receptacle.svg" },
+    "SuperSeal-DP":       { face: "glenair-superseal-dp-face.svg", side: "glenair-superseal-dp-profile.svg", "jam-nut-receptacle": "glenair-superseal-dp-jam-nut-receptacle.svg", "wall-mount-receptacle": "glenair-superseal-dp-wall-mount-receptacle.svg" },
   };
 
   function recognizeRuggedIo(value) {
@@ -459,9 +508,39 @@
         // Select appropriate SVG: mounting-specific if available, otherwise face view
         let selectedSvg = entry.svg;
         let mountingType = "";
+        // Families that ship a dedicated side/profile elevation default to it (e.g. Glenair),
+        // so the viewer can show face + side side-by-side.
+        if (familySvgs.side) {
+          selectedSvg = familySvgs.side;
+          mountingType = "Side Profile";
+        }
+        // Per-entry size/profile drawing (used by families encoded by dash number, e.g. Glenair SuperSeal)
+        if (entry.mountSvg) {
+          selectedSvg = entry.mountSvg;
+          mountingType = entry.mountType || "";
+        }
         if (shellTypeInfo && familySvgs[shellTypeInfo.suffix]) {
           selectedSvg = familySvgs[shellTypeInfo.suffix];
           mountingType = shellTypeInfo.mount;
+        }
+        // Glenair SuperNine / SuperSeal mount-token detection. The mount code appears after the
+        // series letters (not at suffix position 0), so scan the suffix for known mount tokens.
+        // Shell/cat/key/port fields never contain "00"/"D0"/"G6"/"CM"/"07", so substring match is safe.
+        if (familySvgs.side) {
+          const u = suffix.toUpperCase();
+          if (/G6/.test(u) && familySvgs.plug) {
+            selectedSvg = familySvgs.plug;
+            mountingType = "Plug";
+          } else if (/D0/.test(u) && familySvgs["wall-mount-receptacle"]) {
+            selectedSvg = familySvgs["wall-mount-receptacle"];
+            mountingType = "Wall Mount Receptacle (round holes)";
+          } else if (/00/.test(u) && familySvgs["wall-mount-receptacle"]) {
+            selectedSvg = familySvgs["wall-mount-receptacle"];
+            mountingType = "Wall Mount Receptacle (slotted holes)";
+          } else if (/(CM|07)/.test(u) && familySvgs["jam-nut-receptacle"]) {
+            selectedSvg = familySvgs["jam-nut-receptacle"];
+            mountingType = "Jam-Nut Receptacle";
+          }
         }
         // Check for stand-off deviation codes
         if (suffix.includes("F459")) {
@@ -477,6 +556,7 @@
           family: entry.family,
           vendor: entry.vendor,
           interface: entry.interface,
+          interface_gender: entry.gender || "",
           shell_size: entry.shellSize,
           d38999_relation: entry.relation,
           svg: selectedSvg,
@@ -682,6 +762,22 @@
     const panel = document.getElementById("resultPanel");
     const count = document.getElementById("ruleCount");
     count.textContent = `${rules.length} rule sets`;
+
+    const mfrsEl = document.getElementById("converterManufacturers");
+    if (mfrsEl) {
+      const EXCLUDED = new Set(["MIL-DTL-38999", "Repo-generated"]);
+      const manufacturers = [...new Set(
+        rules
+          .map((rule) => String(rule.manufacturer || "")
+            // collapse helper labels like "Conesys / Souriau reference geometry" -> "Conesys"
+            .split(" / ")[0]
+            .replace(/\s+reference geometry$/i, "")
+            .trim())
+          .filter((name) => name && !EXCLUDED.has(name))
+      )].sort((a, b) => a.localeCompare(b));
+      mfrsEl.textContent = manufacturers.length ? manufacturers.join(", ") : "—";
+      mfrsEl.title = `${manufacturers.length} manufacturer catalogs covered`;
+    }
 
     form.addEventListener("submit", (event) => {
       event.preventDefault();

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 120" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- SuperNine RJ45 Wall-Mount Receptacle (00 slotted / D0 round holes) -->
+  <!-- Panel (dashed) -->
+  <rect x="150" y="6" width="6" height="108" fill="currentColor" opacity="0.08" stroke="none"/>
+  <line x1="153" y1="6" x2="153" y2="114" stroke-dasharray="5 4" opacity="0.5" stroke-width="1.5"/>
+  <!-- Square mounting flange with corner holes -->
+  <rect x="140" y="14" width="14" height="92" rx="2" stroke-width="2"/>
+  <circle cx="147" cy="24" r="4" stroke-width="1.4" opacity="0.7"/>
+  <circle cx="147" cy="96" r="4" stroke-width="1.4" opacity="0.7"/>
+  <!-- Mating-face shell body -->
+  <rect x="52" y="34" width="88" height="52" rx="6"/>
+  <!-- Coupling thread band (front) -->
+  <rect x="30" y="42" width="22" height="36" rx="3" stroke-width="1.6" opacity="0.55"/>
+  <!-- Rear body through panel -->
+  <rect x="154" y="44" width="26" height="32" rx="3" stroke-width="1.6" opacity="0.55"/>
+  <!-- RJ45 jack -->
+  <rect x="32" y="48" width="20" height="24" rx="2" stroke-width="1.6"/>
+  <!-- Master key -->
+  <rect x="92" y="26" width="9" height="8" rx="1.5" fill="currentColor" opacity="0.3" stroke="none"/>
+  <!-- Rear leads -->
+  <line x1="180" y1="50" x2="252" y2="50" stroke-width="1.5" opacity="0.6"/>
+  <line x1="180" y1="60" x2="252" y2="60" stroke-width="1.5" opacity="0.6"/>
+  <line x1="180" y1="70" x2="252" y2="70" stroke-width="1.5" opacity="0.6"/>
+  <text x="140" y="114" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">SuperNine RJ45 — Wall-Mount Receptacle</text>
+</svg>

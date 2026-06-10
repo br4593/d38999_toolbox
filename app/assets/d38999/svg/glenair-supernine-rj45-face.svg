@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 108" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- D38999 Series III shell -->
+  <circle cx="110" cy="50" r="42" stroke-width="2.5"/>
+  <circle cx="110" cy="50" r="37" stroke-width="1.4" opacity="0.45"/>
+  <!-- Master keyway (top) + polarizing keys -->
+  <rect x="106" y="8" width="8" height="6" rx="1" fill="currentColor" opacity="0.3" stroke="none"/>
+  <rect x="150" y="63" width="7" height="4" rx="1" fill="currentColor" opacity="0.22" stroke="none" transform="rotate(-38 153 65)"/>
+  <rect x="63" y="63" width="7" height="4" rx="1" fill="currentColor" opacity="0.22" stroke="none" transform="rotate(38 66 65)"/>
+  <rect x="186" y="48" width="6" height="4" rx="1" fill="currentColor" opacity="0.22" stroke="none"/>
+  <!-- RJ45 8P8C receptacle opening with latch relief -->
+  <path d="M91 35 H129 V47 L122 64 H98 L91 47 Z" stroke-width="2" stroke-linejoin="round"/>
+  <!-- 8 contact springs -->
+  <line x1="97" y1="40" x2="95.8" y2="46.5" stroke-width="1" opacity="0.6"/>
+  <line x1="101" y1="40" x2="99.8" y2="46.5" stroke-width="1" opacity="0.6"/>
+  <line x1="105" y1="40" x2="103.8" y2="46.5" stroke-width="1" opacity="0.6"/>
+  <line x1="109" y1="40" x2="107.8" y2="46.5" stroke-width="1" opacity="0.6"/>
+  <line x1="113" y1="40" x2="111.8" y2="46.5" stroke-width="1" opacity="0.6"/>
+  <line x1="117" y1="40" x2="115.8" y2="46.5" stroke-width="1" opacity="0.6"/>
+  <line x1="121" y1="40" x2="119.8" y2="46.5" stroke-width="1" opacity="0.6"/>
+  <line x1="125" y1="40" x2="123.8" y2="46.5" stroke-width="1" opacity="0.6"/>
+  <!-- Latch ramp / plug lead-in -->
+  <path d="M100 56 H120 L114.5 62 H105.5 Z" fill="currentColor" opacity="0.12" stroke="none"/>
+  <text x="110" y="104" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">SuperNine RJ45 (Shell 19)</text>
+</svg>

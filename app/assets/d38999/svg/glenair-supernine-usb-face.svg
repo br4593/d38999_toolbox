@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 108" fill="none" stroke="currentColor" stroke-width="2.5">
+  <!-- D38999 Series III shell -->
+  <circle cx="110" cy="50" r="40" stroke-width="2.5"/>
+  <circle cx="110" cy="50" r="35" stroke-width="1.4" opacity="0.45"/>
+  <!-- Master keyway (top) + polarizing keys -->
+  <rect x="106" y="10" width="8" height="6" rx="1" fill="currentColor" opacity="0.3" stroke="none"/>
+  <rect x="146" y="62" width="7" height="4" rx="1" fill="currentColor" opacity="0.22" stroke="none" transform="rotate(-38 149 64)"/>
+  <rect x="67" y="62" width="7" height="4" rx="1" fill="currentColor" opacity="0.22" stroke="none" transform="rotate(38 70 64)"/>
+  <!-- USB Type-A receptacle opening -->
+  <rect x="92" y="42" width="36" height="16" rx="1.5" stroke-width="2"/>
+  <!-- Plastic tongue with 4 USB 2.0 contacts -->
+  <rect x="95" y="44.5" width="30" height="6.5" rx="1" fill="currentColor" opacity="0.12" stroke="none"/>
+  <line x1="100" y1="45.5" x2="100" y2="50" stroke-width="1.6" opacity="0.65"/>
+  <line x1="106" y1="45.5" x2="106" y2="50" stroke-width="1.6" opacity="0.65"/>
+  <line x1="114" y1="45.5" x2="114" y2="50" stroke-width="1.6" opacity="0.65"/>
+  <line x1="120" y1="45.5" x2="120" y2="50" stroke-width="1.6" opacity="0.65"/>
+  <text x="110" y="104" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">SuperNine USB Type-A (Shell 15)</text>
+</svg>

@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0",
+  "title": "MIL-DTL-38999 contact size vs. current capacity and wire gauge",
+  "description": "Per-contact current-carrying capacity and accommodated wire gauge (AWG) for the standard MIL-DTL-38999 / MIL-STD-1560 contact sizes. Used to filter insert arrangements in the connector builder by the current load they can carry on a single contact.",
+  "current_basis": "Maximum continuous test current per contact at sea level, mated, Service Rating M, taken from MIL-DTL-38999 manufacturer catalog electrical-data tables. Real-world derating (bundle, altitude, ambient) reduces these values; treat as a per-contact ceiling, not a circuit guarantee.",
+  "rules": [
+    "Larger contact size number = smaller physical size. Size 22D is the smallest/lowest-current; size 8 is the largest/highest-current.",
+    "Each contact size accepts a band of wire gauges; pick a wire AWG inside the contact's range so the crimp is rated.",
+    "A connector's current capacity is set by its contact sizes, not its shell size. To carry N amps on a circuit you need a contact rated >= N amps.",
+    "Coax and twinax size-8 / size-12 contacts are RF/data contacts and have no continuous power-current rating; do not use them for power loads.",
+    "Service rating and altitude derate the values below; size up a contact for high-altitude, high-bundle-density, or continuous-duty loads."
+  ],
+  "sources": [
+    {
+      "id": "conesys-iii",
+      "document": "Conesys MIL-DTL-38999 Series III catalog",
+      "table": "Contact Data — Test Current (Amps) / Crimp Well Data / Wire Range (AWG)",
+      "file": "text/Conesys-MIL-DTL-38999-Series-III.txt"
+    },
+    {
+      "id": "itt-cannon",
+      "document": "ITT Cannon 38999 Series I/II/III catalog",
+      "table": "Contact Size and Test Amps; Wire Sizes and Diameters",
+      "file": "text/ITT-Cannon-38999-Series-I-II-III.txt"
+    },
+    {
+      "id": "mil-dtl-38999",
+      "document": "MIL-DTL-38999 / MIL-STD-1560 standard contact ratings (general manufacturer catalog convention)",
+      "table": "Standard size-8 power contact rating",
+      "file": null
+    }
+  ],
+  "ratings": [
+    {
+      "contact_size": "22D",
+      "current_amps": 5.0,
+      "wire_awg_min": 22,
+      "wire_awg_max": 28,
+      "wire_awg_range": "28-22",
+      "signal_type": "power_signal",
+      "confidence": "high",
+      "sources": ["conesys-iii", "itt-cannon"]
+    },
+    {
+      "contact_size": "20",
+      "current_amps": 7.5,
+      "wire_awg_min": 20,
+      "wire_awg_max": 24,
+      "wire_awg_range": "24-20",
+      "signal_type": "power_signal",
+      "confidence": "high",
+      "sources": ["conesys-iii", "itt-cannon"]
+    },
+    {
+      "contact_size": "16",
+      "current_amps": 13.0,
+      "wire_awg_min": 16,
+      "wire_awg_max": 20,
+      "wire_awg_range": "20-16",
+      "signal_type": "power_signal",
+      "confidence": "high",
+      "sources": ["conesys-iii", "itt-cannon"]
+    },
+    {
+      "contact_size": "12",
+      "current_amps": 23.0,
+      "wire_awg_min": 12,
+      "wire_awg_max": 14,
+      "wire_awg_range": "14-12",
+      "signal_type": "power_signal",
+      "confidence": "high",
+      "sources": ["conesys-iii", "itt-cannon"]
+    },
+    {
+      "contact_size": "10",
+      "current_amps": 33.0,
+      "wire_awg_min": 10,
+      "wire_awg_max": 12,
+      "wire_awg_range": "12-10",
+      "signal_type": "power",
+      "confidence": "high",
+      "note": "MS3348 bushing required with 12 gauge wire.",
+      "sources": ["conesys-iii"]
+    },
+    {
+      "contact_size": "8",
+      "current_amps": 46.0,
+      "wire_awg_min": 8,
+      "wire_awg_max": 8,
+      "wire_awg_range": "8",
+      "signal_type": "power",
+      "confidence": "medium",
+      "note": "Standard MIL-DTL-38999 size-8 power contact rating; coax/twinax size-8 variants are RF, not power-rated.",
+      "sources": ["mil-dtl-38999"]
+    },
+    {
+      "contact_size": "8 Coax",
+      "current_amps": null,
+      "wire_awg_range": "coax cable (e.g. RG-180)",
+      "signal_type": "coax",
+      "confidence": "high",
+      "note": "RF coax contact — no continuous power-current rating.",
+      "sources": ["itt-cannon"]
+    },
+    {
+      "contact_size": "8 Twinax",
+      "current_amps": null,
+      "wire_awg_range": "twinax cable (e.g. M17/176-00002)",
+      "signal_type": "twinax",
+      "confidence": "high",
+      "note": "RF twinax contact — no continuous power-current rating.",
+      "sources": ["itt-cannon"]
+    },
+    {
+      "contact_size": "12 Coax",
+      "current_amps": null,
+      "wire_awg_range": "coax cable (e.g. RG174/179/316)",
+      "signal_type": "coax",
+      "confidence": "high",
+      "note": "RF coax contact — no continuous power-current rating.",
+      "sources": ["itt-cannon"]
+    }
+  ]
+}
