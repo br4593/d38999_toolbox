@@ -49,3 +49,7 @@ data/review_needed.json
 
 # Duplicate of MIL-DTL-38999-dtl38999.pdf; keep only the canonical name.
 docs/pdfs/dtl38999.pdf
+data/d38999_environment_classification.json
+data/d38999_valid_part_numbers.json
+app/app-data.js
+app/data/d38999_valid_part_numbers.json
