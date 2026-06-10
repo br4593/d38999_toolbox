@@ -5463,3 +5463,28 @@ h2 { letter-spacing: .06em; }
 }
 [data-theme="dark"] .app-disclaimer-strong,
 [data-theme="blueprint-dark"] .app-disclaimer-strong { color: #ffb020; }
+
+/* Rugged I/O catalog: per-family gender rule + per-PN gender glyph */
+.io-gender-rule {
+  font-size: 11.5px;
+  color: var(--text-muted, #6b7280);
+  font-style: italic;
+  margin-top: 4px;
+  line-height: 1.3;
+}
+.io-gender {
+  display: inline-block;
+  font-weight: 700;
+  margin-inline-end: 4px;
+  padding: 0 4px;
+  border-radius: 6px;
+  font-size: 11px;
+  line-height: 1.4;
+  vertical-align: baseline;
+}
+.io-gender-female { color: #b3175e; background: rgba(255, 110, 180, 0.15); }
+.io-gender-male   { color: #1a5fb4; background: rgba(70, 130, 220, 0.15); }
+[data-theme="dark"] .io-gender-female,
+[data-theme="blueprint-dark"] .io-gender-female { color: #ff9ec3; background: rgba(255, 110, 180, 0.18); }
+[data-theme="dark"] .io-gender-male,
+[data-theme="blueprint-dark"] .io-gender-male   { color: #9bc1ff; background: rgba(70, 130, 220, 0.22); }

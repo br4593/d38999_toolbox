@@ -1871,12 +1871,34 @@
     return ioRichIndex().get(token) || ioRichIndex().get(IO_FAMILY_ALIASES[token]) || null;
   }
 
+  function ioInferGender(text) {
+    const s = String(text || "").toLowerCase();
+    if (!s) return null;
+    if (/\b(plug|cordset|cable[- ]?side|male)\b/.test(s)) return "male";
+    if (/\b(receptacle|jack|female|jam[- ]?nut|feed[- ]?thru|feedthru|bulkhead|panel[- ]?mount|wall[- ]?mount)\b/.test(s)) return "female";
+    return null;
+  }
+
   function ioExamplePns(entry) {
     const rich = ioRichFor(entry);
     if (!rich) return [];
-    const verified = (rich.verified_purchasable_pns || []).map((p) => p.pn);
-    const list = (rich.example_pns && rich.example_pns.length) ? rich.example_pns : verified;
-    return list.slice(0, 3);
+    const verified = (rich.verified_purchasable_pns || []).map((v) => ({ pn: v.pn, description: v.description || "" }));
+    const plain = (rich.example_pns || []).map((pn) => ({ pn, description: "" }));
+    // Prefer the curated short example list; fall back to verified-purchasable.
+    const list = plain.length ? plain : verified;
+    // If we have descriptions on the verified list and the plain list lacks gender clues,
+    // attach descriptions by PN-match so chip icons can still be inferred.
+    const descByPn = new Map(verified.map((v) => [v.pn, v.description]));
+    return list.slice(0, 3).map((item) => {
+      const desc = item.description || descByPn.get(item.pn) || "";
+      return { pn: item.pn, gender: ioInferGender(desc), description: desc };
+    });
+  }
+
+  function ioGenderGlyph(g) {
+    if (g === "female") return `<span class="io-gender io-gender-female" title="Female (receptacle/jack)" aria-label="Female">♀</span>`;
+    if (g === "male") return `<span class="io-gender io-gender-male" title="Male (plug)" aria-label="Male">♂</span>`;
+    return "";
   }
 
   // Friendly labels for the view variants available in FAMILY_SVG_MAP.
@@ -1931,8 +1953,13 @@
     const examples = ioExamplePns(entry);
     const exampleHtml = examples.length
       ? `<div class="io-example-row">${examples
-          .map((pn) => `<button type="button" class="io-pn-chip" data-io-pn="${escapeHtml(pn)}">${escapeHtml(pn)}</button>`)
+          .map((ex) => `<button type="button" class="io-pn-chip" data-io-pn="${escapeHtml(ex.pn)}"${ex.description ? ` title="${escapeHtml(ex.description)}"` : ""}>${ioGenderGlyph(ex.gender)}${escapeHtml(ex.pn)}</button>`)
           .join("")}</div>`
+      : "";
+    const rich = ioRichFor(entry);
+    const genderRule = rich && rich.interface_gender ? rich.interface_gender : "";
+    const genderHtml = genderRule
+      ? `<div class="io-gender-rule">${escapeHtml(genderRule)}</div>`
       : "";
     const views = ioFamilyViews(entry);
     const viewsHtml = views.length > 1
@@ -1953,6 +1980,7 @@
         <div class="catalog-card-meta" style="margin-top:2px">
           <span class="rugged-io-badge${vendorLabel === "Glenair" ? " glenair-badge" : ""}">${escapeHtml(vendorLabel)}</span>
         </div>
+        ${genderHtml}
         ${exampleHtml}
         ${viewsHtml}
         <div class="catalog-card-footer">
