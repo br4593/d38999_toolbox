@@ -26,6 +26,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Regenerate derived data inputs
+        run: python scripts/build_valid_d38999_pns.py
+
       - name: Rebuild app/ from sources
         run: python scripts/build_app.py
 
