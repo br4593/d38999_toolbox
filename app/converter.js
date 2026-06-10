@@ -812,6 +812,7 @@
     convertParsed,
     recognizeRuggedIo,
     RUGGED_IO_FAMILIES,
+    FAMILY_SVG_MAP,
   };
 
   globalThis.D38999Converter = api;

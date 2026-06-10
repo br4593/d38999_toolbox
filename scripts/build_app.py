@@ -34,6 +34,7 @@ DATA_FILES = [
     "connector_engineering_reference.json",
     "high_speed_interface_wiring_reference.json",
     "pinout_rules.json",
+    "contact_current_ratings.json",
 ]
 
 def load_module(module_path: Path, module_name: str):
@@ -110,6 +111,7 @@ def build(project_root: Path) -> Path:
             "standardDefinitions": read_json(data_dir / "standard_definitions.json"),
             "dlaDocuments": read_json(data_dir / "dla_documents.json"),
             "reviewNeeded": read_json(data_dir / "review_needed.json"),
+            "contactCurrentRatings": read_json(data_dir / "contact_current_ratings.json"),
         },
         "converter": {
             "shell_size_numbers": docs_rules.SHELL_SIZE_NUMBERS,

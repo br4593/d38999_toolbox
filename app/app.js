@@ -25,6 +25,10 @@
   const secondarySourceImportableOverlaps = federalConnectorsSecondarySource.importableOverlaps || [];
   const defs = standard.definitions || {};
   const arrangements = (insertData.arrangements || []).slice();
+  const contactCurrentRatings = DATA.contactCurrentRatings || { ratings: [] };
+  const contactCurrentBySize = new Map(
+    (contactCurrentRatings.ratings || []).map((entry) => [String(entry.contact_size), entry])
+  );
   const reviewById = new Map((reviewData.items || []).map((item) => [item.id, item]));
   const validPartNumberMap = new Map(
     validPartNumbers.map((item) => [String(item.normalizedPartNumber || item.partNumber || "").toUpperCase().replace(/[\s-]+/g, ""), item])
@@ -85,6 +89,7 @@
     selectedMateSheet: null,
     activeGaugeFilter: "",
     buildEnvironmentFilter: "",
+    buildCurrentFilter: 0,
   };
 
   const EXACT_VALIDATION_STATUSES = new Set(["EXACT_PN_MATCH", "VERIFIED_EXISTS", "SECONDARY_SOURCE_EXACT"]);
@@ -1549,6 +1554,16 @@
       return;
     }
 
+    const currentButton = event.target.closest("[data-build-current]");
+    if (currentButton) {
+      const nextCurrent = Number(currentButton.dataset.buildCurrent) || 0;
+      if (state.buildCurrentFilter !== nextCurrent) {
+        state.buildCurrentFilter = nextCurrent;
+        if (state.buildRendered) renderBuildConnector();
+      }
+      return;
+    }
+
     const selectorButton = event.target.closest("[data-selector-field]");
     if (selectorButton) {
       if (selectorButton.disabled) return;
@@ -1583,6 +1598,7 @@
         state.manualSelector = blankSelectorSelection();
         state.buildStep = currentBuildStepFromSelection(state.manualSelector);
         state.buildEnvironmentFilter = "";
+        state.buildCurrentFilter = 0;
         if (state.buildRendered) renderBuildConnector();
       } else if (action === "prev-step") {
         state.buildStep = Math.max(0, state.buildStep - 1);
@@ -1628,6 +1644,7 @@
       state.manualSelector = blankSelectorSelection();
       state.buildStep = currentBuildStepFromSelection(state.manualSelector);
       state.buildEnvironmentFilter = "";
+      state.buildCurrentFilter = 0;
       renderBuildConnector();
       selectTab("build");
       return;
@@ -1758,24 +1775,69 @@
   }
 
   // Best-effort join to the richer rugged_io dataset for example part numbers.
+  // RUGGED_IO_FAMILIES family tokens that differ from the rich dataset family names.
+  const IO_FAMILY_ALIASES = {
+    SUPERSEALUSB3: "SUPERSEALUSB30TYPEA",
+    SUPERSEALUSB32C: "SUPERSEALUSB32GEN2TYPEC",
+    SUPERSEALDP: "SUPERSEALDISPLAYPORT14",
+  };
+
   let _ioRichIndex = null;
   function ioRichIndex() {
     if (_ioRichIndex) return _ioRichIndex;
     _ioRichIndex = new Map();
-    const rich = (toolboxData.ruggedIo && toolboxData.ruggedIo.rugged_io_d38999_style_connectors) || [];
-    for (const r of rich) {
-      const key = ioNormToken(r.family);
-      if (key && !_ioRichIndex.has(key)) _ioRichIndex.set(key, r);
+    const io = toolboxData.ruggedIo || {};
+    // Index both the general rugged I/O and the rugged video datasets so HDMI/DP/Mini-DP
+    // families also surface example part numbers in the catalog.
+    const groups = [
+      io.rugged_io_d38999_style_connectors || [],
+      io.rugged_video_d38999_style_connectors || [],
+    ];
+    for (const group of groups) {
+      for (const r of group) {
+        const key = ioNormToken(r.family);
+        if (key && !_ioRichIndex.has(key)) _ioRichIndex.set(key, r);
+      }
     }
     return _ioRichIndex;
   }
 
+  function ioRichFor(entry) {
+    const token = ioNormToken(entry.family);
+    return ioRichIndex().get(token) || ioRichIndex().get(IO_FAMILY_ALIASES[token]) || null;
+  }
+
   function ioExamplePns(entry) {
-    const rich = ioRichIndex().get(ioNormToken(entry.family));
+    const rich = ioRichFor(entry);
     if (!rich) return [];
     const verified = (rich.verified_purchasable_pns || []).map((p) => p.pn);
     const list = (rich.example_pns && rich.example_pns.length) ? rich.example_pns : verified;
     return list.slice(0, 3);
+  }
+
+  // Friendly labels for the view variants available in FAMILY_SVG_MAP.
+  const IO_VIEW_LABELS = {
+    face: "face",
+    side: "side",
+    plug: "plug",
+    "jam-nut-receptacle": "jam-nut",
+    "wall-mount-receptacle": "wall-mount",
+    "square-flange-receptacle": "sq-flange",
+    "reduced-flange-receptacle": "red-flange",
+    "standoff-receptacle": "standoff",
+    "through-bulkhead": "feed-thru",
+  };
+  const IO_VIEW_ORDER = [
+    "face", "side", "plug", "jam-nut-receptacle", "wall-mount-receptacle",
+    "square-flange-receptacle", "reduced-flange-receptacle", "standoff-receptacle", "through-bulkhead",
+  ];
+
+  function ioFamilyViews(entry) {
+    const converter = globalThis.D38999Converter;
+    const map = converter && converter.FAMILY_SVG_MAP;
+    const svgs = map ? map[entry.family] : null;
+    if (!svgs) return [];
+    return IO_VIEW_ORDER.filter((k) => svgs[k]).map((k) => IO_VIEW_LABELS[k] || k);
   }
 
   function filteredIoConnectors() {
@@ -1808,6 +1870,12 @@
           .map((pn) => `<button type="button" class="io-pn-chip" data-io-pn="${escapeHtml(pn)}">${escapeHtml(pn)}</button>`)
           .join("")}</div>`
       : "";
+    const views = ioFamilyViews(entry);
+    const viewsHtml = views.length > 1
+      ? `<div class="io-views-row"><span class="io-views-label">Views:</span>${views
+          .map((v) => `<span class="io-view-tag">${escapeHtml(v)}</span>`)
+          .join("")}</div>`
+      : "";
     card.innerHTML = `
       <div class="catalog-card-svg catalog-card-svg-face">
         ${svgContent}
@@ -1822,6 +1890,7 @@
           <span class="rugged-io-badge${vendorLabel === "Glenair" ? " glenair-badge" : ""}">${escapeHtml(vendorLabel)}</span>
         </div>
         ${exampleHtml}
+        ${viewsHtml}
         <div class="catalog-card-footer">
           <span class="catalog-service">${escapeHtml(entry.vendor)}</span>
         </div>
@@ -2067,6 +2136,66 @@
   function sizeSummary(arr) {
     return (arr.contact_size_notes || []).map((note) => `${note.count}x #${note.size}`).join(", ") || "size unknown";
   }
+
+  function contactCurrentForSize(sizeToken) {
+    if (!sizeToken) return null;
+    const key = String(sizeToken).trim();
+    let entry = contactCurrentBySize.get(key);
+    if (!entry) {
+      const base = key.split(/\s+/)[0];
+      if (/coax|twinax/i.test(key)) return null;
+      entry = contactCurrentBySize.get(base);
+    }
+    return entry && typeof entry.current_amps === "number" ? entry.current_amps : null;
+  }
+
+  function arrangementMaxCurrent(arr) {
+    let best = 0;
+    (arr.contact_size_notes || []).forEach((note) => {
+      const amps = contactCurrentForSize(note.size);
+      if (typeof amps === "number" && amps > best) best = amps;
+    });
+    return best;
+  }
+
+  function arrangementMeetsCurrent(arr, threshold) {
+    if (!threshold) return true;
+    return arrangementMaxCurrent(arr) >= threshold;
+  }
+
+  function buildCurrentThresholds() {
+    const amps = new Set();
+    arrangements.forEach((arr) => {
+      (arr.contact_size_notes || []).forEach((note) => {
+        const value = contactCurrentForSize(note.size);
+        if (typeof value === "number" && value > 0) amps.add(value);
+      });
+    });
+    return [...amps].sort((a, b) => a - b);
+  }
+
+  function currentFilterLabel(amps) {
+    if (!amps) return "Any";
+    return `≥ ${formatCurrentAmps(amps)} A`;
+  }
+
+  function formatCurrentAmps(amps) {
+    return Number.isInteger(amps) ? String(amps) : String(amps);
+  }
+
+  function currentCapacitySummary(arr) {
+    if (!arr) return "";
+    const rated = (arr.contact_size_notes || [])
+      .map((note) => ({ note, amps: contactCurrentForSize(note.size) }))
+      .filter((item) => typeof item.amps === "number" && item.amps > 0);
+    if (!rated.length) return "RF / data contacts only (no power rating)";
+    const max = Math.max(...rated.map((item) => item.amps));
+    const parts = rated
+      .sort((a, b) => b.amps - a.amps)
+      .map((item) => `#${item.note.size} = ${formatCurrentAmps(item.amps)} A`);
+    return `up to ${formatCurrentAmps(max)} A/contact (${parts.join(", ")})`;
+  }
+
 
   function selectArrangement(arrangement, resetViewport) {
     state.selectedArrangement = arrangement;
@@ -2965,7 +3094,7 @@
 
   function buildManualSelectorTree() {
     if (!buildManualSelectorTree.cache) buildManualSelectorTree.cache = new Map();
-    const cacheKey = state.buildEnvironmentFilter || "__all__";
+    const cacheKey = `${state.buildEnvironmentFilter || "__all__"}|i${state.buildCurrentFilter || 0}`;
     const cached = buildManualSelectorTree.cache.get(cacheKey);
     if (cached) return cached;
 
@@ -2986,6 +3115,7 @@
         const slashDef = (defs.slash_sheets || {})[slashSheet] || dlaSlashSheetDefinition(slashSheet);
         arrangements.forEach((arr) => {
           if (!allowedShellCodes.includes(arr.shell_size_code)) return;
+          if (!arrangementMeetsCurrent(arr, state.buildCurrentFilter)) return;
 
           finishCodes.forEach((classField) => {
             const classCode = classField.replace(/-$/, "");
@@ -3572,15 +3702,22 @@
   function connectorSelector(context) {
     const pnValue = context.exact?.part_number || "Choose options to build a connector.";
     const activeEnvironment = state.buildEnvironmentFilter;
+    const activeCurrent = state.buildCurrentFilter || 0;
+    const currentThresholds = buildCurrentThresholds();
+    const filterNote = [
+      activeEnvironment ? environmentFilterLabel(activeEnvironment, true) : "",
+      activeCurrent ? currentFilterLabel(activeCurrent) : "",
+    ].filter(Boolean).join(", ");
+    const filterSuffix = filterNote ? ` for ${filterNote}` : "";
     const summary = context.totalCount === 0
-      ? activeEnvironment
-        ? `No matches for ${environmentFilterLabel(activeEnvironment, true)}.`
+      ? filterNote
+        ? `No matches for ${filterNote}.`
         : "No valid connectors match."
       : context.exact
         ? "Exact match in the valid-part-number set."
         : context.matchCount === context.totalCount
-          ? `${context.totalCount} valid connector${context.totalCount === 1 ? "" : "s"}${activeEnvironment ? ` for ${environmentFilterLabel(activeEnvironment, true)}` : ""}.`
-          : `${context.matchCount} match${context.matchCount === 1 ? "" : "es"}${activeEnvironment ? ` for ${environmentFilterLabel(activeEnvironment, true)}` : ""}.`;
+          ? `${context.totalCount} valid connector${context.totalCount === 1 ? "" : "s"}${filterSuffix}.`
+          : `${context.matchCount} match${context.matchCount === 1 ? "" : "es"}${filterSuffix}.`;
     const fields = [
       ["slash_sheet", "Shell"],
       ["class_field", "Class"],
@@ -3624,6 +3761,18 @@
             <button type="button" class="build-environment-btn${activeEnvironment ? "" : " active"}" data-build-environment="">Any</button>
             ${environmentFilterDefinitions.map((item) => `
               <button type="button" class="build-environment-btn${activeEnvironment === item.filter_key ? " active" : ""}" data-build-environment="${escapeHtml(item.filter_key)}">${escapeHtml(environmentFilterLabel(item.filter_key, true))}</button>
+            `).join("")}
+          </div>
+        </section>
+        <section class="build-environment-filter build-current-filter">
+          <div class="build-environment-filter-head">
+            <strong>Current load</strong>
+            <span>${escapeHtml(currentFilterLabel(activeCurrent))}</span>
+          </div>
+          <div class="build-environment-filter-buttons">
+            <button type="button" class="build-environment-btn${activeCurrent ? "" : " active"}" data-build-current="0">Any</button>
+            ${currentThresholds.map((amps) => `
+              <button type="button" class="build-environment-btn${activeCurrent === amps ? " active" : ""}" data-build-current="${escapeHtml(String(amps))}" title="Only arrangements with a contact rated at least ${escapeHtml(formatCurrentAmps(amps))} A per pin">${escapeHtml(currentFilterLabel(amps))}</button>
             `).join("")}
           </div>
         </section>
@@ -3675,6 +3824,7 @@
             <div class="selector-preview-meta">
               <strong>${escapeHtml(decoded.arrangement_id || "")}</strong>
               <span>${escapeHtml(arrangement ? `${arrangement.contact_count} contacts | ${sizeSummary(arrangement)}` : "Arrangement preview")}</span>
+              ${arrangement ? `<span class="selector-preview-current">${escapeHtml(currentCapacitySummary(arrangement))}</span>` : ""}
             </div>
           </div>
           ${connectorSummaryDetailHtml(decoded, { validation })}
