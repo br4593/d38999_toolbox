@@ -40,7 +40,6 @@ jobs:
           test -f app/converter.js
           test -f app/styles.css
           test -d app/assets/svg
-          test -d app/data
           svg_count=$(ls app/assets/svg/*.svg | wc -l)
           echo "SVG arrangement crops: $svg_count"
           test "$svg_count" -ge 50

@@ -24,11 +24,11 @@ jobs:
           import json, sys
           from pathlib import Path
           required = [
-              "app/data/insert_arrangements.json",
-              "app/data/part_number_rules.json",
-              "app/data/standard_definitions.json",
-              "app/data/dla_documents.json",
-              "app/data/review_needed.json",
+              "data/insert_arrangements.json",
+              "data/part_number_rules.json",
+              "data/standard_definitions.json",
+              "data/dla_documents.json",
+              "data/review_needed.json",
           ]
           for rel in required:
               path = Path(rel)
@@ -81,7 +81,6 @@ jobs:
           test -f app/converter.js
           test -f app/styles.css
           test -d app/assets/svg
-          test -d app/data
           # at least 50 SVG arrangement crops
           count=$(ls app/assets/svg/*.svg | wc -l)
           echo "svg count: $count"
