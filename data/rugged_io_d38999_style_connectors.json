@@ -178,6 +178,22 @@
         {
           "pn": "RJFTV2APEG",
           "description": "Cat6A square-flange receptacle with anti-decouple, nickel (female RJ45)"
+        },
+        {
+          "pn": "RJFTV7AZN",
+          "description": "Cat6A inline cable plug, zinc-nickel (mate to RJFTV6AZN jam-nut receptacle)"
+        },
+        {
+          "pn": "RJFTV7APEG",
+          "description": "Cat6A inline cable plug with anti-decouple, nickel (mate to RJFTV2APEG square-flange receptacle)"
+        },
+        {
+          "pn": "RJFTV21N",
+          "description": "Cat5e square-flange panel receptacle, olive drab (mate to RJFTV71N inline plug)"
+        },
+        {
+          "pn": "RJFTV67B1N",
+          "description": "Cat5e jam-nut panel receptacle with backshell, olive drab (mate to RJFTV67B1G family)"
         }
       ]
     },
@@ -297,6 +313,14 @@
         {
           "pn": "233-301MG6-175LN1",
           "description": "RJ45 receptacle, crimp contacts, miniature plug, shell 17, Cat5, normal key"
+        },
+        {
+          "pn": "233-312NFG6-175HN1",
+          "description": "RJ45 plug with male 8P8C plug outward (mate that plugs into 233-301 receptacle), accessory threads, nickel, shell 17, Cat5e, normal key"
+        },
+        {
+          "pn": "233-300NFG6-175HN1",
+          "description": "RJ45 plug coupler with female RJ45 jack outward (accepts standard RJ45 cordset), accessory threads, nickel, shell 17, Cat5e"
         }
       ],
       "internal_arrangement": {
@@ -432,6 +456,14 @@
         {
           "pn": "USB3FTV7APEN",
           "description": "USB 3.0 inline cable plug with anti-decouple, olive drab"
+        },
+        {
+          "pn": "USB3FTV2APEG",
+          "description": "USB 3.0 square-flange panel receptacle with anti-decouple, nickel (mate to USB3FTV7APEG cable plug)"
+        },
+        {
+          "pn": "USB3FTV2APEN",
+          "description": "USB 3.0 square-flange panel receptacle with anti-decouple, olive drab (mate to USB3FTV7APEN cable plug)"
         }
       ]
     },
@@ -495,6 +527,18 @@
         {
           "pn": "USB3CFTV7PEZN030",
           "description": "USB-C inline cable plug with anti-decouple, zinc-nickel, 30 cm cable"
+        },
+        {
+          "pn": "USB3CFTV2ZN",
+          "description": "USB-C square-flange panel receptacle, zinc-nickel (mate to USB3CFTV7ZN030 cable plug)"
+        },
+        {
+          "pn": "USB3CFTV6ZN",
+          "description": "USB-C jam-nut panel receptacle, zinc-nickel (alternate mate to USB3CFTV7ZN030 cable plug)"
+        },
+        {
+          "pn": "USB3CFTV2PEZN",
+          "description": "USB-C square-flange panel receptacle with anti-decouple, zinc-nickel (mate to USB3CFTV7PEZN030 cable plug)"
         }
       ]
     },
@@ -616,6 +660,10 @@
         {
           "pn": "2330-0445",
           "description": "USB 3.0/2.0 cable jumper: SuperNine connector to commercial USB Type-A plug"
+        },
+        {
+          "pn": "233-358NFG6-153ANH",
+          "description": "USB 3.0 Type-A inline cable plug (mate to 233-350/233-352/233-353/233-357 receptacles), nickel, shell 15, normal key"
         }
       ],
       "example_pns": [
