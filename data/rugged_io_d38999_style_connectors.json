@@ -4,41 +4,108 @@
       "vendor": "Amphenol Aerospace / Amphenol Socapex",
       "family": "Tri-Start TV / CTV",
       "connector_type": "standard MIL-DTL-38999 Series III",
-      "interfaces": ["general power", "general signal", "coax", "twinax", "quadrax", "fiber depending on insert/contact system"],
-      "use_when": ["user needs normal D38999 connector", "user needs custom pinout", "user needs power plus low-speed signals", "user needs CAN, RS485, RS422, UART, SPI, I2C", "user needs mixed power/signal/coax/quadrax inserts"],
-      "notes": ["Good default vendor family for standard D38999 Series III designs.", "Use exact shell size, shell style, insert arrangement, contact size, keying, finish, and backshell from official catalog.", "Do not assume high-speed HDMI/DP/USB3/Ethernet works through generic contacts."]
+      "interfaces": [
+        "general power",
+        "general signal",
+        "coax",
+        "twinax",
+        "quadrax",
+        "fiber depending on insert/contact system"
+      ],
+      "use_when": [
+        "user needs normal D38999 connector",
+        "user needs custom pinout",
+        "user needs power plus low-speed signals",
+        "user needs CAN, RS485, RS422, UART, SPI, I2C",
+        "user needs mixed power/signal/coax/quadrax inserts"
+      ],
+      "notes": [
+        "Good default vendor family for standard D38999 Series III designs.",
+        "Use exact shell size, shell style, insert arrangement, contact size, keying, finish, and backshell from official catalog.",
+        "Do not assume high-speed HDMI/DP/USB3/Ethernet works through generic contacts."
+      ]
     },
     {
       "vendor": "TE Connectivity / DEUTSCH",
       "family": "DTS / ACT",
       "connector_type": "standard MIL-DTL-38999 Series III",
-      "interfaces": ["general power", "general signal", "coax", "twinax depending on configuration"],
-      "use_when": ["user needs alternate standard D38999 supplier", "user needs high-density signal layouts", "user needs qualified aerospace/military connector family"],
-      "notes": ["Verify exact contact current rating, insert arrangement, finish, shell material, and QPL/configuration status."]
+      "interfaces": [
+        "general power",
+        "general signal",
+        "coax",
+        "twinax depending on configuration"
+      ],
+      "use_when": [
+        "user needs alternate standard D38999 supplier",
+        "user needs high-density signal layouts",
+        "user needs qualified aerospace/military connector family"
+      ],
+      "notes": [
+        "Verify exact contact current rating, insert arrangement, finish, shell material, and QPL/configuration status."
+      ]
     },
     {
       "vendor": "Eaton / Souriau",
       "family": "8D Series",
       "connector_type": "MIL-DTL-38999 Series III / EN3645 style",
-      "interfaces": ["general power", "general signal", "aerospace connector layouts"],
-      "use_when": ["user needs Souriau/Eaton option", "user needs EN3645-style aerospace connector", "user needs alternate supplier to Amphenol/TE/Glenair"],
-      "notes": ["Verify exact 8D configuration, QPL/EN3645 status, shell material, finish, and contacts."]
+      "interfaces": [
+        "general power",
+        "general signal",
+        "aerospace connector layouts"
+      ],
+      "use_when": [
+        "user needs Souriau/Eaton option",
+        "user needs EN3645-style aerospace connector",
+        "user needs alternate supplier to Amphenol/TE/Glenair"
+      ],
+      "notes": [
+        "Verify exact 8D configuration, QPL/EN3645 status, shell material, finish, and contacts."
+      ]
     },
     {
       "vendor": "Glenair",
       "family": "SuperNine",
       "connector_type": "MIL-DTL-38999 Series III type / enhanced D38999 family",
-      "interfaces": ["general signal", "power", "coax", "twinax", "quadrax", "fiber", "filtered", "hermetic", "RJ45", "USB", "HDMI", "high-speed variants depending on configuration"],
-      "use_when": ["user wants high-end rugged connector ecosystem", "user needs enhanced sealing/EMI/durability", "user needs high-speed, fiber, filter, hermetic, RJ45, USB, or HDMI variants"],
-      "notes": ["Use Glenair part-number-development tables.", "Sample PNs must be verified before purchase."]
+      "interfaces": [
+        "general signal",
+        "power",
+        "coax",
+        "twinax",
+        "quadrax",
+        "fiber",
+        "filtered",
+        "hermetic",
+        "RJ45",
+        "USB",
+        "HDMI",
+        "high-speed variants depending on configuration"
+      ],
+      "use_when": [
+        "user wants high-end rugged connector ecosystem",
+        "user needs enhanced sealing/EMI/durability",
+        "user needs high-speed, fiber, filter, hermetic, RJ45, USB, or HDMI variants"
+      ],
+      "notes": [
+        "Use Glenair part-number-development tables.",
+        "Sample PNs must be verified before purchase."
+      ]
     },
     {
       "vendor": "ITT Cannon",
       "family": "KJA / KJB",
       "connector_type": "D38999-style Series III harsh-environment connector",
-      "interfaces": ["general power", "general signal", "harsh environment interconnect"],
-      "use_when": ["user needs another D38999-style supplier", "user needs military/aerospace harsh-environment connector"],
-      "notes": ["Verify exact MIL-DTL-38999 compliance, QPL status, configuration, finish, and contact system."]
+      "interfaces": [
+        "general power",
+        "general signal",
+        "harsh environment interconnect"
+      ],
+      "use_when": [
+        "user needs another D38999-style supplier",
+        "user needs military/aerospace harsh-environment connector"
+      ],
+      "notes": [
+        "Verify exact MIL-DTL-38999 compliance, QPL status, configuration, finish, and contact system."
+      ]
     }
   ],
   "rugged_io_d38999_style_connectors": [
@@ -46,7 +113,7 @@
       "vendor": "Amphenol Socapex / Amphenol PCD",
       "family": "RJFTV",
       "interface": "RJ45 Ethernet",
-      "interface_gender": "Varies by PN: RJ45 jack = female, RJ45 plug = male",
+      "interface_gender": "PN suffix decodes the variant: 2xx = square-flange panel receptacle (female RJ45 jack), 6xx = jam-nut panel receptacle (female), 7xx = inline cable plug (female RJ45 jack on outside, male D38999 coupling nut). PE suffix = anti-decouple.",
       "d38999_relation": "MIL-DTL-38999 Series III style rugged RJ45 connector",
       "supported_interfaces": [
         "10BASE-T",
@@ -86,6 +153,32 @@
         "Verify Ethernet category rating for the exact PN.",
         "Verify shield continuity and grounding strategy.",
         "Verify cable assembly performance for the target Ethernet speed."
+      ],
+      "verified_purchasable_pns": [
+        {
+          "pn": "RJFTV6AG",
+          "description": "Cat6A jam-nut panel receptacle, nickel finish (female RJ45)"
+        },
+        {
+          "pn": "RJFTV6AN",
+          "description": "Cat6A jam-nut panel receptacle, olive drab cadmium (female RJ45)"
+        },
+        {
+          "pn": "RJFTV6AZN",
+          "description": "Cat6A jam-nut panel receptacle, zinc-nickel (female RJ45)"
+        },
+        {
+          "pn": "RJFTV7AG",
+          "description": "Cat6A inline cable plug, nickel (male D38999 coupling)"
+        },
+        {
+          "pn": "RJFTV7AN",
+          "description": "Cat6A inline cable plug, olive drab cadmium (male D38999 coupling)"
+        },
+        {
+          "pn": "RJFTV2APEG",
+          "description": "Cat6A square-flange receptacle with anti-decouple, nickel (female RJ45)"
+        }
       ]
     },
     {
@@ -144,7 +237,16 @@
           "ports": "1=single, 3=triple"
         }
       },
-      "catalog_base_numbers": ["233-300", "233-301", "233-302", "233-303", "233-304", "233-305", "233-312", "233-330"],
+      "catalog_base_numbers": [
+        "233-300",
+        "233-301",
+        "233-302",
+        "233-303",
+        "233-304",
+        "233-305",
+        "233-312",
+        "233-330"
+      ],
       "product_types": {
         "233-300": "RJ45 Plug Coupler with Accessory Threads (interface: female RJ45 jack)",
         "233-301": "RJ45 Receptacle with Crimp Removable Contacts (interface: female RJ45 jack)",
@@ -156,16 +258,46 @@
         "233-330": "RJ45 Feedthru Receptacle (interface: female RJ45 jack, both sides)"
       },
       "verified_purchasable_pns": [
-        {"pn": "233-301NFG6-175HN1", "description": "RJ45 receptacle, crimp contacts, plug, nickel, shell 17, Cat5e, normal key, single port"},
-        {"pn": "233-301NF00G175HN1T", "description": "RJ45 receptacle, crimp contacts, wall mount slotted, nickel, shell 17, Cat5e, normal key"},
-        {"pn": "233-301NF00G176AN1", "description": "RJ45 receptacle, crimp contacts, wall mount slotted, nickel, shell 17, Cat6A, normal key"},
-        {"pn": "233-301NFD0-175HN1", "description": "RJ45 receptacle, crimp contacts, wall mount round holes, olive drab, shell 17, Cat5e, normal key"},
-        {"pn": "233-301NFCMG175HN1", "description": "RJ45 receptacle, crimp contacts, jam-nut, nickel, shell 17, Cat5e, normal key"},
-        {"pn": "233-301NF00-195HN1", "description": "RJ45 receptacle, crimp contacts, wall mount slotted, olive drab, shell 19, Cat5e, normal key"},
-        {"pn": "233-301ABG6-175HN1", "description": "RJ45 receptacle, crimp contacts, plug (AB series), nickel, shell 17, Cat5e, normal key"},
-        {"pn": "233-301ABG6-175HA1", "description": "RJ45 receptacle, crimp contacts, plug (AB series), nickel, shell 17, Cat5e, A keying"},
-        {"pn": "233-301ZR07-195HN3", "description": "RJ45 receptacle, crimp contacts, zinc-nickel, alt panel, shell 19, Cat5e, normal key, triple"},
-        {"pn": "233-301MG6-175LN1", "description": "RJ45 receptacle, crimp contacts, miniature plug, shell 17, Cat5, normal key"}
+        {
+          "pn": "233-301NFG6-175HN1",
+          "description": "RJ45 receptacle, crimp contacts, plug, nickel, shell 17, Cat5e, normal key, single port"
+        },
+        {
+          "pn": "233-301NF00G175HN1T",
+          "description": "RJ45 receptacle, crimp contacts, wall mount slotted, nickel, shell 17, Cat5e, normal key"
+        },
+        {
+          "pn": "233-301NF00G176AN1",
+          "description": "RJ45 receptacle, crimp contacts, wall mount slotted, nickel, shell 17, Cat6A, normal key"
+        },
+        {
+          "pn": "233-301NFD0-175HN1",
+          "description": "RJ45 receptacle, crimp contacts, wall mount round holes, olive drab, shell 17, Cat5e, normal key"
+        },
+        {
+          "pn": "233-301NFCMG175HN1",
+          "description": "RJ45 receptacle, crimp contacts, jam-nut, nickel, shell 17, Cat5e, normal key"
+        },
+        {
+          "pn": "233-301NF00-195HN1",
+          "description": "RJ45 receptacle, crimp contacts, wall mount slotted, olive drab, shell 19, Cat5e, normal key"
+        },
+        {
+          "pn": "233-301ABG6-175HN1",
+          "description": "RJ45 receptacle, crimp contacts, plug (AB series), nickel, shell 17, Cat5e, normal key"
+        },
+        {
+          "pn": "233-301ABG6-175HA1",
+          "description": "RJ45 receptacle, crimp contacts, plug (AB series), nickel, shell 17, Cat5e, A keying"
+        },
+        {
+          "pn": "233-301ZR07-195HN3",
+          "description": "RJ45 receptacle, crimp contacts, zinc-nickel, alt panel, shell 19, Cat5e, normal key, triple"
+        },
+        {
+          "pn": "233-301MG6-175LN1",
+          "description": "RJ45 receptacle, crimp contacts, miniature plug, shell 17, Cat5, normal key"
+        }
       ],
       "internal_arrangement": {
         "description": "Fixed RJ45 jack interface (8P8C modular) internally routed to rear termination. Not a standard D38999 insert arrangement.",
@@ -187,13 +319,14 @@
         "Triple-port (3) configurations use larger shell size 19.",
         "Do not assume Cat5e performance if Cat6A is required - verify PN suffix."
       ],
-      "source": "https://www.glenair.com/supernine/rj45-usb-hdmi/"
+      "source": "https://www.glenair.com/supernine/rj45-usb-hdmi/",
+      "interface_gender": "Glenair base number tells side: 233-300/G6 = plug coupler (female RJ45 jack outward, male D38999 coupling nut), 233-301/302/303 = panel receptacle (female RJ45 jack), 233-312/G6 = plug with male RJ45 plug outward, 233-330 = feedthrough (female RJ45 both sides), 233-304/305 = adapters."
     },
     {
       "vendor": "Amphenol Socapex / Amphenol PCD",
       "family": "USBFTV",
       "interface": "USB 2.0 Type-A",
-      "interface_gender": "Varies by PN: USB Type-A receptacle = female, plug = male",
+      "interface_gender": "PN suffix decodes the variant: 2xx = square-flange panel receptacle (female USB-A), 6xx = jam-nut panel receptacle (female), 7xx = inline cable plug (female USB-A on outside, male D38999 coupling).",
       "d38999_relation": "MIL-DTL-38999 Series III style rugged USB connector",
       "supported_interfaces": [
         "USB 2.0"
@@ -220,13 +353,31 @@
       "warnings": [
         "USBFTV is for USB 2.0 family use; do not use it when USB 3.x performance is required unless exact PN supports it.",
         "Verify exact PN, finish, cap, and rear termination."
+      ],
+      "verified_purchasable_pns": [
+        {
+          "pn": "USBFTV2G",
+          "description": "USB 2.0 square-flange panel receptacle, nickel (female USB-A)"
+        },
+        {
+          "pn": "USBFTV2N",
+          "description": "USB 2.0 square-flange panel receptacle, olive drab (female USB-A)"
+        },
+        {
+          "pn": "USBFTV71G",
+          "description": "USB 2.0 inline cable plug, nickel (female USB-A on outside)"
+        },
+        {
+          "pn": "USBFTV71N",
+          "description": "USB 2.0 inline cable plug, olive drab"
+        }
       ]
     },
     {
       "vendor": "Amphenol Socapex / Amphenol PCD",
       "family": "USB3FTV",
       "interface": "USB 3.x Type-A",
-      "interface_gender": "Varies by PN: USB Type-A receptacle = female, plug = male",
+      "interface_gender": "PN suffix decodes the variant: 2Axx = square-flange panel receptacle (female USB-A), 6xx = jam-nut panel receptacle (female), 7Axx = inline cable plug (female USB-A on outside, male D38999 coupling).",
       "d38999_relation": "MIL-DTL-38999 Series III style rugged USB 3 connector",
       "supported_interfaces": [
         "USB 3.0",
@@ -260,13 +411,35 @@
         "Verify exact PN supports the required USB speed.",
         "Validate cable length, shielding, and signal integrity.",
         "Do not replace USB3FTV with generic D38999 contacts unless tested."
+      ],
+      "verified_purchasable_pns": [
+        {
+          "pn": "USB3FTV2AZNG",
+          "description": "USB 3.0 square-flange panel receptacle, zinc-nickel (female USB-A)"
+        },
+        {
+          "pn": "USB3FTV6G",
+          "description": "USB 3.0 jam-nut panel receptacle, nickel (female USB-A)"
+        },
+        {
+          "pn": "USB3FTV7AZNG",
+          "description": "USB 3.0 inline cable plug, zinc-nickel"
+        },
+        {
+          "pn": "USB3FTV7APEG",
+          "description": "USB 3.0 inline cable plug with anti-decouple, nickel"
+        },
+        {
+          "pn": "USB3FTV7APEN",
+          "description": "USB 3.0 inline cable plug with anti-decouple, olive drab"
+        }
       ]
     },
     {
       "vendor": "Amphenol Socapex / Amphenol PCD",
       "family": "USB3CFTV",
       "interface": "USB-C / USB 3.2",
-      "interface_gender": "Varies by PN: USB Type-C receptacle = female, plug = male",
+      "interface_gender": "PN suffix decodes the variant: 22xx = square-flange female-to-female feedthrough (female USB-C both sides), 2xx = square-flange panel receptacle (female USB-C), 6xx = jam-nut panel receptacle (female), 7xx = inline cable plug (male USB-C plug on outside).",
       "d38999_relation": "Size 11 D38999-style rugged USB-C connector",
       "supported_interfaces": [
         "USB-C",
@@ -297,6 +470,32 @@
         "Do not blindly map USB-C pins through a connector.",
         "Verify PD/current/e-marker requirements.",
         "Verify exact PN and supported USB mode."
+      ],
+      "verified_purchasable_pns": [
+        {
+          "pn": "USB3CFTV22N",
+          "description": "USB-C female-to-female feedthrough, square-flange, olive drab"
+        },
+        {
+          "pn": "USB3CFTV22ZN",
+          "description": "USB-C female-to-female feedthrough, square-flange, zinc-nickel"
+        },
+        {
+          "pn": "USB3CFTV6G",
+          "description": "USB-C jam-nut panel receptacle, nickel (female USB-C)"
+        },
+        {
+          "pn": "USB3CFTV6N",
+          "description": "USB-C jam-nut panel receptacle, olive drab"
+        },
+        {
+          "pn": "USB3CFTV7N030",
+          "description": "USB-C inline cable plug, olive drab, 30 cm cable"
+        },
+        {
+          "pn": "USB3CFTV7PEZN030",
+          "description": "USB-C inline cable plug with anti-decouple, zinc-nickel, 30 cm cable"
+        }
       ]
     },
     {
@@ -326,7 +525,14 @@
           "options": "H=environmental seal, T=threaded"
         }
       },
-      "catalog_base_numbers": ["233-340", "233-342", "233-343", "233-344", "233-345", "233-370"],
+      "catalog_base_numbers": [
+        "233-340",
+        "233-342",
+        "233-343",
+        "233-344",
+        "233-345",
+        "233-370"
+      ],
       "product_types": {
         "233-340": "USB Coupler with Accessory Threads (replaced by 233-350 for USB 3.0) (interface: female USB Type-A, both sides)",
         "233-342": "USB Receptacle with PC Tails (replaced by 233-352 for USB 3.0) (interface: female USB Type-A)",
@@ -336,8 +542,14 @@
         "233-370": "Feed-Thru Receptacle with Front/Rear USB Interface (replaced by 233-355 for USB 3.0) (interface: female USB Type-A, both sides)"
       },
       "verified_purchasable_pns": [
-        {"pn": "233-345NF00-152ANH", "description": "USB receptacle, crimp contacts, wall mount slotted, olive drab, shell 15, USB 2.0 Type-A, normal key"},
-        {"pn": "233-370NF00-172AANH", "description": "USB feedthru receptacle, wall mount slotted, olive drab, shell 17, USB 2.0 Type-A, A keying"}
+        {
+          "pn": "233-345NF00-152ANH",
+          "description": "USB receptacle, crimp contacts, wall mount slotted, olive drab, shell 15, USB 2.0 Type-A, normal key"
+        },
+        {
+          "pn": "233-370NF00-172AANH",
+          "description": "USB feedthru receptacle, wall mount slotted, olive drab, shell 17, USB 2.0 Type-A, A keying"
+        }
       ],
       "internal_arrangement": {
         "description": "Fixed USB Type-A female jack interface internally routed to rear termination. Not a standard D38999 insert arrangement.",
@@ -375,9 +587,36 @@
         "user needs sealed USB 3.0 panel connector",
         "user needs USB 3.0 feedthrough or cable adapter"
       ],
-      "catalog_base_numbers": ["233-350", "233-352", "233-353", "233-354", "233-355", "233-357", "233-358"],
+      "catalog_base_numbers": [
+        "233-350",
+        "233-352",
+        "233-353",
+        "233-354",
+        "233-355",
+        "233-357",
+        "233-358"
+      ],
       "verified_purchasable_pns": [
-        {"pn": "233-350NFD0-153ANH", "description": "USB 3.0 panel mount receptacle, wall mount round holes, olive drab, shell 15, USB 3.0 Type-A, normal key"}
+        {
+          "pn": "233-350NFD0-153ANH",
+          "description": "USB 3.0 panel mount receptacle, wall mount round holes, olive drab, shell 15, USB 3.0 Type-A, normal key"
+        },
+        {
+          "pn": "233-357NF00-153ANH",
+          "description": "USB 3.0 panel receptacle with PC tail and threaded standoff, wall-mount slotted, olive drab, shell 15, normal key"
+        },
+        {
+          "pn": "233-357NFD0-153ANH",
+          "description": "USB 3.0 panel receptacle with PC tail and threaded standoff, round holes, olive drab, shell 15"
+        },
+        {
+          "pn": "233-392NFG6-153ANH",
+          "description": "USB 3.0 memory stick (male USB-A), plug shell, shell 15, normal key"
+        },
+        {
+          "pn": "2330-0445",
+          "description": "USB 3.0/2.0 cable jumper: SuperNine connector to commercial USB Type-A plug"
+        }
       ],
       "example_pns": [
         "233-350NF00-153ANH",
@@ -414,7 +653,8 @@
         "bandwidth": "Up to 5 Gbps (USB 3.0 / USB 3.2 Gen 1)"
       },
       "shell_size": "15",
-      "source": "https://www.glenair.com/superseal/38999-type/usb-3-0/"
+      "source": "https://www.glenair.com/superseal/38999-type/usb-3-0/",
+      "interface_gender": "Glenair base number tells side: 233-350..357 = panel receptacle (female USB-A), 233-355 = feedthrough coupler, 233-358 = cable plug, 233-392 = memory stick (male USB-A), 2330-0445 = cable jumper, 2330-0450 = active-repeater jumper."
     },
     {
       "vendor": "Glenair",
@@ -434,12 +674,46 @@
         "user needs sealed USB Type-C connector",
         "user needs smaller shell than USB 3.0 Type-A"
       ],
-      "catalog_base_numbers": ["233-380", "233-381", "233-382", "233-384", "233-388"],
+      "catalog_base_numbers": [
+        "233-380",
+        "233-381",
+        "233-382",
+        "233-384",
+        "233-388"
+      ],
       "verified_purchasable_pns": [
-        {"pn": "233-380ME07-13NH", "description": "USB 3.2 Type-C receptacle, female-to-female, metal-enclosed, alt panel, shell 13, normal key"},
-        {"pn": "233-382NF00-13NH", "description": "USB 3.2 Type-C receptacle to PC tail, wall mount slotted, olive drab, shell 13, normal key"},
-        {"pn": "233-388MEG6-13NH", "description": "USB 3.2 Type-C drive-thru plug, metal-enclosed, plug, shell 13, normal key"},
-        {"pn": "233-388NFG6-13NH", "description": "USB 3.2 Type-C drive-thru plug, standard, plug, shell 13, normal key"}
+        {
+          "pn": "233-380ME07-13NH",
+          "description": "USB 3.2 Type-C receptacle, female-to-female, metal-enclosed, alt panel, shell 13, normal key"
+        },
+        {
+          "pn": "233-382NF00-13NH",
+          "description": "USB 3.2 Type-C receptacle to PC tail, wall mount slotted, olive drab, shell 13, normal key"
+        },
+        {
+          "pn": "233-388MEG6-13NH",
+          "description": "USB 3.2 Type-C drive-thru plug, metal-enclosed, plug, shell 13, normal key"
+        },
+        {
+          "pn": "233-388NFG6-13NH",
+          "description": "USB 3.2 Type-C drive-thru plug, standard, plug, shell 13, normal key"
+        },
+        {
+          "pn": "233-381NF00-13NH",
+          "description": "USB-C female-to-female bulkhead feedthrough, wall-mount slotted, olive drab, shell 13"
+        },
+        {
+          "pn": "233-381ME07-13NH",
+          "description": "USB-C female-to-female feedthrough, metal-enclosed jam-nut, shell 13"
+        },
+        {
+          "pn": "233-381NFD0-13NH",
+          "description": "USB-C female-to-female feedthrough, round holes, olive drab, shell 13"
+        },
+        {
+          "pn": "233-381NFCM-13NH",
+          "description": "USB-C female-to-female feedthrough, jam-nut/clinch-nut, olive drab, shell 13"
+        }
       ],
       "example_pns": [
         "233-380ME07-13NH",
@@ -482,7 +756,8 @@
         "bandwidth": "Up to 10 Gbps (USB 3.2 Gen 2), supports USB4 negotiation via CC",
         "power": "Supports USB Power Delivery up to 100W (20V/5A) with proper PD controller"
       },
-      "source": "https://www.glenair.com/superseal/38999-type/usb-3-2/"
+      "source": "https://www.glenair.com/superseal/38999-type/usb-3-2/",
+      "interface_gender": "Glenair base number tells side: 233-380 = panel receptacle (female USB-C, both faces), 233-381 = female-to-female bulkhead feedthrough, 233-382 = receptacle to PC tail, 233-384 = receptacle to breakout, 233-388 = cable plug (male USB-C)."
     },
     {
       "vendor": "Glenair",
@@ -499,14 +774,37 @@
         "user needs RTCA DO-160 compliant Ethernet connector",
         "user needs indirect lightning strike protection for data lines"
       ],
-      "catalog_base_numbers": ["244-001", "244-002", "244-003", "244-004"],
+      "catalog_base_numbers": [
+        "244-001",
+        "244-002",
+        "244-003",
+        "244-004"
+      ],
       "verified_purchasable_pns": [
-        {"pn": "244-001NF19SGN1", "description": "Cat5e TVS jam-nut receptacle w/ standoffs, standard, shell 19, nickel, normal key, TVS level 1"},
-        {"pn": "244-003AB17SGN1", "description": "Cat5e TVS jam-nut receptacle w/ accessory threads, alt body, shell 17, nickel, normal key, TVS level 1"},
-        {"pn": "244-003AB17SGN3", "description": "Cat5e TVS jam-nut receptacle w/ accessory threads, alt body, shell 17, nickel, normal key, TVS level 3"},
-        {"pn": "244-003NF19SGN1", "description": "Cat5e TVS jam-nut receptacle w/ accessory threads, standard, shell 19, nickel, normal key, TVS level 1"},
-        {"pn": "244-003ZNU19SGN3", "description": "Cat5e TVS jam-nut receptacle w/ accessory threads, zinc-nickel RoHS, shell 19, nickel, normal key, TVS level 3"},
-        {"pn": "244-004MT17SGN3", "description": "Cat5e TVS wall mount receptacle w/ accessory threads, mini-threaded, shell 17, nickel, normal key, TVS level 3"}
+        {
+          "pn": "244-001NF19SGN1",
+          "description": "Cat5e TVS jam-nut receptacle w/ standoffs, standard, shell 19, nickel, normal key, TVS level 1"
+        },
+        {
+          "pn": "244-003AB17SGN1",
+          "description": "Cat5e TVS jam-nut receptacle w/ accessory threads, alt body, shell 17, nickel, normal key, TVS level 1"
+        },
+        {
+          "pn": "244-003AB17SGN3",
+          "description": "Cat5e TVS jam-nut receptacle w/ accessory threads, alt body, shell 17, nickel, normal key, TVS level 3"
+        },
+        {
+          "pn": "244-003NF19SGN1",
+          "description": "Cat5e TVS jam-nut receptacle w/ accessory threads, standard, shell 19, nickel, normal key, TVS level 1"
+        },
+        {
+          "pn": "244-003ZNU19SGN3",
+          "description": "Cat5e TVS jam-nut receptacle w/ accessory threads, zinc-nickel RoHS, shell 19, nickel, normal key, TVS level 3"
+        },
+        {
+          "pn": "244-004MT17SGN3",
+          "description": "Cat5e TVS wall mount receptacle w/ accessory threads, mini-threaded, shell 17, nickel, normal key, TVS level 3"
+        }
       ],
       "example_pns": [
         "244-001NF19SGN1",
@@ -572,7 +870,23 @@
         },
         "notes": "Typical part numbering system per TE; not all options are available with every series. Consult TE."
       },
-      "catalog_base_numbers": ["PC4D0021", "PC4D0048", "PC4D0059", "PC4B0054", "PC4B0089", "PC4B0064", "PC4F0009", "PC4F0016", "PC4F0027", "PC4F0030", "PC4F0031", "PC4F0032", "PC4F0043", "PC4F0049", "PC4F0059"],
+      "catalog_base_numbers": [
+        "PC4D0021",
+        "PC4D0048",
+        "PC4D0059",
+        "PC4B0054",
+        "PC4B0089",
+        "PC4B0064",
+        "PC4F0009",
+        "PC4F0016",
+        "PC4F0027",
+        "PC4F0030",
+        "PC4F0031",
+        "PC4F0032",
+        "PC4F0043",
+        "PC4F0049",
+        "PC4F0059"
+      ],
       "product_types": {
         "PC4D0021": "Size 15 USB Memory Plug Assembly (Standard); also offered as Anti-Tamper (interface: male USB Type-A plug)",
         "PC4D0048": "Size 15 USB Memory Plug, Isolated (interface: male USB Type-A plug)",
@@ -590,7 +904,13 @@
         "PC4F0049": "Jam Nut Sealed Bulkhead Feedthrough (Standard) (interface: female USB Type-A, both sides)",
         "PC4F0059": "Size 15 Jam Nut Feedthrough, Sealed (interface: female USB Type-A)"
       },
-      "example_pns": ["PC4D0021", "PC4D0048", "PC4B0054", "PC4F0027", "PC4F0016"],
+      "example_pns": [
+        "PC4D0021",
+        "PC4D0048",
+        "PC4B0054",
+        "PC4F0027",
+        "PC4F0016"
+      ],
       "internal_arrangement": {
         "description": "Fixed USB Type-A (or Type-B) interface internally routed to rear termination. Not a standard D38999 insert arrangement.",
         "contacts_usb2": "4 contacts (VBUS, D+, D-, GND) plus shell shield",
@@ -655,7 +975,24 @@
         "sample_part_number": "PC40084 H 19 N X 1 C BT",
         "notes": "Typical part numbering system per TE; not all options are available with every series. Consult TE."
       },
-      "catalog_base_numbers": ["PC4D0024", "PC4D0042", "PC4D0002", "PC4F0020", "PC4F0023", "PC4F0084", "PC4F0034", "PC4F0025", "PC4F0002", "PC4F0085", "PC4B0029", "PC4B0102", "PC4B0038", "PC4B0076", "PC4B0002", "PC4B0103"],
+      "catalog_base_numbers": [
+        "PC4D0024",
+        "PC4D0042",
+        "PC4D0002",
+        "PC4F0020",
+        "PC4F0023",
+        "PC4F0084",
+        "PC4F0034",
+        "PC4F0025",
+        "PC4F0002",
+        "PC4F0085",
+        "PC4B0029",
+        "PC4B0102",
+        "PC4B0038",
+        "PC4B0076",
+        "PC4B0002",
+        "PC4B0103"
+      ],
       "product_types": {
         "PC4D0024": "Cat 6a Plug (interface: male RJ45 plug)",
         "PC4D0042": "Cat 6a Plug, Field Installable (interface: male RJ45 plug)",
@@ -674,7 +1011,13 @@
         "PC4B0002": "Cat 5 / Cat 5e Square Flange Feedthrough Receptacle (Standard) (interface: female RJ45 jack)",
         "PC4B0103": "Cat 6a Square Flange Bulkhead-Mount Feedthrough (interface: female RJ45 jack)"
       },
-      "example_pns": ["PC40084H19NX1CBT", "PC4D0024", "PC4F0020", "PC4B0029", "PC4D0002"],
+      "example_pns": [
+        "PC40084H19NX1CBT",
+        "PC4D0024",
+        "PC4F0020",
+        "PC4B0029",
+        "PC4D0002"
+      ],
       "internal_arrangement": {
         "description": "Fixed RJ45 jack interface (8P8C modular) internally routed to rear termination, fully grounded from the shielded RJ45 plug to the 38999-style shell. Not a standard D38999 insert arrangement.",
         "contacts": "8 signal contacts (4 twisted pairs) plus shell ground",
@@ -707,6 +1050,66 @@
         "Confirm shell material, finish, keying, and insert orientation against the TE datasheet."
       ],
       "source": "https://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=1-1773922-9_deutsch38999_COTS&DocType=DS&DocLang=EN"
+    },
+    {
+      "vendor": "Amphenol Socapex / Amphenol PCD",
+      "family": "RJFTVX",
+      "interface": "RJ45 Ethernet (ATEX Zone 2)",
+      "interface_gender": "PN suffix decodes the variant (same convention as RJFTV): 2xx = square-flange panel receptacle (female RJ45 jack), 6xx = jam-nut panel receptacle (female), 7xx = inline cable plug (female RJ45 outside, male D38999 coupling).",
+      "d38999_relation": "MIL-DTL-38999 Series III style rugged RJ45 connector certified for ATEX Zone 2 / EN 60079-15 (explosion-proof environments)",
+      "supported_interfaces": [
+        "10BASE-T",
+        "100BASE-TX",
+        "1000BASE-T",
+        "Cat5e",
+        "Cat6"
+      ],
+      "use_when": [
+        "user needs rugged RJ45 in hazardous locations",
+        "user needs ATEX Zone 2 certified Ethernet",
+        "user needs RJFTV-style with explosion-proof rating"
+      ],
+      "example_pns": [
+        "RJFTVX21G",
+        "RJFTVX21N",
+        "RJFTVX71G",
+        "RJFTVX71N",
+        "RJFTVX6MN"
+      ],
+      "warnings": [
+        "Verify exact PN with Amphenol PCD ATEX catalog before production.",
+        "PN suffix codes inferred from RJFTV pattern; confirm against Amphenol RJFTVX brochure.",
+        "Verify ATEX certification covers your specific zone and gas group."
+      ],
+      "sources": [
+        "https://www.amphenolpcd.com/product/rjf-tv-atex-zone-2/"
+      ]
+    },
+    {
+      "vendor": "Amphenol Socapex / Amphenol PCD",
+      "family": "TV µCOM-10Gb+",
+      "interface": "10G+ Ethernet (high-speed data, exceeds Cat6A/Cat7)",
+      "interface_gender": "µCOM-10Gb+ is a 4-pair shielded contact module that drops into a size-11 D38999 Series III shell. Gender follows the host shell: panel-mount receptacle = female; cable-end plug = male coupling.",
+      "d38999_relation": "Size 11 MIL-DTL-38999 Series III shell with proprietary high-speed insert (10 Gbps+)",
+      "supported_interfaces": [
+        "10GBASE-T",
+        "25GBASE-T (planned)",
+        "high-speed serial"
+      ],
+      "use_when": [
+        "user needs >1 Gbps Ethernet in smallest rugged D38999 shell",
+        "user needs sealed 10G uplink with D38999 mating",
+        "user wants smallest-form-factor rugged 10GBASE-T"
+      ],
+      "example_pns": [],
+      "warnings": [
+        "Specific catalog PNs are in Amphenol PCD brochure PDF — contact vendor for ordering codes.",
+        "Verify cable assembly performance to 10 Gbps over target distance."
+      ],
+      "sources": [
+        "https://www.amphenolpcd.com/product/tv-%c2%b5com-10gb-series/",
+        "https://www.amphenolpcd.com/wp-content/uploads/2023/06/brochure_tv_ucom_10_gb_2.pdf"
+      ]
     }
   ],
   "rugged_video_d38999_style_connectors": [
@@ -714,27 +1117,116 @@
       "vendor": "Amphenol Socapex / Amphenol PCD",
       "family": "HDMIFTV",
       "interface": "HDMI",
-      "interface_gender": "Varies by PN: HDMI receptacle = female, plug = male",
+      "interface_gender": "PN suffix decodes the variant: 2Axx = square-flange panel receptacle (female HDMI Type-A), 6Axx = jam-nut panel receptacle (female), C2xx = female-to-female coupler/feedthrough. No standalone 7xx cable plug; cordsets are sold as cable assemblies.",
       "connector_type": "D38999-style rugged HDMI connector",
       "d38999_relation": "rugged HDMI in size 17 38999 shell",
-      "capability_notes": ["HDMI 2.0 family according to vendor data", "intended for rugged HDMI panel/cable applications", "high-speed video connector, not a generic signal-pin arrangement"],
-      "example_pns": ["HDMIFTV2AG", "HDMIFTV6AG", "HDMIFTVC2G", "HDMIFTV2AZN", "HDMIFTV2APEZN", "HDMIFTV2ANF459", "HDMIFTV2APEG"],
-      "use_when": ["user needs rugged HDMI", "user wants HDMI through sealed panel", "user wants D38999-style HDMI connector", "user wants high-speed video without designing custom HDMI pinout through generic contacts"],
-      "selection_questions": ["What HDMI version or resolution/frame rate is required?", "Do you need plug, square-flange receptacle, or jam-nut receptacle?", "What finish is required?", "Do you need cap, gland, backshell, or cable assembly?", "What is the cable length?", "Is this source side, sink side, or panel feedthrough?"],
-      "warnings": ["Do not route HDMI through random D38999 signal pins.", "HDMI TMDS/FRL pairs require controlled impedance and SI validation.", "Verify exact PN, HDMI version, mating connector, finish, and cable assembly."]
+      "capability_notes": [
+        "HDMI 2.0 family according to vendor data",
+        "intended for rugged HDMI panel/cable applications",
+        "high-speed video connector, not a generic signal-pin arrangement"
+      ],
+      "example_pns": [
+        "HDMIFTV2AG",
+        "HDMIFTV6AG",
+        "HDMIFTVC2G",
+        "HDMIFTV2AZN",
+        "HDMIFTV2APEZN",
+        "HDMIFTV2ANF459",
+        "HDMIFTV2APEG"
+      ],
+      "use_when": [
+        "user needs rugged HDMI",
+        "user wants HDMI through sealed panel",
+        "user wants D38999-style HDMI connector",
+        "user wants high-speed video without designing custom HDMI pinout through generic contacts"
+      ],
+      "selection_questions": [
+        "What HDMI version or resolution/frame rate is required?",
+        "Do you need plug, square-flange receptacle, or jam-nut receptacle?",
+        "What finish is required?",
+        "Do you need cap, gland, backshell, or cable assembly?",
+        "What is the cable length?",
+        "Is this source side, sink side, or panel feedthrough?"
+      ],
+      "warnings": [
+        "Do not route HDMI through random D38999 signal pins.",
+        "HDMI TMDS/FRL pairs require controlled impedance and SI validation.",
+        "Verify exact PN, HDMI version, mating connector, finish, and cable assembly."
+      ],
+      "verified_purchasable_pns": [
+        {
+          "pn": "HDMIFTV2AN",
+          "description": "HDMI 2.0 square-flange panel receptacle, olive drab (female HDMI-A)"
+        },
+        {
+          "pn": "HDMIFTVC2N",
+          "description": "HDMI 2.0 female-to-female feedthrough coupler, olive drab"
+        },
+        {
+          "pn": "HDMIFTVC2ZN",
+          "description": "HDMI 2.0 female-to-female feedthrough coupler, zinc-nickel"
+        },
+        {
+          "pn": "HDMIFTV6AN",
+          "description": "HDMI 2.0 jam-nut panel receptacle, olive drab (female HDMI-A)"
+        },
+        {
+          "pn": "HDMIFTV6AZN",
+          "description": "HDMI 2.0 jam-nut panel receptacle, zinc-nickel"
+        }
+      ]
     },
     {
       "vendor": "Amphenol Socapex / Amphenol PCD",
       "family": "MDPFTV",
       "interface": "Mini DisplayPort / DisplayPort",
-      "interface_gender": "Varies by PN: Mini DisplayPort receptacle = female, plug = male",
+      "interface_gender": "PN suffix decodes the variant: 6xx = jam-nut panel receptacle (female Mini-DP), 7xx = inline cable plug (male D38999 coupling). A/B suffix = shell variant; PE = anti-decouple; finish G/N/ZN; F### = cable length cm.",
       "connector_type": "D38999-style rugged Mini DisplayPort connector",
       "d38999_relation": "rugged Mini DisplayPort in size 13 38999 shell",
-      "capability_notes": ["Mini DisplayPort rugged solution", "high-speed differential video connector", "not a generic D38999 signal-pin arrangement"],
-      "example_pns": ["MDPFTV7BNF312", "MDPFTV7BGF312", "MDPFTV7AZNF312", "MDPFTV7BZNF312", "MDPFTV7AGF312", "MDPFTV7ANF312", "MDPFTV7BPEGF312", "MDPFTV7BPENF312", "MDPFTV7APENF312", "MDPFTV7BPEZNF312", "MDPFTV7APEZNF312", "MDPFTV6BG", "MDPFTV6BN", "MDPFTV6AZN", "MDPFTV6AG", "MDPFTV6BZN", "MDPFTV6AN", "MDPFTV7APEGF312"],
-      "use_when": ["user needs rugged DisplayPort", "user needs rugged Mini DisplayPort", "user needs high-resolution video in harsh environment", "user wants D38999-style Mini DP instead of normal Mini DP"],
-      "selection_questions": ["What DisplayPort version is required?", "What resolution and refresh rate are required?", "How many lanes are needed?", "Do you need plug or panel receptacle?", "What shell finish/environmental rating is required?", "What cable length is required?"],
-      "warnings": ["DisplayPort lanes are high-speed differential pairs.", "Do not map DisplayPort through generic contacts unless validated.", "Verify lane count, DP version, cable assembly, mating connector, and SI performance."]
+      "capability_notes": [
+        "Mini DisplayPort rugged solution",
+        "high-speed differential video connector",
+        "not a generic D38999 signal-pin arrangement"
+      ],
+      "example_pns": [
+        "MDPFTV7BNF312",
+        "MDPFTV7BGF312",
+        "MDPFTV7AZNF312",
+        "MDPFTV7BZNF312",
+        "MDPFTV7AGF312",
+        "MDPFTV7ANF312",
+        "MDPFTV7BPEGF312",
+        "MDPFTV7BPENF312",
+        "MDPFTV7APENF312",
+        "MDPFTV7BPEZNF312",
+        "MDPFTV7APEZNF312",
+        "MDPFTV6BG",
+        "MDPFTV6BN",
+        "MDPFTV6AZN",
+        "MDPFTV6AG",
+        "MDPFTV6BZN",
+        "MDPFTV6AN",
+        "MDPFTV7APEGF312"
+      ],
+      "use_when": [
+        "user needs rugged DisplayPort",
+        "user needs rugged Mini DisplayPort",
+        "user needs high-resolution video in harsh environment",
+        "user wants D38999-style Mini DP instead of normal Mini DP"
+      ],
+      "selection_questions": [
+        "What DisplayPort version is required?",
+        "What resolution and refresh rate are required?",
+        "How many lanes are needed?",
+        "Do you need plug or panel receptacle?",
+        "What shell finish/environmental rating is required?",
+        "What cable length is required?"
+      ],
+      "warnings": [
+        "DisplayPort lanes are high-speed differential pairs.",
+        "Do not map DisplayPort through generic contacts unless validated.",
+        "Verify lane count, DP version, cable assembly, mating connector, and SI performance."
+      ]
     },
     {
       "vendor": "Glenair",
@@ -742,7 +1234,14 @@
       "interface": "HDMI 2.0",
       "connector_type": "MIL-DTL-38999 Series III type rugged HDMI",
       "d38999_relation": "SuperNine D38999-style HDMI 2.0 connector/cable assembly ecosystem",
-      "catalog_base_numbers": ["233-360", "233-362", "233-363", "233-364", "233-365", "233-368"],
+      "catalog_base_numbers": [
+        "233-360",
+        "233-362",
+        "233-363",
+        "233-364",
+        "233-365",
+        "233-368"
+      ],
       "product_types": {
         "233-360": "HDMI 2.0 Panel Mount Couplers with Accessory Threads (interface: female HDMI Type-A, both sides)",
         "233-362": "HDMI 2.0 Panel Mount Receptacles with PC Tails (interface: female HDMI Type-A)",
@@ -752,9 +1251,30 @@
         "233-368": "HDMI 2.0 Plug, Accepts HDMI Plug (interface: female HDMI Type-A receptacle)"
       },
       "verified_purchasable_pns": [
-        {"pn": "233-363NF00-17NH", "description": "HDMI 2.0 panel mount, solder cups, wall mount slotted, olive drab, shell 17, normal key"},
-        {"pn": "233-368NFG6A17NH", "description": "HDMI 2.0 plug, standard, plug mount, shell 17, A keying, normal height"},
-        {"pn": "233-368MEG6A17NH", "description": "HDMI 2.0 plug, metal-enclosed, plug mount, shell 17, A keying, normal height"}
+        {
+          "pn": "233-363NF00-17NH",
+          "description": "HDMI 2.0 panel mount, solder cups, wall mount slotted, olive drab, shell 17, normal key"
+        },
+        {
+          "pn": "233-368NFG6A17NH",
+          "description": "HDMI 2.0 plug, standard, plug mount, shell 17, A keying, normal height"
+        },
+        {
+          "pn": "233-368MEG6A17NH",
+          "description": "HDMI 2.0 plug, metal-enclosed, plug mount, shell 17, A keying, normal height"
+        },
+        {
+          "pn": "2330-0455",
+          "description": "HDMI 2.0 cable assembly: ruggedized SuperNine connector one end, commercial HDMI plug other end"
+        },
+        {
+          "pn": "233-368NFG6-17NH",
+          "description": "HDMI 2.0 plug (standard), plug mount, shell 17, normal key"
+        },
+        {
+          "pn": "233-365NF00-17NH",
+          "description": "HDMI 2.0 panel feedthrough, wall-mount slotted, olive drab, shell 17, normal key"
+        }
       ],
       "internal_arrangement": {
         "description": "Fixed HDMI 2.0 female interface (Type-A 19-pin) internally routed to rear termination. Not a standard D38999 insert arrangement.",
@@ -775,16 +1295,33 @@
           "height": "H=standard height"
         }
       },
-      "use_when": ["user wants rugged HDMI in Glenair SuperNine ecosystem", "user wants MIL-DTL-38999 Series III type shell with HDMI 2.0", "user needs cable assembly or rugged video interconnect", "user needs 4K video through sealed panel connector"],
-      "selection_questions": ["What HDMI version/resolution is required (supports up to 4K@60Hz)?", "Do you need plug (233-368), receptacle, feedthru (233-365), or cable assembly?", "What mounting: plug (G6), wall mount (00/D0), or jam-nut (CM)?", "What finish: nickel (G) or olive drab (blank)?", "What keying: normal (N) or alternate (A)?"],
-      "warnings": ["Verify HDMI 2.0 performance for the specific resolution/framerate needed.", "Use Glenair PN-development tables for exact configuration.", "Verify cable assembly performance and length limitations for HDMI.", "Do not route HDMI through generic D38999 signal contacts."],
-      "source": "https://www.glenair.com/supernine/rj45-usb-hdmi/"
+      "use_when": [
+        "user wants rugged HDMI in Glenair SuperNine ecosystem",
+        "user wants MIL-DTL-38999 Series III type shell with HDMI 2.0",
+        "user needs cable assembly or rugged video interconnect",
+        "user needs 4K video through sealed panel connector"
+      ],
+      "selection_questions": [
+        "What HDMI version/resolution is required (supports up to 4K@60Hz)?",
+        "Do you need plug (233-368), receptacle, feedthru (233-365), or cable assembly?",
+        "What mounting: plug (G6), wall mount (00/D0), or jam-nut (CM)?",
+        "What finish: nickel (G) or olive drab (blank)?",
+        "What keying: normal (N) or alternate (A)?"
+      ],
+      "warnings": [
+        "Verify HDMI 2.0 performance for the specific resolution/framerate needed.",
+        "Use Glenair PN-development tables for exact configuration.",
+        "Verify cable assembly performance and length limitations for HDMI.",
+        "Do not route HDMI through generic D38999 signal contacts."
+      ],
+      "source": "https://www.glenair.com/supernine/rj45-usb-hdmi/",
+      "interface_gender": "Glenair base number tells side: 233-360 = panel coupler (female HDMI both sides), 233-362/363/364 = panel receptacle to PC tail/solder cups/breakout, 233-365 = feedthrough coupler, 233-368/G6A = plug (accepts standard HDMI cable), 2330-0455 = cable assembly (commercial HDMI plug one end)."
     },
     {
       "vendor": "Glenair",
       "family": "SuperSeal DisplayPort 1.4",
       "interface": "DisplayPort 1.4",
-      "interface_gender": "Varies by PN: DisplayPort receptacle = female, plug/cordset = male",
+      "interface_gender": "Glenair base numbers: 233-376 = receptacle with shielded DP coupler, 233-379 = receptacle to PC tail. Mount code in PN further refines (00 = wall mount slotted, D0 = round holes, CM = jam-nut).",
       "connector_type": "MIL-DTL-38999 Series III type rugged DisplayPort connector",
       "d38999_relation": "38999 type SuperSeal rugged DisplayPort 1.4 connector",
       "supported_interfaces": [
@@ -796,12 +1333,24 @@
         "user needs high-resolution video in harsh environments (rail, naval, ground vehicles, IFE)",
         "user wants D38999-style DisplayPort instead of normal DisplayPort"
       ],
-      "catalog_base_numbers": ["233-376", "233-379"],
-      "verified_purchasable_pns": [
-        {"pn": "233-376NF00-17NH", "description": "DisplayPort 1.4 receptacle with shielded DisplayPort coupler, standard finish, wall mount slotted, shell 17, normal key, horizontal orientation"},
-        {"pn": "233-379NF00-17NH", "description": "DisplayPort 1.4 receptacle with DisplayPort to PC tail termination, standard finish, wall mount slotted, shell 17, normal key, horizontal orientation"}
+      "catalog_base_numbers": [
+        "233-376",
+        "233-379"
       ],
-      "example_pns": ["233-376NF00-17NH", "233-379NF00-17NH"],
+      "verified_purchasable_pns": [
+        {
+          "pn": "233-376NF00-17NH",
+          "description": "DisplayPort 1.4 receptacle with shielded DisplayPort coupler, standard finish, wall mount slotted, shell 17, normal key, horizontal orientation"
+        },
+        {
+          "pn": "233-379NF00-17NH",
+          "description": "DisplayPort 1.4 receptacle with DisplayPort to PC tail termination, standard finish, wall mount slotted, shell 17, normal key, horizontal orientation"
+        }
+      ],
+      "example_pns": [
+        "233-376NF00-17NH",
+        "233-379NF00-17NH"
+      ],
       "product_types": {
         "233-376": "Connector receptacle with shielded DisplayPort coupler (interface: female DisplayPort, both sides)",
         "233-379": "Connector receptacle with DisplayPort to PC tail termination (interface: female DisplayPort)"
@@ -863,9 +1412,24 @@
       "interface": "10G Ethernet / high-speed differential data",
       "connector_type": "dedicated high-speed module/insert package for SuperNine",
       "d38999_relation": "MIL-DTL-38999 Series III type high-speed solution",
-      "use_when": ["user needs 10G Ethernet", "user asks for Cat6A in a D38999-style connector", "user needs high-speed differential data through rugged circular connector", "user needs better SI performance than generic contacts"],
-      "selection_questions": ["What Ethernet speed is required: 1G, 2.5G, 5G, 10G?", "Is Cat6A required?", "What cable type and length are required?", "Do you need plug, receptacle, or cable assembly?", "What environmental rating is required?"],
-      "warnings": ["Use official SpeedMaster catalog/configurator.", "Verify insert, cable, shell, contact, and test data.", "Do not assume compatibility with ordinary D38999 inserts."]
+      "use_when": [
+        "user needs 10G Ethernet",
+        "user asks for Cat6A in a D38999-style connector",
+        "user needs high-speed differential data through rugged circular connector",
+        "user needs better SI performance than generic contacts"
+      ],
+      "selection_questions": [
+        "What Ethernet speed is required: 1G, 2.5G, 5G, 10G?",
+        "Is Cat6A required?",
+        "What cable type and length are required?",
+        "Do you need plug, receptacle, or cable assembly?",
+        "What environmental rating is required?"
+      ],
+      "warnings": [
+        "Use official SpeedMaster catalog/configurator.",
+        "Verify insert, cable, shell, contact, and test data.",
+        "Do not assume compatibility with ordinary D38999 inserts."
+      ]
     },
     {
       "vendor": "PIC Wire",
@@ -873,17 +1437,60 @@
       "interface": "high-speed rugged data",
       "connector_type": "MIL-DTL-38999-style high-speed connector system",
       "d38999_relation": "D38999-style rugged high-speed connector",
-      "use_when": ["user needs rugged high-speed data connector", "user needs shielded high-speed cable solution", "user needs Ethernet-class rugged interconnect"],
-      "selection_questions": ["What exact protocol is required?", "What speed/data rate is required?", "What cable length is required?", "What mating connector/cable assembly is required?", "What environmental rating is required?"],
-      "warnings": ["Verify actual protocol support and test data.", "Verify cable, contacts, shielding, and mating system.", "Do not treat as a generic D38999 insert."]
+      "use_when": [
+        "user needs rugged high-speed data connector",
+        "user needs shielded high-speed cable solution",
+        "user needs Ethernet-class rugged interconnect"
+      ],
+      "selection_questions": [
+        "What exact protocol is required?",
+        "What speed/data rate is required?",
+        "What cable length is required?",
+        "What mating connector/cable assembly is required?",
+        "What environmental rating is required?"
+      ],
+      "warnings": [
+        "Verify actual protocol support and test data.",
+        "Verify cable, contacts, shielding, and mating system.",
+        "Do not treat as a generic D38999 insert."
+      ]
     }
   ],
   "ethernet_category_recommendation": {
     "description": "Guide for selecting Ethernet cable category in D38999-style connectors",
     "categories": [
-      {"category": "Cat5e", "max_speed": "1 Gbps", "max_freq": "100 MHz", "use_when": "1000BASE-T over short runs (<30m) where cost matters", "rugged_families": ["RJFTV (most PNs)", "C-RJFTV5E series", "Glenair SuperNine RJ45 basic"]},
-      {"category": "Cat6", "max_speed": "1 Gbps (10G up to 55m)", "max_freq": "250 MHz", "use_when": "1000BASE-T with margin, or 10GBASE-T short runs", "rugged_families": ["RJFTV Cat6 variants", "Glenair SuperNine RJ45 Cat6"]},
-      {"category": "Cat6A", "max_speed": "10 Gbps", "max_freq": "500 MHz", "use_when": "10GBASE-T full distance (100m), high-reliability critical links", "rugged_families": ["RJFTV Cat6A variants (verify PN)", "Glenair SuperNine RJ45 Cat6A", "Glenair SpeedMaster 10G"]}
+      {
+        "category": "Cat5e",
+        "max_speed": "1 Gbps",
+        "max_freq": "100 MHz",
+        "use_when": "1000BASE-T over short runs (<30m) where cost matters",
+        "rugged_families": [
+          "RJFTV (most PNs)",
+          "C-RJFTV5E series",
+          "Glenair SuperNine RJ45 basic"
+        ]
+      },
+      {
+        "category": "Cat6",
+        "max_speed": "1 Gbps (10G up to 55m)",
+        "max_freq": "250 MHz",
+        "use_when": "1000BASE-T with margin, or 10GBASE-T short runs",
+        "rugged_families": [
+          "RJFTV Cat6 variants",
+          "Glenair SuperNine RJ45 Cat6"
+        ]
+      },
+      {
+        "category": "Cat6A",
+        "max_speed": "10 Gbps",
+        "max_freq": "500 MHz",
+        "use_when": "10GBASE-T full distance (100m), high-reliability critical links",
+        "rugged_families": [
+          "RJFTV Cat6A variants (verify PN)",
+          "Glenair SuperNine RJ45 Cat6A",
+          "Glenair SpeedMaster 10G"
+        ]
+      }
     ],
     "selection_rules": [
       "For 100 Mbps: Cat5e is sufficient",
