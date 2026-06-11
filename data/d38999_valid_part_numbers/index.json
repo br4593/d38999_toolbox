@@ -1,0 +1,122 @@
+{
+  "schema_version": "2026-05-20",
+  "generated_at": "2026-06-11T05:58:24Z",
+  "description": "Unified database of valid MIL D38999 part numbers built from all PN-bearing JSON datasets in the repository.",
+  "inputs": {
+    "manufacturerVerified": "data/d38999_verified_part_numbers.json",
+    "catalogExamples": "data/d38999_part_number_examples.json",
+    "federalConnectors": "data/d38999_federalconnectors_secondary_source.json",
+    "qplFiles": [
+      "qpl_1122_part_details.json"
+    ]
+  },
+  "summary": {
+    "uniquePartNumbers": 37030,
+    "sourceCounts": {
+      "manufacturerVerified": 3,
+      "catalogExample": 3,
+      "federalConnectorsExact": 35243,
+      "federalConnectorsImportable": 35243,
+      "qpl": 6017,
+      "qplQualified": 6017
+    },
+    "partsWithNsn": 6017,
+    "partsWithQualifiedSource": 6017,
+    "evidenceLevelCounts": {
+      "manufacturer_verified_exact": 3,
+      "qpl_and_secondary_exact": 4227,
+      "qpl_qualified_source": 1787,
+      "secondary_exact_supported": 31013
+    },
+    "qplFiles": [
+      "qpl_1122_part_details.json"
+    ],
+    "environmentTagCounts": {
+      "aerospace_general": 36858,
+      "aircraft_fixed_wing": 36858,
+      "coastal": 20496,
+      "desert_dust": 36858,
+      "fuel_oil_hydraulic_exposure": 36858,
+      "high_emi_rfi": 36855,
+      "high_shock": 36858,
+      "high_temperature": 19523,
+      "high_vibration": 36858,
+      "industrial": 36858,
+      "land_general": 36858,
+      "land_military": 36858,
+      "land_vehicle": 36858,
+      "low_temperature": 36858,
+      "marine_above_deck": 20496,
+      "outdoor_exposed": 26374,
+      "salt_fog": 20496,
+      "sealed_weatherproof": 36858,
+      "space": 885,
+      "vacuum": 10454
+    }
+  },
+  "environment_filter_definitions": [
+    {
+      "filter_name": "Land",
+      "filter_key": "land",
+      "matches_tags": [
+        "land_general",
+        "land_vehicle",
+        "land_military",
+        "desert_dust",
+        "high_vibration"
+      ]
+    },
+    {
+      "filter_name": "Sea / Marine",
+      "filter_key": "sea",
+      "matches_tags": [
+        "marine_above_deck",
+        "marine_below_deck",
+        "salt_fog",
+        "coastal",
+        "sealed_weatherproof"
+      ]
+    },
+    {
+      "filter_name": "Air / Aerospace",
+      "filter_key": "air",
+      "matches_tags": [
+        "aerospace_general",
+        "aircraft_fixed_wing",
+        "aircraft_rotary_wing",
+        "uav",
+        "high_vibration",
+        "high_emi_rfi"
+      ]
+    },
+    {
+      "filter_name": "Space / Vacuum",
+      "filter_key": "space",
+      "matches_tags": [
+        "space",
+        "vacuum"
+      ]
+    },
+    {
+      "filter_name": "Industrial",
+      "filter_key": "industrial",
+      "matches_tags": [
+        "industrial",
+        "outdoor_exposed",
+        "high_temperature",
+        "low_temperature",
+        "fuel_oil_hydraulic_exposure"
+      ]
+    }
+  ],
+  "_sharding": {
+    "array_key": "partNumbers",
+    "record_count": 37030,
+    "shard_count": 2,
+    "max_shard_bytes": 44040192,
+    "shards": [
+      "part_numbers_001.json",
+      "part_numbers_002.json"
+    ]
+  }
+}

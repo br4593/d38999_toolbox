@@ -35,6 +35,9 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from dataset_io import load_dataset  # noqa: E402
+
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 APP = ROOT / "app"
@@ -573,7 +576,7 @@ def main() -> int:
     family_svg_map = parse_family_svg_map(APP / "converter.js")
     rugged_json = load_json(DATA / "rugged_io_d38999_style_connectors.json")
     rules = load_json(DATA / "part_number_rules.json")
-    valid = load_json(DATA / "d38999_valid_part_numbers.json")
+    valid = load_dataset(DATA / "d38999_valid_part_numbers.json")
     catalog = load_json(DATA / "d38999_catalog_supported_combinations.json")
     verified = load_json(DATA / "d38999_verified_part_numbers.json")
 

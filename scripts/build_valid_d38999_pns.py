@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from d38999_environment import build_environment_outputs, ENVIRONMENT_FILTER_DEFINITIONS
+from dataset_io import write_sharded_dataset
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -398,13 +399,16 @@ def main() -> None:
     output_path = Path(args.output).resolve()
     environment_output_path = Path(args.environment_output).resolve()
     payload, environment_report = build_outputs()
-    output_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    environment_output_path.write_text(
-        json.dumps(environment_report, ensure_ascii=False, separators=(",", ":")) + "\n",
-        encoding="utf-8",
+    # These datasets exceed GitHub's 50 MiB warning / 100 MiB hard limit, so they
+    # are written as size-bounded shard directories (see scripts/dataset_io.py).
+    output_dir = write_sharded_dataset(
+        output_path, payload, "partNumbers", indent=2
     )
-    print(f"Wrote {payload['summary']['uniquePartNumbers']} unified valid D38999 part numbers to {output_path}")
-    print(f"Wrote {len(environment_report['connector_records'])} environment-classified connector records to {environment_output_path}")
+    environment_output_dir = write_sharded_dataset(
+        environment_output_path, environment_report, "connector_records"
+    )
+    print(f"Wrote {payload['summary']['uniquePartNumbers']} unified valid D38999 part numbers to {output_dir}/")
+    print(f"Wrote {len(environment_report['connector_records'])} environment-classified connector records to {environment_output_dir}/")
 
 
 if __name__ == "__main__":

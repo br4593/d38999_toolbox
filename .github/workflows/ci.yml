@@ -38,6 +38,40 @@ jobs:
               print(f"ok    {rel}")
           PY
 
+      - name: Verify sharded datasets reassemble and stay under size limits
+        shell: bash
+        run: |
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from dataset_io import load_dataset
+          datasets = {
+              "data/d38999_valid_part_numbers.json": "partNumbers",
+              "data/d38999_environment_classification.json": "connector_records",
+          }
+          for logical, array_key in datasets.items():
+              obj = load_dataset(Path(logical))
+              assert array_key in obj and obj[array_key], f"{logical}: missing {array_key}"
+              assert "_sharding" not in obj, f"{logical}: shard meta leaked"
+              print(f"ok    {logical} -> {len(obj[array_key])} {array_key}")
+          PY
+
+      - name: Verify no tracked file exceeds GitHub's 50 MiB warning
+        shell: bash
+        run: |
+          limit=$((50 * 1024 * 1024))
+          fail=0
+          while IFS= read -r f; do
+              [ -f "$f" ] || continue
+              size=$(stat -c%s "$f")
+              if [ "$size" -gt "$limit" ]; then
+                  echo "TOO BIG ($size bytes): $f"
+                  fail=1
+              fi
+          done < <(git ls-files)
+          test "$fail" -eq 0 && echo "ok    all tracked files <= 50 MiB"
+
       - name: Verify converter module imports
         run: |
           python - <<'PY'

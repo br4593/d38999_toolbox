@@ -1,0 +1,73 @@
+{
+  "report_format": "compact_audit_v1",
+  "report_notes": "Per-profile evidence quotes are omitted from this checked-in audit report to keep repository artifacts under GitHub's file-size limit. Supporting evidence remains encoded in scripts/d38999_environment.py and the cited source documents.",
+  "environment_filter_definitions": [
+    {
+      "filter_name": "Land",
+      "filter_key": "land",
+      "matches_tags": [
+        "land_general",
+        "land_vehicle",
+        "land_military",
+        "desert_dust",
+        "high_vibration"
+      ]
+    },
+    {
+      "filter_name": "Sea / Marine",
+      "filter_key": "sea",
+      "matches_tags": [
+        "marine_above_deck",
+        "marine_below_deck",
+        "salt_fog",
+        "coastal",
+        "sealed_weatherproof"
+      ]
+    },
+    {
+      "filter_name": "Air / Aerospace",
+      "filter_key": "air",
+      "matches_tags": [
+        "aerospace_general",
+        "aircraft_fixed_wing",
+        "aircraft_rotary_wing",
+        "uav",
+        "high_vibration",
+        "high_emi_rfi"
+      ]
+    },
+    {
+      "filter_name": "Space / Vacuum",
+      "filter_key": "space",
+      "matches_tags": [
+        "space",
+        "vacuum"
+      ]
+    },
+    {
+      "filter_name": "Industrial",
+      "filter_key": "industrial",
+      "matches_tags": [
+        "industrial",
+        "outdoor_exposed",
+        "high_temperature",
+        "low_temperature",
+        "fuel_oil_hydraulic_exposure"
+      ]
+    }
+  ],
+  "_sharding": {
+    "array_key": "connector_records",
+    "record_count": 37030,
+    "shard_count": 6,
+    "max_shard_bytes": 44040192,
+    "shards": [
+      "connector_records_001.json",
+      "connector_records_002.json",
+      "connector_records_003.json",
+      "connector_records_004.json",
+      "connector_records_005.json",
+      "connector_records_006.json"
+    ]
+  }
+}

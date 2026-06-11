@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from build_valid_d38999_pns import build_outputs
+from dataset_io import load_dataset
 from d38999_environment import (
     CLASS_DEFINITIONS,
     CONTACT_STYLE_DEFINITIONS,
@@ -89,8 +90,8 @@ def validate_source_inventory() -> set[str]:
 
 
 def compare_checked_in_outputs(generated_valid: dict[str, Any], generated_report: dict[str, Any]) -> None:
-    checked_in_valid = load_json(VALID_DATA_PATH)
-    checked_in_report = load_json(ENVIRONMENT_REPORT_PATH)
+    checked_in_valid = load_dataset(VALID_DATA_PATH)
+    checked_in_report = load_dataset(ENVIRONMENT_REPORT_PATH)
 
     ensure(generated_valid.get("schema_version") == checked_in_valid.get("schema_version"), "Schema version drift detected in valid PN dataset.")
     ensure(generated_valid.get("description") == checked_in_valid.get("description"), "Valid PN dataset description drift detected.")

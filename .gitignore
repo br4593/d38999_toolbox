@@ -44,15 +44,17 @@ data/.cache/
 app_static/
 text/
 data/svg/
-data/insert_arrangements.json
-data/part_number_rules.json
-data/standard_definitions.json
-data/dla_documents.json
-data/review_needed.json
 
 # Duplicate of MIL-DTL-38999-dtl38999.pdf; keep only the canonical name.
-docs/pdfs/dtl38999.pdf
+docs/pdfs/specs/dtl38999.pdf
+# Large generated datasets are checked in as size-bounded shard directories
+# (data/<name>/index.json + <array>_NNN.json, each < 50 MiB) rather than as one
+# monolithic file. Ignore only the legacy single-file form so a stray rebuild of
+# the old layout is never committed; the data/<name>/ shard dirs ARE tracked.
+# Regenerate the shards with: python scripts/build_valid_d38999_pns.py
 data/d38999_environment_classification.json
 data/d38999_valid_part_numbers.json
+# app/app-data.js is a pure build artifact rebuilt from data/ by scripts/build_app.py
+# (CI/Pages regenerates it on every push), so it is intentionally not committed.
 app/app-data.js
 app/data/d38999_valid_part_numbers.json

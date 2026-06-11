@@ -73,6 +73,7 @@ TEXT = ROOT / "text"
 
 sys.path.insert(0, str(SCRIPTS))
 from d38999_rules import RULES, convert_pin, parse_d38999_pin  # noqa: E402
+from dataset_io import load_dataset  # noqa: E402
 
 SWEEP_SAMPLE = 1500  # number of valid PNs swept unless --full
 
@@ -318,7 +319,7 @@ def rule_for_candidate(candidate: dict) -> dict | None:
 
 def check_catalog_sweep(report: Report, full: bool) -> dict[str, int]:
     report.section("Catalog-grounded sweep (data/d38999_valid_part_numbers.json)")
-    db = load_json(DATA / "d38999_valid_part_numbers.json")
+    db = load_dataset(DATA / "d38999_valid_part_numbers.json")
     entries = db["partNumbers"]
     pns: list[str] = []
     seen: set[str] = set()

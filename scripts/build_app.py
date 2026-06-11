@@ -20,6 +20,8 @@ import shutil
 import sys
 from pathlib import Path
 
+from dataset_io import dataset_exists, load_dataset
+
 # DATA_FILES lists the canonical data/ sources the embedded bundle is built from;
 # it is used only as a presence check (every source must exist before embedding).
 # The full environment audit (d38999_environment_classification.json) stays in data/
@@ -75,7 +77,7 @@ def build(project_root: Path) -> Path:
     if not svg_dir.exists():
         raise FileNotFoundError(f"Missing assets/svg/ directory at {svg_dir}")
 
-    missing = [name for name in DATA_FILES if not (data_dir / name).exists()]
+    missing = [name for name in DATA_FILES if not dataset_exists(data_dir / name)]
     if missing:
         raise FileNotFoundError(
             "Missing data files in data/: "
@@ -125,7 +127,7 @@ def build(project_root: Path) -> Path:
             "extractedRules": read_json(data_dir / "d38999_extracted_rules.json"),
             "partNumberExamples": read_json(data_dir / "d38999_part_number_examples.json"),
             "catalogSupportedCombinations": read_json(data_dir / "d38999_catalog_supported_combinations.json"),
-            "validPartNumbers": read_json(data_dir / "d38999_valid_part_numbers.json"),
+            "validPartNumbers": load_dataset(data_dir / "d38999_valid_part_numbers.json"),
             "verifiedPartNumbers": read_json(data_dir / "d38999_verified_part_numbers.json"),
             "federalConnectorsSecondarySource": read_json(data_dir / "d38999_federalconnectors_secondary_source.json"),
             "visualAssets": read_json(data_dir / "d38999_visual_assets.json"),
