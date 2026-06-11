@@ -77,6 +77,16 @@
     return String(value || "").replace(/-/g, "");
   }
 
+  function esc(value) {
+    return String(value == null ? "" : value).replace(/[&<>"']/g, (ch) => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    }[ch]));
+  }
+
   function parseShellInsertContactKey(tail) {
     for (const shellNumber of numericShellSizes) {
       if (!tail.startsWith(shellNumber)) continue;
@@ -755,23 +765,23 @@
       block.className = "result-block rugged-io-result";
       block.innerHTML = `
         <div class="rugged-io-header">
-          <h3 class="rugged-io-family">${info.family}</h3>
-          <span class="rugged-io-type">${info.connector_type}</span>
+          <h3 class="rugged-io-family">${esc(info.family)}</h3>
+          <span class="rugged-io-type">${esc(info.connector_type)}</span>
         </div>
         <dl class="decode-grid">
-          <div><dt>Input</dt><dd>${info.input}</dd></div>
-          <div><dt>Vendor</dt><dd>${info.vendor}</dd></div>
-          <div><dt>Family</dt><dd>${info.family}</dd></div>
-          <div><dt>Interface</dt><dd>${info.interface}</dd></div>
-          <div><dt>Shell Size</dt><dd>${info.shell_size}</dd></div>
-          <div><dt>D38999 Relation</dt><dd>${info.d38999_relation}</dd></div>
-          ${info.mounting_type ? `<div><dt>Mounting</dt><dd>${info.mounting_type}</dd></div>` : ""}
-          ${info.suffix ? `<div><dt>Suffix/Config</dt><dd>${info.suffix}</dd></div>` : ""}
+          <div><dt>Input</dt><dd>${esc(info.input)}</dd></div>
+          <div><dt>Vendor</dt><dd>${esc(info.vendor)}</dd></div>
+          <div><dt>Family</dt><dd>${esc(info.family)}</dd></div>
+          <div><dt>Interface</dt><dd>${esc(info.interface)}</dd></div>
+          <div><dt>Shell Size</dt><dd>${esc(info.shell_size)}</dd></div>
+          <div><dt>D38999 Relation</dt><dd>${esc(info.d38999_relation)}</dd></div>
+          ${info.mounting_type ? `<div><dt>Mounting</dt><dd>${esc(info.mounting_type)}</dd></div>` : ""}
+          ${info.suffix ? `<div><dt>Suffix/Config</dt><dd>${esc(info.suffix)}</dd></div>` : ""}
         </dl>
-        <div class="rugged-io-note">${info.note}</div>
+        <div class="rugged-io-note">${esc(info.note)}</div>
         <div class="rugged-io-svg">
-          ${faceSvg ? `<img src="assets/svg/${faceSvg}" alt="${info.family} face" style="max-width:100px;max-height:100px;opacity:0.8"/>` : ""}
-          ${mountSvg ? `<img src="assets/svg/${mountSvg}" alt="${info.family} profile" style="max-width:160px;max-height:80px;opacity:0.7;margin-left:12px"/>` : ""}
+          ${faceSvg ? `<img src="assets/svg/${esc(faceSvg)}" alt="${esc(info.family)} face" style="max-width:100px;max-height:100px;opacity:0.8"/>` : ""}
+          ${mountSvg ? `<img src="assets/svg/${esc(mountSvg)}" alt="${esc(info.family)} profile" style="max-width:160px;max-height:80px;opacity:0.7;margin-left:12px"/>` : ""}
         </div>
       `;
       panel.appendChild(block);

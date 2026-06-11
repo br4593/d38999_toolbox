@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="app.title">D38999 Toolbox</title>
-  <link rel="stylesheet" href="styles.css?v=d38999-darkfix3">
+  <link rel="stylesheet" href="styles.css?v=d38999-gauge-side">
   <script>
     // Resolve style before first paint to avoid a flash.
     (function () {
@@ -237,12 +237,21 @@
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="3.4" fill="currentColor"/></svg>
                 <span data-i18n="viewer.viewMode.real">Real</span>
               </button>
+              <button id="viewModeSideBtn" type="button" class="view-mode-btn" data-mode="side" aria-pressed="false" title="Side view — connector body profile and mounting style" data-i18n-title="viewer.viewMode.sideTitle">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" d="M3 9.5h4v5H3zM7 8h6v8H7zM13 6.5h7v11h-7z"/></svg>
+                <span data-i18n="viewer.viewMode.side">Side</span>
+              </button>
             </div>
             <button id="labelsToggle" type="button" class="pin-labels-toggle" role="switch" aria-checked="false" data-state="off" data-i18n-title="viewer.pinLabels" title="Pin labels">
               <span class="pin-labels-toggle-label" data-i18n="viewer.pinLabels">Pin labels</span>
               <span class="pin-labels-toggle-state" data-state-on data-i18n="viewer.labels.on">ON</span>
               <span class="pin-labels-toggle-state" data-state-off data-i18n="viewer.labels.off">OFF</span>
             </button>
+            <div class="label-size-control" role="group" aria-label="Pin label size" data-i18n-aria="viewer.labelSizeAria">
+              <span class="label-size-caption" data-i18n="viewer.labelSize">Label size</span>
+              <button id="labelSizeDown" type="button" class="label-size-btn" title="Smaller pin labels" aria-label="Smaller pin labels" data-i18n-title="viewer.labelSizeDown" data-i18n-aria="viewer.labelSizeDown"><span class="label-size-glyph label-size-glyph-sm">A</span><span aria-hidden="true">−</span></button>
+              <button id="labelSizeUp" type="button" class="label-size-btn" title="Larger pin labels" aria-label="Larger pin labels" data-i18n-title="viewer.labelSizeUp" data-i18n-aria="viewer.labelSizeUp"><span class="label-size-glyph label-size-glyph-lg">A</span><span aria-hidden="true">+</span></button>
+            </div>
             <label class="check"><input id="outlineToggle" type="checkbox" checked> <span data-i18n="viewer.outline">Outline</span></label>
             <button id="resetViewButton" type="button" data-i18n="viewer.resetView">Reset view</button>
           </div>
@@ -532,8 +541,8 @@
   </dialog>
 
   <script src="app-data.js"></script>
-  <script src="i18n.js?v=d38999-realview"></script>
-  <script src="app.js?v=d38999-realview"></script>
+  <script src="i18n.js?v=d38999-gauge-side"></script>
+  <script src="app.js?v=d38999-gauge-side"></script>
   <script src="converter.js?v=sprint-c-2"></script>
 </body>
 </html>

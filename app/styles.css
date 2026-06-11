@@ -1056,6 +1056,55 @@ body.is-home .header-home-button {
   color: #ffffff;
 }
 
+/* Pin-label size stepper — lets the user enlarge/shrink the pin-name text and
+   the hover label bubble in the connector viewer. */
+.label-size-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 6px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.label-size-caption {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  opacity: 0.85;
+  margin-right: 2px;
+}
+
+.label-size-btn {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1px;
+  min-width: 30px;
+  padding: 3px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm, 6px);
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.label-size-btn:hover { background: var(--surface-3); }
+.label-size-btn:focus-visible { outline: 2px solid var(--accent, #3b82f6); outline-offset: 2px; }
+
+.label-size-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.label-size-glyph { font-weight: 800; }
+.label-size-glyph-sm { font-size: 11px; }
+.label-size-glyph-lg { font-size: 15px; }
+
 .inline-row {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -1281,6 +1330,84 @@ body.is-home .header-home-button {
   color: var(--muted, #6b7280);
 }
 
+/* Decoder side-profile view ------------------------------------------- */
+.side-view-layer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(45, 110, 200, 0.06), transparent 60%),
+    var(--diagram-paper);
+}
+
+.side-view-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  max-width: 520px;
+  width: 100%;
+}
+
+.side-view-art {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  color: var(--ink);
+}
+
+.side-view-art .shell-profile-svg {
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+  color: inherit;
+}
+
+.side-view-art .side-view-asset {
+  width: 100%;
+  max-width: 460px;
+  max-height: 340px;
+  height: auto;
+  object-fit: contain;
+}
+
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .side-view-art .side-view-asset {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+.side-view-caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.side-view-style {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.side-view-sheet {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.side-view-empty {
+  padding: 40px 28px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-lg, 12px);
+  color: var(--muted);
+  font-size: 0.95rem;
+  max-width: 360px;
+  text-align: center;
+}
+
 /* Rugged I/O multi-view switcher + figures --------------------------- */
 
 .rugged-view-switcher {
@@ -1493,6 +1620,11 @@ body.is-home .header-home-button {
   stroke-width: .55;
   vector-effect: non-scaling-stroke;
 }
+
+/* True-to-life polarizing keys / keyways. Drawn for every view but only
+   revealed in the real view (see [data-view="real"] rules below), where the
+   plug shows raised keys and the receptacle shows recessed keyways. */
+.connector-svg .keying-real { display: none; }
 
 .pin-hit-area { fill: transparent; cursor: crosshair; }
 
@@ -3473,9 +3605,6 @@ body.is-home .header-home-button {
 @media (max-width: 820px) {
   .app-header { height: auto; align-items: flex-start; flex-direction: column; }
   .header-search { order: 3; width: 100%; max-width: none; flex-basis: auto; }
-@media (max-width: 700px) {
-  .decoded-visual-strip { grid-template-columns: 1fr; }
-}
   .home-panel { padding: 14px 12px 24px; }
   .home-hero,
   .home-task-grid,
@@ -3498,6 +3627,10 @@ body.is-home .header-home-button {
   .decode-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .result-title-row { display: grid; }
   .top-tabs { overflow-x: auto; padding: 10px 12px 0; }
+}
+
+@media (max-width: 700px) {
+  .decoded-visual-strip { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 540px) {
@@ -6453,6 +6586,20 @@ dialog.batch-report-dialog::backdrop {
   stroke: none;
   pointer-events: none;
 }
+/* Female socket: recessed gold sleeve with a dark entry bore (depth via gradient). */
+.connector-svg[data-view="real"] .pin-contact-socket-bore {
+  fill: url(#socketBoreGrad);
+  stroke: rgba(0, 0, 0, 0.55);
+  stroke-width: 0.4;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+/* Male pin: specular highlight that reads as a raised, domed contact tip. */
+.connector-svg[data-view="real"] .pin-contact-highlight {
+  fill: rgba(255, 248, 220, 0.5);
+  stroke: none;
+  pointer-events: none;
+}
 .connector-svg[data-view="real"] .pin-symbol { filter: none; }
 .connector-svg[data-view="real"] .pin:hover .pin-contact-real,
 .connector-svg[data-view="real"] .pin.selected .pin-contact-real {
@@ -6466,10 +6613,39 @@ dialog.batch-report-dialog::backdrop {
 }
 /* Hide engineering-only guides in real view. */
 .connector-svg[data-view="real"] .insert-boundary,
-.connector-svg[data-view="real"] .guide-path,
 .connector-svg[data-view="real"] .keying-reference-ring,
 .connector-svg[data-view="real"] .keying-spoke {
   display: none;
+}
+
+/* Keep the layout-zone separation lines in real view, drawn in white so they
+   read against the dark dielectric insert face. */
+.connector-svg[data-view="real"] .guide-path {
+  stroke: rgba(255, 255, 255, 0.8);
+}
+
+/* Real view: show true-to-life keys/keyways and drop the schematic markers
+   once the shell role (plug vs receptacle) is known. Plug = raised polarizing
+   key (metal tab past the rim); receptacle = recessed keyway (dark slot cut
+   into the rim). Same angular positions per FIGURE 6 of MIL-DTL-38999. */
+.connector-svg[data-view="real"] .keying-drawing[data-role="plug"] .minor-keyway,
+.connector-svg[data-view="real"] .keying-drawing[data-role="receptacle"] .minor-keyway {
+  display: none;
+}
+.connector-svg[data-view="real"] .keying-drawing[data-role="plug"] .keying-real-key {
+  display: inline;
+  fill: var(--shell-tint);
+  stroke: var(--shell-stroke);
+  stroke-width: 0.7;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0.5px 0.6px rgba(0, 0, 0, 0.4));
+}
+.connector-svg[data-view="real"] .keying-drawing[data-role="receptacle"] .keying-real-keyway {
+  display: inline;
+  fill: url(#socketBoreGrad);
+  stroke: rgba(0, 0, 0, 0.55);
+  stroke-width: 0.5;
+  vector-effect: non-scaling-stroke;
 }
 
 /* --- Sprint C polish ---------------------------------------------------- */

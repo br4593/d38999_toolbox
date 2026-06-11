@@ -109,6 +109,7 @@
     ruggedView: null,
     ruggedViewFamily: null,
     viewMode: "engineering",
+    labelScale: 1,
   };
 
   const EXACT_VALIDATION_STATUSES = new Set(["EXACT_PN_MATCH", "VERIFIED_EXISTS", "SECONDARY_SOURCE_EXACT"]);
@@ -251,7 +252,7 @@
     plug: "assets/svg/conesys-d38999-26-straight-plug.svg",
     wall_receptacle: "assets/svg/conesys-d38999-20-wall-mount-receptacle.svg",
     jamnut_receptacle: "assets/svg/conesys-d38999-24-jam-nut-receptacle.svg",
-    box_receptacle: "assets/svg/d38999-receptacle-generic.svg",
+    box_receptacle: "assets/svg/d38999-box-mount-receptacle.svg",
     cover: "assets/svg/conesys-d38999-33-cover.svg",
     inline_receptacle: "assets/svg/d38999-inline-receptacle.svg",
   };
@@ -301,6 +302,9 @@
     outlineToggle: $("outlineToggle"),
     viewModeEngBtn: $("viewModeEngBtn"),
     viewModeRealBtn: $("viewModeRealBtn"),
+    viewModeSideBtn: $("viewModeSideBtn"),
+    labelSizeDown: $("labelSizeDown"),
+    labelSizeUp: $("labelSizeUp"),
     resetViewButton: $("resetViewButton"),
     viewerReportButton: $("viewerReportButton"),
     viewerReportBadge: $("viewerReportBadge"),
@@ -1733,7 +1737,11 @@
     els.outlineToggle.addEventListener("change", renderViewer);
     if (els.viewModeEngBtn) els.viewModeEngBtn.addEventListener("click", () => setViewMode("engineering"));
     if (els.viewModeRealBtn) els.viewModeRealBtn.addEventListener("click", () => setViewMode("real"));
+    if (els.viewModeSideBtn) els.viewModeSideBtn.addEventListener("click", () => setViewMode("side"));
     initViewMode();
+    if (els.labelSizeDown) els.labelSizeDown.addEventListener("click", () => stepLabelScale(-LABEL_SCALE_STEP));
+    if (els.labelSizeUp) els.labelSizeUp.addEventListener("click", () => stepLabelScale(LABEL_SCALE_STEP));
+    initLabelScale();
     els.resetViewButton.addEventListener("click", resetView);
     els.pinSearchInput.addEventListener("input", searchPin);
     document.querySelectorAll("[data-gauge-filter]").forEach((button) => {
@@ -2912,6 +2920,11 @@
     const arr = state.selectedArrangement;
     if (!arr) return;
     clearRuggedIoViewer();
+    if (state.viewMode === "side") {
+      renderSideView(arr);
+      return;
+    }
+    clearSideView();
     const svg = els.connectorSvg;
     svg.innerHTML = "";
     svg.setAttribute("class", "connector-svg");
@@ -2941,10 +2954,24 @@
         <stop offset="0%" stop-color="rgba(255,255,255,0.55)"/>
         <stop offset="45%" stop-color="rgba(255,255,255,0.10)"/>
         <stop offset="100%" stop-color="rgba(0,0,0,0.24)"/>
+      </radialGradient>
+      <radialGradient id="socketBoreGrad" cx="42%" cy="40%" r="62%">
+        <stop offset="0%" stop-color="#05080c"/>
+        <stop offset="55%" stop-color="#101b27"/>
+        <stop offset="100%" stop-color="#26323f"/>
       </radialGradient>`;
     svg.appendChild(defs);
 
     const realView = state.viewMode === "real";
+    const contactGender = currentContactGender(arr);
+    // A socket (female) mating face is the left/right mirror of the pin face.
+    // Mirror it in BOTH the engineering and real views (side view returns early
+    // above) so the two faces read identically and don't confuse the reader.
+    const mirror = Boolean(arr.outline) && contactGender === "socket";
+    svg.dataset.gender = contactGender;
+    svg.dataset.mirrored = mirror ? "true" : "false";
+    const faceGroup = svgEl("g", { class: "face-content" });
+    if (mirror) faceGroup.setAttribute("transform", `matrix(-1 0 0 1 ${arr.outline.center_x * 2} 0)`);
 
     if (els.outlineToggle.checked && arr.outline) {
       const shell = svgEl("g", { class: "shell-layer" });
@@ -3010,7 +3037,7 @@
       );
       shell.appendChild(orientationMarker(arr));
       shell.appendChild(keyingDrawing(arr));
-      svg.appendChild(shell);
+      faceGroup.appendChild(shell);
     }
 
     if (els.outlineToggle.checked) {
@@ -3018,7 +3045,7 @@
       (arr.guide_paths || []).forEach((path) => {
         guideLayer.appendChild(svgEl("path", { class: "guide-path", d: path.d }));
       });
-      svg.appendChild(guideLayer);
+      faceGroup.appendChild(guideLayer);
     }
 
     const contacts = currentContacts();
@@ -3026,25 +3053,28 @@
       const group = svgEl("g", { class: pinClass(contact), "data-key": contact._key });
       const radius = contactSymbolRadius(contact);
       group.appendChild(svgEl("circle", { class: "pin-hit-area", cx: contact.x, cy: contact.y, r: Math.max(radius + 2.2, 2.6) }));
-      appendContactSymbol(group, contact, radius);
+      appendContactSymbol(group, contact, radius, contactGender);
       if (state.selectedContactIndex === contact._index || state.pinMatches.has(contact._key)) {
         group.appendChild(svgEl("circle", { class: "pin-state-ring", cx: contact.x, cy: contact.y, r: radius + 1.15 }));
       }
       if (shouldRenderLabel(contact)) {
-        group.appendChild(
-          svgEl("text", {
-            class: "pin-label",
-            x: contact.x,
-            y: contact.y,
-            "font-size": labelFontSize(contact),
-          }, contact.label || "")
-        );
+        const labelAttrs = {
+          class: "pin-label",
+          x: contact.x,
+          y: contact.y,
+          "font-size": labelFontSize(contact),
+        };
+        // Counter-flip the glyph so the cavity label stays readable inside the
+        // mirrored socket face.
+        if (mirror) labelAttrs.transform = `matrix(-1 0 0 1 ${contact.x * 2} 0)`;
+        group.appendChild(svgEl("text", labelAttrs, contact.label || ""));
       }
       group.addEventListener("mouseenter", () => showPinTooltip(contact));
       group.addEventListener("mouseleave", hidePinTooltip);
       group.addEventListener("click", () => selectContact(contact._index, true));
-      svg.appendChild(group);
+      faceGroup.appendChild(group);
     });
+    svg.appendChild(faceGroup);
     renderHoverPinLabel(svg, arr);
   }
 
@@ -3052,6 +3082,42 @@
     const decoded = state.decoded;
     if (!decoded?.ok || decoded.arrangement_id !== arr.id) return "";
     return SHELL_PROFILE_TYPE[decoded.slash_sheet] || "";
+  }
+
+  // Resolves the contact gender ("pin" male / "socket" female / "" unknown) for
+  // the connector currently in the viewer. Only trusts the decoded P/N when it
+  // matches the arrangement being drawn, mirroring currentShellFaceType().
+  function currentContactGender(arr) {
+    const decoded = state.decoded;
+    if (!decoded?.ok || !arr || decoded.arrangement_id !== arr.id) return "";
+    const g = normalizeDisplayKey(decoded.contact_definition?.contact_gender || "");
+    if (g === "pin" || g === "socket") return g;
+    const style = String(decoded.contact_style || "").toUpperCase();
+    if (style === "P") return "pin";
+    if (style === "S") return "socket";
+    return "";
+  }
+
+  // Resolves the shell coupling role ("plug" / "receptacle" / "" unknown) for a
+  // decoded part from the cataloged slash-sheet mating role. Drives the real-view
+  // keying geometry: a plug carries raised polarizing KEYS, a receptacle carries
+  // recessed KEYWAYS. The polarization angles (standard_definitions.json columns
+  // AR_or_AP_deg … = "A Receptacle or A Plug degrees") are identical for both.
+  function shellRoleForDecoded(decoded) {
+    if (!decoded?.ok) return "";
+    const role = styleEntryForSlashSheet(decoded.slash_sheet)?.matingRole || "";
+    return role === "plug" || role === "receptacle" ? role : "";
+  }
+
+  // True-to-life: a socket (female) connector's mating face is the mirror image
+  // of the pin (male) face, so flip the drawing left/right in both the
+  // engineering and real face views (never in the side-profile view).
+  function faceIsMirrored(arr) {
+    return state.viewMode !== "side" && Boolean(arr?.outline) && currentContactGender(arr) === "socket";
+  }
+
+  function mirrorFaceX(x, arr) {
+    return faceIsMirrored(arr) ? (arr.outline.center_x * 2 - x) : x;
   }
 
   function shellFaceGeometry(profileType, cx, cy, radius) {
@@ -3255,7 +3321,7 @@
 
   function shouldRenderLabel(contact) {
     if (!labelsAreOn()) return false;
-    return true;
+    return contact._index === state.hoveredContactIndex;
   }
 
   function labelsAreOn() {
@@ -3275,25 +3341,61 @@
   }
 
   function reflectViewModeButtons() {
-    const isReal = state.viewMode === "real";
-    if (els.viewModeEngBtn) els.viewModeEngBtn.setAttribute("aria-pressed", isReal ? "false" : "true");
-    if (els.viewModeRealBtn) els.viewModeRealBtn.setAttribute("aria-pressed", isReal ? "true" : "false");
+    const mode = state.viewMode;
+    if (els.viewModeEngBtn) els.viewModeEngBtn.setAttribute("aria-pressed", mode === "engineering" ? "true" : "false");
+    if (els.viewModeRealBtn) els.viewModeRealBtn.setAttribute("aria-pressed", mode === "real" ? "true" : "false");
+    if (els.viewModeSideBtn) els.viewModeSideBtn.setAttribute("aria-pressed", mode === "side" ? "true" : "false");
   }
 
   function initViewMode() {
     let saved = null;
     try { saved = localStorage.getItem("d38999.viewMode"); } catch (e) { /* ignore */ }
-    state.viewMode = saved === "real" ? "real" : "engineering";
+    state.viewMode = (saved === "real" || saved === "side") ? saved : "engineering";
     reflectViewModeButtons();
   }
 
   function setViewMode(mode) {
-    const next = mode === "real" ? "real" : "engineering";
+    const next = (mode === "real" || mode === "side") ? mode : "engineering";
     if (state.viewMode === next) return;
     state.viewMode = next;
     try { localStorage.setItem("d38999.viewMode", next); } catch (e) { /* storage unavailable */ }
     reflectViewModeButtons();
     renderViewer();
+  }
+
+  const LABEL_SCALE_MIN = 1;
+  const LABEL_SCALE_MAX = 3;
+  const LABEL_SCALE_STEP = 0.25;
+  const LABEL_SCALE_DEFAULT = 1.5;
+
+  function clampLabelScale(value) {
+    const stepped = Math.round(value / LABEL_SCALE_STEP) * LABEL_SCALE_STEP;
+    return Math.min(LABEL_SCALE_MAX, Math.max(LABEL_SCALE_MIN, stepped));
+  }
+
+  function reflectLabelScaleButtons() {
+    if (els.labelSizeDown) els.labelSizeDown.disabled = state.labelScale <= LABEL_SCALE_MIN + 1e-6;
+    if (els.labelSizeUp) els.labelSizeUp.disabled = state.labelScale >= LABEL_SCALE_MAX - 1e-6;
+  }
+
+  function initLabelScale() {
+    let saved = NaN;
+    try { saved = parseFloat(localStorage.getItem("d38999.labelScale")); } catch (e) { /* ignore */ }
+    state.labelScale = clampLabelScale(Number.isFinite(saved) ? saved : LABEL_SCALE_DEFAULT);
+    reflectLabelScaleButtons();
+  }
+
+  function setLabelScale(value) {
+    const next = clampLabelScale(value);
+    if (next === state.labelScale) { reflectLabelScaleButtons(); return; }
+    state.labelScale = next;
+    try { localStorage.setItem("d38999.labelScale", String(next)); } catch (e) { /* storage unavailable */ }
+    reflectLabelScaleButtons();
+    renderViewer();
+  }
+
+  function stepLabelScale(delta) {
+    setLabelScale(state.labelScale + delta);
   }
 
   function gaugeToken(contact) {
@@ -3321,14 +3423,20 @@
     return Math.max(0.5, base * scale);
   }
 
-  function appendContactSymbol(group, contact, radius) {
+  function appendContactSymbol(group, contact, radius, gender) {
     const token = gaugeToken(contact);
     if (state.viewMode === "real") {
-      // True-color contacts: gold pads (copper alloy, gold plate per M39029),
-      // with a dark bore for the size-8 coax/power contacts.
+      // True-color contacts: gold pads (copper alloy, gold plate per M39029).
+      // Distinguish female sockets (recessed entry bore) from male pins (domed,
+      // highlighted tip); fall back to the neutral pad when gender is unknown.
       group.appendChild(svgEl("circle", { class: "pin-symbol pin-contact-real", cx: contact.x, cy: contact.y, r: radius }));
-      if (token === "8") {
+      if (gender === "socket") {
+        const boreR = radius * (token === "8" ? 0.52 : 0.46);
+        group.appendChild(svgEl("circle", { class: "pin-contact-socket-bore", cx: contact.x, cy: contact.y, r: boreR }));
+      } else if (token === "8") {
         group.appendChild(svgEl("circle", { class: "pin-contact-bore", cx: contact.x, cy: contact.y, r: radius * 0.42 }));
+      } else if (gender === "pin") {
+        group.appendChild(svgEl("circle", { class: "pin-contact-highlight", cx: contact.x - radius * 0.3, cy: contact.y - radius * 0.32, r: radius * 0.34 }));
       }
       return;
     }
@@ -3417,6 +3525,12 @@
     const cy = outline.center_y;
     const radius = outline.radius;
     const markerRadius = radius * 0.98;
+    // Real hardware: a plug carries raised polarizing KEYS, a receptacle carries
+    // recessed KEYWAYS — same angular positions, opposite relief. Tag the group
+    // so the real view can render the matching feature (CSS in styles.css).
+    const role = shellRoleForDecoded(decoded);
+    group.dataset.role = role || "unknown";
+    const featureWord = role === "plug" ? "keys" : role === "receptacle" ? "keyways" : "key/keyway";
     const markers = [
       ["A", pol.AR_or_AP_deg],
       ["B", pol.BR_or_BP_deg],
@@ -3424,7 +3538,7 @@
       ["D", pol.DR_or_DP_deg],
     ].filter(([, angle]) => Number.isFinite(Number(angle)));
 
-    group.appendChild(svgEl("title", {}, `Series III keying ${decoded.polarization}: ${pol.description || "selected polarization"}`));
+    group.appendChild(svgEl("title", {}, `Series III ${featureWord} ${decoded.polarization}: ${pol.description || "selected polarization"}`));
     group.appendChild(svgEl("circle", {
       class: "keying-reference-ring",
       cx,
@@ -3443,6 +3557,7 @@
         x2: outer.x,
         y2: outer.y,
       }));
+      // Engineering schematic marker (shown in the engineering view).
       group.appendChild(svgEl("rect", {
         class: "minor-keyway",
         x: point.x - radius * 0.018,
@@ -3451,6 +3566,28 @@
         height: radius * 0.17,
         rx: radius * 0.012,
         transform: `rotate(${angle} ${point.x} ${point.y})`,
+      }));
+      // True-to-life keyway recess (receptacle) — a slot cut into the rim band.
+      const keywayPt = polarPoint(cx, cy, radius * 0.93, angle);
+      group.appendChild(svgEl("rect", {
+        class: "keying-real keying-real-keyway",
+        x: keywayPt.x - radius * 0.026,
+        y: keywayPt.y - radius * 0.1,
+        width: radius * 0.052,
+        height: radius * 0.2,
+        rx: radius * 0.016,
+        transform: `rotate(${angle} ${keywayPt.x} ${keywayPt.y})`,
+      }));
+      // True-to-life polarizing key (plug) — a raised tab past the shell edge.
+      const keyPt = polarPoint(cx, cy, radius * 1.055, angle);
+      group.appendChild(svgEl("rect", {
+        class: "keying-real keying-real-key",
+        x: keyPt.x - radius * 0.034,
+        y: keyPt.y - radius * 0.08,
+        width: radius * 0.068,
+        height: radius * 0.16,
+        rx: radius * 0.014,
+        transform: `rotate(${angle} ${keyPt.x} ${keyPt.y})`,
       }));
     });
 
@@ -3501,9 +3638,10 @@
     const radius = pinRadius(contact);
     const n = state.selectedArrangement?.contact_count || currentContacts().length || 1;
     const densityScale = n > 80 ? 1.05 : n > 30 ? 1.2 : 1.45;
-    if (labelLength >= 3) return Math.max(0.85, radius * densityScale * 0.75);
-    if (labelLength === 2) return Math.max(0.9, radius * densityScale * 0.9);
-    return Math.max(0.95, radius * densityScale);
+    const scale = state.labelScale || 1;
+    if (labelLength >= 3) return Math.max(0.85, radius * densityScale * 0.75) * scale;
+    if (labelLength === 2) return Math.max(0.9, radius * densityScale * 0.9) * scale;
+    return Math.max(0.95, radius * densityScale) * scale;
   }
 
   function svgEl(name, attributes, text) {
@@ -3531,20 +3669,25 @@
   function renderHoverPinLabel(svg, arr) {
     const contact = currentContacts()[state.hoveredContactIndex];
     if (!contact || !arr.outline) return;
+    // The tooltip sits in unmirrored coordinates, so anchor it to the contact's
+    // on-screen position (mirrored for the socket real-view face).
+    const contactX = mirrorFaceX(contact.x, arr);
     const text = contact.label && contact.label !== "?" ? contact.label : `Pin ${contact._index + 1}`;
     const detail = `#${contact.size || "?"}`;
     const radius = pinRadius(contact);
-    const width = Math.max(text.length * radius * 1.2, radius * 7.2);
-    const height = radius * 4.1;
+    const scale = state.labelScale || 1;
+    const lr = radius * scale;
+    const width = Math.max(text.length * lr * 1.2, lr * 7.2);
+    const height = lr * 4.1;
     const viewBox = state.viewBox || connectorBaseViewBox(arr);
     const [viewX, viewY, viewWidth, viewHeight] = viewBox;
-    const padding = Math.max(radius * 1.2, 1.8);
-    let x = contact.x + radius * 2.3;
+    const padding = Math.max(lr * 1.2, 1.8);
+    let x = contactX + radius * 2.3;
     let y = contact.y - height - radius * 1.2;
     let placeLeft = false;
     let placeBelow = false;
     if (x + width + padding > viewX + viewWidth) {
-      x = contact.x - width - radius * 2.3;
+      x = contactX - width - radius * 2.3;
       placeLeft = true;
     }
     if (y < viewY + padding) {
@@ -3558,7 +3701,7 @@
     const group = svgEl("g", { class: "hover-pin-label" });
     group.appendChild(svgEl("line", {
       class: "hover-pin-leader",
-      x1: contact.x,
+      x1: contactX,
       y1: contact.y,
       x2: anchorX,
       y2: anchorY,
@@ -3569,19 +3712,19 @@
       y,
       width,
       height,
-      rx: radius * 0.55,
+      rx: lr * 0.55,
     }));
     group.appendChild(svgEl("text", {
       class: "hover-pin-label-name",
-      x: x + radius * 0.95,
-      y: y + radius * 1.55,
-      "font-size": radius * 1.55,
+      x: x + lr * 0.95,
+      y: y + lr * 1.55,
+      "font-size": lr * 1.55,
     }, text));
     group.appendChild(svgEl("text", {
       class: "hover-pin-label-detail",
-      x: x + radius * 0.95,
-      y: y + radius * 3.0,
-      "font-size": radius * 0.95,
+      x: x + lr * 0.95,
+      y: y + lr * 3.0,
+      "font-size": lr * 0.95,
     }, detail));
     svg.appendChild(group);
   }
@@ -3599,7 +3742,8 @@
   function centerOnContact(contact) {
     if (!state.viewBox) return;
     const [, , width, height] = state.viewBox;
-    state.viewBox = [contact.x - width / 2, contact.y - height / 2, width, height];
+    const cx = mirrorFaceX(contact.x, state.selectedArrangement);
+    state.viewBox = [cx - width / 2, contact.y - height / 2, width, height];
     applyViewBox();
   }
 
@@ -4428,6 +4572,57 @@
     const layer = document.getElementById("ruggedFaceLayer");
     if (layer) layer.remove();
     if (els.connectorSvg) els.connectorSvg.style.display = "";
+  }
+
+  function clearSideView() {
+    const layer = document.getElementById("sideViewLayer");
+    if (layer) layer.remove();
+    if (els.connectorSvg) els.connectorSvg.style.display = "";
+  }
+
+  // Side-profile view for standard D38999 connectors. Uses the same artwork as
+  // the printable export side view — the file-based SHELL_PROFILE_ASSET image
+  // (profileAssetForSlashSheet) — falling back to the inline SHELL_PROFILES
+  // schematic only when no asset exists for the resolved profile type.
+  function renderSideView(arr) {
+    const frame = els.viewerFrame;
+    if (!frame) return;
+    if (els.connectorSvg) els.connectorSvg.style.display = "none";
+    let layer = document.getElementById("sideViewLayer");
+    if (!layer) {
+      layer = document.createElement("div");
+      layer.id = "sideViewLayer";
+      layer.className = "side-view-layer";
+      frame.appendChild(layer);
+    }
+
+    const decoded = state.decoded?.ok && state.decoded.arrangement_id === arr.id ? state.decoded : null;
+    const slashSheet = decoded?.slash_sheet || "";
+    const profileType = SHELL_PROFILE_TYPE[slashSheet] || "";
+    const styleLabel = getShellStyleLabel(decoded || slashSheet);
+    const assetPath = profileAssetForSlashSheet(slashSheet);
+    const inlineSvg = SHELL_PROFILES[profileType] || "";
+    const altText = `${styleLabel || slashSheet || "D38999"} side profile`;
+    const artHtml = assetPath
+      ? `<img class="side-view-asset" src="${escapeHtml(assetPath)}" alt="${escapeHtml(altText)}">`
+      : inlineSvg;
+
+    if (!artHtml) {
+      layer.innerHTML = `<div class="side-view-empty">${escapeHtml(T("viewer.sideUnavailable", "Decode a D38999 part number to see the connector side profile."))}</div>`;
+      els.viewerTitle.textContent = Tf("viewer.insertArrangementTitle", { id: arr.id });
+      return;
+    }
+
+    const sheetLabel = `D38999${slashSheet}`;
+    layer.innerHTML = `
+      <figure class="side-view-figure">
+        <div class="side-view-art">${artHtml}</div>
+        <figcaption class="side-view-caption">
+          ${styleLabel ? `<span class="side-view-style">${escapeHtml(styleLabel)}</span>` : ""}
+          <span class="side-view-sheet mono">${escapeHtml(sheetLabel)}</span>
+        </figcaption>
+      </figure>`;
+    els.viewerTitle.textContent = Tf("viewer.insertArrangementTitle", { id: arr.id });
   }
 
   function renderRuggedIoViewer(decoded) {
@@ -5389,11 +5584,12 @@
     return type ? SHELL_PROFILE_ASSET[type] : "";
   }
 
-  function reportFaceFigure(svg, caption, mode, arrId) {
+  function reportFaceFigure(svg, caption, mode, arrId, extraHtml) {
     if (!svg) return "";
     return `<figure class="report-art-face" data-view="${escapeHtml(mode)}" data-arr="${escapeHtml(arrId || "")}">
       ${svg}
       <figcaption class="report-art-face-cap">${escapeHtml(caption)}</figcaption>
+      ${extraHtml || ""}
     </figure>`;
   }
 
@@ -5402,20 +5598,35 @@
     const arrId = block?.decoded?.arrangementId;
     const bodyPath = profileAssetForSlashSheet(slashSheet);
     const variants = faceVariants || {};
+    const genderSuffix = variants.gender === "socket"
+      ? ` · ${T("viewer.gender.socket", "sockets (female, mirrored face)")}`
+      : variants.gender === "pin"
+        ? ` · ${T("viewer.gender.pin", "pins (male)")}`
+        : "";
+    const engFigure = reportFaceFigure(variants.engineering, T("viewer.viewMode.eng"), "engineering", arrId);
+    const engBlock = engFigure
+      ? `<div class="report-art-eng-wrap">${engFigure}${variants.gaugeLegend || ""}</div>`
+      : "";
     const faces = [
-      reportFaceFigure(variants.engineering, T("viewer.viewMode.eng"), "engineering", arrId),
-      reportFaceFigure(variants.real, T("viewer.viewMode.real"), "real", arrId),
+      engBlock,
+      reportFaceFigure(variants.real, T("viewer.viewMode.real") + genderSuffix, "real", arrId),
     ].filter(Boolean);
-    const parts = [];
+    const groups = [];
+    if (faces.length) {
+      groups.push(`<div class="report-art-group report-art-front">
+        <div class="report-art-group-title">${escapeHtml(T("report.frontFace", "Front (mating) face"))}</div>
+        <div class="report-art-faces">${faces.join("")}</div>
+      </div>`);
+    }
     if (bodyPath) {
       const absBody = new URL(bodyPath, document.baseURI).href;
-      parts.push(`<img class="report-art-body" src="${escapeHtml(absBody)}" alt="connector body"/>`);
+      groups.push(`<div class="report-art-group report-art-side">
+        <div class="report-art-group-title">${escapeHtml(T("report.sideProfile", "Side profile"))}</div>
+        <img class="report-art-body" src="${escapeHtml(absBody)}" alt="connector body"/>
+      </div>`);
     }
-    if (faces.length) {
-      parts.push(`<div class="report-art-faces">${faces.join("")}</div>`);
-    }
-    if (!parts.length) return "";
-    return `<div class="report-art">${parts.join("")}</div>`;
+    if (!groups.length) return "";
+    return `<div class="report-art">${groups.join("")}</div>`;
   }
 
   function reportBodyFragment(report, faceVariants, options = {}) {
@@ -5533,18 +5744,40 @@
         .report-summary { margin: 0 0 8px; color: #1f3a64; font-size: 13px; }
         .report-reasons { margin: 8px 0; color: #b45309; font-size: 12px; font-style: italic; }
         .report-art {
-          display: flex; flex-wrap: wrap; align-items: center; gap: 18px;
+          display: flex; flex-wrap: wrap; align-items: stretch; gap: 0;
           margin: 8px 0 12px; padding: 10px; background: #f8fafc;
           border: 1px solid #e2e8f0; border-radius: 6px;
         }
-        .report-art-body { max-width: 240px; max-height: 130px; height: auto; }
+        .report-art-group { display: flex; flex-direction: column; gap: 6px; padding: 0 18px; }
+        .report-art-front { flex: 1 1 auto; }
+        .report-art-side {
+          justify-content: center; align-items: center;
+          border-inline-start: 1px dashed #cbd5e1;
+        }
+        .report-art-group-title {
+          font-size: 10px; font-weight: 700; text-transform: uppercase;
+          letter-spacing: 0.05em; color: #1d4ed8;
+        }
+        .report-art-body { max-width: 220px; max-height: 130px; height: auto; }
         .report-art-faces { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px; }
-        .report-art-face { margin: 0; width: 200px; max-width: 200px; text-align: center; }
-        .report-art-face svg { width: 100%; height: auto; max-width: 200px; max-height: 200px; display: block; background: #fff; }
+        .report-art-eng-wrap { display: flex; flex-direction: row; align-items: flex-start; gap: 10px; }
+        .report-art-face { margin: 0; width: 150px; max-width: 150px; text-align: center; }
+        .report-art-face svg { width: 100%; height: auto; max-width: 150px; max-height: 150px; display: block; background: #fff; }
         .report-art-face-cap {
-          margin-top: 4px; font-size: 11px; font-weight: 600; color: #475569;
+          margin-top: 4px; font-size: 10px; font-weight: 600; color: #475569;
           text-transform: uppercase; letter-spacing: 0.04em;
         }
+        .report-gauge-legend {
+          display: flex; flex-direction: column; gap: 4px;
+          align-self: stretch; padding-inline-start: 8px;
+          border-inline-start: 1px solid #e2e8f0;
+          font-size: 8px; color: #475569;
+        }
+        .report-gauge-legend-title { font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; font-size: 8px; color: #64748b; }
+        .report-gauge-items { display: flex; flex-wrap: wrap; gap: 5px 7px; max-width: 70px; }
+        .report-gauge-item { display: flex; flex-direction: column; align-items: center; gap: 1px; width: 18px; }
+        .report-gauge-swatch { width: 13px; height: 13px; display: block; overflow: visible; }
+        .report-gauge-label { font-size: 8px; line-height: 1; color: #475569; }
         .report-art-face .pin-state-ring,
         .report-art-face .pin-hit-area { display: none !important; }
         .report-art-face .pin { cursor: default; }
@@ -5587,7 +5820,7 @@
     const report = buildCrossRefReport(decoded);
     if (!report) return;
     const arr = decoded.arrangement_id ? arrangementById(decoded.arrangement_id) : null;
-    const faceVariants = renderFaceVariants(arr);
+    const faceVariants = renderFaceVariants(arr, decoded);
     const fragment = reportBodyFragment(report, faceVariants, {});
     const titleText = `${T("report.title")} — ${report.meta.sourcePartNumber}`;
     const metaParts = [report.meta.sourcePartNumber, report.meta.generatedAt];
@@ -5634,13 +5867,20 @@
   }
 
   // Renders the arrangement face in BOTH view modes so a report can embed the
-  // engineering schematic and the true-colour ("real") face side by side. The
-  // user's current view mode and live viewer are restored afterwards.
-  function renderFaceVariants(arr) {
-    const variants = { engineering: "", real: "" };
+  // engineering schematic and the true-colour ("real") face side by side. When a
+  // decoded P/N is supplied it is applied while rendering so gender (pin/socket),
+  // keying and shell-face geometry resolve for that part — important for batch
+  // entries that differ from the live viewer. Live view + mode are restored after.
+  function renderFaceVariants(arr, decoded) {
+    const variants = { engineering: "", real: "", gaugeLegend: "", gender: "" };
     if (!arr) return variants;
     const prevMode = state.viewMode;
+    const prevDecoded = state.decoded;
+    const overrideDecoded = Boolean(decoded?.ok);
     try {
+      if (overrideDecoded) state.decoded = decoded;
+      variants.gender = currentContactGender(arr);
+      variants.gaugeLegend = reportGaugeLegendMarkup(arr);
       state.viewMode = "engineering";
       variants.engineering = renderArrangementToSvgString(arr);
       state.viewMode = "real";
@@ -5649,11 +5889,29 @@
       console.error("renderFaceVariants failed", err);
     } finally {
       state.viewMode = prevMode;
+      if (overrideDecoded) state.decoded = prevDecoded;
       if (state.selectedArrangement) {
         try { renderViewer(); } catch (err) { /* ignore */ }
       }
     }
     return variants;
+  }
+
+  // Builds a small "Sizes" legend of the engineering gauge symbols present in the
+  // arrangement, for inclusion under the engineering face in the printable report.
+  function reportGaugeLegendMarkup(arr) {
+    const contacts = (typeof contactsWithKeys === "function" ? contactsWithKeys(arr) : (arr.contacts || [])) || [];
+    const order = ["8", "10", "12", "16", "20", "22d"];
+    const present = new Set(contacts.map((c) => gaugeToken(c)));
+    const tokens = order.filter((t) => present.has(t));
+    if (!tokens.length) return "";
+    const labelFor = { "8": "#8", "10": "#10", "12": "#12", "16": "#16", "20": "#20", "22d": "#22D" };
+    const sizeFor = { "8": "8", "10": "10", "12": "12", "16": "16", "20": "20", "22d": "22D" };
+    const items = tokens.map((t) => {
+      const symbol = miniContactSymbolMarkup({ x: 0, y: 0, size: sizeFor[t] }, 2.6);
+      return `<span class="report-gauge-item"><svg class="connector-svg report-gauge-swatch" viewBox="-6 -6 12 12" xmlns="http://www.w3.org/2000/svg">${symbol}</svg><span class="report-gauge-label">${escapeHtml(labelFor[t])}</span></span>`;
+    }).join("");
+    return `<div class="report-gauge-legend"><span class="report-gauge-legend-title">${escapeHtml(T("legend.sizes", "Sizes"))}</span><div class="report-gauge-items">${items}</div></div>`;
   }
 
   function decodeBatchEntry(rawInput) {
@@ -5687,7 +5945,7 @@
         return;
       }
       const arr = entry.decoded.arrangement_id ? arrangementById(entry.decoded.arrangement_id) : null;
-      const faceVariants = renderFaceVariants(arr);
+      const faceVariants = renderFaceVariants(arr, entry.decoded);
       const fragment = reportBodyFragment(report, faceVariants, {
         itemTitle: report.meta.sourcePartNumber,
         itemIndex: String(idx),
@@ -6347,451 +6605,6 @@
       '"': "&quot;",
       "'": "&#39;",
     }[char]));
-  }
-
-  // =========================================================================
-  // AI Chat Panel
-  // =========================================================================
-
-  function initChat() {
-    const toggle = document.getElementById("chatToggle");
-    const panel = document.getElementById("chatPanel");
-    const closeBtn = document.getElementById("chatClose");
-    const clearBtn = document.getElementById("chatClear");
-    const settingsBtn = document.getElementById("chatSettings");
-    const settingsPanel = document.getElementById("chatSettings-panel");
-    const form = document.getElementById("chatForm");
-    const input = document.getElementById("chatInput");
-    const messagesEl = document.getElementById("chatMessages");
-    const providerSel = document.getElementById("chatProvider");
-    const modelSel = document.getElementById("chatModel");
-    const apiKeyInput = document.getElementById("chatApiKey");
-    const baseUrlInput = document.getElementById("chatBaseUrl");
-    const proxyUrlInput = document.getElementById("chatProxyUrl");
-    const ollamaUrlInput = document.getElementById("chatOllamaUrl");
-
-    if (!toggle || !panel) return;
-
-    let messages = [];
-    let sending = false;
-
-    // --- Persistence ---
-    const STORAGE_KEY = "d38999_chat";
-    function saveState() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          messages,
-          provider: providerSel.value,
-          model: modelSel.value,
-          apiKey: apiKeyInput.value,
-          baseUrl: baseUrlInput.value,
-          proxyUrl: proxyUrlInput.value,
-          ollamaUrl: ollamaUrlInput ? ollamaUrlInput.value : "",
-        }));
-      } catch (_) {}
-    }
-    function loadState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
-        const s = JSON.parse(raw);
-        messages = s.messages || [];
-        if (s.provider) providerSel.value = s.provider;
-        if (s.model) modelSel.value = s.model;
-        if (s.apiKey) apiKeyInput.value = s.apiKey;
-        if (s.baseUrl) baseUrlInput.value = s.baseUrl;
-        if (s.proxyUrl) proxyUrlInput.value = s.proxyUrl;
-        if (s.ollamaUrl && ollamaUrlInput) ollamaUrlInput.value = s.ollamaUrl;
-        renderMessages();
-      } catch (_) {}
-    }
-
-    // --- Models list ---
-    const STATIC_MODELS = {
-      ollama_direct: ["gemma4", "llama3.1", "qwen2.5", "mistral", "gemma2"],
-      ollama: ["gemma4", "llama3.1", "qwen2.5", "mistral", "gemma2"],
-      openai: ["gpt-4o", "gpt-4o-mini", "gpt-4.1-mini", "gpt-4.1-nano"],
-      github: [
-        // OpenAI
-        "openai/gpt-4o", "openai/gpt-4o-mini",
-        "openai/gpt-4.1", "openai/gpt-4.1-mini", "openai/gpt-4.1-nano",
-        "openai/gpt-5", "openai/gpt-5-chat", "openai/gpt-5-mini", "openai/gpt-5-nano",
-        "openai/o1", "openai/o1-mini", "openai/o1-preview",
-        "openai/o3", "openai/o3-mini", "openai/o4-mini",
-        // xAI
-        "xai/grok-3", "xai/grok-3-mini",
-        // DeepSeek
-        "deepseek/deepseek-r1", "deepseek/deepseek-r1-0528", "deepseek/deepseek-v3-0324",
-        // Microsoft
-        "microsoft/mai-ds-r1",
-        "microsoft/phi-4", "microsoft/phi-4-mini-instruct", "microsoft/phi-4-mini-reasoning",
-        "microsoft/phi-4-multimodal-instruct", "microsoft/phi-4-reasoning",
-        // Meta
-        "meta/meta-llama-3.1-405b-instruct", "meta/meta-llama-3.1-8b-instruct",
-        "meta/llama-3.2-11b-vision-instruct", "meta/llama-3.2-90b-vision-instruct",
-        "meta/llama-3.3-70b-instruct",
-        "meta/llama-4-maverick-17b-128e-instruct-fp8", "meta/llama-4-scout-17b-16e-instruct",
-        // Mistral AI
-        "mistral-ai/mistral-medium-2505", "mistral-ai/mistral-small-2503",
-        "mistral-ai/codestral-2501", "mistral-ai/ministral-3b",
-        // Cohere
-        "cohere/cohere-command-a",
-        "cohere/cohere-command-r-plus-08-2024", "cohere/cohere-command-r-08-2024",
-        // AI21 Labs
-        "ai21-labs/ai21-jamba-1.5-large",
-      ],
-      gemini: ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash", "gemini-2.0-flash-lite"],
-      anthropic: ["claude-sonnet-4-20250514", "claude-3-5-haiku-20241022"],
-    };
-
-    // GitHub Models tier info (from catalog API rate_limit_tier field)
-    // "custom" = requires paid billing / special access
-    // "high"   = Pro/Team plan
-    // "low"    = free for all
-    const GITHUB_TIERS = {
-      custom: new Set([
-        "deepseek/deepseek-r1", "deepseek/deepseek-r1-0528", "microsoft/mai-ds-r1",
-        "openai/gpt-5", "openai/gpt-5-chat", "openai/gpt-5-mini", "openai/gpt-5-nano",
-        "openai/o1", "openai/o1-mini", "openai/o1-preview",
-        "openai/o3", "openai/o3-mini", "openai/o4-mini",
-        "xai/grok-3", "xai/grok-3-mini",
-      ]),
-      high: new Set([
-        "ai21-labs/ai21-jamba-1.5-large", "cohere/cohere-command-r-plus-08-2024",
-        "deepseek/deepseek-v3-0324",
-        "meta/llama-3.2-90b-vision-instruct", "meta/llama-3.3-70b-instruct",
-        "meta/llama-4-maverick-17b-128e-instruct-fp8", "meta/llama-4-scout-17b-16e-instruct",
-        "meta/meta-llama-3.1-405b-instruct",
-        "openai/gpt-4.1", "openai/gpt-4o",
-      ]),
-    };
-
-    function githubModelLabel(id) {
-      if (GITHUB_TIERS.custom.has(id)) return `${id}  [paid]`;
-      if (GITHUB_TIERS.high.has(id)) return `${id}  [pro]`;
-      return id;
-    }
-
-    function populateModels() {
-      const provider = providerSel.value;
-      const list = STATIC_MODELS[provider] || [];
-      if (provider === "github") {
-        // Group into optgroups by tier
-        const groups = { low: [], high: [], custom: [] };
-        list.forEach(m => {
-          if (GITHUB_TIERS.custom.has(m)) groups.custom.push(m);
-          else if (GITHUB_TIERS.high.has(m)) groups.high.push(m);
-          else groups.low.push(m);
-        });
-        const makeGroup = (label, models) => models.length
-          ? `<optgroup label="${label}">${models.map(m => `<option value="${m}">${m}</option>`).join("")}</optgroup>`
-          : "";
-        modelSel.innerHTML =
-          makeGroup("Free tier", groups.low) +
-          makeGroup("Pro / Team tier", groups.high) +
-          makeGroup("Paid (billing required)", groups.custom);
-      } else {
-        modelSel.innerHTML = list.map(m => `<option value="${m}">${m}</option>`).join("");
-      }
-      if (provider === "ollama_direct") {
-        fetchModelsOllama();
-      } else {
-        fetchModels(provider);
-      }
-    }
-
-    async function fetchModelsOllama() {
-      try {
-        const base = ollamaUrlInput ? ollamaUrlInput.value.replace(/\/$/, "") : "http://localhost:11434";
-        const resp = await fetch(`${base}/api/tags`);
-        if (!resp.ok) return;
-        const data = await resp.json();
-        const names = (data.models || []).map(m => m.name);
-        if (names.length) {
-          const prev = modelSel.value;
-          modelSel.innerHTML = names.map(m => `<option value="${m}">${m}</option>`).join("");
-          if (names.includes(prev)) modelSel.value = prev;
-        }
-      } catch (_) {}
-    }
-
-    async function fetchModels(provider) {
-      try {
-        const proxy = proxyUrlInput.value.replace(/\/$/, "");
-        const resp = await fetch(`${proxy}/api/models`);
-        if (!resp.ok) return;
-        const data = await resp.json();
-        const list = data[provider];
-        if (list && list.length) {
-          const prev = modelSel.value;
-          modelSel.innerHTML = list.map(m => `<option value="${m}">${m}</option>`).join("");
-          if (list.includes(prev)) modelSel.value = prev;
-        }
-      } catch (_) {}
-    }
-
-    providerSel.addEventListener("change", () => { populateModels(); saveState(); });
-
-    // --- Settings panel toggle (CSS-class based, not hidden attribute) ---
-    function openSettings() {
-      settingsPanel.classList.remove("chat-settings-panel--closed");
-      settingsBtn.classList.add("active");
-    }
-    function closeSettings() {
-      settingsPanel.classList.add("chat-settings-panel--closed");
-      settingsBtn.classList.remove("active");
-    }
-
-    // --- Save button ---
-    const saveBtn = document.getElementById("chatSaveSettings");
-    const savedMsg = document.getElementById("chatSavedMsg");
-    let savedTimer = null;
-    function doSave() {
-      saveState();
-      if (savedMsg) {
-        savedMsg.textContent = "Saved!";
-        clearTimeout(savedTimer);
-        savedTimer = setTimeout(() => { savedMsg.textContent = ""; }, 2000);
-      }
-    }
-    if (saveBtn) saveBtn.addEventListener("click", doSave);
-
-    // Auto-save on every settings field change
-    [apiKeyInput, baseUrlInput, proxyUrlInput, modelSel, ollamaUrlInput].forEach(el => {
-      if (el) el.addEventListener("change", saveState);
-    });
-
-    // --- Open / close / minimize ---
-    const minimizeBtn = document.getElementById("chatMinimize");
-    function openChat() {
-      panel.classList.remove("chat-panel--closed");
-      panel.classList.remove("minimized");
-      toggle.setAttribute("aria-label", "Close AI Chat");
-      toggle.setAttribute("title", "Close AI Chat");
-      toggle.classList.add("open");
-      input.focus();
-    }
-    function closeChat() {
-      panel.classList.add("chat-panel--closed");
-      toggle.setAttribute("aria-label", "Open AI Chat");
-      toggle.setAttribute("title", "AI Chat");
-      toggle.classList.remove("open");
-    }
-    toggle.addEventListener("click", () => {
-      const isOpen = !panel.classList.contains("chat-panel--closed") && !panel.classList.contains("minimized");
-      if (isOpen) { closeChat(); } else { openChat(); }
-    });
-    closeBtn.addEventListener("click", closeChat);
-    minimizeBtn.addEventListener("click", () => {
-      panel.classList.toggle("minimized");
-    });
-    clearBtn.addEventListener("click", () => {
-      messages = [];
-      renderMessages();
-      saveState();
-    });
-    settingsBtn.addEventListener("click", () => {
-      const isOpen = !settingsPanel.classList.contains("chat-settings-panel--closed");
-      if (isOpen) { closeSettings(); } else { openSettings(); }
-    });
-
-    // --- Render messages ---
-    function renderMessages() {
-      messagesEl.innerHTML = messages.map(m => {
-        const cls = m.role === "user" ? "user" : m.role === "error" ? "error" : "assistant";
-        const content = formatMessage(m.content || "");
-        return `<div class="chat-msg ${cls}">${content}</div>`;
-      }).join("");
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-    }
-
-    function formatMessage(text) {
-      // Escape HTML first
-      let safe = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-      // Inline code
-      safe = safe.replace(/`([^`]+)`/g, "<code>$1</code>");
-      // Detect D38999 part numbers and make clickable
-      safe = safe.replace(/\b(D38999\/\w+)\b/g, '<span class="chat-pn-link" data-pn="$1">$1</span>');
-      return safe;
-    }
-
-    // --- Click on part numbers in chat ---
-    messagesEl.addEventListener("click", (e) => {
-      const link = e.target.closest(".chat-pn-link");
-      if (!link) return;
-      const pn = link.dataset.pn;
-      if (!pn) return;
-      // Navigate to decoder tab and decode
-      const partInput = document.getElementById("partNumberInput");
-      if (partInput) {
-        partInput.value = pn;
-        // Click decode button
-        const decBtn = document.getElementById("decodeButton");
-        if (decBtn) decBtn.click();
-        // Switch to decoder tab
-        const tabBtn = document.querySelector('[data-tab="decoder"]');
-        if (tabBtn) tabBtn.click();
-      }
-    });
-
-    // --- Auto-resize textarea ---
-    input.addEventListener("input", () => {
-      input.style.height = "auto";
-      input.style.height = Math.min(input.scrollHeight, 100) + "px";
-    });
-
-    // --- Submit ---
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const text = input.value.trim();
-      if (!text || sending) return;
-
-      // Inject context about current decoded part number if available
-      let contextPrefix = "";
-      const decoded = state && state.decoded;
-      if (decoded && decoded.raw) {
-        contextPrefix = `[Context: user is viewing decoded part number ${decoded.raw}] `;
-      }
-
-      messages.push({ role: "user", content: text });
-      input.value = "";
-      input.style.height = "auto";
-      renderMessages();
-      saveState();
-
-      sending = true;
-      const typingEl = document.createElement("div");
-      typingEl.className = "chat-typing";
-      typingEl.textContent = "Thinking…";
-      messagesEl.appendChild(typingEl);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-
-      try {
-        const provider = providerSel.value;
-        const model = modelSel.value;
-        const historyMessages = messages
-          .map(m => m.role === "error" ? null : { role: m.role, content: m.role === "user" && m === messages[messages.length - 1] ? contextPrefix + m.content : m.content })
-          .filter(Boolean);
-
-        let data;
-
-        if (provider === "ollama_direct") {
-          // Call Ollama REST API directly from the browser — no proxy needed
-          const ollamaBase = (ollamaUrlInput ? ollamaUrlInput.value : "http://localhost:11434").replace(/\/$/, "");
-          const resp = await fetch(`${ollamaBase}/api/chat`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ model, messages: historyMessages, stream: false }),
-          });
-          if (!resp.ok) {
-            const txt = await resp.text();
-            data = { error: `Ollama error ${resp.status}: ${txt}` };
-          } else {
-            const raw = await resp.json();
-            const content = raw.message?.content || raw.response || "(empty response)";
-            data = { content };
-          }
-        } else {
-          // Route through the Python proxy
-          const proxy = proxyUrlInput.value.replace(/\/$/, "");
-          const payload = { messages: historyMessages, provider, model };
-          const key = apiKeyInput.value.trim();
-          if (key) payload.apiKey = key;
-          const base = baseUrlInput.value.trim();
-          if (base) payload.baseUrl = base;
-          const resp = await fetch(`${proxy}/api/chat`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-          data = await resp.json();
-          if (!resp.ok) data = { error: data.error || `Error ${resp.status}` };
-        }
-
-        if (data.error) {
-          messages.push({ role: "error", content: data.error });
-        } else {
-          messages.push({ role: "assistant", content: data.content || "(no response)" });
-        }
-      } catch (err) {
-        messages.push({ role: "error", content: `Connection failed: ${err.message}. Is the proxy running?` });
-      } finally {
-        sending = false;
-        typingEl.remove();
-        renderMessages();
-        saveState();
-      }
-    });
-
-    // Enter to send, Shift+Enter for newline
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        form.dispatchEvent(new Event("submit"));
-      }
-    });
-
-    // Init
-    populateModels();
-    loadState();
-
-    // --- Drag to move ---
-    const header = panel.querySelector(".chat-header");
-    let dragOffset = { x: 0, y: 0 };
-    let dragging = false;
-
-    header.addEventListener("mousedown", (e) => {
-      if (e.target.closest("button")) return;
-      dragging = true;
-      const rect = panel.getBoundingClientRect();
-      dragOffset.x = e.clientX - rect.left;
-      dragOffset.y = e.clientY - rect.top;
-      e.preventDefault();
-    });
-    document.addEventListener("mousemove", (e) => {
-      if (!dragging) return;
-      const x = e.clientX - dragOffset.x;
-      const y = e.clientY - dragOffset.y;
-      panel.style.left = Math.max(0, x) + "px";
-      panel.style.top = Math.max(0, y) + "px";
-      panel.style.right = "auto";
-      panel.style.bottom = "auto";
-    });
-    document.addEventListener("mouseup", () => { dragging = false; });
-
-    // --- Resize from top-left corner handle ---
-    const resizeHandle = document.getElementById("chatResizeHandle");
-    if (resizeHandle) {
-      let resizing = false;
-      let startX, startY, startW, startH, startLeft, startTop;
-
-      resizeHandle.addEventListener("mousedown", (e) => {
-        resizing = true;
-        const rect = panel.getBoundingClientRect();
-        startX = e.clientX;
-        startY = e.clientY;
-        startW = rect.width;
-        startH = rect.height;
-        startLeft = rect.left;
-        startTop = rect.top;
-        e.preventDefault();
-        e.stopPropagation();
-      });
-      document.addEventListener("mousemove", (e) => {
-        if (!resizing) return;
-        const dx = startX - e.clientX;
-        const dy = startY - e.clientY;
-        const newW = Math.max(300, startW + dx);
-        const newH = Math.max(200, startH + dy);
-        panel.style.width = newW + "px";
-        panel.style.height = newH + "px";
-        panel.style.left = (startLeft - (newW - startW)) + "px";
-        panel.style.top = (startTop - (newH - startH)) + "px";
-        panel.style.right = "auto";
-        panel.style.bottom = "auto";
-      });
-      document.addEventListener("mouseup", () => { resizing = false; });
-    }
   }
 
   init();

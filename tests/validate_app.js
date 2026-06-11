@@ -138,11 +138,11 @@ class CdpClient {
 
 async function main() {
   const requiredDataFiles = [
-    "data/d38999_extracted_rules.json",
-    "data/d38999_part_number_examples.json",
-    "data/d38999_catalog_supported_combinations.json",
-    "data/d38999_verified_part_numbers.json",
-    "data/d38999_visual_assets.json",
+    "data/rules/d38999_extracted_rules.json",
+    "data/part_numbers/d38999_part_number_examples.json",
+    "data/part_numbers/d38999_catalog_supported_combinations.json",
+    "data/part_numbers/d38999_verified_part_numbers.json",
+    "data/connectors/d38999_visual_assets.json",
   ];
   const requiredSvgFiles = [
     "assets/svg/d38999-plug-generic.svg",
@@ -163,9 +163,9 @@ async function main() {
     assert(fs.existsSync(path.join(projectRoot, relativePath)), `Required SVG asset exists: ${relativePath}`);
   });
 
-  const extractedRules = JSON.parse(fs.readFileSync(path.join(projectRoot, "data", "d38999_extracted_rules.json"), "utf8"));
-  const verifiedPartNumbers = JSON.parse(fs.readFileSync(path.join(projectRoot, "data", "d38999_verified_part_numbers.json"), "utf8"));
-  const visualAssets = JSON.parse(fs.readFileSync(path.join(projectRoot, "data", "d38999_visual_assets.json"), "utf8"));
+  const extractedRules = JSON.parse(fs.readFileSync(path.join(projectRoot, "data", "rules", "d38999_extracted_rules.json"), "utf8"));
+  const verifiedPartNumbers = JSON.parse(fs.readFileSync(path.join(projectRoot, "data", "part_numbers", "d38999_verified_part_numbers.json"), "utf8"));
+  const visualAssets = JSON.parse(fs.readFileSync(path.join(projectRoot, "data", "connectors", "d38999_visual_assets.json"), "utf8"));
 
   assert(Array.isArray(extractedRules.catalogGroundingPolicy.statusValues), "Catalog grounding status values are present");
   assert(extractedRules.catalogGroundingPolicy.statusValues.includes("VERIFIED_EXISTS"), "Catalog grounding includes VERIFIED_EXISTS");
