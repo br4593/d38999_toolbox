@@ -1,24 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 120" fill="none" stroke="currentColor" stroke-width="2.5">
-  <!-- SuperNine RJ45 TVS side / profile (Transient Voltage Suppression jam-nut/wall mount) -->
-  <!-- Panel (dashed) -->
-  <rect x="150" y="6" width="6" height="108" fill="currentColor" opacity="0.08" stroke="none"/>
-  <line x1="153" y1="6" x2="153" y2="114" stroke-dasharray="5 4" opacity="0.5" stroke-width="1.5"/>
-  <!-- Mating-face shell body -->
-  <rect x="52" y="32" width="100" height="56" rx="6"/>
-  <!-- Coupling thread band (front) -->
-  <rect x="30" y="40" width="22" height="40" rx="3" stroke-width="1.6" opacity="0.55"/>
-  <!-- Hex jam nut -->
-  <polygon points="156,28 176,18 196,28 196,92 176,102 156,92" stroke-width="2" opacity="0.75"/>
-  <!-- TVS diode module pod (rear, enlarged body) -->
-  <rect x="196" y="36" width="40" height="48" rx="4" stroke-width="1.8"/>
-  <path d="M210 50 l8 0 m-4 -4 v8 M222 60 l8 0" stroke-width="1" opacity="0.5"/>
-  <text x="216" y="48" text-anchor="middle" font-size="7" stroke="none" fill="currentColor" opacity="0.7" font-family="system-ui,sans-serif">TVS</text>
-  <!-- RJ45 jack on mating face -->
-  <rect x="32" y="46" width="20" height="28" rx="2" stroke-width="1.6"/>
-  <!-- Master key -->
-  <rect x="98" y="24" width="9" height="8" rx="1.5" fill="currentColor" opacity="0.3" stroke="none"/>
-  <!-- Rear leads -->
-  <line x1="236" y1="52" x2="258" y2="52" stroke-width="1.5" opacity="0.6"/>
-  <line x1="236" y1="68" x2="258" y2="68" stroke-width="1.5" opacity="0.6"/>
-  <text x="140" y="114" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">SuperNine RJ45 TVS — Side Profile</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 130" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+  <!-- SuperNine RJ45-TVS jam-nut panel receptacle with rear TVS pod, side elevation -->
+  <line x1="22" y1="65" x2="284" y2="65" stroke-width="0.8" stroke-dasharray="8 4 2 4" opacity="0.35"/>
+
+  <!-- Mating-face rim / coupling shoulder -->
+  <path d="M44 34 H34 a4 4 0 0 0 -4 4 V92 a4 4 0 0 0 4 4 H44" stroke-width="1.6" opacity="0.7"/>
+
+  <!-- Knurled coupling nut (front) -->
+  <rect x="44" y="30" width="30" height="70" rx="4"/>
+  <g stroke-width="0.9" opacity="0.5"><path d="M50 34 V96 M56 34 V96 M62 34 V96 M68 34 V96"/></g>
+
+  <!-- Jam-nut hex (panel mount, chamfered flats) -->
+  <path d="M74 30 H92 l6 8 V92 l-6 8 H74 Z" stroke-width="2"/>
+
+  <!-- Mounting panel (dashed reference) behind jam-nut -->
+  <rect x="98" y="14" width="6" height="102" fill="currentColor" stroke="none" opacity="0.08"/>
+  <line x1="98" y1="14" x2="98" y2="116" stroke-width="1.4" stroke-dasharray="5 4" opacity="0.5"/>
+
+  <!-- Main shell body (behind panel) -->
+  <rect x="104" y="40" width="56" height="50" rx="5"/>
+
+  <!-- Rear TVS suppression pod (larger module) -->
+  <rect x="160" y="30" width="62" height="70" rx="7" stroke-width="2"/>
+  <line x1="160" y1="46" x2="222" y2="46" stroke-width="1.1" opacity="0.5"/>
+  <line x1="160" y1="84" x2="222" y2="84" stroke-width="1.1" opacity="0.5"/>
+  <!-- suppression element hint (bidirectional TVS symbol) -->
+  <g stroke-width="1.3" opacity="0.6">
+    <path d="M178 58 l10 7 -10 7 Z M204 58 l-10 7 10 7 Z"/>
+    <path d="M188 56 V74 M194 56 V74 M170 65 H178 M204 65 H212"/>
+  </g>
+
+  <!-- Rear cable / backshell exit -->
+  <path d="M222 50 H242 a6 6 0 0 1 6 6 V74 a6 6 0 0 1 -6 6 H222" stroke-width="1.6" opacity="0.8"/>
+  <path d="M248 58 H268 M248 72 H268" stroke-width="1.4" opacity="0.55"/>
+
+  <!-- RJ45 8P8C jack hinted on the mating face -->
+  <rect x="32" y="50" width="14" height="30" rx="2" stroke-width="1.5"/>
+  <rect x="35" y="70" width="8" height="7" rx="1" fill="currentColor" stroke="none" opacity="0.22"/>
 </svg>

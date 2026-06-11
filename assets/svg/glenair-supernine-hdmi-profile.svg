@@ -1,24 +1,34 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 120" fill="none" stroke="currentColor" stroke-width="2.5">
-  <!-- SuperNine HDMI 2.0 side / profile elevation (Shell 17 panel mount coupler) -->
-  <!-- Panel (dashed) -->
-  <rect x="166" y="6" width="6" height="108" fill="currentColor" opacity="0.08" stroke="none"/>
-  <line x1="169" y1="6" x2="169" y2="114" stroke-dasharray="5 4" opacity="0.5" stroke-width="1.5"/>
-  <!-- Coupling shell (mating face) -->
-  <rect x="28" y="34" width="26" height="52" rx="3" stroke-width="1.6" opacity="0.55"/>
-  <!-- Main shell body (size 17) -->
-  <rect x="54" y="28" width="100" height="64" rx="7"/>
-  <!-- Square mounting flange -->
-  <rect x="154" y="14" width="14" height="92" rx="2" stroke-width="2"/>
-  <circle cx="161" cy="24" r="4" stroke-width="1.4" opacity="0.7"/>
-  <circle cx="161" cy="96" r="4" stroke-width="1.4" opacity="0.7"/>
-  <!-- HDMI Type-A trapezoid port on mating face -->
-  <path d="M34 50 H54 V62 L48 70 H40 L34 62 Z" stroke-width="1.8" stroke-linejoin="round"/>
-  <line x1="38" y1="54" x2="50" y2="54" stroke-width="2" opacity="0.18"/>
-  <!-- Master key -->
-  <rect x="100" y="20" width="9" height="8" rx="1.5" fill="currentColor" opacity="0.3" stroke="none"/>
-  <!-- Rear leads (PC tail / solder cup) -->
-  <line x1="172" y1="48" x2="252" y2="48" stroke-width="1.5" opacity="0.6"/>
-  <line x1="172" y1="60" x2="252" y2="60" stroke-width="1.5" opacity="0.6"/>
-  <line x1="172" y1="72" x2="252" y2="72" stroke-width="1.5" opacity="0.6"/>
-  <text x="140" y="112" text-anchor="middle" font-size="10" stroke="none" fill="currentColor" font-family="system-ui,sans-serif">SuperNine HDMI 2.0 — Side Profile (Shell 17)</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 130" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+  <!-- SuperNine HDMI panel-mount (jam-nut/flange) receptacle, side elevation -->
+  <line x1="20" y1="65" x2="232" y2="65" stroke-width="0.8" stroke-dasharray="8 4 2 4" opacity="0.35"/>
+
+  <!-- Rear termination leads -->
+  <path d="M22 52 H40 M22 65 H40 M22 78 H40" stroke-width="1.5" opacity="0.6"/>
+
+  <!-- Rear accessory thread band -->
+  <rect x="40" y="44" width="22" height="42" rx="3" stroke-width="1.5" opacity="0.8"/>
+  <g stroke-width="0.85" opacity="0.45"><path d="M44 48 l4 6 M51 48 l4 6 M58 48 l4 6 M44 76 l4 6 M51 76 l4 6 M58 76 l4 6"/></g>
+
+  <!-- Main shell body -->
+  <rect x="62" y="36" width="74" height="58" rx="6"/>
+  <!-- Forward knurled coupling ring -->
+  <rect x="120" y="34" width="16" height="62" rx="3" stroke-width="1.3" opacity="0.7"/>
+  <g stroke-width="0.85" opacity="0.45"><path d="M124 38 V92 M128 38 V92 M132 38 V92"/></g>
+
+  <!-- Square mounting flange (4x thru-holes) at panel -->
+  <rect x="136" y="16" width="20" height="98" rx="3" stroke-width="2"/>
+  <circle cx="146" cy="27" r="5" stroke-width="1.5"/>
+  <circle cx="146" cy="103" r="5" stroke-width="1.5"/>
+
+  <!-- Mounting panel (dashed reference) -->
+  <rect x="156" y="8" width="6" height="114" fill="currentColor" stroke="none" opacity="0.08"/>
+  <line x1="156" y1="8" x2="156" y2="122" stroke-width="1.4" stroke-dasharray="5 4" opacity="0.5"/>
+
+  <!-- Protruding receptacle housing (front, through panel) -->
+  <rect x="162" y="44" width="44" height="42" rx="4"/>
+  <!-- master keyway hint -->
+  <path d="M178 44 v-6 h10 v6" stroke-width="1.3" opacity="0.6"/>
+  <!-- HDMI trapezoid opening -->
+  <path d="M170 60 H198 l-3 12 H173 Z" stroke-width="1.5" opacity="0.7"/>
+  <path d="M174 63 H194 l-1.6 5 H175.6 Z" fill="currentColor" stroke="none" opacity="0.22"/>
 </svg>

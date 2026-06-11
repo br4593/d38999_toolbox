@@ -29,16 +29,16 @@ purchasable PNs on file · **Face** = mating-face SVG · **Side/mount** = profil
 | Amphenol Socapex | USBBFTV | USB Type-B | ❌ | ❌ | ✅ | ❌ (face only) | ❌ |
 | Amphenol Socapex | HDMIFTV | HDMI 2.0 | ❌ | ❌ | ✅ | ✅ (plug/jam/sqflange/redflange/standoff) | ❌ |
 | Amphenol Socapex | MDPFTV | Mini DisplayPort | ❌ | ❌ | ✅ | ⚠️ (plug/jam/sqflange) | ❌ |
-| Glenair SuperNine | 233-3xx RJ45 | RJ45 Cat5e/6A | ✅ | ✅ | ✅ | ❌ (face only) | ❌ |
-| Glenair SuperNine | 244-00x RJ45 TVS | RJ45 Cat5e TVS | ⚠️ | ❌ | ✅ | ❌ (face only) | ❌ |
-| Glenair SuperNine | 233-34x/37x USB | USB 2.0/3.0 | ✅ | ✅ | ✅ | ❌ (face only) | ❌ |
-| Glenair SuperSeal | 233-35x USB3-A | USB 3.0/3.2 Gen1 | ⚠️ | ✅ | ✅ | ❌ (face only) | ⚠️ (some from PDFs) |
-| Glenair SuperSeal | 233-38x USB-C | USB 3.2 Gen2 Type-C | ⚠️ | ❌ | ✅ | ❌ (face only) | ❌ |
-| Glenair SuperNine | 233-36x HDMI | HDMI 2.0 | ⚠️ | ❌ | ✅ | ❌ (face only) | ❌ |
-| Glenair SuperSeal | 233-376/379 DP | DisplayPort 1.4 | ⚠️ | ❌ | ✅ | ❌ (face only) | ⚠️ |
+| Glenair SuperNine | 233-3xx RJ45 | RJ45 Cat5e/6A | ✅ | ✅ | ✅ | ✅ (schematic side elevation, plug) | ❌ |
+| Glenair SuperNine | 244-00x RJ45 TVS | RJ45 Cat5e TVS | ⚠️ | ❌ | ✅ | ✅ (schematic side elevation, jam-nut + TVS pod) | ❌ |
+| Glenair SuperNine | 233-34x/37x USB | USB 2.0/3.0 | ✅ | ✅ | ✅ | ✅ (schematic side elevation, plug) | ❌ |
+| Glenair SuperSeal | 233-35x USB3-A | USB 3.0/3.2 Gen1 | ⚠️ | ✅ | ✅ | ✅ (schematic side elevation, panel rcpt) | ⚠️ (some from PDFs) |
+| Glenair SuperSeal | 233-38x USB-C | USB 3.2 Gen2 Type-C | ⚠️ | ❌ | ✅ | ✅ (schematic side elevation, panel rcpt) | ❌ |
+| Glenair SuperNine | 233-36x HDMI | HDMI 2.0 | ⚠️ | ❌ | ✅ | ✅ (schematic side elevation, panel rcpt) | ❌ |
+| Glenair SuperSeal | 233-376/379 DP | DisplayPort 1.4 | ⚠️ | ❌ | ✅ | ✅ (schematic side elevation, panel rcpt) | ⚠️ |
 
 ### Current-state takeaways
-- **Side/profile + mount views**: Amphenol families are well covered; **every Glenair family is face-only** → largest visual gap.
+- **Side/profile + mount views**: Amphenol families are well covered; **all Glenair families now have a clean schematic side elevation** (`*-profile.svg`, hand-authored from datasheet dimensions). Glenair per-mount variant drawings (plug/jam-nut/flange/feedthru) are still a gap.
 - **PN structure**: documented for Glenair RJ45/USB; missing for Amphenol HDMI/MDP/USB-B and Glenair USB-C/HDMI/DP.
 - **Verified PNs**: thin for Amphenol HDMI/MDP/USB-B and several Glenair video/USB-C families.
 - **Dimensions / panel cutout**: essentially uncaptured everywhere → needed to draw accurate side views.
