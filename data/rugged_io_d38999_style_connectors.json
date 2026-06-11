@@ -1128,7 +1128,8 @@
         "Verify ATEX certification covers your specific zone and gas group."
       ],
       "sources": [
-        "https://www.amphenolpcd.com/product/rjf-tv-atex-zone-2/"
+        "https://www.amphenolpcd.com/product/rjf-tv-atex-zone-2/",
+        "Amphenol PCD Rugged Networks Solutions brochure, Sept 2023 (DOC-001056-ANG) - confirms RJF TV ATEX for industrial/explosive environments, RJ11 available, IP68; ordering codes not listed"
       ]
     },
     {
@@ -1174,6 +1175,74 @@
       "sources": [
         "https://www.amphenolpcd.com/product/tv-%c2%b5com-10gb-series/",
         "https://www.amphenolpcd.com/wp-content/uploads/2023/06/brochure_tv_ucom_10_gb_2.pdf"
+      ]
+    },
+    {
+      "vendor": "Souriau / Eaton",
+      "family": "Souriau UTO/UTS RJ45",
+      "interface": "RJ45 Ethernet",
+      "interface_gender": "UTO (metal) and UTS (thermoplastic) ordering: the body-variation digit sets the gender - 6 = cable plug (free RJ insert that accepts a standard male RJ45 cordset), 0 = square-flange receptacle (UTO only), 7 = jam-nut receptacle. Per the catalog: plug = male RJ45 cordset side, receptacle = female RJ45 side. Insert code: RJ = free insert to accept any RJ45 (plug only), RJF = feed-through (receptacle only). Polarisation N/A/B. UTO plug adds gland P (plastic) and a plating code (blank = nickel / 48 hr salt spray, O1 = black-anodized jam nut, O2 = black-anodized plug coupling ring); UTS plug adds backshell JC and the mandatory suffix 25. Shell size 18 only. Verified against the Souriau/Eaton RJ45 catalog, Ordering information (pp. 2 and 4).",
+      "d38999_relation": "Rugged Cat5e RJ45 in a Souriau UTO/UTS bayonet-coupling circular shell (MIL-DTL-26482 / 8LT style). This is NOT a MIL-DTL-38999 Series III Tri-Start connector and does not intermate with D38999 Series III - it is a D38999-style rugged-RJ45 alternative.",
+      "supported_interfaces": [
+        "10BASE-T",
+        "100BASE-TX",
+        "1000BASE-T",
+        "Cat5e (TIA/EIA 568C, ISO/IEC 11801 class D)"
+      ],
+      "use_when": [
+        "user needs rugged Cat5e RJ45 with tool-free field assembly",
+        "user needs IP68/69K sealed Ethernet",
+        "user wants a Souriau / Eaton rugged RJ45",
+        "user wants to use any standard pre-wired RJ45 cordset"
+      ],
+      "example_pns": [
+        "UTO618RJNP",
+        "UTO018RJFN",
+        "UTO718RJFN",
+        "UTS6JC18RJN25",
+        "UTS718RJFN"
+      ],
+      "selection_questions": [
+        "Metal shell (UTO, 500 matings) or thermoplastic shell (UTS, 250 matings)?",
+        "Plug, square-flange receptacle (UTO only), or jam-nut receptacle?",
+        "Standard nickel (48 hr salt spray) or black anodized (96 hr)?",
+        "What cable diameter / gland size is required?"
+      ],
+      "warnings": [
+        "Bayonet coupling - does NOT mate with MIL-DTL-38999 Series III Tri-Start connectors.",
+        "UTO = zinc-alloy metal shell; UTS = thermoplastic shell.",
+        "Cat5e only (10/100/1000BASE-T); not rated for Cat6 or Cat6A.",
+        "Verify the exact ordering string (body variation, insert RJ/RJF, polarisation, gland, plating) against the Souriau/Eaton RJ45 catalog before ordering."
+      ],
+      "verified_purchasable_pns": [
+        {
+          "pn": "UTO618RJNP",
+          "description": "UTO metal cable plug, shell 18, free RJ insert (accepts a male RJ45 cordset), normal polarisation, plastic gland, nickel - cable side"
+        },
+        {
+          "pn": "UTO018RJFN",
+          "description": "UTO metal square-flange receptacle, shell 18, RJF feed-through (female RJ45), normal polarisation, nickel"
+        },
+        {
+          "pn": "UTO718RJFN",
+          "description": "UTO metal jam-nut receptacle, shell 18, RJF feed-through (female RJ45), normal polarisation, nickel"
+        },
+        {
+          "pn": "UTO718RJFNO1",
+          "description": "UTO metal jam-nut receptacle, shell 18, RJF feed-through (female RJ45), black-anodized jam nut (96 hr salt spray)"
+        },
+        {
+          "pn": "UTS6JC18RJN25",
+          "description": "UTS thermoplastic cable plug, easy-handling JC backshell, shell 18, free RJ insert (accepts a male RJ45 cordset), normal polarisation - cable side"
+        },
+        {
+          "pn": "UTS718RJFN",
+          "description": "UTS thermoplastic jam-nut receptacle, shell 18, RJF feed-through (female RJ45), normal polarisation"
+        }
+      ],
+      "sources": [
+        "Souriau / Eaton RJ45 catalog (UTO and UTS RJ45) - Ordering information (pp. 2 and 4), doc INDOVRJ45FL02EN",
+        "https://www.souriau-industrial.com"
       ]
     }
   ],
@@ -1252,7 +1321,9 @@
       "connector_type": "D38999-style rugged Mini DisplayPort connector",
       "d38999_relation": "rugged Mini DisplayPort in size 13 38999 shell",
       "capability_notes": [
-        "Mini DisplayPort rugged solution",
+        "Mini DisplayPort rugged solution, shell size 13",
+        "DisplayPort 1.4 protocol; 32.4 Gbit/s total (8.1 Gbit/s per lane)",
+        "supports 8K UHD (7680x4320) at 60 Hz or 4K UHD (3840x2160) at 120 Hz",
         "high-speed differential video connector",
         "not a generic D38999 signal-pin arrangement"
       ],
