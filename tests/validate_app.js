@@ -264,8 +264,8 @@ async function main() {
     assert(initial.visibleQuestionLabels === 0, "Visible connector labels have no question marks");
     assert(!initial.sourceImage, "Raw extracted SVG image layer is not displayed");
     assert(initial.shellFill, "Connector viewer uses the dynamic redrawn shell");
-    assert(initial.background === "rgb(255, 255, 255)", "Connector viewer uses white drawing background");
-    assert(initial.headerBackground === "rgb(255, 255, 255)", "Header uses the flat light surface treatment");
+    assert(initial.background === "rgb(251, 250, 246)", "Connector viewer uses the paper drawing background");
+    assert(initial.headerBackground === "rgb(251, 250, 246)", "Header uses the paper surface treatment");
     assert(initial.manualTab, "D38999 manual tab is present");
     assert(initial.pnGuide.includes("Shell code"), "Part-number guide is rendered");
     assert(initial.pinTableRemoved, "Decoder-side pin catalog table is removed");
