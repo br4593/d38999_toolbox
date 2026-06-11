@@ -140,6 +140,12 @@ committed regardless.
 - Distinguishes shell type from shell-size code, for example `E` means shell size `17`.
 - Summarizes approved DLA Series III/IV shell-type documents and drafts.
 
+### Data sources
+
+- A dedicated **Data sources** tab (keyboard shortcut `9`) summarizes, inside the app, every standards body, qualified-products database, manufacturer catalog, and reference that feeds the toolbox.
+- Live counts (insert arrangements, contacts, parsed DLA PDFs, QPL-qualified parts, converter rule sets, validated part numbers) are computed from the embedded data at render time, so the page stays in sync with the underlying datasets.
+- See [Data Provenance](#data-provenance) below for the file-level mapping.
+
 ## Data Provenance
 
 All decoded fields and arrangement geometry come from supplied source PDFs or generated data derived from those PDFs.

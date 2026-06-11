@@ -381,6 +381,24 @@ async function main() {
     assert(glossaryAudit.cardStayedUnselected, "Clicking a glossary chip does not change catalog card selection");
     assert(glossaryAudit.closed, "Clicking outside closes the glossary popover");
 
+    const shieldedAudit = await cdp.eval(`(() => {
+      document.querySelector('.tab-button[data-tab="catalog"]').click();
+      const pick = (id) => {
+        const af = document.querySelector("#arrangementFilter");
+        af.value = id; af.dispatchEvent(new Event("input", { bubbles: true }));
+        [...document.querySelectorAll(".catalog-card .catalog-card-id")]
+          .find((n) => n.textContent.trim() === id).closest(".catalog-card").click();
+        return document.querySelectorAll("#connectorSvg .pin-symbol-cutout").length;
+      };
+      const result = { coax: pick("25-46"), twinax: pick("25-90") };
+      const af = document.querySelector("#arrangementFilter");
+      if (af) { af.value = ""; af.dispatchEvent(new Event("input", { bubbles: true })); }
+      return result;
+    })()`);
+    assert(shieldedAudit.coax === 2, "25-46 draws one bore per #8 coax contact (2 total)");
+    assert(shieldedAudit.twinax === 4, "25-90 draws two bores per #8 twinax contact (4 total)");
+    assert(shieldedAudit.twinax > shieldedAudit.coax, "Coax and twinax #8 inserts render with distinct bore patterns");
+
 
     const manualFilter = await cdp.eval(`(() => {
       const shell = document.querySelector("#shellFilter");
@@ -481,6 +499,7 @@ async function main() {
         "decoded exact-match cards render one exact-match block and one human summary",
         "manual shell filter works",
         "Svc rating and contact-size pills open glossary popovers",
+        "coax/twinax #8 contacts render distinct bore patterns",
         "signal-assignment controls are absent",
         "mating panel renders catalog-backed mating PN with paired connector cards",
         "mating shell option switching updates the candidate PN when multiple options exist",

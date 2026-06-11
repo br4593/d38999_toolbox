@@ -23,6 +23,7 @@ from __future__ import annotations
 import argparse
 import json
 import random
+import shutil
 import subprocess
 import sys
 from collections import defaultdict
@@ -47,6 +48,7 @@ DATA_FILE_CANDIDATES = [
     ROOT / "app" / "data" / "insert_arrangements.json",
 ]
 NODE_HELPER = ROOT / "scripts" / "_reverse_parse_node_helper.js"
+NODE_BIN = shutil.which("node") or "/usr/bin/node"
 DEFAULT_LIMIT = 3000
 
 PRIMARY_CONTACTS = ("P", "S")
@@ -193,7 +195,7 @@ def sample_pns(pairs: list[tuple[dict[str, Any] | None, str]], limit: int) -> li
 class NodeReverseParser:
     def __init__(self) -> None:
         self.proc = subprocess.Popen(
-            ["/usr/bin/node", str(NODE_HELPER), str(ROOT / "app")],
+            [NODE_BIN, str(NODE_HELPER), str(ROOT / "app")],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,

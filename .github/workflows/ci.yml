@@ -92,6 +92,32 @@ jobs:
           python scripts/convert_d38999.py D38999/26WD35PN | tee /tmp/out.txt
           grep -qi "amphenol" /tmp/out.txt
 
+  dataset-consistency:
+    name: Dataset 1:1 consistency
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install ws polyfill for the converter round-trip harness
+        run: npm install --no-save ws
+
+      - name: Rebuild app/app-data.js so the bundle matches sources
+        run: python scripts/build_app.py
+
+      - name: Validate part numbers, arrangements, conversions and specs are 1:1
+        run: python scripts/validate_dataset_consistency.py
+
+
   build-sanity:
     name: Build sanity check
     runs-on: ubuntu-latest

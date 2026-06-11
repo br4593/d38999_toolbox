@@ -95,6 +95,8 @@
     isPanning: false,
     panStart: null,
     panViewBox: null,
+    panPending: false,
+    panPointerId: null,
     activeTab: "home",
     activeManualField: "slash_sheet",
     catalogSort: "id",
@@ -326,6 +328,8 @@
     homePanel: $("homePanel"),
     manualPanel: $("manualPanel"),
     manualContent: $("manualContent"),
+    datasourcesPanel: $("datasourcesPanel"),
+    datasourcesContent: $("datasourcesContent"),
     pinDetailHeader: $("pinDetailHeader"),
     openCatalogLink: $("openCatalogLink"),
   };
@@ -824,12 +828,6 @@
     const environmentSummary = environmentSummarySentence(validation?.exactPart || validation?.verifiedPart || validation?.secondaryPart);
     if (environmentSummary) sentences.push(ensureSentence(environmentSummary));
     if (/^Contact gender is not specified\.?$/i.test(contactText)) sentences.push("Contact gender is not specified.");
-    const matePartNumber = String(options.matePartNumber || decoded.mating_connector_pn || decoded.reciprocal_connector_pn || "").trim();
-    if (matePartNumber) {
-      sentences.push(`Known mate: ${matePartNumber}.`);
-    } else if (options.includeMateStatus !== false) {
-      sentences.push("Mating connector is not listed.");
-    }
     const summary = dedupeDisplayItems(sentences, { mapOutput: (item, label) => label }).join(" ");
     return summarizeText(summary, 420);
   }
@@ -1068,6 +1066,7 @@
     if (state.activeTab === "mating") renderMatingPanel();
     if (state.activeTab === "build" && state.buildRendered) renderBuildConnector();
     if (state.activeTab === "manual" && state.manualRendered) renderManual();
+    if (state.activeTab === "datasources" && state.dataSourcesRendered) renderDataSources();
   }
 
   function populateFilters() {
@@ -1334,7 +1333,7 @@
      Phase 2 — cross-tool flow: deep-linking, recent/favorites, global search
      --------------------------------------------------------------------- */
 
-  const ROUTE_TABS = new Set(["home", "decoder", "mating", "catalog", "io", "converter", "build", "manual"]);
+  const ROUTE_TABS = new Set(["home", "decoder", "mating", "catalog", "io", "converter", "build", "manual", "datasources"]);
   const RECENT_KEY = "d38999.recent";
   const FAV_KEY = "d38999.favorites";
   const RECENT_MAX = 12;
@@ -1517,6 +1516,7 @@
     "6": "converter",
     "7": "build",
     "8": "manual",
+    "9": "datasources",
   };
 
   function sortedArrangementList() {
@@ -1555,7 +1555,7 @@
     const rows = [
       ["/", T("sc.search")],
       ["?", T("sc.toggle")],
-      ["1 – 8", T("sc.tabs")],
+      ["1 – 9", T("sc.tabs")],
       ["[ &nbsp; ]", T("sc.step")],
       ["Esc", T("sc.close")],
     ];
@@ -2037,6 +2037,7 @@
     if (panel) panel.classList.add("active");
     if (tabName === "build" && !state.buildRendered) renderBuildConnector();
     if (tabName === "manual" && !state.manualRendered) renderManual();
+    if (tabName === "datasources" && !state.dataSourcesRendered) renderDataSources();
     // When switching to catalog, re-render to reflect any selection change
     if (tabName === "catalog") renderCatalog();
     if (tabName === "io") renderIoCatalog();
@@ -2931,30 +2932,66 @@
     return FINISH_KEY_BY_CLASS[code] || "od";
   }
 
+  // Monotonic counter for per-SVG gradient ids. Every connector SVG (live
+  // viewer, manual/mating/build previews, contact specimens) gets its OWN
+  // gradient instances with a unique suffix and references them through inline
+  // CSS variables. Without this, the four shared ids (contactGoldGrad, …) would
+  // collide across the several connector SVGs on the page: a `url(#id)` fill
+  // resolves to the FIRST matching element in document order, which is the
+  // decoder-tab SVG — and a gradient that lives in a display:none tab panel does
+  // not paint in Chrome, so the real-view gold contacts vanished on every other
+  // tab (notably the mating view).
+  let connectorGradSeq = 0;
+
   // Shared <defs> gradients for the connector face. Used by the live decoder
   // viewer and by the manual/build previews so the real-view gold contacts,
   // recessed socket bores, and metal sheen render identically in both places.
-  const CONNECTOR_GRADIENT_DEFS = `
-    <radialGradient id="sbShellGradient" cx="50%" cy="38%" r="65%">
+  // `suffix` makes the ids unique per SVG instance.
+  function connectorGradientDefs(suffix = "") {
+    return `
+    <radialGradient id="sbShellGradient${suffix}" cx="50%" cy="38%" r="65%">
       <stop class="sb-shell-stop-0" offset="0%" stop-color="rgba(255,255,255,0.85)"/>
       <stop class="sb-shell-stop-1" offset="60%" stop-color="rgba(241,245,249,1)"/>
       <stop class="sb-shell-stop-2" offset="100%" stop-color="rgba(214,222,233,1)"/>
     </radialGradient>
-    <radialGradient id="contactGoldGrad" cx="38%" cy="32%" r="72%">
+    <radialGradient id="contactGoldGrad${suffix}" cx="38%" cy="32%" r="72%">
       <stop offset="0%" stop-color="#E8CE86"/>
       <stop offset="58%" stop-color="#C19A3F"/>
       <stop offset="100%" stop-color="#7C611F"/>
     </radialGradient>
-    <radialGradient id="shellSheenGrad" cx="40%" cy="28%" r="78%">
+    <radialGradient id="shellSheenGrad${suffix}" cx="40%" cy="28%" r="78%">
       <stop offset="0%" stop-color="rgba(255,255,255,0.55)"/>
       <stop offset="45%" stop-color="rgba(255,255,255,0.10)"/>
       <stop offset="100%" stop-color="rgba(0,0,0,0.24)"/>
     </radialGradient>
-    <radialGradient id="socketBoreGrad" cx="42%" cy="40%" r="62%">
-      <stop offset="0%" stop-color="#05080c"/>
-      <stop offset="55%" stop-color="#101b27"/>
-      <stop offset="100%" stop-color="#26323f"/>
-    </radialGradient>`;
+    <radialGradient id="socketBoreGrad${suffix}" cx="50%" cy="62%" r="68%">
+      <stop offset="0%" stop-color="#16242f"/>
+      <stop offset="48%" stop-color="#0a131c"/>
+      <stop offset="100%" stop-color="#02040a"/>
+    </radialGradient>
+    <radialGradient id="socketGoldGrad${suffix}" cx="50%" cy="72%" r="78%">
+      <stop offset="0%" stop-color="#D7BA67"/>
+      <stop offset="55%" stop-color="#A6842F"/>
+      <stop offset="100%" stop-color="#5C4716"/>
+    </radialGradient>
+    <linearGradient id="socketRimGrad${suffix}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(38,28,8,0.9)"/>
+      <stop offset="45%" stop-color="rgba(176,148,80,0.55)"/>
+      <stop offset="100%" stop-color="rgba(255,244,205,0.95)"/>
+    </linearGradient>`;
+  }
+
+  // Inline CSS-variable bindings that point a connector SVG's fills at its own
+  // suffixed gradients. The stylesheet reads these vars (with solid-colour
+  // fallbacks) instead of hard-coded `url(#id)` references.
+  function connectorGradientVars(suffix = "") {
+    return `--grad-shell:url(#sbShellGradient${suffix});`
+      + `--grad-gold:url(#contactGoldGrad${suffix});`
+      + `--grad-sheen:url(#shellSheenGrad${suffix});`
+      + `--grad-gold-socket:url(#socketGoldGrad${suffix});`
+      + `--grad-rim:url(#socketRimGrad${suffix});`
+      + `--grad-bore:url(#socketBoreGrad${suffix});`;
+  }
 
   // Monotonic counter for per-render clip-path ids. Separator guide paths are
   // clipped to the insert face so they can't draw over the metal shell ring;
@@ -2983,9 +3020,13 @@
 
     // Sprint B: subtle radial gradient for the shell fill. Inlined as <defs>
     // so it survives cloning into the printable report popup. The real-view
-    // gold-contact and metal-sheen gradients live here too.
+    // gold-contact and metal-sheen gradients live here too. Unique per-SVG ids
+    // (bound via inline CSS vars) keep this viewer's fills from resolving to a
+    // hidden tab's gradients.
+    const gradSuffix = `-v${++connectorGradSeq}`;
+    svg.style.cssText = connectorGradientVars(gradSuffix);
     const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-    defs.innerHTML = CONNECTOR_GRADIENT_DEFS;
+    defs.innerHTML = connectorGradientDefs(gradSuffix);
     svg.appendChild(defs);
 
     const contactGender = currentContactGender(arr);
@@ -3007,7 +3048,34 @@
       defs,
     });
     svg.appendChild(faceGroup);
-    renderHoverPinLabel(svg, arr);
+    renderSelectedPinLabel(svg, arr);
+  }
+
+  // A few source arrangement drawings include a short tick stroke centred on a
+  // #16 (and occasionally #20) cavity. The extractor captured those strokes as
+  // guide paths, but visually they are just tiny lines poking out of the contact
+  // symbol (seen on 19-11, 21-16, 23-55, 25-46, 25-90) in both the engineering
+  // and real views. Drop any guide path that is a single straight segment whose
+  // midpoint sits on a contact center; genuine layout-zone separators are long
+  // multi-point polylines that pass between contacts, so they are unaffected.
+  function isContactCoincidentTick(path, contacts, arr) {
+    const nums = String(path?.d || "").match(/-?\d+(?:\.\d+)?/g);
+    if (!nums || nums.length !== 4) return false;
+    const x1 = +nums[0], y1 = +nums[1], x2 = +nums[2], y2 = +nums[3];
+    const midX = (x1 + x2) / 2;
+    const midY = (y1 + y2) / 2;
+    const length = Math.hypot(x2 - x1, y2 - y1);
+    return contacts.some((contact) => {
+      const r = Number(contact.r) || pinRadius(contact, arr);
+      return Math.hypot(contact.x - midX, contact.y - midY) <= r * 0.8 && length <= r * 4;
+    });
+  }
+
+  function renderableGuidePaths(arr) {
+    const guides = arr?.guide_paths || [];
+    const contacts = arr?.contacts || [];
+    if (!guides.length || !contacts.length) return guides;
+    return guides.filter((path) => !isContactCoincidentTick(path, contacts, arr));
   }
 
   // Builds the connector mating-face <g> shared by the live decoder viewer and
@@ -3057,7 +3125,7 @@
         defs.appendChild(clip);
         guideLayer.setAttribute("clip-path", `url(#${clipId})`);
       }
-      (arr.guide_paths || []).forEach((path) => {
+      renderableGuidePaths(arr).forEach((path) => {
         guideLayer.appendChild(svgEl("path", { class: "guide-path", d: path.d }));
       });
       faceGroup.appendChild(guideLayer);
@@ -3073,7 +3141,7 @@
       if (interactive && (state.selectedContactIndex === contact._index || state.pinMatches.has(contact._key))) {
         group.appendChild(svgEl("circle", { class: "pin-state-ring", cx: contact.x, cy: contact.y, r: radius + 1.15 }));
       }
-      if (interactive && shouldRenderLabel(contact)) {
+      if (interactive && shouldRenderLabel()) {
         const labelAttrs = {
           class: "pin-label",
           x: contact.x,
@@ -3153,34 +3221,9 @@
     if (profileType === "wall_receptacle" || profileType === "box_receptacle") {
       const plateWidth = radius * (profileType === "wall_receptacle" ? 2.8 : 2.55);
       const plateHeight = radius * (profileType === "wall_receptacle" ? 2.25 : 2.45);
-      const x = cx - plateWidth / 2;
-      const y = cy - plateHeight / 2;
       const holeOffsetX = plateWidth * 0.38;
       const holeOffsetY = plateHeight * 0.36;
-      const shapes = [
-        {
-          tag: "rect",
-          attrs: {
-            class: "mount-flange",
-            x,
-            y,
-            width: plateWidth,
-            height: plateHeight,
-            rx: radius * (profileType === "wall_receptacle" ? 0.2 : 0.14),
-          },
-        },
-        {
-          tag: "rect",
-          attrs: {
-            class: "mount-flange-inner",
-            x: cx - plateWidth * 0.38,
-            y: cy - plateHeight * 0.34,
-            width: plateWidth * 0.76,
-            height: plateHeight * 0.68,
-            rx: radius * 0.12,
-          },
-        },
-      ];
+      const shapes = [];
       [
         [cx - holeOffsetX, cy - holeOffsetY],
         [cx + holeOffsetX, cy - holeOffsetY],
@@ -3346,9 +3389,10 @@
     return group;
   }
 
-  function shouldRenderLabel(contact) {
-    if (!labelsAreOn()) return false;
-    return contact._index === state.hoveredContactIndex;
+  function shouldRenderLabel() {
+    // When the toggle is on, every pin carries its number/letter live; when off,
+    // pins stay clean and details surface in the click-driven floating window.
+    return labelsAreOn();
   }
 
   function labelsAreOn() {
@@ -3439,6 +3483,39 @@
     return "unknown";
   }
 
+  // Shielded data contacts (coax/twinax/quadrax) share a gauge with ordinary
+  // power/signal contacts, so the gauge symbol alone can't tell them apart
+  // (e.g. arrangements 25-46 #8 Coax vs 25-90 #8 Twinax render identically).
+  // We disambiguate by drawing one bore per conductor: coax=1, twinax=2,
+  // quadrax=4. Type is read from contact.type, falling back to the size text.
+  function contactTypeToken(contact) {
+    const t = String((contact && contact.type) || "").toLowerCase();
+    const s = String((contact && contact.size) || "").toLowerCase();
+    if (t.includes("quadrax") || s.includes("quadrax")) return "quadrax";
+    if (t.includes("twinax") || s.includes("twinax")) return "twinax";
+    if (t.includes("coax") || s.includes("coax")) return "coax";
+    return "";
+  }
+
+  function shieldedBoreCount(typeToken) {
+    return { coax: 1, twinax: 2, quadrax: 4 }[typeToken] || 0;
+  }
+
+  function shieldedBorePositions(cx, cy, radius, count) {
+    if (count <= 1) return [{ cx, cy, r: radius * 0.42 }];
+    if (count === 2) {
+      const off = radius * 0.4;
+      const r = radius * 0.3;
+      return [{ cx: cx - off, cy, r }, { cx: cx + off, cy, r }];
+    }
+    const off = radius * 0.4;
+    const r = radius * 0.26;
+    return [
+      { cx: cx - off, cy: cy - off, r }, { cx: cx + off, cy: cy - off, r },
+      { cx: cx - off, cy: cy + off, r }, { cx: cx + off, cy: cy + off, r },
+    ];
+  }
+
   function contactSymbolRadius(contact, arr) {
     const base = pinRadius(contact, arr);
     const scale = {
@@ -3455,14 +3532,25 @@
 
   function appendContactSymbol(group, contact, radius, gender, viewMode) {
     const token = gaugeToken(contact);
+    const shielded = shieldedBoreCount(contactTypeToken(contact));
     if ((viewMode || state.viewMode) === "real") {
       // True-color contacts: gold pads (copper alloy, gold plate per M39029).
       // Distinguish female sockets (recessed entry bore) from male pins (domed,
       // highlighted tip); fall back to the neutral pad when gender is unknown.
       group.appendChild(svgEl("circle", { class: "pin-symbol pin-contact-real", cx: contact.x, cy: contact.y, r: radius }));
-      if (gender === "socket") {
-        const boreR = radius * (token === "8" ? 0.52 : 0.46);
+      if (shielded) {
+        // Coax/twinax/quadrax: one recessed bore per conductor so the contact
+        // type reads at a glance regardless of pin/socket gender.
+        const boreClass = gender === "socket" ? "pin-contact-socket-bore" : "pin-contact-bore";
+        shieldedBorePositions(contact.x, contact.y, radius, shielded)
+          .forEach((b) => group.appendChild(svgEl("circle", { class: boreClass, cx: b.cx, cy: b.cy, r: b.r })));
+      } else if (gender === "socket") {
+        // Female socket: a wide, deep entry bore ringed by a bright machined
+        // lip so it reads as a hollow gold sleeve (not a solid pin) even at the
+        // small scale used in the printable report.
+        const boreR = radius * (token === "8" ? 0.7 : 0.66);
         group.appendChild(svgEl("circle", { class: "pin-contact-socket-bore", cx: contact.x, cy: contact.y, r: boreR }));
+        group.appendChild(svgEl("circle", { class: "pin-contact-socket-rim", cx: contact.x, cy: contact.y, r: boreR }));
       } else if (token === "8") {
         group.appendChild(svgEl("circle", { class: "pin-contact-bore", cx: contact.x, cy: contact.y, r: radius * 0.42 }));
       } else if (gender === "pin") {
@@ -3471,7 +3559,12 @@
       return;
     }
     const attrs = { class: `pin-symbol gauge-${token}`, cx: contact.x, cy: contact.y, r: radius };
-    if (token === "8") {
+    if (shielded) {
+      // Engineering symbol: gauge-colored disc with one bore per conductor.
+      group.appendChild(svgEl("circle", attrs));
+      shieldedBorePositions(contact.x, contact.y, radius, shielded)
+        .forEach((b) => group.appendChild(svgEl("circle", { class: "pin-symbol-cutout", cx: b.cx, cy: b.cy, r: b.r })));
+    } else if (token === "8") {
       group.appendChild(svgEl("circle", attrs));
       group.appendChild(svgEl("circle", { class: "pin-symbol-cutout", cx: contact.x, cy: contact.y, r: radius * 0.48 }));
     } else if (token === "10") {
@@ -3511,7 +3604,12 @@
   }
 
   function appendCross(group, x, y, radius, mode) {
-    const a = radius * 0.72;
+    // Keep both arm tips at the same distance from center (0.72 * radius) so the
+    // diagonal "x" mark stays inside the pin circle. Without the SQRT1_2 factor
+    // the diagonal tips land at 0.72 * sqrt(2) ~= 1.018 * radius and poke past
+    // the circle edge (visible as tiny spikes on #16 contacts).
+    const tip = radius * 0.72;
+    const a = mode === "x" ? tip * Math.SQRT1_2 : tip;
     const lines = mode === "x"
       ? [[x - a, y - a, x + a, y + a], [x - a, y + a, x + a, y - a]]
       : [[x - a, y, x + a, y], [x, y - a, x, y + a]];
@@ -3526,6 +3624,19 @@
 
   function lineMarkup(x1, y1, x2, y2) {
     return `<line class="pin-symbol-mark" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"></line>`;
+  }
+
+  function keyWidthFactors(decoded) {
+    // Real key/keyway widths come from the FIGURE 7 width tables
+    // (standardDefinitions.definitions.key_geometry.series_iv.derived_render_ratios).
+    // Minor polarizing keys share one nominal width; the K polarization key is wider
+    // (note 16); the main/master key/keyway is modestly wider than a minor key. Each
+    // factor falls back to 1 (uniform width) when the data is unavailable.
+    const ratios = defs.key_geometry?.series_iv?.derived_render_ratios || {};
+    const kFactor = Number(ratios.k_polarization_keyway_width_factor) || 1;
+    const mainFactor = Number(ratios.main_keyway_to_minor_keyway_width_factor) || 1;
+    const minorFactor = decoded?.polarization === "K" ? kFactor : 1;
+    return { minorFactor, mainFactor, kFactor };
   }
 
   function orientationMarker(arr, decodedOverride) {
@@ -3544,6 +3655,7 @@
     // style as the minor polarizing features (see keyingDrawing + styles.css).
     const group = svgEl("g", { class: "orientation-group" });
     group.dataset.role = role || "unknown";
+    const mainFactor = keyWidthFactors(decoded).mainFactor;
 
     const markerWidth = radius * 0.18;
     const markerHeight = radius * 0.11;
@@ -3560,18 +3672,18 @@
     const keywayPt = polarPoint(cx, cy, radius * 0.93, 0);
     group.appendChild(svgEl("rect", {
       class: "keying-real keying-real-keyway keying-real-master",
-      x: keywayPt.x - radius * 0.026,
+      x: keywayPt.x - radius * 0.026 * mainFactor,
       y: keywayPt.y - radius * 0.1,
-      width: radius * 0.052,
+      width: radius * 0.052 * mainFactor,
       height: radius * 0.2,
       rx: radius * 0.016,
     }));
     const keyPt = polarPoint(cx, cy, radius * 1.055, 0);
     group.appendChild(svgEl("rect", {
       class: "keying-real keying-real-key keying-real-master",
-      x: keyPt.x - radius * 0.034,
+      x: keyPt.x - radius * 0.034 * mainFactor,
       y: keyPt.y - radius * 0.08,
-      width: radius * 0.068,
+      width: radius * 0.068 * mainFactor,
       height: radius * 0.16,
       rx: radius * 0.014,
     }));
@@ -3596,6 +3708,7 @@
     // so the real view can render the matching feature (CSS in styles.css).
     const role = shellRoleForDecoded(decoded);
     group.dataset.role = role || "unknown";
+    const widthFactor = keyWidthFactors(decoded).minorFactor;
     const featureWord = role === "plug" ? "keys" : role === "receptacle" ? "keyways" : "key/keyway";
     const markers = [
       ["A", pol.AR_or_AP_deg],
@@ -3626,9 +3739,9 @@
       // Engineering schematic marker (shown in the engineering view).
       group.appendChild(svgEl("rect", {
         class: "minor-keyway",
-        x: point.x - radius * 0.018,
+        x: point.x - radius * 0.018 * widthFactor,
         y: point.y - radius * 0.085,
-        width: radius * 0.036,
+        width: radius * 0.036 * widthFactor,
         height: radius * 0.17,
         rx: radius * 0.012,
         transform: `rotate(${angle} ${point.x} ${point.y})`,
@@ -3637,9 +3750,9 @@
       const keywayPt = polarPoint(cx, cy, radius * 0.93, angle);
       group.appendChild(svgEl("rect", {
         class: "keying-real keying-real-keyway",
-        x: keywayPt.x - radius * 0.026,
+        x: keywayPt.x - radius * 0.026 * widthFactor,
         y: keywayPt.y - radius * 0.1,
-        width: radius * 0.052,
+        width: radius * 0.052 * widthFactor,
         height: radius * 0.2,
         rx: radius * 0.016,
         transform: `rotate(${angle} ${keywayPt.x} ${keywayPt.y})`,
@@ -3648,9 +3761,9 @@
       const keyPt = polarPoint(cx, cy, radius * 1.055, angle);
       group.appendChild(svgEl("rect", {
         class: "keying-real keying-real-key",
-        x: keyPt.x - radius * 0.034,
+        x: keyPt.x - radius * 0.034 * widthFactor,
         y: keyPt.y - radius * 0.08,
-        width: radius * 0.068,
+        width: radius * 0.068 * widthFactor,
         height: radius * 0.16,
         rx: radius * 0.014,
         transform: `rotate(${angle} ${keyPt.x} ${keyPt.y})`,
@@ -3865,19 +3978,23 @@
   }
 
   function showPinTooltip(contact) {
+    // Only update the status line on hover. Re-rendering the SVG here would wipe
+    // and rebuild every pin between mousedown and mouseup, so the browser would
+    // never emit the click that opens the floating detail window.
     state.hoveredContactIndex = contact._index;
     setMessage(els.searchMessage, `Pin ${contact.label} | #${contact.size} ${contact.type}`);
-    renderViewer();
   }
 
   function hidePinTooltip() {
     state.hoveredContactIndex = null;
     setMessage(els.searchMessage, "");
-    renderViewer();
   }
 
-  function renderHoverPinLabel(svg, arr) {
-    const contact = currentContacts()[state.hoveredContactIndex];
+  function renderSelectedPinLabel(svg, arr) {
+    // The floating detail window is the "labels off" affordance: when labels are
+    // shown over every pin, the live glyphs already convey identity, so skip it.
+    if (labelsAreOn()) return;
+    const contact = currentContacts()[state.selectedContactIndex];
     if (!contact || !arr.outline) return;
     // The tooltip sits in unmirrored coordinates, so anchor it to the contact's
     // on-screen position (mirrored for the socket real-view face).
@@ -4652,7 +4769,7 @@
     const arr = decoded.arrangement_id ? arrangementById(decoded.arrangement_id) : null;
     const svgHtml = arr?.outline ? `
       <div class="mating-source-svg">
-        ${manualArrangementPreview(decoded, { showBoundary: true, showKeying: true })}
+        ${manualArrangementPreview(decoded, { showBoundary: true, showKeying: true, viewMode: "real" })}
       </div>` : "";
     return `
       <div class="mating-source-card">
@@ -4684,7 +4801,11 @@
     const candidateValidation = exactValidation
       ? { ...exactValidation, status: opt.status || exactValidation.status }
       : { status: opt.status, reasons: [...(opt.conflictingFields || []), ...(opt.missingFields || [])], sources: opt.sources || [] };
-    const mateDecoded = {
+    // Draw the mate face from its own fully-decoded part number when one was
+    // constructed, so the opposite contact gender (socket vs pin) and shell
+    // finish render exactly as the decoder would draw that connector. Force the
+    // real/gold face so the mating tab matches the decoder's real view.
+    const previewDecoded = targetDecoded?.ok ? targetDecoded : {
       ok: true,
       arrangement_id: decoded.arrangement_id,
       polarization: decoded.polarization,
@@ -4693,7 +4814,7 @@
     const arr = decoded.arrangement_id ? arrangementById(decoded.arrangement_id) : null;
     const svgHtml = arr?.outline ? `
       <div class="mating-source-svg">
-        ${manualArrangementPreview(mateDecoded, { showBoundary: true, showKeying: true })}
+        ${manualArrangementPreview(previewDecoded, { showBoundary: true, showKeying: true, viewMode: "real" })}
       </div>` : "";
     const shellHtml = shellProfileHtml(opt.mateSheet);
     const pnBlock = opt.candidatePartNumber
@@ -5044,6 +5165,223 @@
       </section>
     `).join("");
     state.manualRendered = true;
+  }
+
+  function dataSourceManufacturers() {
+    const EXCLUDED = new Set(["MIL-DTL-38999", "Repo-generated", "DLA"]);
+    return [...new Set(
+      (converterData.rules || [])
+        .map((rule) => String(rule.manufacturer || "")
+          .split(" / ")[0]
+          .replace(/\s+reference geometry$/i, "")
+          .trim())
+        .filter((name) => name && !EXCLUDED.has(name))
+    )].sort((a, b) => a.localeCompare(b));
+  }
+
+  function dataSourceIoVendors() {
+    const io = toolboxData.ruggedIo || {};
+    const groups = [
+      io.rugged_io_d38999_style_connectors || [],
+      io.rugged_video_d38999_style_connectors || [],
+      io.rugged_high_speed_d38999_style_connectors || [],
+    ];
+    const vendors = new Set();
+    groups.forEach((group) => group.forEach((entry) => {
+      if (entry && entry.vendor) vendors.add(String(entry.vendor).trim());
+    }));
+    return [...vendors].sort((a, b) => a.localeCompare(b));
+  }
+
+  function dataSourceCard(card) {
+    const refs = (card.refs || [])
+      .map((ref) => ref.href
+        ? `<a class="datasource-link" href="${escapeHtml(ref.href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(ref.label)}</a>`
+        : `<span class="datasource-ref">${escapeHtml(ref.label)}</span>`)
+      .join("");
+    return `
+      <div class="datasource-card">
+        <div class="datasource-card-head">
+          <strong>${escapeHtml(card.name)}</strong>
+          ${card.kind ? `<span class="datasource-tag">${escapeHtml(card.kind)}</span>` : ""}
+        </div>
+        ${card.role ? `<div class="datasource-role">${escapeHtml(card.role)}</div>` : ""}
+        ${card.used ? `<div class="datasource-used"><span class="datasource-used-label">${escapeHtml(T("datasources.usedLabel", "Used for"))}:</span> ${escapeHtml(card.used)}</div>` : ""}
+        ${refs ? `<div class="datasource-refs">${refs}</div>` : ""}
+      </div>`;
+  }
+
+  function renderDataSources() {
+    if (!els.datasourcesContent) return;
+
+    const arrangementCount = arrangements.length;
+    const contactTotal = arrangements.reduce(
+      (sum, arr) => sum + (Number(arr.contact_count) || (arr.contacts ? arr.contacts.length : 0)), 0);
+    const dlaCount = Number(dlaDocs.downloaded_count || dlaDocs.document_count || (dlaDocs.documents || []).length || 0);
+    const dlaSummary = dlaDocs.summary || {};
+    const dlaSourcePage = dlaDocs.source_page || "https://landandmaritimeapps.dla.mil/Programs/MilSpec/ListDocs.aspx?BasicDoc=MIL-DTL-38999";
+    const ruleCount = (converterData.rules || []).length;
+    const manufacturers = dataSourceManufacturers();
+    const ioVendors = dataSourceIoVendors();
+    const corpus = (validPartNumbersData && validPartNumbersData.summary) || {};
+    const sourceCounts = corpus.sourceCounts || {};
+    const num = (value) => Number(value || 0).toLocaleString();
+
+    const intro = `
+      <div class="manual-note">${escapeHtml(T("datasources.intro",
+        "This toolbox is fully offline. Every decoded field, drawing, current rating, and part number is derived from the public standards, qualified-product databases, and manufacturer catalogs listed below — not from live lookups."))}</div>
+      <div class="manual-note">${escapeHtml(T("datasources.introProvenance",
+        "Where a source PDF does not define a value, the generated data marks it as unknown or needing manual verification rather than guessing."))}</div>
+    `;
+
+    const standardsCards = [
+      {
+        name: "DLA Land and Maritime (Defense Logistics Agency)",
+        kind: T("datasources.kind.body", "Standards body"),
+        role: T("datasources.dla.role", "U.S. DoD preparing activity for MIL-DTL-38999. Publishes the detail specification, slash sheets (Series III/IV shell types), and legacy MS sheets (Series I/II)."),
+        used: T("datasources.dla.used", `Part-number field order, shell-size codes, contact styles, classes/finishes, series definitions, Series III polarization, and ${dlaCount} parsed official PDFs (${num(dlaSummary.series_iii_iv_approved_slash_sheets || 0)} approved slash sheets, ${num(dlaSummary.series_iii_iv_initial_drafts || 0)} initial drafts, ${num(dlaSummary.series_i_ii_ms_sheets || 0)} MS sheets).`),
+        refs: [
+          { label: "MIL-DTL-38999 document list", href: dlaSourcePage },
+          { label: "MIL-DTL-38999 detail spec (PDF)", href: "https://landandmaritimeapps.dla.mil/Downloads/MilSpec/Docs/MIL-DTL-38999/dtl38999.pdf" },
+          { label: "ASSIST Online (assist.dla.mil)", href: "https://assist.dla.mil" },
+        ],
+      },
+      {
+        name: "MIL-STD-1560 — Insert Arrangements",
+        kind: T("datasources.kind.standard", "Standard"),
+        role: T("datasources.std1560.role", "DoD standard tabulating MIL-DTL-38999 insert (cavity) arrangements and contact positions."),
+        used: T("datasources.std1560.used", "Cross-checking and correcting insert-arrangement labels and contact positions."),
+        refs: [{ label: "data/reference/std1560.pdf" }],
+      },
+      {
+        name: "QPL-38999 / QPL-1122 (qpldocs.dla.mil)",
+        kind: T("datasources.kind.database", "Qualified-products database"),
+        role: T("datasources.qpl.role", "DLA Qualified Products List of part numbers from manufacturers qualified to MIL-DTL-38999, with National Stock Numbers."),
+        used: T("datasources.qpl.used", `${num(sourceCounts.qpl || 0)} QPL-qualified part numbers feed the validated part-number corpus and NSN tagging.`),
+        refs: [{ label: "QPL-1122 search", href: "https://qpldocs.dla.mil/search/parts.aspx?qpl=1122" }],
+      },
+    ];
+
+    const drawingCards = [
+      {
+        name: "D38999 contact-arrangement drawings",
+        kind: T("datasources.kind.drawing", "Drawings"),
+        role: T("datasources.arrangements.role", "Insert arrangement face drawings used to build the connector viewer."),
+        used: T("datasources.arrangements.used", `${num(arrangementCount)} insert arrangements and ${num(contactTotal)} contacts, including labels, gauges, contact counts, and the ${num(arrangementCount)} SVG crops drawn in the viewer.`),
+        refs: [{ label: "docs/pdfs/reference/d38999-contact-arrangements.pdf" }],
+      },
+      {
+        name: "D38999 shell-keying reference",
+        kind: T("datasources.kind.drawing", "Drawings"),
+        role: T("datasources.keying.role", "Series III keying/clocking angle tables used to draw the polarization teeth on the connector."),
+        used: T("datasources.keying.used", "Series III keying teeth (positions A–E and normal) rendered on the connector drawing."),
+        refs: [{ label: "docs/pdfs/reference/d38999-shell-keying.pdf" }],
+      },
+    ];
+
+    const manufacturerList = manufacturers.length
+      ? manufacturers.join(", ")
+      : "Amphenol, Conesys, Eaton, Glenair, ITT Cannon, Souriau, TE Deutsch";
+
+    const manufacturerCards = [
+      {
+        name: manufacturerList,
+        kind: T("datasources.kind.catalogs", "Manufacturer catalogs"),
+        role: T("datasources.mfr.role",
+          `${manufacturers.length || 7} qualified manufacturers. Their MIL-DTL-38999 ordering catalogs back the ${ruleCount} cross-reference rule sets in the P/N Converter.`),
+        used: T("datasources.mfr.used", "Mapping D38999 part numbers to manufacturer part numbers (and back): shell prefixes, finish codes, class/finish letters, and contact-style suffixes."),
+        refs: [
+          { label: "Catalog PDFs: docs/pdfs/catalogs/" },
+          { label: "federalconnectors.com datasheet mirror", href: "https://d38999.federalconnectors.com/D38999" },
+        ],
+      },
+      {
+        name: "Contact current ratings",
+        kind: T("datasources.kind.catalogs", "Manufacturer catalogs"),
+        role: T("datasources.ratings.role", "Per-contact-size test current, crimp-well data, and wire range (AWG)."),
+        used: T("datasources.ratings.used", "Current ratings and wire-gauge guidance shown for each contact size."),
+        refs: [
+          { label: "Conesys Series III catalog" },
+          { label: "ITT Cannon Series I/II/III catalog" },
+          { label: "MIL-DTL-38999 / MIL-STD-1560" },
+        ],
+      },
+    ];
+
+    const corpusCards = [
+      {
+        name: "Validated D38999 part-number corpus",
+        kind: T("datasources.kind.database", "Combined database"),
+        role: T("datasources.corpus.role",
+          `${num(corpus.uniquePartNumbers || 0)} unique part numbers assembled from four evidence levels and tagged with environment suitability.`),
+        used: T("datasources.corpus.used", "Exact-match catalog hits, environment filtering, and decoder validation."),
+        refs: [
+          { label: `Manufacturer-verified: ${num(sourceCounts.manufacturerVerified || 0)}` },
+          { label: `Catalog examples: ${num(sourceCounts.catalogExample || 0)}` },
+          { label: `QPL-qualified: ${num(sourceCounts.qpl || 0)}` },
+          { label: `Federal Connectors exact: ${num(sourceCounts.federalConnectorsExact || 0)}` },
+        ],
+      },
+      {
+        name: "Federal Connectors D38999 index",
+        kind: T("datasources.kind.secondary", "Secondary source"),
+        role: T("datasources.fedcon.role", "Distributor/index site cataloging D38999 part numbers. Kept separate from manufacturer-verified data and clearly labeled as a secondary source."),
+        used: T("datasources.fedcon.used", "Supporting evidence for part-number existence and as a datasheet mirror; never the sole authority for decoded fields."),
+        refs: [{ label: "d38999.federalconnectors.com", href: "https://d38999.federalconnectors.com/D38999" }],
+      },
+    ];
+
+    const ioVendorList = ioVendors.length
+      ? ioVendors.join(", ")
+      : "Amphenol Socapex / Amphenol PCD, Cinch, Glenair, PIC Wire, Souriau / Eaton, TE Connectivity / POLAMCO";
+
+    const ioCards = [
+      {
+        name: ioVendorList,
+        kind: T("datasources.kind.catalogs", "Manufacturer catalogs"),
+        role: T("datasources.io.role", "Vendors of rugged D38999-style I/O connectors (RJ45/Ethernet, USB, HDMI, DisplayPort)."),
+        used: T("datasources.io.used", "The I/O Connectors browser: families, supported interfaces, example/verified part numbers, and selection guidance."),
+        refs: [
+          { label: "Glenair SuperSeal / SuperNine datasheets", href: "https://www.glenair.com" },
+          { label: "Amphenol TV µCOM 10Gb brochure", href: "https://www.amphenolpcd.com" },
+          { label: "docs/pdfs/datasheets/, docs/pdfs/catalogs/" },
+        ],
+      },
+      {
+        name: "USB-IF · HDMI Forum · VESA · DDWG · IEEE · TIA/EIA · SAE",
+        kind: T("datasources.kind.body", "Standards bodies"),
+        role: T("datasources.protocol.role", "Protocol and wiring standards used to determine pin groupings and feasibility for high-speed interfaces routed through D38999 connectors."),
+        used: T("datasources.protocol.used", "Pin-naming conventions and wiring rules for USB 2.0/3.x/Type-C, HDMI, DisplayPort, DVI, VGA, Ethernet (IEEE 802.3), RS-485/422/232, and CAN (SAE J1939)."),
+        refs: [
+          { label: "USB-IF (usb.org)", href: "https://www.usb.org/documents" },
+          { label: "HDMI (hdmi.org)", href: "https://www.hdmi.org/spec/index" },
+          { label: "VESA DisplayPort", href: "https://www.vesa.org" },
+        ],
+      },
+    ];
+
+    const sections = [
+      [T("datasources.section.overview", "Overview"), intro],
+      [T("datasources.section.standards", "Standards & qualified-products databases"), standardsCards.map(dataSourceCard).join("")],
+      [T("datasources.section.drawings", "Insert arrangements & drawings"), drawingCards.map(dataSourceCard).join("")],
+      [T("datasources.section.manufacturers", "Manufacturer catalogs"), manufacturerCards.map(dataSourceCard).join("")],
+      [T("datasources.section.corpus", "Part-number databases"), corpusCards.map(dataSourceCard).join("")],
+      [T("datasources.section.io", "Rugged I/O & high-speed references"), ioCards.map(dataSourceCard).join("")],
+      [T("datasources.section.notes", "References & disclaimer"), `
+        <div class="manual-note">${escapeHtml(T("datasources.notes.terms",
+          "Source standards and manufacturer PDFs are redistributed under their own terms; upstream URLs are recorded in docs/pdfs/manifest.json."))}</div>
+        <div class="manual-note">${escapeHtml(T("datasources.notes.currency",
+          "Always verify the currency of a standard or qualified part via the official ASSIST and QPL databases before specifying a connector."))}</div>
+      `],
+    ];
+
+    els.datasourcesContent.innerHTML = sections.map(([title, body]) => `
+      <section class="manual-section">
+        <h3>${escapeHtml(title)}</h3>
+        ${body}
+      </section>
+    `).join("");
+    state.dataSourcesRendered = true;
   }
 
   function activeDecodedOrExample(decoded) {
@@ -5665,6 +6003,10 @@
     return {
       mateIndex,
       d38999: decoded.part_number,
+      // Full decoded object retained so the report can render this connector's
+      // own front-face artwork (gender mirroring, keying, shell geometry)
+      // rather than reusing the source connector's faces.
+      decodedFull: decoded,
       decoded: {
         slashSheet: decoded.slash_sheet,
         classField: decoded.class_field,
@@ -5806,6 +6148,21 @@
     </figure>`;
   }
 
+  // Each connector block (source or mate) must show its OWN front face. The mate
+  // is a different part — usually the opposite gender (pin vs socket → mirrored
+  // face) and possibly different keying — so reusing the source's precomputed
+  // faces would wrongly print the source graphic as the "mating" connector.
+  // Render this block's faces from its own decoded data; when the block carries
+  // no full decoded object (e.g. an undecodable candidate) emit no artwork.
+  function faceVariantsForBlock(block) {
+    const full = block?.decodedFull;
+    if (full?.ok && full.arrangement_id) {
+      const arr = arrangementById(full.arrangement_id);
+      if (arr) return renderFaceVariants(arr, full);
+    }
+    return {};
+  }
+
   function reportConnectorArtwork(block, faceVariants) {
     const slashSheet = block?.decoded?.slashSheet;
     const arrId = block?.decoded?.arrangementId;
@@ -5827,7 +6184,7 @@
     const groups = [];
     if (faces.length) {
       groups.push(`<div class="report-art-group report-art-front">
-        <div class="report-art-group-title">${escapeHtml(T("report.frontFace", "Front (mating) face"))}</div>
+        <div class="report-art-group-title">${escapeHtml(T("report.frontFace", "Front face"))}</div>
         <div class="report-art-faces">${faces.join("")}</div>
       </div>`);
     }
@@ -5842,7 +6199,7 @@
     return `<div class="report-art">${groups.join("")}</div>`;
   }
 
-  function reportBodyFragment(report, faceVariants, options = {}) {
+  function reportBodyFragment(report, options = {}) {
     const sourceHeading = options.sourceHeading || T("report.sourceConnector");
     const matesHeading = options.matesHeading || T("report.matesHeading");
     const itemTitle = options.itemTitle;
@@ -5865,7 +6222,7 @@
       const decodedLine = decoded.slashSheet
         ? `<p class="report-decoded">${escapeHtml(`${decoded.slashSheet} · class ${decoded.classField || "?"} · shell ${decoded.shellCode || "?"} (${decoded.shellSize || "?"}) · arr ${decoded.arrangementId || "?"} · contact ${decoded.contactStyle || "?"} · keying ${decoded.polarization || "?"}`)}</p>`
         : "";
-      const artwork = reportConnectorArtwork(block, faceVariants);
+      const artwork = reportConnectorArtwork(block, faceVariantsForBlock(block));
       return `
         <section class="report-block report-block-${role}">
           <h3>${escapeHtml(heading)}</h3>
@@ -5915,7 +6272,67 @@
       </article>`;
   }
 
-  function reportShellMarkup(titleText, metaText, fragmentsHtml, subtitleText) {
+  function reportLogoSvg() {
+    return `<svg viewBox="0 0 48 48" width="42" height="42" fill="none" aria-hidden="true">
+      <circle cx="24" cy="24" r="21" stroke="currentColor" stroke-width="2.5"/>
+      <circle cx="24" cy="24" r="15" stroke="currentColor" stroke-width="1.4" opacity="0.55"/>
+      <circle cx="24" cy="14" r="2.3" fill="currentColor"/>
+      <circle cx="32.7" cy="19" r="2.3" fill="currentColor"/>
+      <circle cx="32.7" cy="29" r="2.3" fill="currentColor"/>
+      <circle cx="24" cy="34" r="2.3" fill="currentColor"/>
+      <circle cx="15.3" cy="29" r="2.3" fill="currentColor"/>
+      <circle cx="15.3" cy="19" r="2.3" fill="currentColor"/>
+      <circle cx="24" cy="24" r="2.3" fill="currentColor"/>
+      <path d="M24 3.2v3.4" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+    </svg>`;
+  }
+
+  function reportChipRow(pairs) {
+    const chips = pairs
+      .filter(([, value]) => value != null && String(value).trim() !== "")
+      .map(([label, value]) =>
+        `<span class="report-chip"><span class="report-chip-label">${escapeHtml(label)}</span><span class="report-chip-value">${escapeHtml(String(value))}</span></span>`)
+      .join("");
+    return chips ? `<div class="report-chips">${chips}</div>` : "";
+  }
+
+  function reportMetaGrid(pairs) {
+    const cells = pairs
+      .filter(([, value]) => value != null && String(value).trim() !== "")
+      .map(([label, value, mono]) =>
+        `<div class="report-meta-cell"><dt>${escapeHtml(label)}</dt><dd class="${mono ? "mono" : ""}">${escapeHtml(String(value))}</dd></div>`)
+      .join("");
+    return cells ? `<dl class="report-meta-grid">${cells}</dl>` : "";
+  }
+
+  function reportHeaderExtras(report) {
+    const d = report?.self?.decoded || {};
+    const desc = report?.self?.description || {};
+    const shellVal = d.shellCode
+      ? `${d.shellCode}${d.shellSize ? ` (${d.shellSize})` : ""}`
+      : (d.shellSize || "");
+    const chipsHtml = reportChipRow([
+      [T("report.field.slashSheet"), d.slashSheet],
+      [T("report.field.class"), d.classField],
+      [T("report.field.shellSize"), shellVal],
+      [T("report.field.arrangement"), d.arrangementId || d.insertArrangement],
+      [T("report.field.contact"), d.contactStyle],
+      [T("report.field.keying"), d.polarization],
+    ]);
+    const generated = report?.meta?.generatedAt
+      ? String(report.meta.generatedAt).slice(0, 16).replace("T", " ")
+      : "";
+    const metaGridHtml = reportMetaGrid([
+      [T("report.field.partNumber"), report?.meta?.sourcePartNumber, true],
+      [T("report.field.shellType"), desc.shellTypeLabel],
+      [T("report.field.matingRole"), desc.matingRole],
+      [T("report.field.generated"), generated],
+    ]);
+    return { chipsHtml, metaGridHtml };
+  }
+
+  function reportShellMarkup(titleText, metaText, fragmentsHtml, opts = {}) {
+    const { subtitle = "", chipsHtml = "", metaGridHtml = "" } = opts;
     const dir = (document.documentElement.getAttribute("dir") === "rtl") ? "rtl" : "ltr";
     const baseHref = document.baseURI || (location.href.replace(/[^/]*$/, ""));
     const stylesHref = new URL("styles.css", baseHref).href;
@@ -5927,7 +6344,34 @@
         @page { size: A4; margin: 14mm; }
         body { font-family: Inter, Arial, sans-serif; color: #0b2545; padding: 24px; max-width: 960px; margin: auto; background: #fff; }
         h1 { font-size: 22px; margin-bottom: 4px; }
-        .report-pn-title { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 18px; font-weight: 700; color: #1d4ed8; margin: 0 0 10px; }
+        .report-header {
+          display: flex; align-items: center; gap: 16px;
+          padding: 18px 24px; margin: -24px -24px 18px;
+          background: linear-gradient(135deg, #1d4ed8, #2563eb); color: #fff;
+        }
+        .report-brand { flex: none; display: flex; color: #fff; }
+        .report-headings { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .report-header h1 { margin: 0; color: #fff; line-height: 1.15; }
+        .report-pn-title {
+          font-family: ui-monospace, "SF Mono", Menlo, monospace;
+          font-size: 16px; font-weight: 700; margin: 0;
+          color: rgba(255, 255, 255, 0.95); word-break: break-all;
+        }
+        .report-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
+        .report-chip {
+          display: inline-flex; flex-direction: column; gap: 1px;
+          padding: 5px 11px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 7px;
+        }
+        .report-chip-label { font-size: 8.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; }
+        .report-chip-value { font-size: 13px; font-weight: 700; color: #1d4ed8; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+        .report-meta-grid {
+          display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+          gap: 1px; margin: 0 0 16px; border: 1px solid #e2e8f0; border-radius: 8px;
+          overflow: hidden; background: #e2e8f0;
+        }
+        .report-meta-cell { background: #fff; padding: 8px 12px; }
+        .report-meta-cell dt { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin: 0 0 2px; }
+        .report-meta-cell dd { margin: 0; font-size: 13px; font-weight: 600; color: #0b2545; word-break: break-all; }
         h3 { font-size: 14px; margin: 14px 0 4px; }
         .report-meta { color: #475569; font-size: 12px; margin-bottom: 18px; }
         .report-disclaimer { background: #fef3c7; border: 1px solid #d97706; padding: 8px 12px; border-radius: 6px; font-size: 12px; margin-bottom: 18px; }
@@ -6007,42 +6451,55 @@
           .report-item { break-inside: avoid-page; page-break-inside: avoid; border-color: #000; }
           .report-group { break-inside: avoid; page-break-inside: avoid; }
           .report-group-heading { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .report-header, .report-chip, .report-meta-cell {
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+          }
+          .report-header { margin: 0 0 18px; }
           .report-print-bar { display: none; }
         }
       </style></head><body>
       <div class="report-print-bar"><button type="button" onclick="window.print()">${escapeHtml(T("decoded.action.report"))}</button></div>
-      <h1>${escapeHtml(titleText)}</h1>
-      ${subtitleText ? `<p class="report-pn-title">${escapeHtml(subtitleText)}</p>` : ""}
-      <div class="report-meta">${escapeHtml(metaText)}</div>
+      <header class="report-header">
+        <span class="report-brand">${reportLogoSvg()}</span>
+        <div class="report-headings">
+          <h1>${escapeHtml(titleText)}</h1>
+          ${subtitle ? `<p class="report-pn-title">${escapeHtml(subtitle)}</p>` : ""}
+        </div>
+      </header>
+      ${chipsHtml}
+      ${metaGridHtml}
+      ${metaText ? `<div class="report-meta">${escapeHtml(metaText)}</div>` : ""}
       <div class="report-disclaimer">${escapeHtml(T("report.disclaimer"))}</div>
       ${fragmentsHtml}
       </body></html>`;
   }
 
   function reportHtmlMarkup(report) {
-    const arr = report?.self?.decoded?.arrangementId
-      ? arrangementById(report.self.decoded.arrangementId)
-      : state.selectedArrangement;
-    const faceVariants = renderFaceVariants(arr);
-    const fragment = reportBodyFragment(report, faceVariants, {});
+    const fragment = reportBodyFragment(report, {});
     const title = T("report.title");
-    const meta = report.meta.generatedAt;
-    return reportShellMarkup(title, meta, fragment, report.meta.sourcePartNumber);
+    const { chipsHtml, metaGridHtml } = reportHeaderExtras(report);
+    return reportShellMarkup(title, "", fragment, {
+      subtitle: report.meta.sourcePartNumber,
+      chipsHtml,
+      metaGridHtml,
+    });
   }
 
   function exportReportHtml(decoded, options = {}) {
     if (!decoded?.ok) return;
     const report = buildCrossRefReport(decoded);
     if (!report) return;
-    const arr = decoded.arrangement_id ? arrangementById(decoded.arrangement_id) : null;
-    const faceVariants = renderFaceVariants(arr, decoded);
-    const fragment = reportBodyFragment(report, faceVariants, {});
+    const fragment = reportBodyFragment(report, {});
     const titleText = T("report.title");
-    const metaParts = [report.meta.generatedAt];
-    if (options.viaInput && options.viaInput !== report.meta.sourcePartNumber) {
-      metaParts.unshift(Tf("report.viaInput", { input: options.viaInput, vendor: options.vendor || "?" }));
-    }
-    const html = reportShellMarkup(titleText, metaParts.join(" · "), fragment, report.meta.sourcePartNumber);
+    const { chipsHtml, metaGridHtml } = reportHeaderExtras(report);
+    const metaText = (options.viaInput && options.viaInput !== report.meta.sourcePartNumber)
+      ? Tf("report.viaInput", { input: options.viaInput, vendor: options.vendor || "?" })
+      : "";
+    const html = reportShellMarkup(titleText, metaText, fragment, {
+      subtitle: report.meta.sourcePartNumber,
+      chipsHtml,
+      metaGridHtml,
+    });
     const w = window.open("", "_blank");
     if (!w) {
       const blob = new Blob([html], { type: "text/html;charset=utf-8" });
@@ -6119,13 +6576,26 @@
     const order = ["8", "10", "12", "16", "20", "22d"];
     const present = new Set(contacts.map((c) => gaugeToken(c)));
     const tokens = order.filter((t) => present.has(t));
-    if (!tokens.length) return "";
+    const typesPresent = new Set(contacts.map((c) => contactTypeToken(c)).filter(Boolean));
+    const typeOrder = ["coax", "twinax", "quadrax"];
+    const types = typeOrder.filter((t) => typesPresent.has(t));
+    if (!tokens.length && !types.length) return "";
     const labelFor = { "8": "#8", "10": "#10", "12": "#12", "16": "#16", "20": "#20", "22d": "#22D" };
     const sizeFor = { "8": "8", "10": "10", "12": "12", "16": "16", "20": "20", "22d": "22D" };
-    const items = tokens.map((t) => {
-      const symbol = miniContactSymbolMarkup({ x: 0, y: 0, size: sizeFor[t] }, 2.6);
-      return `<span class="report-gauge-item"><svg class="connector-svg report-gauge-swatch" viewBox="-6 -6 12 12" xmlns="http://www.w3.org/2000/svg">${symbol}</svg><span class="report-gauge-label">${escapeHtml(labelFor[t])}</span></span>`;
-    }).join("");
+    const typeLabelFor = {
+      coax: T("legend.coax", "Coax"),
+      twinax: T("legend.twinax", "Twinax"),
+      quadrax: T("legend.quadrax", "Quadrax"),
+    };
+    const swatch = (symbol, label) =>
+      `<span class="report-gauge-item"><svg class="connector-svg report-gauge-swatch" viewBox="-6 -6 12 12" xmlns="http://www.w3.org/2000/svg">${symbol}</svg><span class="report-gauge-label">${escapeHtml(label)}</span></span>`;
+    const sizeItems = tokens.map((t) =>
+      swatch(miniContactSymbolMarkup({ x: 0, y: 0, size: sizeFor[t] }, 2.6), labelFor[t])
+    );
+    const typeItems = types.map((t) =>
+      swatch(miniContactSymbolMarkup({ x: 0, y: 0, size: "8", type: t }, 2.6), typeLabelFor[t])
+    );
+    const items = [...sizeItems, ...typeItems].join("");
     return `<div class="report-gauge-legend"><span class="report-gauge-legend-title">${escapeHtml(T("legend.sizes", "Sizes"))}</span><div class="report-gauge-items">${items}</div></div>`;
   }
 
@@ -6159,9 +6629,7 @@
         failures.push({ index: idx, raw: entry.raw, reason: "no-report" });
         return;
       }
-      const arr = entry.decoded.arrangement_id ? arrangementById(entry.decoded.arrangement_id) : null;
-      const faceVariants = renderFaceVariants(arr, entry.decoded);
-      const fragment = reportBodyFragment(report, faceVariants, {
+      const fragment = reportBodyFragment(report, {
         itemTitle: report.meta.sourcePartNumber,
         itemIndex: String(idx),
       });
@@ -6437,8 +6905,12 @@
     // Render the manual preview through the exact same builder the live decoder
     // uses, so the graphics are 1:1 (shell hardware, coupling knurl, seal ring,
     // keying, and gold/schematic contacts). Side view has no face equivalent, so
-    // fall back to the engineering face.
-    const previewView = state.viewMode === "side" ? "engineering" : state.viewMode;
+    // fall back to the engineering face. Callers can force a specific face view
+    // (e.g. the mating tab pins the real/gold view regardless of the global
+    // toggle) via options.viewMode.
+    const previewView = options.viewMode
+      ? options.viewMode
+      : state.viewMode === "side" ? "engineering" : state.viewMode;
     const decoded = active?.ok ? active : null;
     const gender = decodedContactGender(decoded);
     const mirror = Boolean(arr.outline) && gender === "socket";
@@ -6446,8 +6918,9 @@
     const previewClasses = ["connector-svg", "mini-connector-svg", "manual-preview-svg"];
     if (options.showKeying) previewClasses.push("manual-keying-svg");
 
+    const gradSuffix = `-p${++connectorGradSeq}`;
     const defs = svgEl("defs");
-    defs.innerHTML = CONNECTOR_GRADIENT_DEFS;
+    defs.innerHTML = connectorGradientDefs(gradSuffix);
     const faceGroup = buildConnectorFaceGroup(arr, {
       decoded,
       viewMode: previewView,
@@ -6460,7 +6933,7 @@
     const viewBox = manualPreviewViewBox(arr, decoded).join(" ");
     return `
       <div class="field-graphic manual-svg-frame" aria-hidden="true">
-        <svg class="${previewClasses.join(" ")}" viewBox="${viewBox}" data-view="${previewView}" data-finish="${finishKeyFromClass(active?.class_field)}" data-gender="${gender}" data-mirrored="${mirror ? "true" : "false"}">
+        <svg class="${previewClasses.join(" ")}" style="${connectorGradientVars(gradSuffix)}" viewBox="${viewBox}" data-view="${previewView}" data-finish="${finishKeyFromClass(active?.class_field)}" data-gender="${gender}" data-mirrored="${mirror ? "true" : "false"}">
           ${defs.outerHTML}
           ${faceGroup.outerHTML}
         </svg>
@@ -6522,25 +6995,28 @@
     `;
   }
 
-  // A single life-size contact rendered with the decoder's real-view graphics:
-  // a gold-plated pad on the dark dielectric face, with a recessed bore for
-  // sockets or a domed specular highlight for pins. Used by the manual's pins
-  // section so it matches the live viewer 1:1.
+  // A single contact rendered exactly the way the decoder's real view draws one:
+  // a gold-plated pad on the dark insert dielectric, with a recessed bore for
+  // sockets or a domed specular highlight for pins. No shell/seal ring — that is
+  // a connector-face feature, not a contact — so this reads as one contact, at
+  // the manual's existing specimen size.
   function contactSpecimenSvg(gender) {
     const cx = 20;
     const cy = 20;
-    const r = 12;
+    const r = 13.5;
     let contact = `<circle class="pin-symbol pin-contact-real" cx="${cx}" cy="${cy}" r="${r}"></circle>`;
     if (gender === "socket") {
-      contact += `<circle class="pin-contact-socket-bore" cx="${cx}" cy="${cy}" r="${r * 0.46}"></circle>`;
+      const boreR = r * 0.66;
+      contact += `<circle class="pin-contact-socket-bore" cx="${cx}" cy="${cy}" r="${boreR}"></circle>`;
+      contact += `<circle class="pin-contact-socket-rim" cx="${cx}" cy="${cy}" r="${boreR}"></circle>`;
     } else {
       contact += `<circle class="pin-contact-highlight" cx="${cx - r * 0.3}" cy="${cy - r * 0.32}" r="${r * 0.34}"></circle>`;
     }
+    const gradSuffix = `-s${++connectorGradSeq}`;
     return `
-      <svg class="connector-svg contact-specimen-svg" viewBox="0 0 40 40" data-view="real" aria-hidden="true">
-        <defs>${CONNECTOR_GRADIENT_DEFS}</defs>
-        <circle class="insert-face" cx="${cx}" cy="${cy}" r="18"></circle>
-        <circle class="shell-face-ring" cx="${cx}" cy="${cy}" r="18.6"></circle>
+      <svg class="connector-svg contact-specimen-svg" style="${connectorGradientVars(gradSuffix)}" viewBox="0 0 40 40" data-view="real" data-gender="${gender}" aria-hidden="true">
+        <defs>${connectorGradientDefs(gradSuffix)}</defs>
+        <circle class="insert-face" cx="${cx}" cy="${cy}" r="17"></circle>
         ${contact}
       </svg>
     `;
@@ -6819,7 +7295,7 @@
     const outline = arr.outline;
     const contactRadius = Math.max(0.25, pinRadiusForArrangement(arr) * 0.75);
     const contacts = contactsWithKeys(arr);
-    const guidePaths = arr.guide_paths || [];
+    const guidePaths = renderableGuidePaths(arr);
     let guideMarkup = "";
     if (guidePaths.length) {
       const clipId = `miniGuideClip-${++guideClipSeq}`;
@@ -6839,6 +7315,7 @@
 
   function miniContactSymbolMarkup(contact, baseRadius, opts = {}) {
     const token = gaugeToken(contact);
+    const shielded = shieldedBoreCount(contactTypeToken(contact));
     const radius = Math.max(0.2, baseRadius * ({
       "22d": 0.46,
       "20": 0.68,
@@ -6853,9 +7330,15 @@
       // recessed bore for female sockets and a domed highlight for male pins.
       const gender = opts.gender || "";
       let markup = `<circle class="pin-symbol pin-contact-real" cx="${contact.x}" cy="${contact.y}" r="${radius}"></circle>`;
-      if (gender === "socket") {
-        const boreR = radius * (token === "8" ? 0.52 : 0.46);
+      if (shielded) {
+        const boreClass = gender === "socket" ? "pin-contact-socket-bore" : "pin-contact-bore";
+        markup += shieldedBorePositions(contact.x, contact.y, radius, shielded)
+          .map((b) => `<circle class="${boreClass}" cx="${b.cx}" cy="${b.cy}" r="${b.r}"></circle>`)
+          .join("");
+      } else if (gender === "socket") {
+        const boreR = radius * (token === "8" ? 0.7 : 0.66);
         markup += `<circle class="pin-contact-socket-bore" cx="${contact.x}" cy="${contact.y}" r="${boreR}"></circle>`;
+        markup += `<circle class="pin-contact-socket-rim" cx="${contact.x}" cy="${contact.y}" r="${boreR}"></circle>`;
       } else if (token === "8") {
         markup += `<circle class="pin-contact-bore" cx="${contact.x}" cy="${contact.y}" r="${radius * 0.42}"></circle>`;
       } else if (gender === "pin") {
@@ -6864,6 +7347,12 @@
       return markup;
     }
     const circle = `<circle class="pin-symbol gauge-${token}" cx="${contact.x}" cy="${contact.y}" r="${radius}"></circle>`;
+    if (shielded) {
+      const bores = shieldedBorePositions(contact.x, contact.y, radius, shielded)
+        .map((b) => `<circle class="pin-symbol-cutout" cx="${b.cx}" cy="${b.cy}" r="${b.r}"></circle>`)
+        .join("");
+      return `${circle}${bores}`;
+    }
     if (token === "8") {
       return `${circle}<circle class="pin-symbol-cutout" cx="${contact.x}" cy="${contact.y}" r="${radius * 0.48}"></circle>`;
     }
@@ -6871,7 +7360,10 @@
       return `<circle class="pin-symbol gauge-10-ring" cx="${contact.x}" cy="${contact.y}" r="${radius}"></circle><circle class="pin-symbol gauge-10-core" cx="${contact.x}" cy="${contact.y}" r="${radius * 0.68}"></circle>`;
     }
     if (token === "12" || token === "16") {
-      const a = radius * 0.72;
+      // Match appendCross(): keep the diagonal "x" (#16) tips at the same
+      // 0.72 * radius reach as the "+" (#12) so they stay inside the circle.
+      const tip = radius * 0.72;
+      const a = token === "16" ? tip * Math.SQRT1_2 : tip;
       const mark = token === "12"
         ? `${lineMarkup(contact.x - a, contact.y, contact.x + a, contact.y)}${lineMarkup(contact.x, contact.y - a, contact.x, contact.y + a)}`
         : `${lineMarkup(contact.x - a, contact.y - a, contact.x + a, contact.y + a)}${lineMarkup(contact.x - a, contact.y + a, contact.x + a, contact.y - a)}`;
@@ -6885,6 +7377,7 @@
 
   function bindPanZoom() {
     const svg = els.connectorSvg;
+    const PAN_DRAG_THRESHOLD = 4;
     svg.addEventListener("wheel", (event) => {
       if (!state.viewBox) return;
       event.preventDefault();
@@ -6900,13 +7393,26 @@
     }, { passive: false });
 
     svg.addEventListener("pointerdown", (event) => {
-      state.isPanning = true;
+      // Defer pan activation until the pointer actually moves. Capturing the
+      // pointer here would retarget the follow-up click to the SVG, so a plain
+      // click would never reach a pin's handler (which opens the detail window).
+      state.isPanning = false;
+      state.panPending = true;
+      state.panPointerId = event.pointerId;
       state.panStart = { x: event.clientX, y: event.clientY };
       state.panViewBox = state.viewBox?.slice();
-      svg.setPointerCapture(event.pointerId);
     });
     svg.addEventListener("pointermove", (event) => {
-      if (!state.isPanning || !state.panViewBox) return;
+      if (!state.panViewBox) return;
+      if (state.panPending && !state.isPanning) {
+        const moved = Math.hypot(event.clientX - state.panStart.x, event.clientY - state.panStart.y);
+        if (moved < PAN_DRAG_THRESHOLD) return;
+        // Promote to a drag: now capture so the gesture keeps tracking even when
+        // the pointer leaves the SVG bounds.
+        state.isPanning = true;
+        try { svg.setPointerCapture(event.pointerId); } catch (e) { /* capture is best-effort */ }
+      }
+      if (!state.isPanning) return;
       const rect = svg.getBoundingClientRect();
       const [, , width, height] = state.panViewBox;
       const dx = (event.clientX - state.panStart.x) * (width / rect.width);
@@ -6914,11 +7420,20 @@
       state.viewBox = [state.panViewBox[0] - dx, state.panViewBox[1] - dy, width, height];
       applyViewBox();
     });
-    svg.addEventListener("pointerup", () => {
+    const endPan = () => {
+      if (state.panPointerId != null && svg.hasPointerCapture?.(state.panPointerId)) {
+        try { svg.releasePointerCapture(state.panPointerId); } catch (e) { /* already released */ }
+      }
       state.isPanning = false;
-    });
+      state.panPending = false;
+      state.panPointerId = null;
+    };
+    svg.addEventListener("pointerup", endPan);
+    svg.addEventListener("pointercancel", endPan);
     svg.addEventListener("pointerleave", () => {
-      state.isPanning = false;
+      // A press that leaves the SVG without crossing the drag threshold is not a
+      // pan; clear pending state so a later release elsewhere can't start one.
+      if (state.panPending && !state.isPanning) endPan();
       // Dismiss the hover pin-label bubble once the pointer leaves the connector
       // graphics. The per-pin mouseleave can be missed because showPinTooltip
       // rebuilds the SVG DOM, so guard the lingering bubble here.

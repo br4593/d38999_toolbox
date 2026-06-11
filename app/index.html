@@ -105,6 +105,10 @@
       <svg class="tab-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="3" y="1" width="10" height="14" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="M5.5 5.5h5M5.5 8h5M5.5 10.5h3"/></svg>
       <span data-i18n="nav.manual">Manual</span>
     </button>
+    <button class="tab-button" type="button" data-tab="datasources">
+      <svg class="tab-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><ellipse cx="8" cy="3.5" rx="5.5" ry="2.2" stroke="currentColor" stroke-width="1.4"/><path stroke="currentColor" stroke-width="1.4" stroke-linecap="round" d="M2.5 3.5v9c0 1.2 2.46 2.2 5.5 2.2s5.5-1 5.5-2.2v-9M2.5 8c0 1.2 2.46 2.2 5.5 2.2s5.5-1 5.5-2.2"/></svg>
+      <span data-i18n="nav.datasources">Data sources</span>
+    </button>
   </nav>
 
   <section id="homePanel" class="home-panel tab-panel active" aria-label="Start Here" data-i18n-aria="home.aria">
@@ -192,6 +196,13 @@
           <strong data-i18n="nav.manual">Manual</strong>
           <span data-i18n="home.card.manual.desc">Learn the code system.</span>
         </button>
+        <button type="button" class="home-task-card" data-home-target="datasources">
+          <div class="home-task-icon" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none"><ellipse cx="16" cy="7" rx="11" ry="4.2" stroke="currentColor" stroke-width="2"/><path d="M5 7v18c0 2.3 4.92 4.2 11 4.2s11-1.9 11-4.2V7M5 16c0 2.3 4.92 4.2 11 4.2s11-1.9 11-4.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <strong data-i18n="nav.datasources">Data sources</strong>
+          <span data-i18n="home.card.datasources.desc">See where the data comes from.</span>
+        </button>
       </div>
 
       <section class="home-recent panel" id="homeRecentSection" hidden>
@@ -203,6 +214,7 @@
 
   <div id="decoderPanel" class="app-shell tab-panel">
     <aside class="sidebar panel">
+      <div class="decoder-col-scroll">
       <section>
         <h2 data-i18n="decoder.heading">Decode</h2>
         <label for="partNumberInput" data-i18n="decoder.partNumberLabel">Part number</label>
@@ -243,6 +255,7 @@
           <div id="recentChips" class="recent-strip"></div>
         </details>
       </section>
+      </div>
     </aside>
 
     <main class="main-panel">
@@ -313,6 +326,7 @@
     </main>
 
     <aside class="right-panel panel">
+      <div class="decoder-col-scroll">
       <section>
         <h2 data-i18n="common.guide">Guide</h2>
         <div id="partNumberGuidePanel" class="details-list"></div>
@@ -322,6 +336,7 @@
         <h2 data-i18n="common.pin">Pin</h2>
         <div id="pinDetailHeader" class="pin-detail-header" data-i18n="decoder.selectPin">Select a pin.</div>
       </section>
+      </div>
     </aside>
   </div>
 
@@ -538,6 +553,16 @@
       </div>
     </div>
     <div id="manualContent" class="manual-content"></div>
+  </section>
+
+  <section id="datasourcesPanel" class="manual-panel panel tab-panel" aria-label="Data sources" data-i18n-aria="datasources.aria">
+    <div class="panel-title-row">
+      <div>
+        <h2 data-i18n="datasources.title">Data sources</h2>
+        <div class="source-line" data-i18n="datasources.subtitle">Where every field, drawing, and part number in this toolbox comes from.</div>
+      </div>
+    </div>
+    <div id="datasourcesContent" class="manual-content"></div>
   </section>
 
   <section id="matingPanel" class="mating-shell tab-panel" aria-label="Mating Connector" data-i18n-aria="mating.aria">

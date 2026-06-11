@@ -18,6 +18,8 @@ from typing import Any
 
 import fitz
 
+from dataset_io import data_path
+
 
 def now_iso() -> str:
     return dt.datetime.now(dt.UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -36,6 +38,10 @@ def source(page: int, section: str, note: str | None = None) -> dict[str, Any]:
     if note:
         payload["note"] = note
     return payload
+
+
+def dms_to_decimal(degrees: int, minutes: int) -> float:
+    return round(degrees + minutes / 60.0, 4)
 
 
 def shell_size_codes() -> dict[str, Any]:
@@ -221,6 +227,54 @@ def polarization_definitions() -> dict[str, Any]:
             }
             for key, angles in values.items()
         }
+
+    series_iv_minor_keys = {
+        "N": (110, 250, None),
+        "A": (100, 260, None),
+        "B": (90, 270, None),
+        "C": (80, 280, None),
+        "D": (70, 290, None),
+        "K": (120, 255, "K polarization: see note 16 for U2/UU2/Z2 key/keyway width increase on Y/YY positions."),
+        "L": (120, 265, None),
+        "M": (120, 275, None),
+        "R": (120, 285, None),
+    }
+    series_iv_main_keys = {
+        "11": ("B", (47, 21), (148, 13), (211, 47), (312, 39)),
+        "13": ("C", (46, 34), (148, 22), (211, 38), (313, 26)),
+        "15": ("D", (46, 23), (148, 35), (211, 25), (313, 37)),
+        "17": ("E", (46, 11), (148, 47), (211, 13), (313, 49)),
+        "19": ("F", (45, 33), (149, 27), (210, 33), (314, 27)),
+        "21": ("G", (45, 28), (149, 29), (210, 31), (314, 32)),
+        "23": ("H", (45, 25), (149, 29), (210, 31), (314, 35)),
+        "25": ("J", (45, 30), (149, 34), (210, 26), (314, 30)),
+    }
+    minor_key_arrangements = {
+        key: {
+            "identification_letter": key,
+            "X_or_XX_deg": x_deg,
+            "Y_or_YY_deg": y_deg,
+            "description": "Normal" if key == "N" else f"Alternate polarization {key}",
+            **({"note": note} if note else {}),
+            **source(111, "FIGURE 7 Main key/keyway polarization (series IV)"),
+        }
+        for key, (x_deg, y_deg, note) in series_iv_minor_keys.items()
+    }
+    main_key_by_shell_size = {
+        shell_size: {
+            "shell_size_code": code,
+            "P_deg_dms": f"{p[0]}\u00b0{p[1]:02d}'",
+            "Q_deg_dms": f"{q[0]}\u00b0{q[1]:02d}'",
+            "R_deg_dms": f"{r[0]}\u00b0{r[1]:02d}'",
+            "S_deg_dms": f"{s[0]}\u00b0{s[1]:02d}'",
+            "P_deg": dms_to_decimal(*p),
+            "Q_deg": dms_to_decimal(*q),
+            "R_deg": dms_to_decimal(*r),
+            "S_deg": dms_to_decimal(*s),
+            **source(111, "FIGURE 7 Main key/keyway polarization (series IV)"),
+        }
+        for shell_size, (code, p, q, r, s) in series_iv_main_keys.items()
+    }
     return {
         "series_iii": {
             "description": "Main key/keyway polarization for series III. The insert arrangement does not rotate with the main key/keyway.",
@@ -231,9 +285,139 @@ def polarization_definitions() -> dict[str, Any]:
             **source(103, "FIGURE 6 Main key/keyway polarization (series III)"),
         },
         "series_iv": {
-            "description": "Series IV polarization is referenced by the PIN section, but this extractor did not tabulate figure 7.",
-            "confidence": "needs_manual_verification",
-            **source(3, "1.3 Part or Identifying Number, series III and IV example"),
+            "description": (
+                "Main key/keyway polarization for series IV. The minor key/keyway polarity "
+                "arrangements (N, A, B, C, D, K, L, M, R) apply to all shell sizes (note 5), "
+                "while the main key/keyway angles P/Q/R/S vary by shell size. The insert "
+                "arrangement does not rotate with the main key/keyway. Series IV is defined "
+                "for shell sizes 11 through 25 (no shell size 9)."
+            ),
+            "angle_units": "degrees BSC",
+            "minor_key_polarity_arrangements": {
+                "columns": ["X_or_XX_deg", "Y_or_YY_deg"],
+                "applies_to_all_shell_sizes": True,
+                "arrangements": minor_key_arrangements,
+            },
+            "main_key_by_shell_size": {
+                "columns": ["P_deg", "Q_deg", "R_deg", "S_deg"],
+                "angle_format": "Values are printed in degrees-minutes (the *_dms fields); the *_deg fields are decimal-degree equivalents.",
+                "shell_sizes": main_key_by_shell_size,
+            },
+            "confidence": "high",
+            **source(111, "FIGURE 7 Main key/keyway polarization (series IV)"),
+        },
+    }
+
+
+def key_geometry_definitions() -> dict[str, Any]:
+    """Real main-key/keyway diameters and key/keyway widths (series IV, figure 7).
+
+    Diameters come from the figure 7 main-key table (p.111); key/keyway width
+    dimensions come from the figure 7 width tables (p.112). These are the
+    machine-readable, dimensioned key widths from the standard. Series III width
+    dimensions are published only as dimensioned drawings (figure 6, pp.99-107)
+    and are not extractable as text, so only the series IV widths are tabulated
+    here; the series III main key is geometrically equivalent in magnitude.
+    """
+    # shell: (code, L_dia_max_mm, L_dia_max_in, L_dia_min_mm, L_dia_min_in, M_dia_bsc_mm, M_dia_bsc_in)
+    diameters = {
+        "11": ("B", 13.26, 0.522, 13.16, 0.518, 16.28, 0.641),
+        "13": ("C", 16.68, 0.657, 16.58, 0.653, 19.35, 0.762),
+        "15": ("D", 19.86, 0.782, 19.76, 0.778, 22.50, 0.886),
+        "17": ("E", 23.06, 0.908, 22.96, 0.904, 25.68, 1.011),
+        "19": ("F", 25.96, 1.022, 25.86, 1.018, 27.71, 1.091),
+        "21": ("G", 29.13, 1.147, 29.03, 1.143, 30.88, 1.216),
+        "23": ("H", 32.31, 1.272, 32.21, 1.268, 34.16, 1.345),
+        "25": ("J", 35.48, 1.397, 35.38, 1.393, 37.38, 1.472),
+    }
+    # shell: (U_mm,U_in, U2K_mm,U2K_in, UUmax_mm,UUmax_in, UU2K_mm,UU2K_in, W1_mm,W1_in, W2_mm,W2_in)
+    # U2 (all polarizations except K) equals U; UU2 (except K) equals UU max.
+    # W1/W2 are blank on the drawing for shells 17, 21 and 25 (recorded as null).
+    widths = {
+        "11": (1.26, 0.050, 2.06, 0.081, 2.42, 0.095, 3.20, 0.126, 1.82, 0.072, 2.84, 0.112),
+        "13": (0.95, 0.037, 1.96, 0.077, 2.22, 0.087, 3.00, 0.118, 1.85, 0.073, 2.87, 0.113),
+        "15": (1.77, 0.070, 2.82, 0.111, 2.76, 0.109, 3.81, 0.150, 2.36, 0.093, 3.37, 0.133),
+        "17": (1.46, 0.057, 2.72, 0.107, 2.71, 0.107, 3.58, 0.141, None, None, None, None),
+        "19": (2.28, 0.090, 3.58, 0.141, 2.94, 0.116, 4.24, 0.167, 2.87, 0.113, 3.89, 0.153),
+        "21": (1.97, 0.078, 3.48, 0.137, 2.92, 0.115, 4.22, 0.166, None, None, None, None),
+        "23": (2.78, 0.109, 4.34, 0.171, 3.47, 0.137, 5.05, 0.199, 3.37, 0.133, 4.39, 0.173),
+        "25": (2.47, 0.097, 4.24, 0.167, 3.47, 0.137, 5.05, 0.199, None, None, None, None),
+    }
+    by_shell_size: dict[str, Any] = {}
+    k_factors: list[float] = []
+    main_factors: list[float] = []
+    for shell_size, (code, ld_max, ld_max_in, ld_min, ld_min_in, m_bsc, m_bsc_in) in diameters.items():
+        (u, u_in, u2k, u2k_in, uu, uu_in, uu2k, uu2k_in, w1, w1_in, w2, w2_in) = widths[shell_size]
+        k_factors.append(round(uu2k / uu, 4))
+        if w2 is not None:
+            main_factors.append(round(w2 / uu, 4))
+        by_shell_size[shell_size] = {
+            "shell_size_code": code,
+            "L_dia_mm": {"max": ld_max, "min": ld_min},
+            "L_dia_in": {"max": ld_max_in, "min": ld_min_in},
+            "M_dia_bsc_mm": m_bsc,
+            "M_dia_bsc_in": m_bsc_in,
+            "polarity_key_width_U_mm": u,
+            "polarity_key_width_U_in": u_in,
+            "polarity_key_width_U2_K_mm": u2k,
+            "polarity_key_width_U2_K_in": u2k_in,
+            "keyway_width_UU_max_mm": uu,
+            "keyway_width_UU_max_in": uu_in,
+            "keyway_width_UU2_K_max_mm": uu2k,
+            "keyway_width_UU2_K_max_in": uu2k_in,
+            "main_keyway_W1_pin_mm": w1,
+            "main_keyway_W1_pin_in": w1_in,
+            "main_keyway_W2_socket_mm": w2,
+            "main_keyway_W2_socket_in": w2_in,
+            **source(112, "FIGURE 7 Main key/keyway polarization (series IV) - width dimensions"),
+        }
+    k_factor_avg = round(sum(k_factors) / len(k_factors), 3)
+    main_factor_avg = round(sum(main_factors) / len(main_factors), 3)
+    return {
+        "series_iv": {
+            "description": (
+                "Real main-key/keyway diameters and key/keyway widths for series IV "
+                "(figure 7). Polarization is set by the angular position of the minor keys, "
+                "not by their width, so all minor polarizing keys share one nominal width per "
+                "shell size; the K polarization key/keyway is wider (note 16). The main "
+                "key/keyway (W1/W2) is dimensioned separately from the polarizing keys. Key "
+                "and keyway widths scale with shell size (≈ proportional to shell diameter)."
+            ),
+            "units": "millimeters (mm) with inch equivalents (in) for reference",
+            "diameters_source_page": 111,
+            "widths_source_page": 112,
+            "column_legend": {
+                "L_dia": "polarity-key reference diameter",
+                "M_dia_bsc": "main key/keyway reference diameter (BSC)",
+                "U": "polarity (minor) key width; U2 (all polarizations except K) equals U",
+                "U2_K": "polarity key width for K polarization only (wider, note 16)",
+                "UU_max": "maximum keyway width; UU2 (except K) equals UU max",
+                "UU2_K_max": "maximum keyway width for K polarization only (note 16)",
+                "W1_pin": "main keyway width, pin contact (BSC); blank on drawing for shells 17/21/25",
+                "W2_socket": "main keyway width, socket contact (BSC); blank on drawing for shells 17/21/25",
+            },
+            "derived_render_ratios": {
+                "k_polarization_keyway_width_factor": k_factor_avg,
+                "k_polarization_keyway_width_factor_basis": "mean of UU2(K max) / UU(max) across shell sizes 11-25",
+                "k_polarization_keyway_width_factor_range": [min(k_factors), max(k_factors)],
+                "main_keyway_to_minor_keyway_width_factor": main_factor_avg,
+                "main_keyway_to_minor_keyway_width_factor_basis": "mean of W2(socket BSC) / UU(max) across shells that list W2 (11,13,15,19,23)",
+                "main_keyway_to_minor_keyway_width_factor_range": [min(main_factors), max(main_factors)],
+                "minor_keys_share_one_width": True,
+                "polarization_encoded_by": "angular position (not key width)",
+            },
+            "by_shell_size": by_shell_size,
+            "confidence": "high",
+            **source(112, "FIGURE 7 Main key/keyway polarization (series IV) - width dimensions"),
+        },
+        "series_iii": {
+            "description": (
+                "Series III key/keyway width dimensions are published only as dimensioned "
+                "drawings (figure 6, pp.99-107) and are not extractable as machine-readable "
+                "text. Angular key positions are tabulated under definitions.polarization."
+            ),
+            "confidence": "not_tabulated_text_only_drawings",
+            **source(103, "FIGURE 6 Main key/keyway polarization (series III)"),
         },
     }
 
@@ -252,6 +436,7 @@ def build_standard_definitions(pdf_path: Path) -> dict[str, Any]:
             "contact_styles": contact_styles(),
             "shell_size_codes_series_iii_iv": shell_size_codes(),
             "polarization": polarization_definitions(),
+            "key_geometry": key_geometry_definitions(),
             "insert_arrangements": {
                 "description": "Insert arrangement values are referenced to MIL-STD-1560 by dtl38999.pdf. Actual insert drawings and coordinates in this project come from d38999-contact-arrangements.pdf.",
                 "confidence": "high_for_reference_only",
@@ -328,7 +513,7 @@ def build_part_number_rules(pdf_path: Path) -> dict[str, Any]:
                     },
                     {
                         "name": "polarization",
-                        "description": "Key/keyway polarization. Series III values are tabulated in figure 6.",
+                        "description": "Key/keyway polarization. Series III values are tabulated in figure 6; series IV values are tabulated in figure 7.",
                         **source(3, "1.3 Part or Identifying Number"),
                     },
                 ],
@@ -365,18 +550,23 @@ def extract(project_root: Path, pdf_name: str = "dtl38999.pdf") -> tuple[dict[st
         raise FileNotFoundError(pdf_name)
     # Open once so PyMuPDF validates the PDF; definitions below are page-backed.
     with fitz.open(pdf_path) as doc:
-        if doc.page_count < 103:
-            raise RuntimeError("dtl38999.pdf is shorter than expected; cannot source figure 6 page 103.")
+        if doc.page_count < 113:
+            raise RuntimeError(
+                "dtl38999.pdf is shorter than expected; cannot source figure 6 (page 103) "
+                "and figure 7 (pages 111-113)."
+            )
 
-    # Web app is source of truth for runtime data; extraction writes into app/.
-    data_dir = project_root / "app" / "data"
-    data_dir.mkdir(parents=True, exist_ok=True)
+    # Canonical data lives under data/<category>/ (see dataset_io.DATASET_CATEGORIES).
     standard_definitions = build_standard_definitions(pdf_path)
     part_number_rules = build_part_number_rules(pdf_path)
-    (data_dir / "standard_definitions.json").write_text(
+    std_path = data_path("standard_definitions.json", project_root / "data")
+    rules_path = data_path("part_number_rules.json", project_root / "data")
+    std_path.parent.mkdir(parents=True, exist_ok=True)
+    rules_path.parent.mkdir(parents=True, exist_ok=True)
+    std_path.write_text(
         json.dumps(standard_definitions, indent=2, ensure_ascii=False), encoding="utf-8"
     )
-    (data_dir / "part_number_rules.json").write_text(
+    rules_path.write_text(
         json.dumps(part_number_rules, indent=2, ensure_ascii=False), encoding="utf-8"
     )
     return standard_definitions, part_number_rules

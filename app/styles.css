@@ -2257,6 +2257,78 @@ body.is-home .header-home-button {
   font-style: normal;
 }
 
+.datasource-card {
+  display: grid;
+  gap: 6px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.datasource-card:last-child { border-bottom: 0; }
+
+.datasource-card-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.datasource-card-head strong {
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.datasource-tag {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--accent, #2f5c8a);
+  background: var(--accent-soft, rgba(47, 92, 138, .12));
+  border-radius: 999px;
+  padding: 2px 9px;
+  white-space: nowrap;
+}
+
+.datasource-role { color: var(--text); font-size: 12.5px; }
+
+.datasource-used { color: var(--text); font-size: 12.5px; }
+
+.datasource-used-label { color: var(--dim); font-weight: 600; }
+
+.datasource-refs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.datasource-link,
+.datasource-ref {
+  font-size: 11.5px;
+  border-radius: 6px;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  background: var(--surface-2, rgba(0, 0, 0, .02));
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.datasource-ref { color: var(--dim); }
+
+.datasource-link {
+  color: var(--accent, #2f5c8a);
+  text-decoration: none;
+}
+
+.datasource-link:hover {
+  text-decoration: underline;
+  border-color: var(--accent, #2f5c8a);
+}
+
 .selector-shell {
   display: grid;
   gap: 12px;
@@ -6336,6 +6408,26 @@ h2 { letter-spacing: .06em; }
 #decoderPanel.app-shell {
   grid-template-columns: minmax(380px, 460px) minmax(540px, 1fr) 280px;
 }
+/* Make the left (Decode/Decoded) and right (Guide/Pin) cards end level with
+   the middle viewer card. Their content is taken out of flow (absolute) so it
+   no longer inflates the grid row; the row height is therefore driven by the
+   middle column, and the default grid `stretch` alignment expands both side
+   cards to match it. Overflowing side content scrolls inside its own card. */
+@media (min-width: 1101px) {
+  #decoderPanel .sidebar,
+  #decoderPanel .right-panel {
+    position: relative;
+    overflow: hidden;
+    max-height: none;
+    padding: 0;
+  }
+  #decoderPanel .decoder-col-scroll {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    padding: 14px 14px 18px;
+  }
+}
 .decoder-decoded-section {
   /* Visual lift so the decoded card stands out as the primary result area. */
   background: var(--surface-2, transparent);
@@ -6675,7 +6767,7 @@ dialog.batch-report-dialog::backdrop {
   filter: drop-shadow(0 1px 0 rgba(15, 23, 42, 0.06));
 }
 .connector-svg .shell-fill {
-  fill: url(#sbShellGradient);
+  fill: var(--grad-shell, rgba(241, 245, 249, 1));
 }
 /* Dark themes: the engineering-view connector interior (the shell-fill disc
    painted with #sbShellGradient) must read dark too. Re-tint the gradient
@@ -6719,7 +6811,7 @@ dialog.batch-report-dialog::backdrop {
 }
 /* Metallic sheen overlay on the shell rim. */
 .connector-svg[data-view="real"] .shell-sheen {
-  fill: url(#shellSheenGrad);
+  fill: var(--grad-sheen, rgba(255, 255, 255, 0.18));
   stroke: none;
   pointer-events: none;
 }
@@ -6758,7 +6850,7 @@ dialog.batch-report-dialog::backdrop {
 }
 /* Gold contacts (copper alloy, gold plate per M39029). */
 .connector-svg[data-view="real"] .pin-contact-real {
-  fill: url(#contactGoldGrad);
+  fill: var(--grad-gold, #c19a3f);
   stroke: rgba(0, 0, 0, 0.5);
   stroke-width: 0.5;
 }
@@ -6769,9 +6861,25 @@ dialog.batch-report-dialog::backdrop {
 }
 /* Female socket: recessed gold sleeve with a dark entry bore (depth via gradient). */
 .connector-svg[data-view="real"] .pin-contact-socket-bore {
-  fill: url(#socketBoreGrad);
-  stroke: rgba(0, 0, 0, 0.55);
-  stroke-width: 0.4;
+  fill: var(--grad-bore, #101b27);
+  stroke: rgba(0, 0, 0, 0.6);
+  stroke-width: 0.5;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+/* Sunken read: socket pads use a concave gold gradient (shadow at the top of
+   the sleeve, light caught on the lower far wall) so they sit recessed rather
+   than reading as a raised/"hollowed" pin like the convex pin gradient does. */
+.connector-svg[data-view="real"][data-gender="socket"] .pin-contact-real {
+  fill: var(--grad-gold-socket, #a6842f);
+}
+/* Polished machined lip at the mouth of the socket sleeve — a beveled gradient
+   (shadowed top, bright bottom) reads as a hollow tube sunk into the face (vs.
+   a solid pin) and keeps sockets legible at small report sizes. */
+.connector-svg[data-view="real"] .pin-contact-socket-rim {
+  fill: none;
+  stroke: var(--grad-rim, rgba(255, 241, 204, 0.85));
+  stroke-width: 0.7;
   vector-effect: non-scaling-stroke;
   pointer-events: none;
 }
@@ -6823,7 +6931,7 @@ dialog.batch-report-dialog::backdrop {
 }
 .connector-svg[data-view="real"] .keying-drawing[data-role="receptacle"] .keying-real-keyway {
   display: inline;
-  fill: url(#socketBoreGrad);
+  fill: var(--grad-bore, #101b27);
   stroke: rgba(0, 0, 0, 0.55);
   stroke-width: 0.5;
   vector-effect: non-scaling-stroke;
@@ -6846,7 +6954,7 @@ dialog.batch-report-dialog::backdrop {
 }
 .connector-svg[data-view="real"] .orientation-group[data-role="receptacle"] .keying-real-keyway {
   display: inline;
-  fill: url(#socketBoreGrad);
+  fill: var(--grad-bore, #101b27);
   stroke: rgba(0, 0, 0, 0.55);
   stroke-width: 0.5;
   vector-effect: non-scaling-stroke;

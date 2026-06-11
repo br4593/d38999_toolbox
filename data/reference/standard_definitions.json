@@ -1136,11 +1136,497 @@
         "section": "FIGURE 6 Main key/keyway polarization (series III)"
       },
       "series_iv": {
-        "description": "Series IV polarization is referenced by the PIN section, but this extractor did not tabulate figure 7.",
-        "confidence": "needs_manual_verification",
+        "description": "Main key/keyway polarization for series IV. The minor key/keyway polarity arrangements (N, A, B, C, D, K, L, M, R) apply to all shell sizes (note 5), while the main key/keyway angles P/Q/R/S vary by shell size. The insert arrangement does not rotate with the main key/keyway. Series IV is defined for shell sizes 11 through 25 (no shell size 9).",
+        "angle_units": "degrees BSC",
+        "minor_key_polarity_arrangements": {
+          "columns": [
+            "X_or_XX_deg",
+            "Y_or_YY_deg"
+          ],
+          "applies_to_all_shell_sizes": true,
+          "arrangements": {
+            "N": {
+              "identification_letter": "N",
+              "X_or_XX_deg": 110,
+              "Y_or_YY_deg": 250,
+              "description": "Normal",
+              "source_pdf": "dtl38999.pdf",
+              "source_page": 111,
+              "section": "FIGURE 7 Main key/keyway polarization (series IV)"
+            },
+            "A": {
+              "identification_letter": "A",
+              "X_or_XX_deg": 100,
+              "Y_or_YY_deg": 260,
+              "description": "Alternate polarization A",
+              "source_pdf": "dtl38999.pdf",
+              "source_page": 111,
+              "section": "FIGURE 7 Main key/keyway polarization (series IV)"
+            },
+            "B": {
+              "identification_letter": "B",
+              "X_or_XX_deg": 90,
+              "Y_or_YY_deg": 270,
+              "description": "Alternate polarization B",
+              "source_pdf": "dtl38999.pdf",
+              "source_page": 111,
+              "section": "FIGURE 7 Main key/keyway polarization (series IV)"
+            },
+            "C": {
+              "identification_letter": "C",
+              "X_or_XX_deg": 80,
+              "Y_or_YY_deg": 280,
+              "description": "Alternate polarization C",
+              "source_pdf": "dtl38999.pdf",
+              "source_page": 111,
+              "section": "FIGURE 7 Main key/keyway polarization (series IV)"
+            },
+            "D": {
+              "identification_letter": "D",
+              "X_or_XX_deg": 70,
+              "Y_or_YY_deg": 290,
+              "description": "Alternate polarization D",
+              "source_pdf": "dtl38999.pdf",
+              "source_page": 111,
+              "section": "FIGURE 7 Main key/keyway polarization (series IV)"
+            },
+            "K": {
+              "identification_letter": "K",
+              "X_or_XX_deg": 120,
+              "Y_or_YY_deg": 255,
+              "description": "Alternate polarization K",
+              "note": "K polarization: see note 16 for U2/UU2/Z2 key/keyway width increase on Y/YY positions.",
+              "source_pdf": "dtl38999.pdf",
+              "source_page": 111,
+              "section": "FIGURE 7 Main key/keyway polarization (series IV)"
+            },
+            "L": {
+              "identification_letter": "L",
+              "X_or_XX_deg": 120,
+              "Y_or_YY_deg": 265,
+              "description": "Alternate polarization L",
+              "source_pdf": "dtl38999.pdf",
+              "source_page": 111,
+              "section": "FIGURE 7 Main key/keyway polarization (series IV)"
+            },
+            "M": {
+              "identification_letter": "M",
+              "X_or_XX_deg": 120,
+              "Y_or_YY_deg": 275,
+              "description": "Alternate polarization M",
+              "source_pdf": "dtl38999.pdf",
+              "source_page": 111,
+              "section": "FIGURE 7 Main key/keyway polarization (series IV)"
+            },
+            "R": {
+              "identification_letter": "R",
+              "X_or_XX_deg": 120,
+              "Y_or_YY_deg": 285,
+              "description": "Alternate polarization R",
+              "source_pdf": "dtl38999.pdf",
+              "source_page": 111,
+              "section": "FIGURE 7 Main key/keyway polarization (series IV)"
+            }
+          }
+        },
+        "main_key_by_shell_size": {
+          "columns": [
+            "P_deg",
+            "Q_deg",
+            "R_deg",
+            "S_deg"
+          ],
+          "angle_format": "Values are printed in degrees-minutes (the *_dms fields); the *_deg fields are decimal-degree equivalents.",
+          "shell_sizes": {
+            "11": {
+              "shell_size_code": "B",
+              "P_deg_dms": "47°21'",
+              "Q_deg_dms": "148°13'",
+              "R_deg_dms": "211°47'",
+              "S_deg_dms": "312°39'",
+              "P_deg": 47.35,
+              "Q_deg": 148.2167,
+              "R_deg": 211.7833,
+              "S_deg": 312.65,
+              "source_pdf": "dtl38999.pdf",
+              "source_page": 111,
+              "section": "FIGURE 7 Main key/keyway polarization (series IV)"
+            },
+            "13": {
+              "shell_size_code": "C",
+              "P_deg_dms": "46°34'",
+              "Q_deg_dms": "148°22'",
+              "R_deg_dms": "211°38'",
+              "S_deg_dms": "313°26'",
+              "P_deg": 46.5667,
+              "Q_deg": 148.3667,
+              "R_deg": 211.6333,
+              "S_deg": 313.4333,
+              "source_pdf": "dtl38999.pdf",
+              "source_page": 111,
+              "section": "FIGURE 7 Main key/keyway polarization (series IV)"
+            },
+            "15": {
+              "shell_size_code": "D",
+              "P_deg_dms": "46°23'",
+              "Q_deg_dms": "148°35'",
+              "R_deg_dms": "211°25'",
+              "S_deg_dms": "313°37'",
+              "P_deg": 46.3833,
+              "Q_deg": 148.5833,
+              "R_deg": 211.4167,
+              "S_deg": 313.6167,
+              "source_pdf": "dtl38999.pdf",
+              "source_page": 111,
+              "section": "FIGURE 7 Main key/keyway polarization (series IV)"
+            },
+            "17": {
+              "shell_size_code": "E",
+              "P_deg_dms": "46°11'",
+              "Q_deg_dms": "148°47'",
+              "R_deg_dms": "211°13'",
+              "S_deg_dms": "313°49'",
+              "P_deg": 46.1833,
+              "Q_deg": 148.7833,
+              "R_deg": 211.2167,
+              "S_deg": 313.8167,
+              "source_pdf": "dtl38999.pdf",
+              "source_page": 111,
+              "section": "FIGURE 7 Main key/keyway polarization (series IV)"
+            },
+            "19": {
+              "shell_size_code": "F",
+              "P_deg_dms": "45°33'",
+              "Q_deg_dms": "149°27'",
+              "R_deg_dms": "210°33'",
+              "S_deg_dms": "314°27'",
+              "P_deg": 45.55,
+              "Q_deg": 149.45,
+              "R_deg": 210.55,
+              "S_deg": 314.45,
+              "source_pdf": "dtl38999.pdf",
+              "source_page": 111,
+              "section": "FIGURE 7 Main key/keyway polarization (series IV)"
+            },
+            "21": {
+              "shell_size_code": "G",
+              "P_deg_dms": "45°28'",
+              "Q_deg_dms": "149°29'",
+              "R_deg_dms": "210°31'",
+              "S_deg_dms": "314°32'",
+              "P_deg": 45.4667,
+              "Q_deg": 149.4833,
+              "R_deg": 210.5167,
+              "S_deg": 314.5333,
+              "source_pdf": "dtl38999.pdf",
+              "source_page": 111,
+              "section": "FIGURE 7 Main key/keyway polarization (series IV)"
+            },
+            "23": {
+              "shell_size_code": "H",
+              "P_deg_dms": "45°25'",
+              "Q_deg_dms": "149°29'",
+              "R_deg_dms": "210°31'",
+              "S_deg_dms": "314°35'",
+              "P_deg": 45.4167,
+              "Q_deg": 149.4833,
+              "R_deg": 210.5167,
+              "S_deg": 314.5833,
+              "source_pdf": "dtl38999.pdf",
+              "source_page": 111,
+              "section": "FIGURE 7 Main key/keyway polarization (series IV)"
+            },
+            "25": {
+              "shell_size_code": "J",
+              "P_deg_dms": "45°30'",
+              "Q_deg_dms": "149°34'",
+              "R_deg_dms": "210°26'",
+              "S_deg_dms": "314°30'",
+              "P_deg": 45.5,
+              "Q_deg": 149.5667,
+              "R_deg": 210.4333,
+              "S_deg": 314.5,
+              "source_pdf": "dtl38999.pdf",
+              "source_page": 111,
+              "section": "FIGURE 7 Main key/keyway polarization (series IV)"
+            }
+          }
+        },
+        "confidence": "high",
         "source_pdf": "dtl38999.pdf",
-        "source_page": 3,
-        "section": "1.3 Part or Identifying Number, series III and IV example"
+        "source_page": 111,
+        "section": "FIGURE 7 Main key/keyway polarization (series IV)"
+      }
+    },
+    "key_geometry": {
+      "series_iv": {
+        "description": "Real main-key/keyway diameters and key/keyway widths for series IV (figure 7). Polarization is set by the angular position of the minor keys, not by their width, so all minor polarizing keys share one nominal width per shell size; the K polarization key/keyway is wider (note 16). The main key/keyway (W1/W2) is dimensioned separately from the polarizing keys. Key and keyway widths scale with shell size (≈ proportional to shell diameter).",
+        "units": "millimeters (mm) with inch equivalents (in) for reference",
+        "diameters_source_page": 111,
+        "widths_source_page": 112,
+        "column_legend": {
+          "L_dia": "polarity-key reference diameter",
+          "M_dia_bsc": "main key/keyway reference diameter (BSC)",
+          "U": "polarity (minor) key width; U2 (all polarizations except K) equals U",
+          "U2_K": "polarity key width for K polarization only (wider, note 16)",
+          "UU_max": "maximum keyway width; UU2 (except K) equals UU max",
+          "UU2_K_max": "maximum keyway width for K polarization only (note 16)",
+          "W1_pin": "main keyway width, pin contact (BSC); blank on drawing for shells 17/21/25",
+          "W2_socket": "main keyway width, socket contact (BSC); blank on drawing for shells 17/21/25"
+        },
+        "derived_render_ratios": {
+          "k_polarization_keyway_width_factor": 1.397,
+          "k_polarization_keyway_width_factor_basis": "mean of UU2(K max) / UU(max) across shell sizes 11-25",
+          "k_polarization_keyway_width_factor_range": [
+            1.321,
+            1.4553
+          ],
+          "main_keyway_to_minor_keyway_width_factor": 1.255,
+          "main_keyway_to_minor_keyway_width_factor_basis": "mean of W2(socket BSC) / UU(max) across shells that list W2 (11,13,15,19,23)",
+          "main_keyway_to_minor_keyway_width_factor_range": [
+            1.1736,
+            1.3231
+          ],
+          "minor_keys_share_one_width": true,
+          "polarization_encoded_by": "angular position (not key width)"
+        },
+        "by_shell_size": {
+          "11": {
+            "shell_size_code": "B",
+            "L_dia_mm": {
+              "max": 13.26,
+              "min": 13.16
+            },
+            "L_dia_in": {
+              "max": 0.522,
+              "min": 0.518
+            },
+            "M_dia_bsc_mm": 16.28,
+            "M_dia_bsc_in": 0.641,
+            "polarity_key_width_U_mm": 1.26,
+            "polarity_key_width_U_in": 0.05,
+            "polarity_key_width_U2_K_mm": 2.06,
+            "polarity_key_width_U2_K_in": 0.081,
+            "keyway_width_UU_max_mm": 2.42,
+            "keyway_width_UU_max_in": 0.095,
+            "keyway_width_UU2_K_max_mm": 3.2,
+            "keyway_width_UU2_K_max_in": 0.126,
+            "main_keyway_W1_pin_mm": 1.82,
+            "main_keyway_W1_pin_in": 0.072,
+            "main_keyway_W2_socket_mm": 2.84,
+            "main_keyway_W2_socket_in": 0.112,
+            "source_pdf": "dtl38999.pdf",
+            "source_page": 112,
+            "section": "FIGURE 7 Main key/keyway polarization (series IV) - width dimensions"
+          },
+          "13": {
+            "shell_size_code": "C",
+            "L_dia_mm": {
+              "max": 16.68,
+              "min": 16.58
+            },
+            "L_dia_in": {
+              "max": 0.657,
+              "min": 0.653
+            },
+            "M_dia_bsc_mm": 19.35,
+            "M_dia_bsc_in": 0.762,
+            "polarity_key_width_U_mm": 0.95,
+            "polarity_key_width_U_in": 0.037,
+            "polarity_key_width_U2_K_mm": 1.96,
+            "polarity_key_width_U2_K_in": 0.077,
+            "keyway_width_UU_max_mm": 2.22,
+            "keyway_width_UU_max_in": 0.087,
+            "keyway_width_UU2_K_max_mm": 3.0,
+            "keyway_width_UU2_K_max_in": 0.118,
+            "main_keyway_W1_pin_mm": 1.85,
+            "main_keyway_W1_pin_in": 0.073,
+            "main_keyway_W2_socket_mm": 2.87,
+            "main_keyway_W2_socket_in": 0.113,
+            "source_pdf": "dtl38999.pdf",
+            "source_page": 112,
+            "section": "FIGURE 7 Main key/keyway polarization (series IV) - width dimensions"
+          },
+          "15": {
+            "shell_size_code": "D",
+            "L_dia_mm": {
+              "max": 19.86,
+              "min": 19.76
+            },
+            "L_dia_in": {
+              "max": 0.782,
+              "min": 0.778
+            },
+            "M_dia_bsc_mm": 22.5,
+            "M_dia_bsc_in": 0.886,
+            "polarity_key_width_U_mm": 1.77,
+            "polarity_key_width_U_in": 0.07,
+            "polarity_key_width_U2_K_mm": 2.82,
+            "polarity_key_width_U2_K_in": 0.111,
+            "keyway_width_UU_max_mm": 2.76,
+            "keyway_width_UU_max_in": 0.109,
+            "keyway_width_UU2_K_max_mm": 3.81,
+            "keyway_width_UU2_K_max_in": 0.15,
+            "main_keyway_W1_pin_mm": 2.36,
+            "main_keyway_W1_pin_in": 0.093,
+            "main_keyway_W2_socket_mm": 3.37,
+            "main_keyway_W2_socket_in": 0.133,
+            "source_pdf": "dtl38999.pdf",
+            "source_page": 112,
+            "section": "FIGURE 7 Main key/keyway polarization (series IV) - width dimensions"
+          },
+          "17": {
+            "shell_size_code": "E",
+            "L_dia_mm": {
+              "max": 23.06,
+              "min": 22.96
+            },
+            "L_dia_in": {
+              "max": 0.908,
+              "min": 0.904
+            },
+            "M_dia_bsc_mm": 25.68,
+            "M_dia_bsc_in": 1.011,
+            "polarity_key_width_U_mm": 1.46,
+            "polarity_key_width_U_in": 0.057,
+            "polarity_key_width_U2_K_mm": 2.72,
+            "polarity_key_width_U2_K_in": 0.107,
+            "keyway_width_UU_max_mm": 2.71,
+            "keyway_width_UU_max_in": 0.107,
+            "keyway_width_UU2_K_max_mm": 3.58,
+            "keyway_width_UU2_K_max_in": 0.141,
+            "main_keyway_W1_pin_mm": null,
+            "main_keyway_W1_pin_in": null,
+            "main_keyway_W2_socket_mm": null,
+            "main_keyway_W2_socket_in": null,
+            "source_pdf": "dtl38999.pdf",
+            "source_page": 112,
+            "section": "FIGURE 7 Main key/keyway polarization (series IV) - width dimensions"
+          },
+          "19": {
+            "shell_size_code": "F",
+            "L_dia_mm": {
+              "max": 25.96,
+              "min": 25.86
+            },
+            "L_dia_in": {
+              "max": 1.022,
+              "min": 1.018
+            },
+            "M_dia_bsc_mm": 27.71,
+            "M_dia_bsc_in": 1.091,
+            "polarity_key_width_U_mm": 2.28,
+            "polarity_key_width_U_in": 0.09,
+            "polarity_key_width_U2_K_mm": 3.58,
+            "polarity_key_width_U2_K_in": 0.141,
+            "keyway_width_UU_max_mm": 2.94,
+            "keyway_width_UU_max_in": 0.116,
+            "keyway_width_UU2_K_max_mm": 4.24,
+            "keyway_width_UU2_K_max_in": 0.167,
+            "main_keyway_W1_pin_mm": 2.87,
+            "main_keyway_W1_pin_in": 0.113,
+            "main_keyway_W2_socket_mm": 3.89,
+            "main_keyway_W2_socket_in": 0.153,
+            "source_pdf": "dtl38999.pdf",
+            "source_page": 112,
+            "section": "FIGURE 7 Main key/keyway polarization (series IV) - width dimensions"
+          },
+          "21": {
+            "shell_size_code": "G",
+            "L_dia_mm": {
+              "max": 29.13,
+              "min": 29.03
+            },
+            "L_dia_in": {
+              "max": 1.147,
+              "min": 1.143
+            },
+            "M_dia_bsc_mm": 30.88,
+            "M_dia_bsc_in": 1.216,
+            "polarity_key_width_U_mm": 1.97,
+            "polarity_key_width_U_in": 0.078,
+            "polarity_key_width_U2_K_mm": 3.48,
+            "polarity_key_width_U2_K_in": 0.137,
+            "keyway_width_UU_max_mm": 2.92,
+            "keyway_width_UU_max_in": 0.115,
+            "keyway_width_UU2_K_max_mm": 4.22,
+            "keyway_width_UU2_K_max_in": 0.166,
+            "main_keyway_W1_pin_mm": null,
+            "main_keyway_W1_pin_in": null,
+            "main_keyway_W2_socket_mm": null,
+            "main_keyway_W2_socket_in": null,
+            "source_pdf": "dtl38999.pdf",
+            "source_page": 112,
+            "section": "FIGURE 7 Main key/keyway polarization (series IV) - width dimensions"
+          },
+          "23": {
+            "shell_size_code": "H",
+            "L_dia_mm": {
+              "max": 32.31,
+              "min": 32.21
+            },
+            "L_dia_in": {
+              "max": 1.272,
+              "min": 1.268
+            },
+            "M_dia_bsc_mm": 34.16,
+            "M_dia_bsc_in": 1.345,
+            "polarity_key_width_U_mm": 2.78,
+            "polarity_key_width_U_in": 0.109,
+            "polarity_key_width_U2_K_mm": 4.34,
+            "polarity_key_width_U2_K_in": 0.171,
+            "keyway_width_UU_max_mm": 3.47,
+            "keyway_width_UU_max_in": 0.137,
+            "keyway_width_UU2_K_max_mm": 5.05,
+            "keyway_width_UU2_K_max_in": 0.199,
+            "main_keyway_W1_pin_mm": 3.37,
+            "main_keyway_W1_pin_in": 0.133,
+            "main_keyway_W2_socket_mm": 4.39,
+            "main_keyway_W2_socket_in": 0.173,
+            "source_pdf": "dtl38999.pdf",
+            "source_page": 112,
+            "section": "FIGURE 7 Main key/keyway polarization (series IV) - width dimensions"
+          },
+          "25": {
+            "shell_size_code": "J",
+            "L_dia_mm": {
+              "max": 35.48,
+              "min": 35.38
+            },
+            "L_dia_in": {
+              "max": 1.397,
+              "min": 1.393
+            },
+            "M_dia_bsc_mm": 37.38,
+            "M_dia_bsc_in": 1.472,
+            "polarity_key_width_U_mm": 2.47,
+            "polarity_key_width_U_in": 0.097,
+            "polarity_key_width_U2_K_mm": 4.24,
+            "polarity_key_width_U2_K_in": 0.167,
+            "keyway_width_UU_max_mm": 3.47,
+            "keyway_width_UU_max_in": 0.137,
+            "keyway_width_UU2_K_max_mm": 5.05,
+            "keyway_width_UU2_K_max_in": 0.199,
+            "main_keyway_W1_pin_mm": null,
+            "main_keyway_W1_pin_in": null,
+            "main_keyway_W2_socket_mm": null,
+            "main_keyway_W2_socket_in": null,
+            "source_pdf": "dtl38999.pdf",
+            "source_page": 112,
+            "section": "FIGURE 7 Main key/keyway polarization (series IV) - width dimensions"
+          }
+        },
+        "confidence": "high",
+        "source_pdf": "dtl38999.pdf",
+        "source_page": 112,
+        "section": "FIGURE 7 Main key/keyway polarization (series IV) - width dimensions"
+      },
+      "series_iii": {
+        "description": "Series III key/keyway width dimensions are published only as dimensioned drawings (figure 6, pp.99-107) and are not extractable as machine-readable text. Angular key positions are tabulated under definitions.polarization.",
+        "confidence": "not_tabulated_text_only_drawings",
+        "source_pdf": "dtl38999.pdf",
+        "source_page": 103,
+        "section": "FIGURE 6 Main key/keyway polarization (series III)"
       }
     },
     "insert_arrangements": {
