@@ -98,6 +98,41 @@ def parse_rugged_families(converter_js: Path) -> list[dict]:
     return entries
 
 
+def parse_family_svg_map(converter_js: Path) -> dict[str, dict[str, str]]:
+    """Parse FAMILY_SVG_MAP (family -> {view: svg}) from converter.js."""
+    text = converter_js.read_text(encoding="utf-8")
+    m = re.search(r"const FAMILY_SVG_MAP\s*=\s*\{(.*?)\n\s*\};", text, re.DOTALL)
+    if not m:
+        raise RuntimeError("Could not locate FAMILY_SVG_MAP in converter.js")
+    body = m.group(1)
+    fmap: dict[str, dict[str, str]] = {}
+    line_re = re.compile(r'"([^"]+)":\s*\{(.*)\}\s*,?\s*$')
+    pair_re = re.compile(r'(?:"([^"]+)"|(\w+))\s*:\s*"([^"]+)"')
+    for line in body.splitlines():
+        lm = line_re.match(line.strip())
+        if not lm:
+            continue
+        views = {(q or b): val for q, b, val in pair_re.findall(lm.group(2))}
+        fmap[lm.group(1)] = views
+    return fmap
+
+
+def norm_gender(gender: str) -> str:
+    """Collapse a free-text gender label into a comparison key."""
+    g = (gender or "").lower()
+    if "varies" in g:
+        return "varies"
+    has_f = "female" in g or "jack" in g or "receptacle" in g
+    has_m = "male" in g or "plug" in g
+    if has_f and has_m:
+        return "female+male"
+    if has_f:
+        return "female"
+    if has_m:
+        return "male"
+    return g.strip() or "unspecified"
+
+
 SHELL_TYPE_MAP = {
     "6": ("Plug", "plug"),
     "7": ("Jam Nut Receptacle", "jam-nut-receptacle"),
@@ -166,6 +201,76 @@ def section_rugged_families(rep: Report, families: list[dict]) -> None:
         passed += 1
     rep.ok(f"{passed}/{len(families)} rugged families valid with present SVG assets")
     rep.tally("A rugged families", passed, len(families))
+
+
+# --------------------------------------------------------------------------- #
+# Section A2 — IO connector SVG uniformity
+# --------------------------------------------------------------------------- #
+def _svg_pair_ok(rep: Report, svg: str, label: str) -> bool:
+    """Assert an SVG exists in BOTH dirs and the built copy is byte-identical."""
+    src, built = SRC_SVG / svg, APP_SVG / svg
+    if not src.exists():
+        rep.fail(f"{label}: source SVG missing ({src.relative_to(ROOT)})")
+        return False
+    if not built.exists():
+        rep.fail(f"{label}: built SVG missing ({built.relative_to(ROOT)}) — run build_app.py")
+        return False
+    if src.read_bytes() != built.read_bytes():
+        rep.fail(f"{label}: src/built SVG drift ({svg}) — run build_app.py")
+        return False
+    return True
+
+
+def section_io_svg_uniformity(rep: Report, families: list[dict], fmap: dict[str, dict[str, str]]) -> None:
+    """Verify IO connector SVG assignments are uniform within each family.
+
+    Within a single vendor/family, every connector sharing the same
+    interface + gender must resolve to exactly one face SVG, that face SVG must
+    agree with FAMILY_SVG_MAP, and every referenced SVG (face + per-mount) must
+    exist in both svg dirs with byte-identical built copies.
+    """
+    rep.section("A2. IO connector SVG uniformity (per vendor/family)")
+    by_family: dict[str, list[dict]] = {}
+    for e in families:
+        by_family.setdefault(e["family"], []).append(e)
+
+    passed = 0
+    for fam, ents in sorted(by_family.items()):
+        ok = True
+        views = fmap.get(fam, {})
+        map_face = views.get("face")
+
+        # 1. Single face SVG per family, agreeing with FAMILY_SVG_MAP.
+        faces = {e["svg"] for e in ents}
+        if len(faces) > 1:
+            rep.fail(f"family {fam}: {len(faces)} differing face SVGs across PNs {sorted(faces)}")
+            ok = False
+        if map_face and faces - {map_face}:
+            rep.fail(f"family {fam}: entry.svg {sorted(faces)} != FAMILY_SVG_MAP face {map_face!r}")
+            ok = False
+
+        # 2. Same (interface, gender) within the family must share one face SVG.
+        groups: dict[tuple[str, str], set[str]] = {}
+        for e in ents:
+            key = (e.get("interface", ""), norm_gender(e.get("gender", "")))
+            groups.setdefault(key, set()).add(e["svg"])
+        for (iface, gender), svgs in sorted(groups.items()):
+            if len(svgs) > 1:
+                rep.fail(f"family {fam}: interface {iface!r} gender {gender!r} maps to "
+                         f"{len(svgs)} different SVGs {sorted(svgs)}")
+                ok = False
+
+        # 3. Every referenced SVG (face + per-mount + per-entry mountSvg) is present & in sync.
+        refs = set(views.values()) | {e["svg"] for e in ents}
+        refs |= {e["mountSvg"] for e in ents if e.get("mountSvg")}
+        for svg in sorted(refs):
+            if not _svg_pair_ok(rep, svg, f"family {fam}"):
+                ok = False
+
+        if ok:
+            passed += 1
+    rep.ok(f"{passed}/{len(by_family)} IO connector families uniform on interface+gender SVG mapping")
+    rep.tally("A2 IO svg uniformity", passed, len(by_family))
 
 
 # --------------------------------------------------------------------------- #
@@ -465,6 +570,7 @@ def main() -> int:
     print(f"root: {ROOT}")
 
     families = parse_rugged_families(APP / "converter.js")
+    family_svg_map = parse_family_svg_map(APP / "converter.js")
     rugged_json = load_json(DATA / "rugged_io_d38999_style_connectors.json")
     rules = load_json(DATA / "part_number_rules.json")
     valid = load_json(DATA / "d38999_valid_part_numbers.json")
@@ -472,6 +578,7 @@ def main() -> int:
     verified = load_json(DATA / "d38999_verified_part_numbers.json")
 
     section_rugged_families(rep, families)
+    section_io_svg_uniformity(rep, families, family_svg_map)
     section_verified_rugged(rep, families, rugged_json)
     section_standard_pns(rep, rules, valid, args.full)
     section_catalog(rep, rules, catalog, valid, args.full)
