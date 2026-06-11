@@ -25,7 +25,12 @@ import fitz
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 LIST_HTML = PROJECT_ROOT / "docs" / "pdfs" / "dla_mil_dtl_38999_list.html"
 PDF_DIR = PROJECT_ROOT / "docs" / "pdfs" / "dla"
-OUT_PATH = PROJECT_ROOT / "data" / "dla_documents.json"
+
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from dataset_io import data_path  # noqa: E402
+
+OUT_PATH = data_path("dla_documents.json")
 
 
 def clean_text(value: str) -> str:
@@ -245,6 +250,7 @@ def build() -> dict[str, object]:
 
 
 def main() -> None:
+    OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUT_PATH.write_text(json.dumps(build(), indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print(f"Wrote {OUT_PATH}")
 

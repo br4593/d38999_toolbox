@@ -40,9 +40,10 @@ from scripts.d38999_rules import (  # noqa: E402
     parse_d38999_pin,
     _rule_supports,
 )
+from scripts.dataset_io import data_path  # noqa: E402
 
 DATA_FILE_CANDIDATES = [
-    ROOT / "data" / "insert_arrangements.json",
+    data_path("insert_arrangements.json"),
     ROOT / "app" / "data" / "insert_arrangements.json",
 ]
 NODE_HELPER = ROOT / "scripts" / "_reverse_parse_node_helper.js"

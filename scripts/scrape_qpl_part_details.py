@@ -44,8 +44,12 @@ except ImportError:  # pragma: no cover - urllib fallback for minimal envs
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = PROJECT_ROOT / "data"
-DEFAULT_DETAILS_OUTPUT = DATA_DIR / "qpl_1122_part_details.json"
-DEFAULT_LIST_OUTPUT = DATA_DIR / "qpl_1122_part_numbers.json"
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from dataset_io import data_path  # noqa: E402
+
+DEFAULT_DETAILS_OUTPUT = data_path("qpl_1122_part_details.json")
+DEFAULT_LIST_OUTPUT = data_path("qpl_1122_part_numbers.json")
 CACHE_DIR = DATA_DIR / ".cache"
 
 BASE_URL = "https://qpldocs.dla.mil/search/parts.aspx?qpl={qpl}"

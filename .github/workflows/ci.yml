@@ -23,19 +23,21 @@ jobs:
           python - <<'PY'
           import json, sys
           from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from dataset_io import data_path
           required = [
-              "data/insert_arrangements.json",
-              "data/part_number_rules.json",
-              "data/standard_definitions.json",
-              "data/dla_documents.json",
-              "data/review_needed.json",
+              "insert_arrangements.json",
+              "part_number_rules.json",
+              "standard_definitions.json",
+              "dla_documents.json",
+              "review_needed.json",
           ]
-          for rel in required:
-              path = Path(rel)
+          for name in required:
+              path = data_path(name)
               if not path.exists():
-                  print(f"missing {rel}", file=sys.stderr); sys.exit(1)
+                  print(f"missing {name} (expected {path})", file=sys.stderr); sys.exit(1)
               json.loads(path.read_text(encoding="utf-8"))
-              print(f"ok    {rel}")
+              print(f"ok    {path}")
           PY
 
       - name: Verify sharded datasets reassemble and stay under size limits
@@ -43,15 +45,15 @@ jobs:
         run: |
           python - <<'PY'
           import sys
-          from pathlib import Path
           sys.path.insert(0, "scripts")
-          from dataset_io import load_dataset
+          from dataset_io import load_dataset, data_path
           datasets = {
-              "data/d38999_valid_part_numbers.json": "partNumbers",
-              "data/d38999_environment_classification.json": "connector_records",
+              "d38999_valid_part_numbers.json": "partNumbers",
+              "d38999_environment_classification.json": "connector_records",
           }
-          for logical, array_key in datasets.items():
-              obj = load_dataset(Path(logical))
+          for name, array_key in datasets.items():
+              logical = data_path(name)
+              obj = load_dataset(logical)
               assert array_key in obj and obj[array_key], f"{logical}: missing {array_key}"
               assert "_sharding" not in obj, f"{logical}: shard meta leaked"
               print(f"ok    {logical} -> {len(obj[array_key])} {array_key}")

@@ -20,7 +20,10 @@ except ImportError:  # pragma: no cover - fallback for minimal environments
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_OUTPUT = PROJECT_ROOT / "data" / "qpl_1122_part_numbers.json"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from dataset_io import data_path  # noqa: E402
+
+DEFAULT_OUTPUT = data_path("qpl_1122_part_numbers.json")
 BASE_URL = "https://qpldocs.dla.mil/search/parts.aspx?qpl={qpl}"
 
 

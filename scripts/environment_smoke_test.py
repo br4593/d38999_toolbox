@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from build_valid_d38999_pns import build_outputs
-from dataset_io import load_dataset
+from dataset_io import load_dataset, data_path
 from d38999_environment import (
     CLASS_DEFINITIONS,
     CONTACT_STYLE_DEFINITIONS,
@@ -25,10 +25,10 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
 DOCS_PDF_DIR = ROOT / "docs" / "pdfs"
 
-VALID_DATA_PATH = DATA_DIR / "d38999_valid_part_numbers.json"
-ENVIRONMENT_REPORT_PATH = DATA_DIR / "d38999_environment_classification.json"
+VALID_DATA_PATH = data_path("d38999_valid_part_numbers.json")
+ENVIRONMENT_REPORT_PATH = data_path("d38999_environment_classification.json")
 MANIFEST_PATH = DOCS_PDF_DIR / "manifest.json"
-DLA_DOCUMENTS_PATH = DATA_DIR / "dla_documents.json"
+DLA_DOCUMENTS_PATH = data_path("dla_documents.json")
 
 PART_FIELDS_TO_COMPARE = (
     "environment_tags",

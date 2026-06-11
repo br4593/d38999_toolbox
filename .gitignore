@@ -52,8 +52,8 @@ docs/pdfs/specs/dtl38999.pdf
 # monolithic file. Ignore only the legacy single-file form so a stray rebuild of
 # the old layout is never committed; the data/<name>/ shard dirs ARE tracked.
 # Regenerate the shards with: python scripts/build_valid_d38999_pns.py
-data/d38999_environment_classification.json
-data/d38999_valid_part_numbers.json
+data/environment/d38999_environment_classification.json
+data/part_numbers/d38999_valid_part_numbers.json
 # app/app-data.js is a pure build artifact rebuilt from data/ by scripts/build_app.py
 # (CI/Pages regenerates it on every push), so it is intentionally not committed.
 app/app-data.js

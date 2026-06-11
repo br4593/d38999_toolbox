@@ -28,9 +28,12 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = REPO_ROOT / "data"
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from dataset_io import data_path  # noqa: E402
+
 
 def _load_json(name: str) -> Any:
-    with open(DATA_DIR / name) as f:
+    with open(data_path(name)) as f:
         return json.load(f)
 
 

@@ -13,16 +13,18 @@ from d38999_rules import (
     SHELL_SIZE_NUMBERS,
     convert_pin,
 )
+from dataset_io import data_path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
-DB_PATH = DATA_DIR / "d38999_cross_reference.sqlite"
+DB_PATH = data_path("d38999_cross_reference.sqlite")
 
 
 def write_csv(path: Path, rows: list[dict[str, object]]) -> None:
     if not rows:
         return
+    path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0].keys()))
         writer.writeheader()
@@ -31,6 +33,7 @@ def write_csv(path: Path, rows: list[dict[str, object]]) -> None:
 
 def main() -> None:
     DATA_DIR.mkdir(exist_ok=True)
+    DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
@@ -278,11 +281,11 @@ def main() -> None:
     conn.commit()
     conn.close()
 
-    write_csv(DATA_DIR / "conversion_rules.csv", rule_export)
-    write_csv(DATA_DIR / "style_mappings.csv", style_export)
-    write_csv(DATA_DIR / "finish_mappings.csv", finish_export)
-    write_csv(DATA_DIR / "rule_constraints.csv", constraints_export)
-    write_csv(DATA_DIR / "example_conversions.csv", example_rows)
+    write_csv(data_path("conversion_rules.csv"), rule_export)
+    write_csv(data_path("style_mappings.csv"), style_export)
+    write_csv(data_path("finish_mappings.csv"), finish_export)
+    write_csv(data_path("rule_constraints.csv"), constraints_export)
+    write_csv(data_path("example_conversions.csv"), example_rows)
 
     print(f"Wrote {DB_PATH}")
     print(f"Wrote {len(rule_export)} conversion rules and {len(example_rows)} example rows")

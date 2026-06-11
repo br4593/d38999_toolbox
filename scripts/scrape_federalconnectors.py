@@ -12,6 +12,10 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urljoin
 from urllib.request import Request, urlopen
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from dataset_io import data_path  # noqa: E402
+
 BASE_URL = "https://d38999.federalconnectors.com/"
 INDEX_PATH = "D38999"
 DEFAULT_SEEDS = ["20", "21", "23", "24", "25", "26", "27"]
@@ -39,7 +43,7 @@ def fetch_text(url: str) -> str:
 
 
 def load_support_map(data_dir: Path) -> dict[str, list[dict[str, Any]]]:
-    payload = read_json(data_dir / "d38999_catalog_supported_combinations.json")
+    payload = read_json(data_path("d38999_catalog_supported_combinations.json", data_dir))
     support_map: dict[str, list[dict[str, Any]]] = {}
     for row in payload.get("catalogSupportedCombinations", []):
         code = row.get("shellStyleCode")
@@ -50,7 +54,7 @@ def load_support_map(data_dir: Path) -> dict[str, list[dict[str, Any]]]:
 
 
 def load_verified_map(data_dir: Path) -> dict[str, dict[str, Any]]:
-    payload = read_json(data_dir / "d38999_verified_part_numbers.json")
+    payload = read_json(data_path("d38999_verified_part_numbers.json", data_dir))
     return {
         normalize_part_number(entry.get("partNumber", "")): entry
         for entry in payload.get("verifiedPartNumbers", [])
@@ -222,7 +226,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--output",
-        default="data/d38999_federalconnectors_secondary_source.json",
+        default=str(data_path("d38999_federalconnectors_secondary_source.json")),
         help="Output path relative to the project root.",
     )
     parser.add_argument(

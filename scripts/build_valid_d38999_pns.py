@@ -9,13 +9,13 @@ from pathlib import Path
 from typing import Any
 
 from d38999_environment import build_environment_outputs, ENVIRONMENT_FILTER_DEFINITIONS
-from dataset_io import write_sharded_dataset
+from dataset_io import write_sharded_dataset, data_path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
-DEFAULT_OUTPUT = DATA_DIR / "d38999_valid_part_numbers.json"
-DEFAULT_ENVIRONMENT_OUTPUT = DATA_DIR / "d38999_environment_classification.json"
+DEFAULT_OUTPUT = data_path("d38999_valid_part_numbers.json")
+DEFAULT_ENVIRONMENT_OUTPUT = data_path("d38999_environment_classification.json")
 
 STANDARD_PART_NUMBER_RE = re.compile(
     r"^D38999/(?P<slashSheet>\d{2})(?P<class>[A-Z])(?P<shellSizeCode>[A-Z]{1,2})(?P<insertArrangement>\d{1,3})(?P<contactStyle>[A-Z])(?P<keying>[A-Z])$"
@@ -159,7 +159,7 @@ def evidence_level(source_presence: dict[str, bool]) -> str:
 
 
 def load_verified(records: dict[str, dict[str, Any]]) -> None:
-    payload = read_json(DATA_DIR / "d38999_verified_part_numbers.json")
+    payload = read_json(data_path("d38999_verified_part_numbers.json"))
     for entry in payload.get("verifiedPartNumbers", []):
         part_number = entry.get("partNumber", "")
         if not is_d38999_part_number(part_number):
@@ -180,7 +180,7 @@ def load_verified(records: dict[str, dict[str, Any]]) -> None:
 
 
 def load_examples(records: dict[str, dict[str, Any]]) -> None:
-    payload = read_json(DATA_DIR / "d38999_part_number_examples.json")
+    payload = read_json(data_path("d38999_part_number_examples.json"))
     for entry in payload.get("examples", []):
         part_number = entry.get("originalPartNumber", "")
         if not entry.get("exactPartNumberAppears"):
@@ -206,7 +206,7 @@ def load_examples(records: dict[str, dict[str, Any]]) -> None:
 
 
 def load_federal_connectors(records: dict[str, dict[str, Any]]) -> None:
-    payload = read_json(DATA_DIR / "d38999_federalconnectors_secondary_source.json")
+    payload = read_json(data_path("d38999_federalconnectors_secondary_source.json"))
     importable_map = {
         normalize_part_number(item.get("partNumber", "")): item
         for item in payload.get("importableOverlaps", [])
@@ -236,7 +236,7 @@ def load_federal_connectors(records: dict[str, dict[str, Any]]) -> None:
 
 def load_qpl_details(records: dict[str, dict[str, Any]]) -> str | None:
     """Ingest the rich QPL detail crawl (per-part NSN + qualified sources)."""
-    path = DATA_DIR / "qpl_1122_part_details.json"
+    path = data_path("qpl_1122_part_details.json")
     if not path.exists():
         return None
     payload = read_json(path)
@@ -284,7 +284,7 @@ def load_qpl_details(records: dict[str, dict[str, Any]]) -> str | None:
 
 
 def load_qpl_files(records: dict[str, dict[str, Any]]) -> list[str]:
-    qpl_files = sorted(DATA_DIR.glob("qpl_*_part_numbers.json"))
+    qpl_files = sorted((DATA_DIR / "qpl").glob("qpl_*_part_numbers.json"))
     used: list[str] = []
     for path in qpl_files:
         details_path = path.with_name(
@@ -353,9 +353,9 @@ def finalize(records: dict[str, dict[str, Any]], qpl_files: list[str]) -> tuple[
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "description": "Unified database of valid MIL D38999 part numbers built from all PN-bearing JSON datasets in the repository.",
         "inputs": {
-            "manufacturerVerified": "data/d38999_verified_part_numbers.json",
-            "catalogExamples": "data/d38999_part_number_examples.json",
-            "federalConnectors": "data/d38999_federalconnectors_secondary_source.json",
+            "manufacturerVerified": "data/part_numbers/d38999_verified_part_numbers.json",
+            "catalogExamples": "data/part_numbers/d38999_part_number_examples.json",
+            "federalConnectors": "data/part_numbers/d38999_federalconnectors_secondary_source.json",
             "qplFiles": qpl_files,
         },
         "summary": summary,

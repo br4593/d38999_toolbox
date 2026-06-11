@@ -28,6 +28,73 @@ SHARD_META_KEY = "_sharding"
 # Keep each shard comfortably under GitHub's 50 MiB warning threshold.
 DEFAULT_MAX_SHARD_BYTES = 42 * 1024 * 1024
 
+# Repository ``data/`` directory (scripts/ -> repo root -> data).
+DATA_ROOT = Path(__file__).resolve().parents[1] / "data"
+
+# Single source of truth for how dataset files are categorized into folders
+# under ``data/``. Keyed by the file's basename (the ".json" logical name is
+# used for sharded datasets, whose on-disk form is a directory of shards).
+DATASET_CATEGORIES: dict[str, str] = {
+    # part-number corpora and their sources
+    "d38999_valid_part_numbers.json": "part_numbers",
+    "d38999_verified_part_numbers.json": "part_numbers",
+    "d38999_part_number_examples.json": "part_numbers",
+    "d38999_federalconnectors_secondary_source.json": "part_numbers",
+    "d38999_catalog_supported_combinations.json": "part_numbers",
+    # DLA QPL scrape outputs
+    "qpl_1122_part_numbers.json": "qpl",
+    "qpl_1122_part_details.json": "qpl",
+    "qpl_1122_revalidation_report.json": "qpl",
+    # environment classification audit
+    "d38999_environment_classification.json": "environment",
+    # decode / validation rule data
+    "part_number_rules.json": "rules",
+    "pinout_rules.json": "rules",
+    "d38999_extracted_rules.json": "rules",
+    "conversion_rules.csv": "rules",
+    "rule_constraints.csv": "rules",
+    "review_needed.json": "rules",
+    # converter lookup tables and cross-reference database
+    "style_mappings.csv": "converter",
+    "finish_mappings.csv": "converter",
+    "example_conversions.csv": "converter",
+    "d38999_cross_reference.sqlite": "converter",
+    # engineering reference and standards
+    "std1560.pdf": "reference",
+    "standard_definitions.json": "reference",
+    "insert_arrangements.json": "reference",
+    "insert_arrangements_contacts.csv": "reference",
+    "connector_engineering_reference.json": "reference",
+    "high_speed_interface_wiring_reference.json": "reference",
+    "contact_current_ratings.json": "reference",
+    "dla_documents.json": "reference",
+    # connector catalogs and visual assets
+    "rugged_io_d38999_style_connectors.json": "connectors",
+    "d38999_visual_assets.json": "connectors",
+}
+
+
+def data_path(name: str, data_dir: Path | None = None) -> Path:
+    """Resolve a dataset file's location under ``data/``.
+
+    ``name`` is the file's basename; the categorized subfolder is looked up in
+    :data:`DATASET_CATEGORIES` (single source of truth for the layout). Pass a
+    custom ``data_dir`` to resolve against a non-default data directory.
+    """
+    root = Path(data_dir) if data_dir is not None else DATA_ROOT
+    category = DATASET_CATEGORIES.get(name)
+    if category:
+        return root / category / name
+    # Fall back to a recursive search so a misclassified or new name still
+    # resolves to wherever the file actually lives under data/.
+    matches = sorted(root.glob(f"**/{name}"))
+    if matches:
+        return matches[0]
+    shard_matches = sorted(root.glob(f"**/{Path(name).stem}/index.json"))
+    if shard_matches:
+        return shard_matches[0].parent.parent / name
+    return root / name
+
 
 def _shard_dir_for(path: Path) -> Path:
     """Map a logical dataset path to its sharded directory.

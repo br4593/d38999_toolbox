@@ -1,12 +1,16 @@
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from dataset_io import data_path  # noqa: E402
 
 POSITIVE_SUITABILITIES = {"recommended", "acceptable", "conditional"}
 SCORE_BY_SUITABILITY = {
@@ -138,14 +142,14 @@ def compact_profile(profile_record: dict[str, Any]) -> dict[str, Any]:
     return compact
 
 
-STANDARD_DEFINITIONS = read_json(DATA_DIR / "standard_definitions.json")["definitions"]
+STANDARD_DEFINITIONS = read_json(data_path("standard_definitions.json"))["definitions"]
 CLASS_DEFINITIONS = STANDARD_DEFINITIONS["classes"]
 CONTACT_STYLE_DEFINITIONS = STANDARD_DEFINITIONS["contact_styles"]
 SHELL_SIZE_CODES = STANDARD_DEFINITIONS["shell_size_codes_series_iii_iv"]
 
 
 def load_slash_sheet_map() -> dict[str, dict[str, Any]]:
-    documents = read_json(DATA_DIR / "dla_documents.json").get("documents", [])
+    documents = read_json(data_path("dla_documents.json")).get("documents", [])
     slash_map: dict[str, dict[str, Any]] = {}
     for document in documents:
         slash_sheet = document.get("slash_sheet")

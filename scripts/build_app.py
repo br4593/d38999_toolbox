@@ -20,7 +20,7 @@ import shutil
 import sys
 from pathlib import Path
 
-from dataset_io import dataset_exists, load_dataset
+from dataset_io import dataset_exists, load_dataset, data_path
 
 # DATA_FILES lists the canonical data/ sources the embedded bundle is built from;
 # it is used only as a presence check (every source must exist before embedding).
@@ -77,7 +77,7 @@ def build(project_root: Path) -> Path:
     if not svg_dir.exists():
         raise FileNotFoundError(f"Missing assets/svg/ directory at {svg_dir}")
 
-    missing = [name for name in DATA_FILES if not dataset_exists(data_dir / name)]
+    missing = [name for name in DATA_FILES if not dataset_exists(data_path(name, data_dir))]
     if missing:
         raise FileNotFoundError(
             "Missing data files in data/: "
@@ -107,13 +107,13 @@ def build(project_root: Path) -> Path:
 
     embedded = {
         "pinout": {
-            "insertArrangements": read_json(data_dir / "insert_arrangements.json"),
-            "partNumberRules": read_json(data_dir / "part_number_rules.json"),
-            "pinoutRules": read_json(data_dir / "pinout_rules.json"),
-            "standardDefinitions": read_json(data_dir / "standard_definitions.json"),
-            "dlaDocuments": read_json(data_dir / "dla_documents.json"),
-            "reviewNeeded": read_json(data_dir / "review_needed.json"),
-            "contactCurrentRatings": read_json(data_dir / "contact_current_ratings.json"),
+            "insertArrangements": read_json(data_path("insert_arrangements.json", data_dir)),
+            "partNumberRules": read_json(data_path("part_number_rules.json", data_dir)),
+            "pinoutRules": read_json(data_path("pinout_rules.json", data_dir)),
+            "standardDefinitions": read_json(data_path("standard_definitions.json", data_dir)),
+            "dlaDocuments": read_json(data_path("dla_documents.json", data_dir)),
+            "reviewNeeded": read_json(data_path("review_needed.json", data_dir)),
+            "contactCurrentRatings": read_json(data_path("contact_current_ratings.json", data_dir)),
         },
         "converter": {
             "shell_size_numbers": docs_rules.SHELL_SIZE_NUMBERS,
@@ -124,15 +124,15 @@ def build(project_root: Path) -> Path:
             "rules": docs_rules.RULES,
         },
         "research": {
-            "extractedRules": read_json(data_dir / "d38999_extracted_rules.json"),
-            "partNumberExamples": read_json(data_dir / "d38999_part_number_examples.json"),
-            "catalogSupportedCombinations": read_json(data_dir / "d38999_catalog_supported_combinations.json"),
-            "validPartNumbers": load_dataset(data_dir / "d38999_valid_part_numbers.json"),
-            "verifiedPartNumbers": read_json(data_dir / "d38999_verified_part_numbers.json"),
-            "federalConnectorsSecondarySource": read_json(data_dir / "d38999_federalconnectors_secondary_source.json"),
-            "visualAssets": read_json(data_dir / "d38999_visual_assets.json"),
+            "extractedRules": read_json(data_path("d38999_extracted_rules.json", data_dir)),
+            "partNumberExamples": read_json(data_path("d38999_part_number_examples.json", data_dir)),
+            "catalogSupportedCombinations": read_json(data_path("d38999_catalog_supported_combinations.json", data_dir)),
+            "validPartNumbers": load_dataset(data_path("d38999_valid_part_numbers.json", data_dir)),
+            "verifiedPartNumbers": read_json(data_path("d38999_verified_part_numbers.json", data_dir)),
+            "federalConnectorsSecondarySource": read_json(data_path("d38999_federalconnectors_secondary_source.json", data_dir)),
+            "visualAssets": read_json(data_path("d38999_visual_assets.json", data_dir)),
         },
-        "ruggedIo": read_json(data_dir / "rugged_io_d38999_style_connectors.json"),
+        "ruggedIo": read_json(data_path("rugged_io_d38999_style_connectors.json", data_dir)),
     }
 
     app_data_js = (

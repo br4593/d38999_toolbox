@@ -73,7 +73,7 @@ TEXT = ROOT / "text"
 
 sys.path.insert(0, str(SCRIPTS))
 from d38999_rules import RULES, convert_pin, parse_d38999_pin  # noqa: E402
-from dataset_io import load_dataset  # noqa: E402
+from dataset_io import load_dataset, data_path  # noqa: E402
 
 SWEEP_SAMPLE = 1500  # number of valid PNs swept unless --full
 
@@ -138,7 +138,7 @@ def rule_id(rule: dict) -> str:
 def check_ground_truth(report: Report) -> set[tuple[str, str]]:
     """Returns the set of (manufacturer, product_line) pairs proven correct."""
     report.section("Ground-truth conversions (data/example_conversions.csv)")
-    rows = list(csv.DictReader((DATA / "example_conversions.csv").open(encoding="utf-8")))
+    rows = list(csv.DictReader((data_path("example_conversions.csv")).open(encoding="utf-8")))
     passed = 0
     proven: set[tuple[str, str]] = set()
     for row in rows:
@@ -319,7 +319,7 @@ def rule_for_candidate(candidate: dict) -> dict | None:
 
 def check_catalog_sweep(report: Report, full: bool) -> dict[str, int]:
     report.section("Catalog-grounded sweep (data/d38999_valid_part_numbers.json)")
-    db = load_dataset(DATA / "d38999_valid_part_numbers.json")
+    db = load_dataset(data_path("d38999_valid_part_numbers.json"))
     entries = db["partNumbers"]
     pns: list[str] = []
     seen: set[str] = set()
@@ -518,7 +518,7 @@ def main() -> int:
     if args.mouser:
         examples = [
             row["manufacturer_part_number"]
-            for row in csv.DictReader((DATA / "example_conversions.csv").open(encoding="utf-8"))
+            for row in csv.DictReader((data_path("example_conversions.csv")).open(encoding="utf-8"))
         ]
         check_mouser(report, examples)
 

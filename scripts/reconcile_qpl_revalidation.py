@@ -30,10 +30,11 @@ from build_valid_d38999_pns import (  # noqa: E402  (path set above)
     is_d38999_part_number,
     normalize_part_number,
 )
+from dataset_io import data_path  # noqa: E402
 
-DEFAULT_DETAILS = DATA_DIR / "qpl_1122_part_details.json"
-DEFAULT_REPORT = DATA_DIR / "qpl_1122_revalidation_report.json"
-LIST_REL_PATH = "data/qpl_1122_part_numbers.json"
+DEFAULT_DETAILS = data_path("qpl_1122_part_details.json")
+DEFAULT_REPORT = data_path("qpl_1122_revalidation_report.json")
+LIST_REL_PATH = data_path("qpl_1122_part_numbers.json").relative_to(ROOT).as_posix()
 SAMPLE_CAP = 200
 
 
