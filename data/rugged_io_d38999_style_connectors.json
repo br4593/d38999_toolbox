@@ -113,7 +113,7 @@
       "vendor": "Amphenol Socapex / Amphenol PCD",
       "family": "RJFTV",
       "interface": "RJ45 Ethernet",
-      "interface_gender": "PN suffix decodes the variant: 2xx = square-flange panel receptacle (female RJ45 jack), 6xx = jam-nut panel receptacle (female), 7xx = inline cable plug (female RJ45 jack on outside, male D38999 coupling nut). PE suffix = anti-decouple.",
+      "interface_gender": "Shell type (the digit right after the RJFTV / RJFTV6 / RJFTV6A series prefix) sets the gender: 6 = plug / free connector (cable side, mates into a panel receptacle), 6M = plug with metal gland, 2 = square-flange panel receptacle, 7 = jam-nut panel receptacle. Cat6/Cat6A receptacles add a coding letter (A-D); the back-termination digit is the data interface (1 = female RJ45 jack, 1RA = right-angle female RJ45, 2 = RJ45 lead / PCB). PE/PEM = metal backshell (receptacle only). Finish: G = olive drab cadmium, N = nickel, ZN = black zinc nickel, BZ = marine bronze. Verified against the Amphenol Socapex RJFIELD catalog, How-to-order RJFTV (pp. 113-115).",
       "d38999_relation": "MIL-DTL-38999 Series III style rugged RJ45 connector",
       "supported_interfaces": [
         "10BASE-T",
@@ -130,14 +130,14 @@
         "user wants D38999-style Ethernet instead of normal RJ45"
       ],
       "example_pns": [
-        "RJFTV21G",
-        "RJFTV71G",
-        "RJFTV71N",
         "RJFTV6MN",
+        "RJFTV6A7CPEM1ZN",
+        "RJFTV6A2SA5GF459",
+        "RJFTV6A7SA1RAG",
+        "RJFTV67HA1N",
+        "RJFTV21G",
+        "RJFTV71N",
         "RJFTV2PEM1G",
-        "RJFTV2SA1G",
-        "RJFTV7SA1G",
-        "RJFTV67B1G",
         "RJFTV22N00"
       ],
       "selection_questions": [
@@ -156,45 +156,37 @@
       ],
       "verified_purchasable_pns": [
         {
-          "pn": "RJFTV6AG",
-          "description": "Cat6A jam-nut panel receptacle, nickel finish (female RJ45)"
+          "pn": "RJFTV6MN",
+          "description": "Cat5e plug with metal gland, nickel finish - cable side"
         },
         {
-          "pn": "RJFTV6AN",
-          "description": "Cat6A jam-nut panel receptacle, olive drab cadmium (female RJ45)"
+          "pn": "RJFTV6A7CPEM1ZN",
+          "description": "Cat6A jam-nut receptacle, coding C, metal-gland backshell, female RJ45 jack, black zinc nickel"
         },
         {
-          "pn": "RJFTV6AZN",
-          "description": "Cat6A jam-nut panel receptacle, zinc-nickel (female RJ45)"
+          "pn": "RJFTV6A7APEM1G",
+          "description": "Cat6A jam-nut receptacle, coding A, metal-gland backshell, female RJ45 jack, olive drab cadmium"
         },
         {
-          "pn": "RJFTV7AG",
-          "description": "Cat6A inline cable plug, nickel (male D38999 coupling)"
+          "pn": "RJFTV6A7SA1RAG",
+          "description": "Cat6A transversally-sealed jam-nut receptacle, coding A, right-angle female RJ45 jack, olive drab cadmium"
         },
         {
-          "pn": "RJFTV7AN",
-          "description": "Cat6A inline cable plug, olive drab cadmium (male D38999 coupling)"
+          "pn": "RJFTV6A2SA5GF459",
+          "description": "Cat6A transversally-sealed square-flange receptacle, coding A, PC-tail termination, olive drab cadmium, stand-off (F459)"
         },
         {
-          "pn": "RJFTV2APEG",
-          "description": "Cat6A square-flange receptacle with anti-decouple, nickel (female RJ45)"
+          "pn": "RJFTV6A7SA5BZF459",
+          "description": "Cat6A transversally-sealed jam-nut receptacle, coding A, PC-tail termination, marine bronze, stand-off (F459)"
         },
         {
-          "pn": "RJFTV7AZN",
-          "description": "Cat6A inline cable plug, zinc-nickel (mate to RJFTV6AZN jam-nut receptacle)"
-        },
-        {
-          "pn": "RJFTV7APEG",
-          "description": "Cat6A inline cable plug with anti-decouple, nickel (mate to RJFTV2APEG square-flange receptacle)"
-        },
-        {
-          "pn": "RJFTV21N",
-          "description": "Cat5e square-flange panel receptacle, olive drab (mate to RJFTV71N inline plug)"
-        },
-        {
-          "pn": "RJFTV67B1N",
-          "description": "Cat5e jam-nut panel receptacle with backshell, olive drab (mate to RJFTV67B1G family)"
+          "pn": "RJFTV67HA1N",
+          "description": "Cat6 hermetic jam-nut receptacle, coding A, female RJ45 jack, nickel"
         }
+      ],
+      "sources": [
+        "Amphenol Socapex RJFIELD catalog - How to order RJFTV / RJFTV6 / RJFTV6A (pp. 113-115)",
+        "https://www.amphenol-socapex.com"
       ]
     },
     {
@@ -350,7 +342,7 @@
       "vendor": "Amphenol Socapex / Amphenol PCD",
       "family": "USBFTV",
       "interface": "USB 2.0 Type-A",
-      "interface_gender": "PN suffix decodes the variant: 2xx = square-flange panel receptacle (female USB-A), 6xx = jam-nut panel receptacle (female), 7xx = inline cable plug (female USB-A on outside, male D38999 coupling).",
+      "interface_gender": "Shell type sets the gender: 6 = plug / free connector (cable side), 2 = square-flange panel receptacle, 7 = jam-nut panel receptacle. Receptacles add a back-termination digit (1 = female USB-A, 2 = solder / 4 tinned holes) and optional backshell (PE = plastic gland, PEM = metal gland). Finish: G = olive drab cadmium, N = nickel, ZN = black zinc nickel, BZ = marine bronze. Verified against the Amphenol Socapex USBFIELD catalog, How-to-order USBFTV (p. 89).",
       "d38999_relation": "MIL-DTL-38999 Series III style rugged USB connector",
       "supported_interfaces": [
         "USB 2.0"
@@ -361,11 +353,12 @@
         "user wants USB through D38999-style shell"
       ],
       "example_pns": [
-        "USBFTV",
-        "USBFTV6N",
         "USBFTV6G",
-        "USBF21ZNSCC",
-        "USBF21GSCC"
+        "USBFTV2PE2N",
+        "USBFTV7PEM2N",
+        "USBFTV71G",
+        "USBFTV21N",
+        "USBFTV6N"
       ],
       "selection_questions": [
         "Do you need USB 2.0 only or USB 3.x?",
@@ -380,28 +373,40 @@
       ],
       "verified_purchasable_pns": [
         {
-          "pn": "USBFTV2G",
-          "description": "USB 2.0 square-flange panel receptacle, nickel (female USB-A)"
+          "pn": "USBFTV6G",
+          "description": "USB 2.0 plug, olive drab cadmium - cable side"
         },
         {
-          "pn": "USBFTV2N",
-          "description": "USB 2.0 square-flange panel receptacle, olive drab (female USB-A)"
+          "pn": "USBFTV6N",
+          "description": "USB 2.0 plug, nickel - cable side"
+        },
+        {
+          "pn": "USBFTV2PE2N",
+          "description": "USB 2.0 square-flange receptacle with metal backshell (plastic gland), solder back termination, nickel"
+        },
+        {
+          "pn": "USBFTV7PEM2N",
+          "description": "USB 2.0 jam-nut receptacle with metal-gland backshell, solder back termination, nickel"
         },
         {
           "pn": "USBFTV71G",
-          "description": "USB 2.0 inline cable plug, nickel (female USB-A on outside)"
+          "description": "USB 2.0 jam-nut receptacle, female USB-A back termination, olive drab cadmium"
         },
         {
-          "pn": "USBFTV71N",
-          "description": "USB 2.0 inline cable plug, olive drab"
+          "pn": "USBFTV21N",
+          "description": "USB 2.0 square-flange receptacle, female USB-A back termination, nickel"
         }
+      ],
+      "sources": [
+        "Amphenol Socapex USBFIELD catalog - How to order USBFTV (p. 89)",
+        "https://www.amphenol-socapex.com"
       ]
     },
     {
       "vendor": "Amphenol Socapex / Amphenol PCD",
       "family": "USB3FTV",
       "interface": "USB 3.x Type-A",
-      "interface_gender": "PN suffix decodes the variant: 2Axx = square-flange panel receptacle (female USB-A), 6xx = jam-nut panel receptacle (female), 7Axx = inline cable plug (female USB-A on outside, male D38999 coupling).",
+      "interface_gender": "Shell type sets the gender: 6 = plug / free connector (cable side), 2 = square-flange panel receptacle, 7 = jam-nut panel receptacle. A coding letter (A/B) follows for cordset plugs and receptacles; a plug-with-cordset then adds a length (03/05/10/15 = 0.3-1.5 m) and cable type (ACROS = crossed, ASTR = straight, OPEN = no end plug). Receptacles may add PE = metal backshell. Finish: G = olive drab cadmium, N = nickel, ZN = black zinc nickel, BZ = marine bronze. Verified against the Amphenol Socapex USBFIELD catalog, How-to-order USB3FTV (p. 86).",
       "d38999_relation": "MIL-DTL-38999 Series III style rugged USB 3 connector",
       "supported_interfaces": [
         "USB 3.0",
@@ -413,15 +418,12 @@
         "user needs higher speed than USB 2.0"
       ],
       "example_pns": [
+        "USB3FTV6A10GOPEN",
+        "USB3FTV2APEG",
+        "USB3FTV7AZN",
         "USB3FTV6N",
         "USB3FTV2AN",
-        "USB3FTV2AG",
-        "USB3FTV7AN",
-        "USB3FTV7AG",
-        "USB3FTV7APEG",
-        "USB3FTV2SANF459",
-        "USB3FTV7ANF312",
-        "USB3FTV7AGF312"
+        "USB3FTV7AG"
       ],
       "selection_questions": [
         "Do you need USB 3.0 / 5 Gbps or only USB 2.0?",
@@ -438,40 +440,40 @@
       ],
       "verified_purchasable_pns": [
         {
-          "pn": "USB3FTV2AZNG",
-          "description": "USB 3.0 square-flange panel receptacle, zinc-nickel (female USB-A)"
+          "pn": "USB3FTV6A10GOPEN",
+          "description": "USB 3.0 plug, coding A, 1.0 m attached USB-A lead (open end), olive drab cadmium - cable side"
         },
         {
-          "pn": "USB3FTV6G",
-          "description": "USB 3.0 jam-nut panel receptacle, nickel (female USB-A)"
-        },
-        {
-          "pn": "USB3FTV7AZNG",
-          "description": "USB 3.0 inline cable plug, zinc-nickel"
-        },
-        {
-          "pn": "USB3FTV7APEG",
-          "description": "USB 3.0 inline cable plug with anti-decouple, nickel"
-        },
-        {
-          "pn": "USB3FTV7APEN",
-          "description": "USB 3.0 inline cable plug with anti-decouple, olive drab"
+          "pn": "USB3FTV6N",
+          "description": "USB 3.0 plug, nickel - cable side"
         },
         {
           "pn": "USB3FTV2APEG",
-          "description": "USB 3.0 square-flange panel receptacle with anti-decouple, nickel (mate to USB3FTV7APEG cable plug)"
+          "description": "USB 3.0 square-flange receptacle with metal backshell, coding A, olive drab cadmium"
         },
         {
-          "pn": "USB3FTV2APEN",
-          "description": "USB 3.0 square-flange panel receptacle with anti-decouple, olive drab (mate to USB3FTV7APEN cable plug)"
+          "pn": "USB3FTV7AZN",
+          "description": "USB 3.0 jam-nut receptacle, coding A, black zinc nickel"
+        },
+        {
+          "pn": "USB3FTV7AG",
+          "description": "USB 3.0 jam-nut receptacle, coding A, olive drab cadmium"
+        },
+        {
+          "pn": "USB3FTV2AN",
+          "description": "USB 3.0 square-flange receptacle, coding A, nickel"
         }
+      ],
+      "sources": [
+        "Amphenol Socapex USBFIELD catalog - How to order USB3FTV (p. 86)",
+        "https://www.amphenol-socapex.com"
       ]
     },
     {
       "vendor": "Amphenol Socapex / Amphenol PCD",
       "family": "USB3CFTV",
       "interface": "USB-C / USB 3.2",
-      "interface_gender": "PN suffix decodes the variant: 22xx = square-flange female-to-female feedthrough (female USB-C both sides), 2xx = square-flange panel receptacle (female USB-C), 6xx = jam-nut panel receptacle (female), 7xx = inline cable plug (male USB-C plug on outside).",
+      "interface_gender": "Shell type sets the gender: 6 = plug / free connector (cable side), 2 = square-flange panel receptacle, 7 = jam-nut panel receptacle. For receptacles the next digit is the USB output (2 = fixed USB type-C termination; blank = cordset or PC-tail), followed by finish, optional cordset length (015/030/050/100 = 0.15-1 m) and deviation (F459 = stand-off for PCB, F312/F311 = reduced flange, F059/F058 = stand-off reduced flange). USB-C is reversible on both plug and receptacle. Finish: G = olive drab cadmium, N = nickel, ZN = black zinc nickel, TZ = tin-zinc, BZ = bronze, S = stainless passivated. Verified against the Amphenol Socapex USB3CFTV brochure, How-to-order (p. 9).",
       "d38999_relation": "Size 11 D38999-style rugged USB-C connector",
       "supported_interfaces": [
         "USB-C",
@@ -483,11 +485,11 @@
         "user wants D38999-style USB-C connector"
       ],
       "example_pns": [
-        "USB3CFTV22G",
-        "USB3CFTV22ZN",
-        "USB3CFTV2G030",
-        "USB3CFTV7G030",
-        "USB3CFTV7ZN030"
+        "USB3CFTV6ZN",
+        "USB3CFTV72BZF312",
+        "USB3CFTV2G100",
+        "USB3CFTV7NF059",
+        "USB3CFTV22N"
       ],
       "selection_questions": [
         "Is this USB-C for power only, USB 2.0, USB 3.x, or DisplayPort Alt Mode?",
@@ -505,41 +507,37 @@
       ],
       "verified_purchasable_pns": [
         {
-          "pn": "USB3CFTV22N",
-          "description": "USB-C female-to-female feedthrough, square-flange, olive drab"
-        },
-        {
-          "pn": "USB3CFTV22ZN",
-          "description": "USB-C female-to-female feedthrough, square-flange, zinc-nickel"
-        },
-        {
-          "pn": "USB3CFTV6G",
-          "description": "USB-C jam-nut panel receptacle, nickel (female USB-C)"
+          "pn": "USB3CFTV6ZN",
+          "description": "USB-C plug, black zinc nickel - cable side"
         },
         {
           "pn": "USB3CFTV6N",
-          "description": "USB-C jam-nut panel receptacle, olive drab"
+          "description": "USB-C plug, nickel - cable side"
         },
         {
-          "pn": "USB3CFTV7N030",
-          "description": "USB-C inline cable plug, olive drab, 30 cm cable"
+          "pn": "USB3CFTV72BZF312",
+          "description": "USB-C jam-nut receptacle, reduced flange (F312), fixed USB-C output, marine bronze"
         },
         {
-          "pn": "USB3CFTV7PEZN030",
-          "description": "USB-C inline cable plug with anti-decouple, zinc-nickel, 30 cm cable"
+          "pn": "USB3CFTV2G100",
+          "description": "USB-C square-flange receptacle with 1 m integrated USB-C lead, olive drab cadmium"
         },
         {
-          "pn": "USB3CFTV2ZN",
-          "description": "USB-C square-flange panel receptacle, zinc-nickel (mate to USB3CFTV7ZN030 cable plug)"
+          "pn": "USB3CFTV7NF059",
+          "description": "USB-C jam-nut receptacle, stand-off reduced flange for PCB (F059), nickel"
         },
         {
-          "pn": "USB3CFTV6ZN",
-          "description": "USB-C jam-nut panel receptacle, zinc-nickel (alternate mate to USB3CFTV7ZN030 cable plug)"
+          "pn": "USB3CFTV22N",
+          "description": "USB-C square-flange receptacle with fixed USB-C output, nickel"
         },
         {
-          "pn": "USB3CFTV2PEZN",
-          "description": "USB-C square-flange panel receptacle with anti-decouple, zinc-nickel (mate to USB3CFTV7PEZN030 cable plug)"
+          "pn": "USB3CFTV22ZN",
+          "description": "USB-C square-flange receptacle with fixed USB-C output, black zinc nickel"
         }
+      ],
+      "sources": [
+        "Amphenol Socapex USB3CFTV brochure - How to order (p. 9)",
+        "https://www.amphenol-socapex.com"
       ]
     },
     {
@@ -1103,7 +1101,7 @@
       "vendor": "Amphenol Socapex / Amphenol PCD",
       "family": "RJFTVX",
       "interface": "RJ45 Ethernet (ATEX Zone 2)",
-      "interface_gender": "PN suffix decodes the variant (same convention as RJFTV): 2xx = square-flange panel receptacle (female RJ45 jack), 6xx = jam-nut panel receptacle (female), 7xx = inline cable plug (female RJ45 outside, male D38999 coupling).",
+      "interface_gender": "Same shell-type convention as RJFTV: 6 = plug / free connector (cable side), 6M = plug with metal gland, 2 = square-flange panel receptacle, 7 = jam-nut panel receptacle. The ATEX Zone 2 variant adds explosion-protection features but keeps the RJFTV ordering structure. Finish: G = olive drab cadmium, N = nickel, ZN = black zinc nickel.",
       "d38999_relation": "MIL-DTL-38999 Series III style rugged RJ45 connector certified for ATEX Zone 2 / EN 60079-15 (explosion-proof environments)",
       "supported_interfaces": [
         "10BASE-T",
@@ -1118,15 +1116,15 @@
         "user needs RJFTV-style with explosion-proof rating"
       ],
       "example_pns": [
+        "RJFTVX6MN",
         "RJFTVX21G",
         "RJFTVX21N",
         "RJFTVX71G",
-        "RJFTVX71N",
-        "RJFTVX6MN"
+        "RJFTVX71N"
       ],
       "warnings": [
         "Verify exact PN with Amphenol PCD ATEX catalog before production.",
-        "PN suffix codes inferred from RJFTV pattern; confirm against Amphenol RJFTVX brochure.",
+        "Shell-type/finish codes follow the verified RJFTV convention (6 = plug, 2/7 = receptacles), but the exact RJFTVX ATEX ordering string and stock PNs were NOT confirmed against a primary RJFTVX catalog - confirm before ordering.",
         "Verify ATEX certification covers your specific zone and gas group."
       ],
       "sources": [
@@ -1137,7 +1135,7 @@
       "vendor": "Amphenol Socapex / Amphenol PCD",
       "family": "TV µCOM-10Gb+",
       "interface": "10G+ Ethernet (high-speed data, exceeds Cat6A/Cat7)",
-      "interface_gender": "µCOM-10Gb+ is a 4-pair shielded contact module that drops into a size-11 D38999 Series III shell. Gender follows the host shell: panel-mount receptacle = female; cable-end plug = male coupling.",
+      "interface_gender": "Shell-type prefix sets the gender: TV06UCOM = plug (free / cable side), TVP00UCOM = square-flange panel receptacle, TV07UCOM = jam-nut panel receptacle. The type-of-contact code sets the module gender: P = male uCom module (pins), S = female uCom module (sockets) - plugs normally carry P and receptacles carry S, but it is order-configurable. Contact termination: C = crimp, S = solder, CI = PCB (receptacle only). Shell size 11 is mandatory. Finish: F = nickel, W = olive drab cadmium, ZN = black zinc nickel, B = marine bronze. Verified against the Amphenol Socapex TV uCom-10Gb+ brochure, How-to-order (p. 9).",
       "d38999_relation": "Size 11 MIL-DTL-38999 Series III shell with proprietary high-speed insert (10 Gbps+)",
       "supported_interfaces": [
         "10GBASE-T",
@@ -1149,10 +1147,29 @@
         "user needs sealed 10G uplink with D38999 mating",
         "user wants smallest-form-factor rugged 10GBASE-T"
       ],
-      "example_pns": [],
+      "example_pns": [
+        "TV06UCOMCF11P",
+        "TVP00UCOMCIZN11SF459",
+        "TV07UCOMSB11S"
+      ],
+      "verified_purchasable_pns": [
+        {
+          "pn": "TV06UCOMCF11P",
+          "description": "TV uCom plug, crimp contacts, nickel, male uCom module (pins) - cable side"
+        },
+        {
+          "pn": "TVP00UCOMCIZN11SF459",
+          "description": "TV uCom square-flange receptacle, PCB contacts, black zinc nickel, female uCom module (sockets), stand-off (F459)"
+        },
+        {
+          "pn": "TV07UCOMSB11S",
+          "description": "TV uCom jam-nut receptacle, solder contacts, marine bronze, female uCom module (sockets)"
+        }
+      ],
       "warnings": [
-        "Specific catalog PNs are in Amphenol PCD brochure PDF — contact vendor for ordering codes.",
-        "Verify cable assembly performance to 10 Gbps over target distance."
+        "Verify cable assembly performance to 10 Gbps over target distance.",
+        "Shell size 11 is mandatory in the ordering string.",
+        "Confirm contact gender (P male / S female) matches the mating connector."
       ],
       "sources": [
         "https://www.amphenolpcd.com/product/tv-%c2%b5com-10gb-series/",
@@ -1165,7 +1182,7 @@
       "vendor": "Amphenol Socapex / Amphenol PCD",
       "family": "HDMIFTV",
       "interface": "HDMI",
-      "interface_gender": "PN suffix decodes the variant: 2Axx = square-flange panel receptacle (female HDMI Type-A), 6Axx = jam-nut panel receptacle (female), C2xx = female-to-female coupler/feedthrough. No standalone 7xx cable plug; cordsets are sold as cable assemblies.",
+      "interface_gender": "Shell type sets the gender: 6 = plug / free connector (cable side), 2 = square-flange panel receptacle, 7 = jam-nut panel receptacle. A coding letter (A/B) follows, then optional backshell (PE = metal backshell, receptacle only), finish, and deviation (F459 = stand-off for PCB, F312 = reduced flange, F059 = stand-off reduced flange). HDMIFTVC... = matching protective cap (accessory, not a connector). Finish: G = olive drab cadmium, N = nickel, ZN = black zinc nickel. Verified against the Amphenol Socapex HDMIFTV brochure, How-to-order (p. 12).",
       "connector_type": "D38999-style rugged HDMI connector",
       "d38999_relation": "rugged HDMI in size 17 38999 shell",
       "capability_notes": [
@@ -1174,13 +1191,12 @@
         "high-speed video connector, not a generic signal-pin arrangement"
       ],
       "example_pns": [
-        "HDMIFTV2AG",
         "HDMIFTV6AG",
-        "HDMIFTVC2G",
-        "HDMIFTV2AZN",
+        "HDMIFTV2AN",
+        "HDMIFTV7AN",
         "HDMIFTV2APEZN",
-        "HDMIFTV2ANF459",
-        "HDMIFTV2APEG"
+        "HDMIFTV7APEGF312",
+        "HDMIFTV2ANF459"
       ],
       "use_when": [
         "user needs rugged HDMI",
@@ -1203,32 +1219,36 @@
       ],
       "verified_purchasable_pns": [
         {
+          "pn": "HDMIFTV6AG",
+          "description": "HDMI plug, coding A, olive drab cadmium - cable side"
+        },
+        {
           "pn": "HDMIFTV2AN",
-          "description": "HDMI 2.0 square-flange panel receptacle, olive drab (female HDMI-A)"
+          "description": "HDMI square-flange receptacle, coding A, nickel - female HDMI Type-A, panel"
         },
         {
-          "pn": "HDMIFTVC2N",
-          "description": "HDMI 2.0 female-to-female feedthrough coupler, olive drab"
+          "pn": "HDMIFTV7AN",
+          "description": "HDMI jam-nut receptacle, coding A, nickel - female HDMI Type-A, panel"
         },
         {
-          "pn": "HDMIFTVC2ZN",
-          "description": "HDMI 2.0 female-to-female feedthrough coupler, zinc-nickel"
+          "pn": "HDMIFTV2APEZN",
+          "description": "HDMI square-flange receptacle with metal backshell, coding A, black zinc nickel"
         },
         {
-          "pn": "HDMIFTV6AN",
-          "description": "HDMI 2.0 jam-nut panel receptacle, olive drab (female HDMI-A)"
-        },
-        {
-          "pn": "HDMIFTV6AZN",
-          "description": "HDMI 2.0 jam-nut panel receptacle, zinc-nickel"
+          "pn": "HDMIFTV7APEGF312",
+          "description": "HDMI jam-nut receptacle with metal backshell, coding A, olive drab cadmium, reduced flange (F312)"
         }
+      ],
+      "sources": [
+        "Amphenol Socapex HDMIFTV brochure - How to order (p. 12)",
+        "https://www.amphenol-socapex.com"
       ]
     },
     {
       "vendor": "Amphenol Socapex / Amphenol PCD",
       "family": "MDPFTV",
       "interface": "Mini DisplayPort / DisplayPort",
-      "interface_gender": "PN suffix decodes the variant: 6xx = jam-nut panel receptacle (female Mini-DP), 7xx = inline cable plug (male D38999 coupling). A/B suffix = shell variant; PE = anti-decouple; finish G/N/ZN; F### = cable length cm.",
+      "interface_gender": "Shell type sets the gender: 6 = plug / free connector (cable side), 7 = jam-nut panel receptacle (this family has no square-flange option). A coding letter (A/B) follows; receptacles add optional PE = metal backshell and the F312 reduced-flange deviation. Cordsets are ordered separately as MDP-MDP, MDP-DP, or MDP-DPF leads. Finish: G = olive drab cadmium, N = nickel, ZN = black zinc nickel. Verified against the Amphenol Socapex MDPFTV brochure, How-to-order (p. 6).",
       "connector_type": "D38999-style rugged Mini DisplayPort connector",
       "d38999_relation": "rugged Mini DisplayPort in size 13 38999 shell",
       "capability_notes": [
@@ -1237,24 +1257,30 @@
         "not a generic D38999 signal-pin arrangement"
       ],
       "example_pns": [
-        "MDPFTV7BNF312",
-        "MDPFTV7BGF312",
-        "MDPFTV7AZNF312",
-        "MDPFTV7BZNF312",
-        "MDPFTV7AGF312",
-        "MDPFTV7ANF312",
-        "MDPFTV7BPEGF312",
-        "MDPFTV7BPENF312",
-        "MDPFTV7APENF312",
-        "MDPFTV7BPEZNF312",
-        "MDPFTV7APEZNF312",
         "MDPFTV6BG",
-        "MDPFTV6BN",
-        "MDPFTV6AZN",
-        "MDPFTV6AG",
-        "MDPFTV6BZN",
         "MDPFTV6AN",
-        "MDPFTV7APEGF312"
+        "MDPFTV7APEGF312",
+        "MDPFTV7BNF312",
+        "MDPFTV7AZNF312",
+        "MDPFTV6BZN"
+      ],
+      "verified_purchasable_pns": [
+        {
+          "pn": "MDPFTV6BG",
+          "description": "Mini-DP plug, coding B, olive drab cadmium - cable side"
+        },
+        {
+          "pn": "MDPFTV6AN",
+          "description": "Mini-DP plug, coding A, nickel - cable side"
+        },
+        {
+          "pn": "MDPFTV7APEGF312",
+          "description": "Mini-DP jam-nut receptacle with metal backshell, coding A, olive drab cadmium, reduced flange (F312)"
+        },
+        {
+          "pn": "MDPFTV7BNF312",
+          "description": "Mini-DP jam-nut receptacle, coding B, nickel, reduced flange (F312)"
+        }
       ],
       "use_when": [
         "user needs rugged DisplayPort",
@@ -1274,6 +1300,10 @@
         "DisplayPort lanes are high-speed differential pairs.",
         "Do not map DisplayPort through generic contacts unless validated.",
         "Verify lane count, DP version, cable assembly, mating connector, and SI performance."
+      ],
+      "sources": [
+        "Amphenol Socapex MDPFTV brochure - How to order (p. 6)",
+        "https://www.amphenol-socapex.com"
       ]
     },
     {
