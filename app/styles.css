@@ -5552,6 +5552,16 @@ body.is-home .header-home-button {
 }
 .home-recent .home-kicker { margin-bottom: 4px; }
 
+.app-footer {
+  margin-top: 28px;
+  padding: 18px 20px;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+}
+
 /* -------------------------------------------------------------------------
    Keyboard shortcuts overlay
    ------------------------------------------------------------------------- */
@@ -7012,4 +7022,84 @@ dialog.batch-report-dialog::backdrop {
 [data-theme="blueprint-dark"] .home-task-card:hover .home-task-icon,
 [data-theme="blueprint-dark"] .field-why-toggle[aria-expanded="true"] {
   color: #07121f;
+}
+
+/* Manual: real-view gold contact specimens (pins section) ---------------- */
+.contact-specimen-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+.contact-specimen {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 1 220px;
+  margin: 0;
+  padding: 12px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+.contact-specimen-svg {
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  display: block;
+}
+.contact-specimen figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+.contact-specimen figcaption strong {
+  font-size: 0.9rem;
+}
+.contact-specimen figcaption span {
+  color: var(--text-muted);
+}
+
+/* Manual: connector series primer cards ---------------------------------- */
+.manual-series-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 12px 0;
+}
+.manual-series-card {
+  padding: 14px 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+.manual-series-card.is-primary {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.manual-series-card h4 {
+  margin: 0 0 6px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.98rem;
+}
+.manual-series-card h4 span {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+.manual-series-card.is-primary h4 span {
+  color: var(--accent);
+}
+.manual-series-card p {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--text);
 }
