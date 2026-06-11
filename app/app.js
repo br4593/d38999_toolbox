@@ -253,7 +253,16 @@
     jamnut_receptacle: "assets/svg/conesys-d38999-24-jam-nut-receptacle.svg",
     box_receptacle: "assets/svg/d38999-receptacle-generic.svg",
     cover: "assets/svg/conesys-d38999-33-cover.svg",
-    inline_receptacle: "assets/svg/d38999-receptacle-generic.svg",
+    inline_receptacle: "assets/svg/d38999-inline-receptacle.svg",
+  };
+
+  const PROFILE_TYPE_LABEL = {
+    plug: "Straight Plug",
+    wall_receptacle: "Wall Flange",
+    jamnut_receptacle: "Jam-Nut",
+    box_receptacle: "Box Mount",
+    inline_receptacle: "In-Line",
+    cover: "Protective Cover",
   };
 
   const els = {
@@ -4264,15 +4273,24 @@
     });
   }
 
-  function shellProfileHtml(slashSheet) {
-    const profileType = SHELL_PROFILE_TYPE[slashSheet];
+  function shellProfileArt(profileType, alt = "") {
     const assetPath = SHELL_PROFILE_ASSET[profileType];
     if (assetPath) {
-      const alt = `${getShellStyleLabel(slashSheet) || slashSheet} schematic`;
-      return `<div class="shell-profile-frame shell-profile-asset-frame"><img class="shell-profile-asset" src="${escapeHtml(assetPath)}" alt="${escapeHtml(alt)}"></div>`;
+      return `<img class="shell-profile-asset" src="${escapeHtml(assetPath)}" alt="${escapeHtml(alt)}">`;
     }
-    const svg = SHELL_PROFILES[profileType];
-    return svg ? `<div class="shell-profile-frame">${svg}</div>` : "";
+    return SHELL_PROFILES[profileType] || "";
+  }
+
+  function shellProfileHtml(slashSheet) {
+    const profileType = SHELL_PROFILE_TYPE[slashSheet];
+    if (!profileType) return "";
+    const alt = `${getShellStyleLabel(slashSheet) || slashSheet} schematic`;
+    const art = shellProfileArt(profileType, alt);
+    if (!art) return "";
+    const frameClass = SHELL_PROFILE_ASSET[profileType]
+      ? "shell-profile-frame shell-profile-asset-frame"
+      : "shell-profile-frame";
+    return `<div class="${frameClass}">${art}</div>`;
   }
 
   function matingSourceCard(decoded, matePartNumber = "") {
@@ -5888,11 +5906,16 @@
     }).join("");
     const activeProfile = active.ok ? (SHELL_PROFILE_TYPE[active.slash_sheet] || "plug") : "plug";
     const profileKeys = ["plug", "wall_receptacle", "jamnut_receptacle", "box_receptacle", "inline_receptacle", "cover"];
-    const profileGrid = profileKeys.map((key) => `
-      <div class="shell-profile-item${key === activeProfile ? " active" : ""}">
-        ${SHELL_PROFILES[key]}
+    const profileGrid = profileKeys.map((key) => {
+      const label = PROFILE_TYPE_LABEL[key] || key;
+      const isAsset = !!SHELL_PROFILE_ASSET[key];
+      return `
+      <div class="shell-profile-item${key === activeProfile ? " active" : ""}${isAsset ? " shell-profile-item-asset" : ""}">
+        ${shellProfileArt(key, label)}
+        <span class="shell-profile-item-label">${escapeHtml(label)}</span>
       </div>
-    `).join("");
+    `;
+    }).join("");
     return `
       <div class="field-graphic shell-type-graphic shell-profiles-grid" aria-hidden="true">
         ${profileGrid}
