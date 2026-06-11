@@ -3221,9 +3221,34 @@
     if (profileType === "wall_receptacle" || profileType === "box_receptacle") {
       const plateWidth = radius * (profileType === "wall_receptacle" ? 2.8 : 2.55);
       const plateHeight = radius * (profileType === "wall_receptacle" ? 2.25 : 2.45);
+      const x = cx - plateWidth / 2;
+      const y = cy - plateHeight / 2;
       const holeOffsetX = plateWidth * 0.38;
       const holeOffsetY = plateHeight * 0.36;
-      const shapes = [];
+      const shapes = [
+        {
+          tag: "rect",
+          attrs: {
+            class: "mount-flange",
+            x,
+            y,
+            width: plateWidth,
+            height: plateHeight,
+            rx: radius * (profileType === "wall_receptacle" ? 0.2 : 0.14),
+          },
+        },
+        {
+          tag: "rect",
+          attrs: {
+            class: "mount-flange-inner",
+            x: cx - plateWidth * 0.38,
+            y: cy - plateHeight * 0.34,
+            width: plateWidth * 0.76,
+            height: plateHeight * 0.68,
+            rx: radius * 0.12,
+          },
+        },
+      ];
       [
         [cx - holeOffsetX, cy - holeOffsetY],
         [cx + holeOffsetX, cy - holeOffsetY],
