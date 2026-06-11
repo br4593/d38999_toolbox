@@ -353,6 +353,35 @@ async function main() {
     assert(guideAndGaugeAudit.guides > 0, "17-35 renders extracted separator guide paths");
     assert(guideAndGaugeAudit.manualText.includes("Strong coverage") && guideAndGaugeAudit.manualText.includes("Contact Styles"), "Manual tab renders simplified standard guide");
 
+    const glossaryAudit = await cdp.eval(`(() => {
+      document.querySelector('.tab-button[data-tab="catalog"]').click();
+      const af = document.querySelector("#arrangementFilter");
+      if (af) { af.value = ""; af.dispatchEvent(new Event("input", { bubbles: true })); }
+      const sf = document.querySelector("#shellFilter");
+      if (sf) { sf.value = ""; sf.dispatchEvent(new Event("change", { bubbles: true })); }
+      const card = [...document.querySelectorAll(".catalog-card")].find((el) => !el.classList.contains("active"))
+        || document.querySelector(".catalog-card");
+      const coaxPill = [...card.querySelectorAll(".size-pill")].find((el) => /coax/i.test(el.getAttribute("data-glossary-value") || ""))
+        || card.querySelector(".size-pill");
+      const wasActive = card.classList.contains("active");
+      coaxPill.click();
+      const afterPill = document.querySelector(".glossary-popover");
+      const pillBody = afterPill ? afterPill.querySelector(".glossary-popover-body").textContent.trim() : "";
+      const cardStayedUnselected = card.classList.contains("active") === wasActive;
+      const svc = card.querySelector(".catalog-service[data-glossary]");
+      svc.click();
+      const afterSvc = document.querySelector(".glossary-popover");
+      const svcBody = afterSvc ? afterSvc.querySelector(".glossary-popover-body").textContent.trim() : "";
+      document.body.click();
+      const closed = !document.querySelector(".glossary-popover");
+      return { hasSvcAttr: Boolean(svc), pillBody, svcBody, cardStayedUnselected, closed };
+    })()`);
+    assert(glossaryAudit.pillBody.length > 10, "Size pill opens a glossary popover with a description");
+    assert(glossaryAudit.svcBody.length > 10, "Svc chip opens a glossary popover with a description");
+    assert(glossaryAudit.cardStayedUnselected, "Clicking a glossary chip does not change catalog card selection");
+    assert(glossaryAudit.closed, "Clicking outside closes the glossary popover");
+
+
     const manualFilter = await cdp.eval(`(() => {
       const shell = document.querySelector("#shellFilter");
       shell.value = "17";
@@ -451,6 +480,7 @@ async function main() {
         "part number lookup selects 17-35",
         "decoded exact-match cards render one exact-match block and one human summary",
         "manual shell filter works",
+        "Svc rating and contact-size pills open glossary popovers",
         "signal-assignment controls are absent",
         "mating panel renders catalog-backed mating PN with paired connector cards",
         "mating shell option switching updates the candidate PN when multiple options exist",

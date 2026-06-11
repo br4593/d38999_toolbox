@@ -87,6 +87,27 @@
     }[ch]));
   }
 
+  // i18n helpers — converter.js loads after i18n.js, so window.D38999_I18N exists.
+  function i18n() {
+    return window.D38999_I18N || null;
+  }
+  function T(key, fallback) {
+    const x = i18n();
+    return x && typeof x.t === "function" ? x.t(key, fallback) : (fallback != null ? fallback : key);
+  }
+  function Tf(key, vars, fallback) {
+    let str = T(key, fallback);
+    if (vars) {
+      Object.keys(vars).forEach((name) => {
+        str = str.replace(new RegExp("\\{" + name + "\\}", "g"), vars[name]);
+      });
+    }
+    return str;
+  }
+
+  // Last successful payload, so the open result re-renders on language change.
+  let lastPayload = null;
+
   function parseShellInsertContactKey(tail) {
     for (const shellNumber of numericShellSizes) {
       if (!tail.startsWith(shellNumber)) continue;
@@ -661,7 +682,7 @@
   function convertInput(value) {
     const trimmed = String(value || "").trim();
     if (!trimmed) {
-      throw new Error("Enter a part number.");
+      throw new Error(T("converter.error.enterPn", "Enter a part number."));
     }
 
     // Check for rugged I/O family first
@@ -685,7 +706,7 @@
     } catch {
       const inferred = reverseParseManufacturerPin(trimmed);
       if (!inferred.length) {
-        throw new Error("The part number was not recognized by the current rule set.");
+        throw new Error(T("converter.error.notRecognized", "The part number was not recognized by the current rule set."));
       }
       return {
         mode: "manufacturer",
@@ -697,21 +718,21 @@
 
   function decodedFields(parsed) {
     return [
-      ["Series", parsed.series],
-      ["Shell type", `/${parsed.shellType}`],
-      ["Class", parsed.serviceClass],
-      ["Shell size", `${parsed.shellSizeCode} = ${parsed.shellSizeNumber}`],
-      ["Insert", parsed.insert],
-      ["Contact", `${parsed.contact} ${contactDescriptions[parsed.contact] || ""}`.trim()],
-      ["Keying", parsed.key],
-      ["Description", milShellTypes[parsed.shellType] || ""],
+      [T("converter.field.series", "Series"), parsed.series],
+      [T("converter.field.shellType", "Shell type"), `/${parsed.shellType}`],
+      [T("converter.field.class", "Class"), parsed.serviceClass],
+      [T("converter.field.shellSize", "Shell size"), `${parsed.shellSizeCode} = ${parsed.shellSizeNumber}`],
+      [T("converter.field.insert", "Insert"), parsed.insert],
+      [T("converter.field.contact", "Contact"), `${parsed.contact} ${contactDescriptions[parsed.contact] || ""}`.trim()],
+      [T("converter.field.keying", "Keying"), parsed.key],
+      [T("converter.field.description", "Description"), milShellTypes[parsed.shellType] || ""],
     ];
   }
 
   function copyText(text, button) {
     const done = () => {
       const original = button.textContent;
-      button.textContent = "Copied";
+      button.textContent = T("converter.copied", "Copied");
       setTimeout(() => {
         button.textContent = original;
       }, 900);
@@ -746,14 +767,16 @@
   }
 
   function renderEmpty(panel) {
+    lastPayload = null;
     panel.innerHTML = "";
     const block = document.createElement("div");
     block.className = "empty-state";
-    block.textContent = "Ready";
+    block.textContent = T("converter.ready", "Ready");
     panel.appendChild(block);
   }
 
   function renderResults(panel, payload) {
+    lastPayload = payload;
     panel.innerHTML = "";
 
     // Handle rugged I/O connector recognition
@@ -769,14 +792,14 @@
           <span class="rugged-io-type">${esc(info.connector_type)}</span>
         </div>
         <dl class="decode-grid">
-          <div><dt>Input</dt><dd>${esc(info.input)}</dd></div>
-          <div><dt>Vendor</dt><dd>${esc(info.vendor)}</dd></div>
-          <div><dt>Family</dt><dd>${esc(info.family)}</dd></div>
-          <div><dt>Interface</dt><dd>${esc(info.interface)}</dd></div>
-          <div><dt>Shell Size</dt><dd>${esc(info.shell_size)}</dd></div>
-          <div><dt>D38999 Relation</dt><dd>${esc(info.d38999_relation)}</dd></div>
-          ${info.mounting_type ? `<div><dt>Mounting</dt><dd>${esc(info.mounting_type)}</dd></div>` : ""}
-          ${info.suffix ? `<div><dt>Suffix/Config</dt><dd>${esc(info.suffix)}</dd></div>` : ""}
+          <div><dt>${esc(T("converter.io.input", "Input"))}</dt><dd>${esc(info.input)}</dd></div>
+          <div><dt>${esc(T("converter.io.vendor", "Vendor"))}</dt><dd>${esc(info.vendor)}</dd></div>
+          <div><dt>${esc(T("converter.io.family", "Family"))}</dt><dd>${esc(info.family)}</dd></div>
+          <div><dt>${esc(T("converter.io.interface", "Interface"))}</dt><dd>${esc(info.interface)}</dd></div>
+          <div><dt>${esc(T("converter.io.shellSize", "Shell Size"))}</dt><dd>${esc(info.shell_size)}</dd></div>
+          <div><dt>${esc(T("converter.io.relation", "D38999 Relation"))}</dt><dd>${esc(info.d38999_relation)}</dd></div>
+          ${info.mounting_type ? `<div><dt>${esc(T("converter.io.mounting", "Mounting"))}</dt><dd>${esc(info.mounting_type)}</dd></div>` : ""}
+          ${info.suffix ? `<div><dt>${esc(T("converter.io.suffix", "Suffix/Config"))}</dt><dd>${esc(info.suffix)}</dd></div>` : ""}
         </dl>
         <div class="rugged-io-note">${esc(info.note)}</div>
         <div class="rugged-io-svg">
@@ -801,7 +824,9 @@
       const tbody = node.querySelector("tbody");
 
       normalized.textContent = result.parsed.normalized;
-      sourceLine.textContent = payload.mode === "manufacturer" ? `Matched ${result.source}` : milShellTypes[result.parsed.shellType] || "D38999";
+      sourceLine.textContent = payload.mode === "manufacturer"
+        ? Tf("converter.matched", { source: result.source }, "Matched {source}")
+        : milShellTypes[result.parsed.shellType] || "D38999";
       copyD38999.addEventListener("click", () => copyText(result.parsed.normalized, copyD38999));
       if (openInDecoder) {
         openInDecoder.addEventListener("click", () => {
@@ -854,19 +879,24 @@
         row.querySelector(".candidate-pn").textContent = candidate.manufacturer_part_number;
         row.querySelector(".confidence").textContent = candidate.confidence;
         row.querySelector(".note-cell").textContent = candidate.notes;
-        row.querySelector(".copy-btn").addEventListener("click", (event) => copyText(candidate.manufacturer_part_number, event.currentTarget));
+        const copyBtn = row.querySelector(".copy-btn");
+        copyBtn.textContent = T("converter.copyBtn", "Copy");
+        copyBtn.addEventListener("click", (event) => copyText(candidate.manufacturer_part_number, event.currentTarget));
         tbody.appendChild(row);
       });
 
       if (!result.candidates.length) {
         const message = document.createElement("div");
         message.className = "no-candidates";
-        message.textContent = "Decoded successfully, but no automated manufacturer candidates matched this exact class/style/contact combination.";
+        message.textContent = T("converter.noCandidates", "Decoded successfully, but no automated manufacturer candidates matched this exact class/style/contact combination.");
         node.querySelector(".result-block").appendChild(message);
       }
 
       panel.appendChild(node);
     });
+
+    const x = i18n();
+    if (x && typeof x.apply === "function") x.apply(panel);
   }
 
   function initUi() {
@@ -875,12 +905,11 @@
     const clearBtn = document.getElementById("clearBtn");
     const panel = document.getElementById("resultPanel");
     const count = document.getElementById("ruleCount");
-    count.textContent = `${rules.length} rule sets`;
-
     const mfrsEl = document.getElementById("converterManufacturers");
-    if (mfrsEl) {
+
+    const manufacturers = (() => {
       const EXCLUDED = new Set(["MIL-DTL-38999", "Repo-generated"]);
-      const manufacturers = [...new Set(
+      return [...new Set(
         rules
           .map((rule) => String(rule.manufacturer || "")
             // collapse helper labels like "Conesys / Souriau reference geometry" -> "Conesys"
@@ -889,9 +918,17 @@
             .trim())
           .filter((name) => name && !EXCLUDED.has(name))
       )].sort((a, b) => a.localeCompare(b));
-      mfrsEl.textContent = manufacturers.length ? manufacturers.join(", ") : "—";
-      mfrsEl.title = `${manufacturers.length} manufacturer catalogs covered`;
+    })();
+
+    // Refresh language-dependent chrome (rule-set count, catalog tooltip).
+    function refreshChrome() {
+      if (count) count.textContent = Tf("converter.ruleSets", { count: rules.length }, `${rules.length} rule sets`);
+      if (mfrsEl) {
+        mfrsEl.textContent = manufacturers.length ? manufacturers.join(", ") : "—";
+        mfrsEl.title = Tf("converter.catalogsCovered", { count: manufacturers.length }, `${manufacturers.length} manufacturer catalogs covered`);
+      }
     }
+    refreshChrome();
 
     form.addEventListener("submit", (event) => {
       event.preventDefault();
@@ -914,6 +951,15 @@
         renderResults(panel, convertInput(input.value));
       });
     });
+
+    const x = i18n();
+    if (x && typeof x.onChange === "function") {
+      x.onChange(() => {
+        refreshChrome();
+        if (lastPayload) renderResults(panel, lastPayload);
+        else renderEmpty(panel);
+      });
+    }
 
     renderEmpty(panel);
   }

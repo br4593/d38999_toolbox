@@ -906,11 +906,11 @@
     if (!definition) return filterKey;
     if (!short) return definition.filter_name || filterKey;
     const shortLabels = {
-      land: "Land",
-      sea: "Sea",
-      air: "Air",
-      space: "Space",
-      industrial: "Industrial",
+      land: T("build.env.land", "Land"),
+      sea: T("build.env.sea", "Sea"),
+      air: T("build.env.air", "Air"),
+      space: T("build.env.space", "Space"),
+      industrial: T("build.env.industrial", "Industrial"),
     };
     return shortLabels[filterKey] || definition.filter_name || filterKey;
   }
@@ -1639,6 +1639,7 @@
     bindGlobalSearch();
     bindRecentStrips();
     bindKeyboardShortcuts();
+    bindGlossary();
     const convForm = document.getElementById("converterForm");
     const convInput = document.getElementById("pnInput");
     if (convForm && convInput) {
@@ -1761,6 +1762,7 @@
   /* ---------- Sprint A UX enhancements ---------- */
   const SA_KEYS = {
     disclaimer: "d38999.disclaimer.dismissed",
+    intro: "d38999.homeIntro.dismissed",
     lastPn: "d38999.lastPn",
   };
 
@@ -1785,6 +1787,19 @@
       dismissBtn.addEventListener("click", () => {
         if (disclaimer) disclaimer.hidden = true;
         safeStorageSet(SA_KEYS.disclaimer, "1");
+      });
+    }
+
+    // 1b) Dismissible "New to D38999?" home explainer (persisted).
+    const homeIntro = document.getElementById("homeIntro");
+    const homeIntroDismiss = document.getElementById("homeIntroDismiss");
+    if (homeIntro && safeStorageGet(SA_KEYS.intro) === "1") {
+      homeIntro.hidden = true;
+    }
+    if (homeIntroDismiss) {
+      homeIntroDismiss.addEventListener("click", () => {
+        if (homeIntro) homeIntro.hidden = true;
+        safeStorageSet(SA_KEYS.intro, "1");
       });
     }
 
@@ -2636,7 +2651,7 @@
     const viewBox = connectorBaseViewBox(arr);
     const svgMarkup = miniSvgMarkup(arr);
     const sizePills = (arr.contact_size_notes || [])
-      .map((note) => `<span class="size-pill size-pill-${cssToken(note.size)}">#${escapeHtml(note.size)}</span>`)
+      .map((note) => sizePillMarkup(note))
       .join("");
 
     card.innerHTML = `
@@ -2651,7 +2666,7 @@
         </div>
         <div class="catalog-size-pills">${sizePills}</div>
         <div class="catalog-card-footer">
-          <span class="catalog-service">${escapeHtml(T("card.svc"))} ${escapeHtml(arr.service_rating || "?")}</span>
+          <span class="catalog-service glossary-chip" ${glossaryAttrs("svc", arr.service_rating || "?")}>${escapeHtml(T("card.svc"))} ${escapeHtml(arr.service_rating || "?")}</span>
           <button type="button" class="catalog-open-btn">${escapeHtml(T("card.openDecoder"))}</button>
         </div>
       </div>
@@ -2688,7 +2703,7 @@
     const viewBox = connectorBaseViewBox(arr);
     const svgMarkup = miniSvgMarkup(arr);
     const sizePills = (arr.contact_size_notes || [])
-      .map((note) => `<span class="size-pill size-pill-${cssToken(note.size)}">#${escapeHtml(note.size)}</span>`)
+      .map((note) => sizePillMarkup(note))
       .join("");
 
     const overlay = document.createElement("div");
@@ -2721,7 +2736,7 @@
             </div>
             <div class="lightbox-stat">
               <div class="lightbox-stat-label">${escapeHtml(T("lightbox.service"))}</div>
-              <div class="lightbox-stat-value">${escapeHtml(arr.service_rating || "—")}</div>
+              <div class="lightbox-stat-value glossary-chip" ${glossaryAttrs("svc", arr.service_rating || "?")}>${escapeHtml(arr.service_rating || "—")}</div>
             </div>
             <div class="lightbox-stat">
               <div class="lightbox-stat-label">${escapeHtml(T("lightbox.sourcePage"))}</div>
@@ -2805,7 +2820,7 @@
   }
 
   function currentFilterLabel(amps) {
-    if (!amps) return "Any";
+    if (!amps) return T("build.any", "Any");
     return `≥ ${formatCurrentAmps(amps)} A`;
   }
 
@@ -2916,6 +2931,37 @@
     return FINISH_KEY_BY_CLASS[code] || "od";
   }
 
+  // Shared <defs> gradients for the connector face. Used by the live decoder
+  // viewer and by the manual/build previews so the real-view gold contacts,
+  // recessed socket bores, and metal sheen render identically in both places.
+  const CONNECTOR_GRADIENT_DEFS = `
+    <radialGradient id="sbShellGradient" cx="50%" cy="38%" r="65%">
+      <stop class="sb-shell-stop-0" offset="0%" stop-color="rgba(255,255,255,0.85)"/>
+      <stop class="sb-shell-stop-1" offset="60%" stop-color="rgba(241,245,249,1)"/>
+      <stop class="sb-shell-stop-2" offset="100%" stop-color="rgba(214,222,233,1)"/>
+    </radialGradient>
+    <radialGradient id="contactGoldGrad" cx="38%" cy="32%" r="72%">
+      <stop offset="0%" stop-color="#E8CE86"/>
+      <stop offset="58%" stop-color="#C19A3F"/>
+      <stop offset="100%" stop-color="#7C611F"/>
+    </radialGradient>
+    <radialGradient id="shellSheenGrad" cx="40%" cy="28%" r="78%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.55)"/>
+      <stop offset="45%" stop-color="rgba(255,255,255,0.10)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.24)"/>
+    </radialGradient>
+    <radialGradient id="socketBoreGrad" cx="42%" cy="40%" r="62%">
+      <stop offset="0%" stop-color="#05080c"/>
+      <stop offset="55%" stop-color="#101b27"/>
+      <stop offset="100%" stop-color="#26323f"/>
+    </radialGradient>`;
+
+  // Monotonic counter for per-render clip-path ids. Separator guide paths are
+  // clipped to the insert face so they can't draw over the metal shell ring;
+  // unique ids keep multiple connector SVGs on the page from cross-referencing
+  // each other's clip geometry.
+  let guideClipSeq = 0;
+
   function renderViewer() {
     const arr = state.selectedArrangement;
     if (!arr) return;
@@ -2939,30 +2985,9 @@
     // so it survives cloning into the printable report popup. The real-view
     // gold-contact and metal-sheen gradients live here too.
     const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-    defs.innerHTML = `
-      <radialGradient id="sbShellGradient" cx="50%" cy="38%" r="65%">
-        <stop class="sb-shell-stop-0" offset="0%" stop-color="rgba(255,255,255,0.85)"/>
-        <stop class="sb-shell-stop-1" offset="60%" stop-color="rgba(241,245,249,1)"/>
-        <stop class="sb-shell-stop-2" offset="100%" stop-color="rgba(214,222,233,1)"/>
-      </radialGradient>
-      <radialGradient id="contactGoldGrad" cx="38%" cy="32%" r="72%">
-        <stop offset="0%" stop-color="#E8CE86"/>
-        <stop offset="58%" stop-color="#C19A3F"/>
-        <stop offset="100%" stop-color="#7C611F"/>
-      </radialGradient>
-      <radialGradient id="shellSheenGrad" cx="40%" cy="28%" r="78%">
-        <stop offset="0%" stop-color="rgba(255,255,255,0.55)"/>
-        <stop offset="45%" stop-color="rgba(255,255,255,0.10)"/>
-        <stop offset="100%" stop-color="rgba(0,0,0,0.24)"/>
-      </radialGradient>
-      <radialGradient id="socketBoreGrad" cx="42%" cy="40%" r="62%">
-        <stop offset="0%" stop-color="#05080c"/>
-        <stop offset="55%" stop-color="#101b27"/>
-        <stop offset="100%" stop-color="#26323f"/>
-      </radialGradient>`;
+    defs.innerHTML = CONNECTOR_GRADIENT_DEFS;
     svg.appendChild(defs);
 
-    const realView = state.viewMode === "real";
     const contactGender = currentContactGender(arr);
     // A socket (female) mating face is the left/right mirror of the pin face.
     // Mirror it in BOTH the engineering and real views (side view returns early
@@ -2970,94 +2995,85 @@
     const mirror = Boolean(arr.outline) && contactGender === "socket";
     svg.dataset.gender = contactGender;
     svg.dataset.mirrored = mirror ? "true" : "false";
+
+    const decodedForArr = state.decoded?.ok && state.decoded.arrangement_id === arr.id ? state.decoded : null;
+    const faceGroup = buildConnectorFaceGroup(arr, {
+      decoded: decodedForArr,
+      viewMode: state.viewMode,
+      interactive: true,
+      showShell: els.outlineToggle.checked,
+      showGuides: els.outlineToggle.checked,
+      contacts: currentContacts(),
+      defs,
+    });
+    svg.appendChild(faceGroup);
+    renderHoverPinLabel(svg, arr);
+  }
+
+  // Builds the connector mating-face <g> shared by the live decoder viewer and
+  // the static manual/build/mating previews so both render the exact same
+  // graphics (shell hardware, knurl, seal ring, keying, and gold or schematic
+  // contacts). Pass `interactive: true` to wire hit areas, selection rings, and
+  // hover/click handlers (live viewer only); previews leave it false.
+  function buildConnectorFaceGroup(arr, opts = {}) {
+    const viewMode = opts.viewMode || "engineering";
+    const realView = viewMode === "real";
+    const decoded = opts.decoded?.ok ? opts.decoded : null;
+    const interactive = Boolean(opts.interactive);
+    const showShell = opts.showShell !== false;
+    const showGuides = opts.showGuides !== false;
+    const defs = opts.defs || null;
+    const contacts = opts.contacts || contactsWithKeys(arr);
+    const gender = decodedContactGender(decoded);
+    const mirror = Boolean(arr.outline) && gender === "socket";
+
     const faceGroup = svgEl("g", { class: "face-content" });
     if (mirror) faceGroup.setAttribute("transform", `matrix(-1 0 0 1 ${arr.outline.center_x * 2} 0)`);
 
-    if (els.outlineToggle.checked && arr.outline) {
+    if (showShell && arr.outline) {
       const shell = svgEl("g", { class: "shell-layer" });
-      shell.appendChild(
-        svgEl("circle", {
-          class: "shell-shadow-ring",
-          cx: arr.outline.center_x,
-          cy: arr.outline.center_y,
-          r: arr.outline.radius * 1.08,
-        })
-      );
-      shell.appendChild(connectorFaceHardware(arr));
-      shell.appendChild(
-        svgEl("circle", {
-          class: "shell-fill",
-          cx: arr.outline.center_x,
-          cy: arr.outline.center_y,
-          r: arr.outline.radius * 1.04,
-        })
-      );
+      shell.appendChild(svgEl("circle", { class: "shell-shadow-ring", cx: arr.outline.center_x, cy: arr.outline.center_y, r: arr.outline.radius * 1.08 }));
+      shell.appendChild(connectorFaceHardware(arr, decoded));
+      shell.appendChild(svgEl("circle", { class: "shell-fill", cx: arr.outline.center_x, cy: arr.outline.center_y, r: arr.outline.radius * 1.04 }));
       if (realView) {
         shell.appendChild(couplingKnurl(arr));
-        shell.appendChild(
-          svgEl("circle", {
-            class: "shell-sheen",
-            cx: arr.outline.center_x,
-            cy: arr.outline.center_y,
-            r: arr.outline.radius * 1.04,
-          })
-        );
+        shell.appendChild(svgEl("circle", { class: "shell-sheen", cx: arr.outline.center_x, cy: arr.outline.center_y, r: arr.outline.radius * 1.04 }));
       }
-      shell.appendChild(
-        svgEl("circle", {
-          class: "insert-face",
-          cx: arr.outline.center_x,
-          cy: arr.outline.center_y,
-          r: arr.outline.radius * 0.9,
-        })
-      );
-      shell.appendChild(
-        svgEl("circle", {
-          class: "shell",
-          cx: arr.outline.center_x,
-          cy: arr.outline.center_y,
-          r: arr.outline.radius,
-        })
-      );
-      shell.appendChild(
-        svgEl("circle", {
-          class: "insert-boundary",
-          cx: arr.outline.center_x,
-          cy: arr.outline.center_y,
-          r: arr.outline.radius * 0.88,
-        })
-      );
-      shell.appendChild(
-        svgEl("circle", {
-          class: "shell-face-ring",
-          cx: arr.outline.center_x,
-          cy: arr.outline.center_y,
-          r: arr.outline.radius * 0.93,
-        })
-      );
-      shell.appendChild(orientationMarker(arr));
-      shell.appendChild(keyingDrawing(arr));
+      shell.appendChild(svgEl("circle", { class: "insert-face", cx: arr.outline.center_x, cy: arr.outline.center_y, r: arr.outline.radius * 0.9 }));
+      shell.appendChild(svgEl("circle", { class: "shell", cx: arr.outline.center_x, cy: arr.outline.center_y, r: arr.outline.radius }));
+      shell.appendChild(svgEl("circle", { class: "insert-boundary", cx: arr.outline.center_x, cy: arr.outline.center_y, r: arr.outline.radius * 0.88 }));
+      shell.appendChild(svgEl("circle", { class: "shell-face-ring", cx: arr.outline.center_x, cy: arr.outline.center_y, r: arr.outline.radius * 0.93 }));
+      shell.appendChild(orientationMarker(arr, decoded));
+      shell.appendChild(keyingDrawing(arr, decoded));
       faceGroup.appendChild(shell);
     }
 
-    if (els.outlineToggle.checked) {
+    if (showGuides) {
       const guideLayer = svgEl("g", { class: "guide-layer" });
+      if (arr.outline && defs) {
+        const clipId = `guideInsertClip-${++guideClipSeq}`;
+        const clip = svgEl("clipPath", { id: clipId, clipPathUnits: "userSpaceOnUse" });
+        clip.appendChild(svgEl("circle", { cx: arr.outline.center_x, cy: arr.outline.center_y, r: arr.outline.radius * 0.9 }));
+        defs.appendChild(clip);
+        guideLayer.setAttribute("clip-path", `url(#${clipId})`);
+      }
       (arr.guide_paths || []).forEach((path) => {
         guideLayer.appendChild(svgEl("path", { class: "guide-path", d: path.d }));
       });
       faceGroup.appendChild(guideLayer);
     }
 
-    const contacts = currentContacts();
     contacts.forEach((contact) => {
-      const group = svgEl("g", { class: pinClass(contact), "data-key": contact._key });
-      const radius = contactSymbolRadius(contact);
-      group.appendChild(svgEl("circle", { class: "pin-hit-area", cx: contact.x, cy: contact.y, r: Math.max(radius + 2.2, 2.6) }));
-      appendContactSymbol(group, contact, radius, contactGender);
-      if (state.selectedContactIndex === contact._index || state.pinMatches.has(contact._key)) {
+      const group = svgEl("g", { class: pinClass(contact, interactive), "data-key": contact._key });
+      const radius = contactSymbolRadius(contact, arr);
+      if (interactive) {
+        group.appendChild(svgEl("circle", { class: "pin-hit-area", cx: contact.x, cy: contact.y, r: Math.max(radius + 2.2, 2.6) }));
+      }
+      appendContactSymbol(group, contact, radius, gender, viewMode);
+      if (interactive && (state.selectedContactIndex === contact._index || state.pinMatches.has(contact._key))) {
         group.appendChild(svgEl("circle", { class: "pin-state-ring", cx: contact.x, cy: contact.y, r: radius + 1.15 }));
       }
-      if (shouldRenderLabel(contact)) {
+      if (interactive && shouldRenderLabel(contact)) {
         const labelAttrs = {
           class: "pin-label",
           x: contact.x,
@@ -3069,17 +3085,19 @@
         if (mirror) labelAttrs.transform = `matrix(-1 0 0 1 ${contact.x * 2} 0)`;
         group.appendChild(svgEl("text", labelAttrs, contact.label || ""));
       }
-      group.addEventListener("mouseenter", () => showPinTooltip(contact));
-      group.addEventListener("mouseleave", hidePinTooltip);
-      group.addEventListener("click", () => selectContact(contact._index, true));
+      if (interactive) {
+        group.addEventListener("mouseenter", () => showPinTooltip(contact));
+        group.addEventListener("mouseleave", hidePinTooltip);
+        group.addEventListener("click", () => selectContact(contact._index, true));
+      }
       faceGroup.appendChild(group);
     });
-    svg.appendChild(faceGroup);
-    renderHoverPinLabel(svg, arr);
+
+    return faceGroup;
   }
 
-  function currentShellFaceType(arr) {
-    const decoded = state.decoded;
+  function currentShellFaceType(arr, decodedOverride) {
+    const decoded = decodedOverride !== undefined ? decodedOverride : state.decoded;
     if (!decoded?.ok || decoded.arrangement_id !== arr.id) return "";
     return SHELL_PROFILE_TYPE[decoded.slash_sheet] || "";
   }
@@ -3090,6 +3108,15 @@
   function currentContactGender(arr) {
     const decoded = state.decoded;
     if (!decoded?.ok || !arr || decoded.arrangement_id !== arr.id) return "";
+    return decodedContactGender(decoded);
+  }
+
+  // Resolves the contact gender ("pin" / "socket" / "") for any decoded-like
+  // object (decoded P/N or manual-selector preview), independent of the live
+  // viewer state. Shared so the manual previews can label pins vs sockets the
+  // same way the decoder does.
+  function decodedContactGender(decoded) {
+    if (!decoded) return "";
     const g = normalizeDisplayKey(decoded.contact_definition?.contact_gender || "");
     if (g === "pin" || g === "socket") return g;
     const style = String(decoded.contact_style || "").toUpperCase();
@@ -3304,9 +3331,9 @@
     `;
   }
 
-  function connectorFaceHardware(arr) {
+  function connectorFaceHardware(arr, decodedOverride) {
     const outline = arr.outline;
-    const profileType = currentShellFaceType(arr);
+    const profileType = currentShellFaceType(arr, decodedOverride);
     const group = svgEl("g", { class: `mount-hardware mount-${profileType || "none"}` });
     if (!outline || !profileType) return group;
 
@@ -3361,6 +3388,9 @@
     try { localStorage.setItem("d38999.viewMode", next); } catch (e) { /* storage unavailable */ }
     reflectViewModeButtons();
     renderViewer();
+    // Keep the manual/build previews uniform with the decoder's current view.
+    if (state.buildRendered) renderBuildConnector();
+    if (state.manualRendered) renderManual();
   }
 
   const LABEL_SCALE_MIN = 1;
@@ -3409,8 +3439,8 @@
     return "unknown";
   }
 
-  function contactSymbolRadius(contact) {
-    const base = pinRadius(contact);
+  function contactSymbolRadius(contact, arr) {
+    const base = pinRadius(contact, arr);
     const scale = {
       "22d": 0.50,
       "20": 0.74,
@@ -3423,9 +3453,9 @@
     return Math.max(0.5, base * scale);
   }
 
-  function appendContactSymbol(group, contact, radius, gender) {
+  function appendContactSymbol(group, contact, radius, gender, viewMode) {
     const token = gaugeToken(contact);
-    if (state.viewMode === "real") {
+    if ((viewMode || state.viewMode) === "real") {
       // True-color contacts: gold pads (copper alloy, gold plate per M39029).
       // Distinguish female sockets (recessed entry bore) from male pins (domed,
       // highlighted tip); fall back to the neutral pad when gender is unknown.
@@ -3498,19 +3528,55 @@
     return `<line class="pin-symbol-mark" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"></line>`;
   }
 
-  function orientationMarker(arr) {
+  function orientationMarker(arr, decodedOverride) {
     const outline = arr.outline;
-    const markerWidth = outline.radius * 0.18;
-    const markerHeight = outline.radius * 0.11;
-    const top = outline.center_y - outline.radius;
-    return svgEl("path", {
+    const cx = outline.center_x;
+    const cy = outline.center_y;
+    const radius = outline.radius;
+    const decoded = decodedOverride !== undefined
+      ? (decodedOverride?.ok && decodedOverride.arrangement_id === arr.id ? decodedOverride : null)
+      : (state.decoded?.ok && state.decoded.arrangement_id === arr.id ? state.decoded : null);
+    const role = shellRoleForDecoded(decoded);
+
+    // The master key/keyway lives at 12 o'clock (0deg). The engineering view
+    // shows it as the orange orientation triangle; the real view swaps in a
+    // true-to-life master key (plug) / keyway (receptacle) drawn in the same
+    // style as the minor polarizing features (see keyingDrawing + styles.css).
+    const group = svgEl("g", { class: "orientation-group" });
+    group.dataset.role = role || "unknown";
+
+    const markerWidth = radius * 0.18;
+    const markerHeight = radius * 0.11;
+    const top = cy - radius;
+    group.appendChild(svgEl("path", {
       class: "orientation-marker keying-tooth",
       d: [
-        `M ${outline.center_x - markerWidth / 2} ${top - markerHeight * 0.55}`,
-        `L ${outline.center_x} ${top + markerHeight * 0.75}`,
-        `L ${outline.center_x + markerWidth / 2} ${top - markerHeight * 0.55}`,
+        `M ${cx - markerWidth / 2} ${top - markerHeight * 0.55}`,
+        `L ${cx} ${top + markerHeight * 0.75}`,
+        `L ${cx + markerWidth / 2} ${top - markerHeight * 0.55}`,
       ].join(" "),
-    });
+    }));
+
+    const keywayPt = polarPoint(cx, cy, radius * 0.93, 0);
+    group.appendChild(svgEl("rect", {
+      class: "keying-real keying-real-keyway keying-real-master",
+      x: keywayPt.x - radius * 0.026,
+      y: keywayPt.y - radius * 0.1,
+      width: radius * 0.052,
+      height: radius * 0.2,
+      rx: radius * 0.016,
+    }));
+    const keyPt = polarPoint(cx, cy, radius * 1.055, 0);
+    group.appendChild(svgEl("rect", {
+      class: "keying-real keying-real-key keying-real-master",
+      x: keyPt.x - radius * 0.034,
+      y: keyPt.y - radius * 0.08,
+      width: radius * 0.068,
+      height: radius * 0.16,
+      rx: radius * 0.014,
+    }));
+
+    return group;
   }
 
   function keyingDrawing(arr, decodedOverride) {
@@ -3602,13 +3668,15 @@
     };
   }
 
-  function pinClass(contact) {
+  function pinClass(contact, interactive = true) {
     const token = gaugeToken(contact);
     const classes = ["pin", `gauge-${token}`, `size-${cssToken(contact.size)}`, `type-${cssToken(contact.type)}`];
-    if (state.selectedContactIndex === contact._index) classes.push("selected");
-    if (state.pinMatches.has(contact._key)) classes.push("search-match");
     if (contact.confidence !== "high" || contact.label === "?") classes.push("needs-review");
-    if (state.activeGaugeFilter && token !== state.activeGaugeFilter) classes.push("filtered-out");
+    if (interactive) {
+      if (state.selectedContactIndex === contact._index) classes.push("selected");
+      if (state.pinMatches.has(contact._key)) classes.push("search-match");
+      if (state.activeGaugeFilter && token !== state.activeGaugeFilter) classes.push("filtered-out");
+    }
     return classes.join(" ");
   }
 
@@ -3616,9 +3684,151 @@
     return String(value || "unknown").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "unknown";
   }
 
-  function pinRadius(contact) {
+  // ---- Glossary popovers (Svc rating + contact-size pills) ----
+
+  function glossaryServiceKey(rating) {
+    const s = String(rating || "").toLowerCase();
+    if (s.includes("fiber")) return "fiber";
+    if (s.includes("coax")) return "coax";
+    if (s.includes("twinax")) return "twinax";
+    if (s.includes("inst")) return "inst";
+    const core = s.replace(/[^a-z]/g, "");
+    if (core === "n") return "n";
+    if (core === "m") return "m";
+    if (core === "ii" || core === "il" || core === "ll") return "ii";
+    if (core === "i" || core === "l") return "i";
+    return "unknown";
+  }
+
+  function glossarySizeKey(size) {
+    const s = String(size || "").toLowerCase();
+    if (s.includes("quadrax")) return "quadrax";
+    if (s.includes("coax")) return "coax";
+    if (s.includes("twinax")) return "twinax";
+    if (s.includes("22")) return "22d";
+    if (s.includes("20")) return "20";
+    if (s.includes("16")) return "16";
+    if (s.includes("12")) return "12";
+    if (s.includes("10")) return "10";
+    if (s.includes("8")) return "8";
+    return "unknown";
+  }
+
+  function glossaryEntryFor(kind, value) {
+    if (kind === "svc") {
+      return {
+        title: `${T("glossary.svc.label", "Service rating")} ${value}`,
+        body: T("glossary.svc." + glossaryServiceKey(value)),
+      };
+    }
+    if (kind === "size") {
+      return {
+        title: `${T("glossary.size.label", "Contact")} #${value}`,
+        body: T("glossary.size." + glossarySizeKey(value)),
+      };
+    }
+    return null;
+  }
+
+  function glossaryAttrs(kind, value) {
+    return `data-glossary="${kind}" data-glossary-value="${escapeHtml(String(value))}"`
+      + ` role="button" tabindex="0" aria-expanded="false"`
+      + ` aria-label="${escapeHtml(T("glossary.aria", "Show definition"))}"`
+      + ` title="${escapeHtml(T("glossary.hint", "Tap for details"))}"`;
+  }
+
+  function sizePillMarkup(note) {
+    return `<span class="size-pill size-pill-${cssToken(note.size)} glossary-chip" ${glossaryAttrs("size", note.size)}>#${escapeHtml(note.size)}</span>`;
+  }
+
+  function closeGlossaryPopover() {
+    const existing = document.querySelector(".glossary-popover");
+    if (existing) {
+      if (existing._cleanup) existing._cleanup();
+      existing.remove();
+    }
+    document
+      .querySelectorAll('[data-glossary][aria-expanded="true"]')
+      .forEach((el) => el.setAttribute("aria-expanded", "false"));
+  }
+
+  function positionGlossaryPopover(pop, anchor) {
+    const rect = anchor.getBoundingClientRect();
+    const margin = 8;
+    const pw = pop.offsetWidth;
+    const ph = pop.offsetHeight;
+    let left = rect.left + rect.width / 2 - pw / 2;
+    left = Math.max(margin, Math.min(left, window.innerWidth - pw - margin));
+    let top = rect.bottom + 6;
+    if (top + ph + margin > window.innerHeight && rect.top - ph - 6 > margin) {
+      top = rect.top - ph - 6;
+    }
+    top = Math.max(margin, Math.min(top, window.innerHeight - ph - margin));
+    pop.style.left = `${left}px`;
+    pop.style.top = `${top}px`;
+  }
+
+  function openGlossaryPopover(anchor) {
+    const entry = glossaryEntryFor(anchor.getAttribute("data-glossary"), anchor.getAttribute("data-glossary-value"));
+    if (!entry || !entry.body) return;
+    closeGlossaryPopover();
+
+    const pop = document.createElement("div");
+    pop.className = "glossary-popover";
+    pop.setAttribute("role", "tooltip");
+    pop.innerHTML = `<div class="glossary-popover-title">${escapeHtml(entry.title)}</div>`
+      + `<div class="glossary-popover-body">${escapeHtml(entry.body)}</div>`;
+    document.body.appendChild(pop);
+    anchor.setAttribute("aria-expanded", "true");
+    positionGlossaryPopover(pop, anchor);
+
+    const onOutside = (event) => {
+      if (!pop.contains(event.target) && !anchor.contains(event.target)) closeGlossaryPopover();
+    };
+    const onKey = (event) => {
+      if (event.key === "Escape") {
+        closeGlossaryPopover();
+        if (anchor.focus) anchor.focus();
+      }
+    };
+    const onReposition = () => closeGlossaryPopover();
+    // Registered during the opening click's dispatch, so the DOM spec guarantees
+    // it is not invoked for that same event — no need for a setTimeout guard.
+    document.addEventListener("click", onOutside, true);
+    document.addEventListener("keydown", onKey, true);
+    window.addEventListener("resize", onReposition);
+    window.addEventListener("scroll", onReposition, true);
+    pop._cleanup = () => {
+      document.removeEventListener("click", onOutside, true);
+      document.removeEventListener("keydown", onKey, true);
+      window.removeEventListener("resize", onReposition);
+      window.removeEventListener("scroll", onReposition, true);
+    };
+  }
+
+  function bindGlossary() {
+    document.addEventListener("click", (event) => {
+      const chip = event.target.closest("[data-glossary]");
+      if (!chip) return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (chip.getAttribute("aria-expanded") === "true") closeGlossaryPopover();
+      else openGlossaryPopover(chip);
+    }, true);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " " && event.key !== "Spacebar") return;
+      const chip = event.target.closest("[data-glossary]");
+      if (!chip) return;
+      event.preventDefault();
+      event.stopPropagation();
+      openGlossaryPopover(chip);
+    }, true);
+  }
+
+  function pinRadius(contact, arr) {
     if (Number(contact.r)) return Number(contact.r);
-    return pinRadiusForArrangement(state.selectedArrangement);
+    return pinRadiusForArrangement(arr || state.selectedArrangement);
   }
 
   function pinRadiusForArrangement(arrangement) {
@@ -4806,7 +5016,7 @@
     if (!els.buildContent) return;
     const selector = manualSelectorContext(state.decoded);
     const sections = [
-      ["Build", connectorSelector(selector)],
+      [T("build.title", "Build"), connectorSelector(selector)],
     ];
     els.buildContent.innerHTML = sections.map(([title, body]) => `
       <section class="manual-section build-section">
@@ -4821,10 +5031,11 @@
     if (!els.manualContent) return;
     const preview = activeDecodedOrExample(state.decoded);
     const sections = [
-      ["Interactive PN Decoder", interactivePnGuide(preview, "manual")],
-      ["PN Parts And Options", manualPnPartSections(preview)],
-      ["Quick Reference", manualQuickReference()],
-      ["Source Coverage", manualCoverage()],
+      [T("manual.section.interactive", "Interactive PN Decoder"), interactivePnGuide(preview, "manual")],
+      [T("manual.section.series", "Connector Series"), manualSeriesExplainer()],
+      [T("manual.section.parts", "PN Parts And Options"), manualPnPartSections(preview)],
+      [T("manual.section.quickRef", "Quick Reference"), manualQuickReference()],
+      [T("manual.section.coverage", "Source Coverage"), manualCoverage()],
     ];
     els.manualContent.innerHTML = sections.map(([title, body]) => `
       <section class="manual-section">
@@ -4897,7 +5108,9 @@
     const meta = selectorFieldMeta(field, value, preview);
     const optionCount = optionNode?.descendantCount || 0;
     const shellPreview = field === "slash_sheet" ? shellFacePreviewMarkup(value) : "";
-    const metaLine = disabled ? "Unavailable" : `${optionCount} match${optionCount === 1 ? "" : "es"}`;
+    const metaLine = disabled
+      ? T("build.opt.unavailable", "Unavailable")
+      : Tf(optionCount === 1 ? "build.opt.matchOne" : "build.opt.matchMany", { count: optionCount });
     return `
       <button
         type="button"
@@ -4915,7 +5128,7 @@
   }
 
   function connectorSelector(context) {
-    const pnValue = context.exact?.part_number || "Choose options to build a connector.";
+    const pnValue = context.exact?.part_number || T("build.choosePrompt", "Choose options to build a connector.");
     const activeEnvironment = state.buildEnvironmentFilter;
     const activeCurrent = state.buildCurrentFilter || 0;
     const currentThresholds = buildCurrentThresholds();
@@ -4923,31 +5136,31 @@
       activeEnvironment ? environmentFilterLabel(activeEnvironment, true) : "",
       activeCurrent ? currentFilterLabel(activeCurrent) : "",
     ].filter(Boolean).join(", ");
-    const filterSuffix = filterNote ? ` for ${filterNote}` : "";
+    const filterSuffix = filterNote ? Tf("build.summary.forFilter", { filter: filterNote }) : "";
     const summary = context.totalCount === 0
       ? filterNote
-        ? `No matches for ${filterNote}.`
-        : "No valid connectors match."
+        ? Tf("build.summary.noMatchFor", { filter: filterNote })
+        : T("build.summary.noValid", "No valid connectors match.")
       : context.exact
-        ? "Exact match in the valid-part-number set."
+        ? T("build.summary.exact", "Exact match in the valid-part-number set.")
         : context.matchCount === context.totalCount
-          ? `${context.totalCount} valid connector${context.totalCount === 1 ? "" : "s"}${filterSuffix}.`
-          : `${context.matchCount} match${context.matchCount === 1 ? "" : "es"}${filterSuffix}.`;
+          ? Tf(context.totalCount === 1 ? "build.summary.validOne" : "build.summary.validMany", { count: context.totalCount, suffix: filterSuffix })
+          : Tf(context.matchCount === 1 ? "build.summary.matchOne" : "build.summary.matchMany", { count: context.matchCount, suffix: filterSuffix });
     const fields = [
-      ["slash_sheet", "Shell"],
-      ["class_field", "Class"],
-      ["shell_code", "Size"],
-      ["insert_arrangement", "Insert"],
-      ["contact_style", "Contacts"],
-      ["polarization", "Keying"],
+      ["slash_sheet", T("build.field.shell", "Shell")],
+      ["class_field", T("build.field.class", "Class")],
+      ["shell_code", T("build.field.size", "Size")],
+      ["insert_arrangement", T("build.field.insert", "Insert")],
+      ["contact_style", T("build.field.contacts", "Contacts")],
+      ["polarization", T("build.field.keying", "Keying")],
     ];
     const stepHelp = {
-      slash_sheet: "Pick the shell family.",
-      class_field: "Pick class and finish.",
-      shell_code: "Pick the shell size code.",
-      insert_arrangement: "Pick the insert pattern.",
-      contact_style: "Pick the contact option.",
-      polarization: "Pick the keying.",
+      slash_sheet: T("build.help.slash", "Pick the shell family."),
+      class_field: T("build.help.class", "Pick class and finish."),
+      shell_code: T("build.help.size", "Pick the shell size code."),
+      insert_arrangement: T("build.help.insert", "Pick the insert pattern."),
+      contact_style: T("build.help.contacts", "Pick the contact option."),
+      polarization: T("build.help.keying", "Pick the keying."),
     };
     const activeStep = context.activeStep;
     const activeField = fields[activeStep]?.[0] || fields[0][0];
@@ -4962,18 +5175,18 @@
           <div class="selector-pn mono">${escapeHtml(pnValue)}</div>
           <p>${escapeHtml(summary)}</p>
           <div class="selector-actions">
-            <button type="button" class="selector-action secondary" data-selector-action="prev-step" ${activeStep === 0 ? "disabled" : ""}>Back</button>
-            <button type="button" class="selector-action" data-selector-action="apply" ${context.exact ? "" : "disabled"}>Open in decoder</button>
-            <button type="button" class="selector-action secondary" data-selector-action="reset">Clear</button>
+            <button type="button" class="selector-action secondary" data-selector-action="prev-step" ${activeStep === 0 ? "disabled" : ""}>${escapeHtml(T("build.btn.back", "Back"))}</button>
+            <button type="button" class="selector-action" data-selector-action="apply" ${context.exact ? "" : "disabled"}>${escapeHtml(T("build.btn.open", "Open in decoder"))}</button>
+            <button type="button" class="selector-action secondary" data-selector-action="reset">${escapeHtml(T("common.clear", "Clear"))}</button>
           </div>
         </div>
         <section class="build-environment-filter">
           <div class="build-environment-filter-head">
-            <strong>Environment</strong>
-            <span>${escapeHtml(activeEnvironment ? environmentFilterLabel(activeEnvironment, true) : "Any")}</span>
+            <strong>${escapeHtml(T("build.env.title", "Environment"))}</strong>
+            <span>${escapeHtml(activeEnvironment ? environmentFilterLabel(activeEnvironment, true) : T("build.any", "Any"))}</span>
           </div>
           <div class="build-environment-filter-buttons">
-            <button type="button" class="build-environment-btn${activeEnvironment ? "" : " active"}" data-build-environment="">Any</button>
+            <button type="button" class="build-environment-btn${activeEnvironment ? "" : " active"}" data-build-environment="">${escapeHtml(T("build.any", "Any"))}</button>
             ${environmentFilterDefinitions.map((item) => `
               <button type="button" class="build-environment-btn${activeEnvironment === item.filter_key ? " active" : ""}" data-build-environment="${escapeHtml(item.filter_key)}">${escapeHtml(environmentFilterLabel(item.filter_key, true))}</button>
             `).join("")}
@@ -4981,13 +5194,13 @@
         </section>
         <section class="build-environment-filter build-current-filter">
           <div class="build-environment-filter-head">
-            <strong>Current load</strong>
+            <strong>${escapeHtml(T("build.current.title", "Current load"))}</strong>
             <span>${escapeHtml(currentFilterLabel(activeCurrent))}</span>
           </div>
           <div class="build-environment-filter-buttons">
-            <button type="button" class="build-environment-btn${activeCurrent ? "" : " active"}" data-build-current="0">Any</button>
+            <button type="button" class="build-environment-btn${activeCurrent ? "" : " active"}" data-build-current="0">${escapeHtml(T("build.any", "Any"))}</button>
             ${currentThresholds.map((amps) => `
-              <button type="button" class="build-environment-btn${activeCurrent === amps ? " active" : ""}" data-build-current="${escapeHtml(String(amps))}" title="Only arrangements with a contact rated at least ${escapeHtml(formatCurrentAmps(amps))} A per pin">${escapeHtml(currentFilterLabel(amps))}</button>
+              <button type="button" class="build-environment-btn${activeCurrent === amps ? " active" : ""}" data-build-current="${escapeHtml(String(amps))}" title="${escapeHtml(Tf("build.current.tip", { amps: formatCurrentAmps(amps) }))}">${escapeHtml(currentFilterLabel(amps))}</button>
             `).join("")}
           </div>
         </section>
@@ -5000,7 +5213,7 @@
                 : context.selection[field]
                   ? "done"
                   : "pending";
-            const label = context.selection[field] || "Choose";
+            const label = context.selection[field] || T("build.step.choose", "Choose");
             return `
               <button type="button" class="build-step-pill ${status}" data-build-step="${index}">
                 <strong>${escapeHtml(title)}</strong>
@@ -5030,7 +5243,7 @@
     return `
       <section class="build-result">
         <div class="build-result-head">
-          <strong>Selected Connector</strong>
+          <strong>${escapeHtml(T("build.result.selected", "Selected Connector"))}</strong>
           <span class="mono">${escapeHtml(decoded.part_number || "")}</span>
         </div>
         <div class="build-result-body">
@@ -5038,21 +5251,21 @@
             ${manualArrangementPreview(decoded, { showBoundary: true, showKeying: true })}
             <div class="selector-preview-meta">
               <strong>${escapeHtml(decoded.arrangement_id || "")}</strong>
-              <span>${escapeHtml(arrangement ? `${arrangement.contact_count} contacts | ${sizeSummary(arrangement)}` : "Arrangement preview")}</span>
+              <span>${escapeHtml(arrangement ? Tf("build.result.contactsLine", { count: arrangement.contact_count, summary: sizeSummary(arrangement) }) : T("build.result.arrPreview", "Arrangement preview"))}</span>
               ${arrangement ? `<span class="selector-preview-current">${escapeHtml(currentCapacitySummary(arrangement))}</span>` : ""}
             </div>
           </div>
           ${connectorSummaryDetailHtml(decoded, { validation })}
           <div class="manual-stat-grid">
-            ${optionChip(decoded.slash_sheet || "", "shell type", getShellStyleLabel(decoded))}
-            ${optionChip(decoded.class_field || "", "class / finish", decoded.class_definition?.description || "")}
-            ${optionChip(decoded.shell_code || "", "shell size", decoded.shell_size ? `size ${decoded.shell_size}` : "")}
-            ${optionChip(decoded.insert_arrangement || "", "insert arrangement", decoded.arrangement_id || "")}
-            ${optionChip(decoded.contact_style || "", "contact style", decoded.contact_definition?.contact_gender || decoded.contact_definition?.description || "")}
-            ${optionChip(decoded.polarization || "", "polarization", decoded.polarization_definition?.description || "")}
+            ${optionChip(decoded.slash_sheet || "", T("build.chip.shellType", "shell type"), getShellStyleLabel(decoded))}
+            ${optionChip(decoded.class_field || "", T("build.chip.classFinish", "class / finish"), decoded.class_definition?.description || "")}
+            ${optionChip(decoded.shell_code || "", T("build.chip.shellSize", "shell size"), decoded.shell_size ? `size ${decoded.shell_size}` : "")}
+            ${optionChip(decoded.insert_arrangement || "", T("build.chip.insertArr", "insert arrangement"), decoded.arrangement_id || "")}
+            ${optionChip(decoded.contact_style || "", T("build.chip.contactStyle", "contact style"), decoded.contact_definition?.contact_gender || decoded.contact_definition?.description || "")}
+            ${optionChip(decoded.polarization || "", T("build.chip.polarization", "polarization"), decoded.polarization_definition?.description || "")}
           </div>
           ${validationSummaryHtml(validation, { partNumber: decoded.part_number })}
-          <div class="detail-item"><div class="label">Validation evidence</div><div class="value">${escapeHtml(validationEvidence || "No validation detail available.")}</div></div>
+          <div class="detail-item"><div class="label">${escapeHtml(T("build.result.validationEvidence", "Validation evidence"))}</div><div class="value">${escapeHtml(validationEvidence || T("build.result.noValidationDetail", "No validation detail available."))}</div></div>
         </div>
       </section>
     `;
@@ -5702,7 +5915,7 @@
       </article>`;
   }
 
-  function reportShellMarkup(titleText, metaText, fragmentsHtml) {
+  function reportShellMarkup(titleText, metaText, fragmentsHtml, subtitleText) {
     const dir = (document.documentElement.getAttribute("dir") === "rtl") ? "rtl" : "ltr";
     const baseHref = document.baseURI || (location.href.replace(/[^/]*$/, ""));
     const stylesHref = new URL("styles.css", baseHref).href;
@@ -5714,6 +5927,7 @@
         @page { size: A4; margin: 14mm; }
         body { font-family: Inter, Arial, sans-serif; color: #0b2545; padding: 24px; max-width: 960px; margin: auto; background: #fff; }
         h1 { font-size: 22px; margin-bottom: 4px; }
+        .report-pn-title { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 18px; font-weight: 700; color: #1d4ed8; margin: 0 0 10px; }
         h3 { font-size: 14px; margin: 14px 0 4px; }
         .report-meta { color: #475569; font-size: 12px; margin-bottom: 18px; }
         .report-disclaimer { background: #fef3c7; border: 1px solid #d97706; padding: 8px 12px; border-radius: 6px; font-size: 12px; margin-bottom: 18px; }
@@ -5798,6 +6012,7 @@
       </style></head><body>
       <div class="report-print-bar"><button type="button" onclick="window.print()">${escapeHtml(T("decoded.action.report"))}</button></div>
       <h1>${escapeHtml(titleText)}</h1>
+      ${subtitleText ? `<p class="report-pn-title">${escapeHtml(subtitleText)}</p>` : ""}
       <div class="report-meta">${escapeHtml(metaText)}</div>
       <div class="report-disclaimer">${escapeHtml(T("report.disclaimer"))}</div>
       ${fragmentsHtml}
@@ -5810,9 +6025,9 @@
       : state.selectedArrangement;
     const faceVariants = renderFaceVariants(arr);
     const fragment = reportBodyFragment(report, faceVariants, {});
-    const title = `${T("report.title")} — ${report.meta.sourcePartNumber}`;
-    const meta = `${report.meta.sourcePartNumber} · ${report.meta.generatedAt}`;
-    return reportShellMarkup(title, meta, fragment);
+    const title = T("report.title");
+    const meta = report.meta.generatedAt;
+    return reportShellMarkup(title, meta, fragment, report.meta.sourcePartNumber);
   }
 
   function exportReportHtml(decoded, options = {}) {
@@ -5822,12 +6037,12 @@
     const arr = decoded.arrangement_id ? arrangementById(decoded.arrangement_id) : null;
     const faceVariants = renderFaceVariants(arr, decoded);
     const fragment = reportBodyFragment(report, faceVariants, {});
-    const titleText = `${T("report.title")} — ${report.meta.sourcePartNumber}`;
-    const metaParts = [report.meta.sourcePartNumber, report.meta.generatedAt];
+    const titleText = T("report.title");
+    const metaParts = [report.meta.generatedAt];
     if (options.viaInput && options.viaInput !== report.meta.sourcePartNumber) {
       metaParts.unshift(Tf("report.viaInput", { input: options.viaInput, vendor: options.vendor || "?" }));
     }
-    const html = reportShellMarkup(titleText, metaParts.join(" · "), fragment);
+    const html = reportShellMarkup(titleText, metaParts.join(" · "), fragment, report.meta.sourcePartNumber);
     const w = window.open("", "_blank");
     if (!w) {
       const blob = new Blob([html], { type: "text/html;charset=utf-8" });
@@ -6219,20 +6434,57 @@
     const arr = arrangementById(fallbackId) || arrangements[0] || null;
     if (!arr?.outline) return "";
 
-    const outline = arr.outline;
+    // Render the manual preview through the exact same builder the live decoder
+    // uses, so the graphics are 1:1 (shell hardware, coupling knurl, seal ring,
+    // keying, and gold/schematic contacts). Side view has no face equivalent, so
+    // fall back to the engineering face.
+    const previewView = state.viewMode === "side" ? "engineering" : state.viewMode;
+    const decoded = active?.ok ? active : null;
+    const gender = decodedContactGender(decoded);
+    const mirror = Boolean(arr.outline) && gender === "socket";
+
     const previewClasses = ["connector-svg", "mini-connector-svg", "manual-preview-svg"];
     if (options.showKeying) previewClasses.push("manual-keying-svg");
 
+    const defs = svgEl("defs");
+    defs.innerHTML = CONNECTOR_GRADIENT_DEFS;
+    const faceGroup = buildConnectorFaceGroup(arr, {
+      decoded,
+      viewMode: previewView,
+      interactive: false,
+      showShell: true,
+      showGuides: true,
+      defs,
+    });
+
+    const viewBox = manualPreviewViewBox(arr, decoded).join(" ");
     return `
       <div class="field-graphic manual-svg-frame" aria-hidden="true">
-        <svg class="${previewClasses.join(" ")}" viewBox="${connectorBaseViewBox(arr).join(" ")}">
-          ${miniSvgMarkup(arr)}
-          ${options.showBoundary ? `<circle class="insert-boundary" cx="${outline.center_x}" cy="${outline.center_y}" r="${outline.radius * 0.88}"></circle>` : ""}
-          ${svgOuterMarkup(orientationMarker(arr))}
-          ${options.showKeying ? svgOuterMarkup(keyingDrawing(arr, active)) : ""}
+        <svg class="${previewClasses.join(" ")}" viewBox="${viewBox}" data-view="${previewView}" data-finish="${finishKeyFromClass(active?.class_field)}" data-gender="${gender}" data-mirrored="${mirror ? "true" : "false"}">
+          ${defs.outerHTML}
+          ${faceGroup.outerHTML}
         </svg>
       </div>
     `;
+  }
+
+  // Square viewBox for the static previews. Plugs reuse the decoder's tight base
+  // framing; receptacles get extra room so their mount flanges / jam-nut ring
+  // stay inside the preview frame instead of spilling over adjacent content.
+  function manualPreviewViewBox(arr, decoded) {
+    const base = connectorBaseViewBox(arr);
+    const o = arr.outline;
+    if (!o) return base;
+    const extentByProfile = {
+      wall_receptacle: 1.52,
+      box_receptacle: 1.42,
+      jamnut_receptacle: 1.42,
+      inline_receptacle: 1.28,
+    };
+    const extent = extentByProfile[currentShellFaceType(arr, decoded)];
+    if (!extent) return base;
+    const half = o.radius * extent;
+    return [o.center_x - half, o.center_y - half, half * 2, half * 2];
   }
 
   function insertOptions(active) {
@@ -6256,11 +6508,41 @@
       .map(([code, value]) => optionChip(code, value.contact_gender || "contact option", summarizeText(value.description, 80), active.ok && active.contact_style === code))
       .join("");
     return `
-      <div class="field-graphic contact-graphic" aria-hidden="true">
-        <span class="pin-contact"></span>
-        <span class="socket-contact"></span>
+      <div class="contact-specimen-row" aria-hidden="true">
+        <figure class="contact-specimen">
+          ${contactSpecimenSvg("pin")}
+          <figcaption><strong>P — Pin (male)</strong><span>Solid gold-plated contact; lives on the connector half wired to the source.</span></figcaption>
+        </figure>
+        <figure class="contact-specimen">
+          ${contactSpecimenSvg("socket")}
+          <figcaption><strong>S — Socket (female)</strong><span>Recessed gold sleeve that receives the pin and shrouds the live contact.</span></figcaption>
+        </figure>
       </div>
       <div class="option-grid">${chips}</div>
+    `;
+  }
+
+  // A single life-size contact rendered with the decoder's real-view graphics:
+  // a gold-plated pad on the dark dielectric face, with a recessed bore for
+  // sockets or a domed specular highlight for pins. Used by the manual's pins
+  // section so it matches the live viewer 1:1.
+  function contactSpecimenSvg(gender) {
+    const cx = 20;
+    const cy = 20;
+    const r = 12;
+    let contact = `<circle class="pin-symbol pin-contact-real" cx="${cx}" cy="${cy}" r="${r}"></circle>`;
+    if (gender === "socket") {
+      contact += `<circle class="pin-contact-socket-bore" cx="${cx}" cy="${cy}" r="${r * 0.46}"></circle>`;
+    } else {
+      contact += `<circle class="pin-contact-highlight" cx="${cx - r * 0.3}" cy="${cy - r * 0.32}" r="${r * 0.34}"></circle>`;
+    }
+    return `
+      <svg class="connector-svg contact-specimen-svg" viewBox="0 0 40 40" data-view="real" aria-hidden="true">
+        <defs>${CONNECTOR_GRADIENT_DEFS}</defs>
+        <circle class="insert-face" cx="${cx}" cy="${cy}" r="18"></circle>
+        <circle class="shell-face-ring" cx="${cx}" cy="${cy}" r="18.6"></circle>
+        ${contact}
+      </svg>
     `;
   }
 
@@ -6282,6 +6564,35 @@
     const text = String(value || "").replace(/\s+/g, " ").trim();
     if (text.length <= maxLength) return text;
     return `${text.slice(0, Math.max(0, maxLength - 3)).trim()}...`;
+  }
+
+  // Plain-language primer on the four MIL-DTL-38999 connector series. The key
+  // difference between them is the coupling mechanism (how the plug locks to the
+  // receptacle); shell anatomy, contacts, and insert arrangements are otherwise
+  // shared. This tool decodes Series III/IV part numbers.
+  function manualSeriesExplainer() {
+    return `
+      <div class="manual-note">MIL-DTL-38999 (formerly MIL-C-38999) defines four <strong>series</strong>. They share the same circular shell anatomy, contact sizes, and insert arrangements — what changes between series is mainly the <strong>coupling mechanism</strong> that locks the plug to the receptacle, plus the shell profile and environmental sealing.</div>
+      <div class="manual-series-grid">
+        <div class="manual-series-card">
+          <h4>Series I <span>Bayonet</span></h4>
+          <p>The original design. Three-pin <strong>bayonet</strong> coupling mates with a quick quarter-turn. Environmental class available, but lower vibration/temperature performance than later series. Rarely specified for new designs.</p>
+        </div>
+        <div class="manual-series-card">
+          <h4>Series II <span>Low-profile bayonet</span></h4>
+          <p>A <strong>low-silhouette</strong> version of the bayonet coupling for height-constrained installs. Non-environmental (no interfacial seal/grommet), so it is used in benign, protected environments.</p>
+        </div>
+        <div class="manual-series-card is-primary">
+          <h4>Series III <span>Threaded · most common</span></h4>
+          <p>The workhorse for aerospace and defense. <strong>Triple-start (triple-lead) threaded</strong> self-locking coupling, <strong>scoop-proof</strong> shell (the shell shrouds the pins so a misaligned plug can't bend them), 360° EMI/RFI shielding, and fluid/temperature resistance to ~175&nbsp;°C (200&nbsp;°C variants). This is the series the decoder and examples target.</p>
+        </div>
+        <div class="manual-series-card">
+          <h4>Series IV <span>Breech-lock</span></h4>
+          <p>Uses a <strong>breech-lock</strong> (ratchet/breech) coupling that mates with very little rotation — useful in tight quarters and high-vibration mounts. Less common than Series III; polarization isn't yet tabulated in this data set.</p>
+        </div>
+      </div>
+      <div class="manual-note"><strong>Reading the part number:</strong> the series isn't a single letter in the D38999 number — it's implied by the slash sheet (shell-type) family. Coupling style and shell profile come from that shell type, while the shell size, insert arrangement, contact style, and keying are decoded separately in the fields below.</div>
+    `;
   }
 
   function manualQuickReference() {
@@ -6502,19 +6813,31 @@
     `;
   }
 
-  function miniSvgMarkup(arr) {
+  function miniSvgMarkup(arr, opts = {}) {
+    const realView = Boolean(opts.realView);
+    const gender = opts.gender || "";
     const outline = arr.outline;
     const contactRadius = Math.max(0.25, pinRadiusForArrangement(arr) * 0.75);
     const contacts = contactsWithKeys(arr);
+    const guidePaths = arr.guide_paths || [];
+    let guideMarkup = "";
+    if (guidePaths.length) {
+      const clipId = `miniGuideClip-${++guideClipSeq}`;
+      guideMarkup = `<clipPath id="${clipId}" clipPathUnits="userSpaceOnUse"><circle cx="${outline.center_x}" cy="${outline.center_y}" r="${outline.radius * 0.9}"></circle></clipPath>
+      <g clip-path="url(#${clipId})">${guidePaths.map((path) => `<path class="guide-path" d="${path.d}"></path>`).join("")}</g>`;
+    }
     return `
       <circle class="shell-fill" cx="${outline.center_x}" cy="${outline.center_y}" r="${outline.radius * 1.04}"></circle>
+      ${realView ? `<circle class="shell-sheen" cx="${outline.center_x}" cy="${outline.center_y}" r="${outline.radius * 1.04}"></circle>` : ""}
+      ${realView ? `<circle class="insert-face" cx="${outline.center_x}" cy="${outline.center_y}" r="${outline.radius * 0.9}"></circle>` : ""}
       <circle class="shell" cx="${outline.center_x}" cy="${outline.center_y}" r="${outline.radius}"></circle>
-      ${(arr.guide_paths || []).map((path) => `<path class="guide-path" d="${path.d}"></path>`).join("")}
-      ${contacts.map((contact) => miniContactSymbolMarkup(contact, contactRadius)).join("")}
+      ${realView ? `<circle class="shell-face-ring" cx="${outline.center_x}" cy="${outline.center_y}" r="${outline.radius * 0.93}"></circle>` : ""}
+      ${guideMarkup}
+      ${contacts.map((contact) => miniContactSymbolMarkup(contact, contactRadius, { realView, gender })).join("")}
     `;
   }
 
-  function miniContactSymbolMarkup(contact, baseRadius) {
+  function miniContactSymbolMarkup(contact, baseRadius, opts = {}) {
     const token = gaugeToken(contact);
     const radius = Math.max(0.2, baseRadius * ({
       "22d": 0.46,
@@ -6525,6 +6848,21 @@
       "8": 1.8,
       unknown: 0.85,
     }[token] || 0.85));
+    if (opts.realView) {
+      // True-color contacts matching the decoder's real view: gold pads with a
+      // recessed bore for female sockets and a domed highlight for male pins.
+      const gender = opts.gender || "";
+      let markup = `<circle class="pin-symbol pin-contact-real" cx="${contact.x}" cy="${contact.y}" r="${radius}"></circle>`;
+      if (gender === "socket") {
+        const boreR = radius * (token === "8" ? 0.52 : 0.46);
+        markup += `<circle class="pin-contact-socket-bore" cx="${contact.x}" cy="${contact.y}" r="${boreR}"></circle>`;
+      } else if (token === "8") {
+        markup += `<circle class="pin-contact-bore" cx="${contact.x}" cy="${contact.y}" r="${radius * 0.42}"></circle>`;
+      } else if (gender === "pin") {
+        markup += `<circle class="pin-contact-highlight" cx="${contact.x - radius * 0.3}" cy="${contact.y - radius * 0.32}" r="${radius * 0.34}"></circle>`;
+      }
+      return markup;
+    }
     const circle = `<circle class="pin-symbol gauge-${token}" cx="${contact.x}" cy="${contact.y}" r="${radius}"></circle>`;
     if (token === "8") {
       return `${circle}<circle class="pin-symbol-cutout" cx="${contact.x}" cy="${contact.y}" r="${radius * 0.48}"></circle>`;
@@ -6581,6 +6919,10 @@
     });
     svg.addEventListener("pointerleave", () => {
       state.isPanning = false;
+      // Dismiss the hover pin-label bubble once the pointer leaves the connector
+      // graphics. The per-pin mouseleave can be missed because showPinTooltip
+      // rebuilds the SVG DOM, so guard the lingering bubble here.
+      if (state.hoveredContactIndex != null) hidePinTooltip();
     });
   }
 
