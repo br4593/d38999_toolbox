@@ -245,11 +245,11 @@
   };
 
   const SHELL_PROFILE_ASSET = {
-    plug: "assets/svg/d38999-straight-plug.svg",
-    wall_receptacle: "assets/svg/d38999-wall-mount-receptacle.svg",
-    jamnut_receptacle: "assets/svg/d38999-jam-nut-receptacle.svg",
+    plug: "assets/svg/conesys-d38999-26-straight-plug.svg",
+    wall_receptacle: "assets/svg/conesys-d38999-20-wall-mount-receptacle.svg",
+    jamnut_receptacle: "assets/svg/conesys-d38999-24-jam-nut-receptacle.svg",
     box_receptacle: "assets/svg/d38999-receptacle-generic.svg",
-    cover: "assets/svg/d38999-backshell-generic.svg",
+    cover: "assets/svg/conesys-d38999-33-cover.svg",
     inline_receptacle: "assets/svg/d38999-receptacle-generic.svg",
   };
 
