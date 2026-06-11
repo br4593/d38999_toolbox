@@ -62,9 +62,11 @@ d38999-toolbox/
 |   |                             #   verified, examples, catalog combos, federalconnectors source
 |   |-- qpl/                      # DLA QPL scrape outputs (qpl_1122_*.json)
 |   |-- environment/              # d38999_environment_classification/ (SHARDED)
-|   |-- rules/                    # decode/validation rules (part_number_rules.json,
-|   |                             #   pinout_rules.json, conversion_rules.csv, review_needed.json, ...)
-|   |-- converter/                # converter lookup tables (*_mappings.csv) + d38999_cross_reference.sqlite
+|   |-- rules/                    # decode/validation rules: part_number_rules.json,
+|   |                             #   pinout_rules.json, d38999_extracted_rules.json, review_needed.json
+|   |                             #   (conversion_rules.csv + rule_constraints.csv are generated, untracked)
+|   |-- converter/                # example_conversions.csv (ground-truth test data);
+|   |                             #   *_mappings.csv + d38999_cross_reference.sqlite are generated, untracked
 |   |-- reference/                # standards & engineering reference (std1560.pdf,
 |   |                             #   insert_arrangements.json, standard_definitions.json, dla_documents.json, ...)
 |   `-- connectors/               # rugged_io + visual-asset catalogs

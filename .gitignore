@@ -58,3 +58,13 @@ data/part_numbers/d38999_valid_part_numbers.json
 # (CI/Pages regenerates it on every push), so it is intentionally not committed.
 app/app-data.js
 app/data/d38999_valid_part_numbers.json
+
+# Derived converter exports regenerated from scripts/d38999_rules.py by
+# scripts/build_d38999_database.py. They have no app/CLI consumer (the bundle
+# embeds rules straight from d38999_rules.py), so they are not committed.
+# example_conversions.csv IS committed because the smoke test consumes it.
+data/converter/d38999_cross_reference.sqlite
+data/converter/style_mappings.csv
+data/converter/finish_mappings.csv
+data/rules/conversion_rules.csv
+data/rules/rule_constraints.csv
