@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 360" font-family="Inter, Arial, sans-serif">
+  <defs>
+    <style>
+      .step { fill: #ffffff; stroke: #0b2545; stroke-width: 1.6; }
+      .num  { fill: #0b2545; }
+      .nt   { fill: #ffffff; font-weight: 700; font-size: 16px; }
+      .h    { font-size: 14px; font-weight: 700; fill: #0b2545; }
+      .t    { font-size: 12px; fill: #1f3a64; }
+      .arrow { stroke: #0b2545; stroke-width: 2; fill: none; marker-end: url(#mk2); }
+      .title { font-size: 22px; font-weight: 700; fill: #0b2545; }
+    </style>
+    <marker id="mk2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0b2545"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="40" class="title">Typical user journey</text>
+
+  <g transform="translate(40,90)">
+    <rect class="step" width="170" height="150" rx="10"/>
+    <circle class="num" cx="26" cy="26" r="16"/><text x="26" y="32" text-anchor="middle" class="nt">1</text>
+    <text x="52"  y="32" class="h">Type or paste</text>
+    <text x="14"  y="74" class="t">Enter D38999/26WE35PN</text>
+    <text x="14"  y="92" class="t">or shorthand 26WE35PN.</text>
+    <text x="14" y="120" class="t">Header search accepts</text>
+    <text x="14" y="136" class="t">arrangements like 17-35.</text>
+  </g>
+
+  <g transform="translate(230,90)">
+    <rect class="step" width="170" height="150" rx="10"/>
+    <circle class="num" cx="26" cy="26" r="16"/><text x="26" y="32" text-anchor="middle" class="nt">2</text>
+    <text x="52" y="32" class="h">Decode</text>
+    <text x="14" y="74" class="t">Toolbox decodes every</text>
+    <text x="14" y="92" class="t">field, switches the</text>
+    <text x="14" y="110" class="t">connector drawing,</text>
+    <text x="14" y="128" class="t">renders Series III teeth.</text>
+  </g>
+
+  <g transform="translate(420,90)">
+    <rect class="step" width="170" height="150" rx="10"/>
+    <circle class="num" cx="26" cy="26" r="16"/><text x="26" y="32" text-anchor="middle" class="nt">3</text>
+    <text x="52" y="32" class="h">Inspect pins</text>
+    <text x="14" y="74" class="t">Hover for name +</text>
+    <text x="14" y="92" class="t">gauge. Search by pin.</text>
+    <text x="14" y="110" class="t">Compare two</text>
+    <text x="14" y="128" class="t">arrangements.</text>
+  </g>
+
+  <g transform="translate(610,90)">
+    <rect class="step" width="170" height="150" rx="10"/>
+    <circle class="num" cx="26" cy="26" r="16"/><text x="26" y="32" text-anchor="middle" class="nt">4</text>
+    <text x="52" y="32" class="h">Find mate</text>
+    <text x="14" y="74" class="t">Mating tab shows the</text>
+    <text x="14" y="92" class="t">reciprocal connector</text>
+    <text x="14" y="110" class="t">family + polarization</text>
+    <text x="14" y="128" class="t">requirement.</text>
+  </g>
+
+  <g transform="translate(800,90)">
+    <rect class="step" width="160" height="150" rx="10"/>
+    <circle class="num" cx="26" cy="26" r="16"/><text x="26" y="32" text-anchor="middle" class="nt">5</text>
+    <text x="52" y="32" class="h">Convert/export</text>
+    <text x="14" y="74" class="t">Get manufacturer</text>
+    <text x="14" y="92" class="t">equivalents. Export</text>
+    <text x="14" y="110" class="t">pin tables as CSV.</text>
+  </g>
+
+  <path class="arrow" d="M210,165 L230,165"/>
+  <path class="arrow" d="M400,165 L420,165"/>
+  <path class="arrow" d="M590,165 L610,165"/>
+  <path class="arrow" d="M780,165 L800,165"/>
+
+  <text x="40" y="290" class="h">Side trips</text>
+  <text x="40" y="310" class="t">• Catalog — browse all 63 arrangements visually.   • Rugged I/O — vendor variants for HDMI, USB, RJ45, DisplayPort.</text>
+  <text x="40" y="328" class="t">• Build — assemble a valid PN field by field.        • Manual — interactive PN chips, shell-type primer, DLA index.</text>
+</svg>

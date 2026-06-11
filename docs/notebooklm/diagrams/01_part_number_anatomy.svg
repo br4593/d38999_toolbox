@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 360" font-family="Inter, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0b2545"/>
+      <stop offset="1" stop-color="#13315c"/>
+    </linearGradient>
+    <style>
+      .field { fill: #ffffff; stroke: #0b2545; stroke-width: 1.5; }
+      .label { font-size: 14px; fill: #0b2545; font-weight: 600; }
+      .desc  { font-size: 12px; fill: #1f3a64; }
+      .chip  { font-size: 22px; font-weight: 700; fill: #0b2545; }
+      .title { font-size: 22px; font-weight: 700; fill: #ffffff; }
+      .sub   { font-size: 13px; fill: #c7d2fe; }
+      .arrow { stroke: #1f3a64; stroke-width: 1.2; fill: none; }
+    </style>
+  </defs>
+
+  <rect width="960" height="360" fill="url(#bg)"/>
+  <text x="40" y="42" class="title">Anatomy of a D38999 Part Number</text>
+  <text x="40" y="64" class="sub">Example: D38999/26WE35PN — a Series III wall-mount receptacle, shell size 17, with 35 sockets, polarization N.</text>
+
+  <!-- PN bar -->
+  <g transform="translate(40,100)">
+    <rect x="0"   y="0" width="180" height="60" rx="6" class="field"/>
+    <rect x="180" y="0" width="80"  height="60" class="field"/>
+    <rect x="260" y="0" width="60"  height="60" class="field"/>
+    <rect x="320" y="0" width="60"  height="60" class="field"/>
+    <rect x="380" y="0" width="100" height="60" class="field"/>
+    <rect x="480" y="0" width="80"  height="60" class="field"/>
+    <rect x="560" y="0" width="80"  height="60" class="field" stroke-dasharray="4 3"/>
+
+    <text x="90"  y="38" class="chip" text-anchor="middle">D38999/</text>
+    <text x="220" y="38" class="chip" text-anchor="middle">26</text>
+    <text x="290" y="38" class="chip" text-anchor="middle">W</text>
+    <text x="350" y="38" class="chip" text-anchor="middle">E</text>
+    <text x="430" y="38" class="chip" text-anchor="middle">35</text>
+    <text x="520" y="38" class="chip" text-anchor="middle">P</text>
+    <text x="600" y="38" class="chip" text-anchor="middle">N</text>
+  </g>
+
+  <!-- Callouts -->
+  <g transform="translate(40,180)">
+    <text x="90"  y="14" class="label" text-anchor="middle">Spec prefix</text>
+    <text x="90"  y="30" class="desc"  text-anchor="middle">MIL-DTL-38999</text>
+
+    <text x="220" y="14" class="label" text-anchor="middle">Shell type</text>
+    <text x="220" y="30" class="desc"  text-anchor="middle">26 = Series III wall-mount recept.</text>
+
+    <text x="290" y="14" class="label" text-anchor="middle">Class/finish</text>
+    <text x="290" y="30" class="desc"  text-anchor="middle">W = olive cadmium, 500h</text>
+
+    <text x="350" y="14" class="label" text-anchor="middle">Shell size</text>
+    <text x="350" y="30" class="desc"  text-anchor="middle">E = 17</text>
+
+    <text x="430" y="14" class="label" text-anchor="middle">Insert arrangement</text>
+    <text x="430" y="30" class="desc"  text-anchor="middle">35 contacts (17-35)</text>
+
+    <text x="520" y="14" class="label" text-anchor="middle">Contact style</text>
+    <text x="520" y="30" class="desc"  text-anchor="middle">P = pin, S = socket</text>
+
+    <text x="600" y="14" class="label" text-anchor="middle">Polarization</text>
+    <text x="600" y="30" class="desc"  text-anchor="middle">N (default) / A B C D E</text>
+  </g>
+
+  <!-- Hint box -->
+  <g transform="translate(720,100)">
+    <rect width="200" height="180" rx="10" fill="#ffffff" opacity="0.96" stroke="#0b2545"/>
+    <text x="100" y="26" text-anchor="middle" class="label">Decoder tips</text>
+    <text x="14"  y="54" class="desc">• Shorthand allowed:</text>
+    <text x="26"  y="72" class="desc" font-weight="700">26WE35PN</text>
+    <text x="14"  y="96" class="desc">• Missing polarization → N</text>
+    <text x="14" y="118" class="desc">• Valid PNs auto-load the</text>
+    <text x="14" y="134" class="desc">  matching insert arrangement</text>
+    <text x="14" y="158" class="desc">• Click any chip on the Manual</text>
+    <text x="14" y="174" class="desc">  tab for an interactive guide</text>
+  </g>
+
+  <text x="40" y="330" class="sub">Source fields: MIL-DTL-38999 (dtl38999.pdf) + d38999-contact-arrangements.pdf.</text>
+</svg>

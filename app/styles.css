@@ -6,83 +6,99 @@
 :root {
   color-scheme: light;
 
-  /* Palette */
-  --bg:           #f8f9fb;
-  --bg-2:         #eef3fb;
-  --surface:      #ffffff;
-  --surface-2:    #f5f8fc;
-  --surface-3:    #e9eff7;
-  --ink:          #111827;
-  --text:         #1f2937;
-  --muted:        #5f6368;
-  --dim:          #6b7280;
-  --line:         #dbe0ea;
-  --line-strong:  #c0c7d4;
-  --line-soft:    #eef2f7;
+  /* Palette — D38999 finish system: warm nickel/cadmium neutrals. */
+  --bg:           #f4f3ee;
+  --bg-2:         #eceae2;
+  --surface:      #fbfaf6;
+  --surface-2:    #f4f3ee;
+  --surface-3:    #e9e6db;
+  --ink:          #1a1d21;
+  --text:         #2a2d31;
+  --muted:        #6a6e66;
+  --dim:          #7a7e74;
+  --line:         #dad8ce;
+  --line-strong:  #c7c5b8;
+  --line-soft:    #eae8df;
 
-  /* Keyboard focus ring — high-contrast, theme-aware */
-  /* Keyboard focus ring — Neo-Modern indigo. */
-  --focus-ring:    #6366f1;
+  /* Keyboard focus ring — steel blue (insert highlight / fluorosilicone seal). */
+  --focus-ring:    #2f5c8a;
 
-  /* Brand / accent — Neo-Modern indigo. */
-  --accent:        #6366f1;
-  --accent-hover:  #4f46e5;
-  --accent-soft:   #eef2ff;
-  --accent-strong: #3730a3;
-  --brand:         #6366f1;
+  /* Brand / accent — steel→cobalt blue (A-A-59588 seal / EIA-359 band). */
+  --accent:        #2f5c8a;
+  --accent-hover:  #1e5bd6;
+  --accent-soft:   #e7eef6;
+  --accent-strong: #0c3c8f;
+  --brand:         #56563d;
 
-  /* Secondary accent — constructive actions (build / generate / export)
-     kept distinct from the primary blue used for navigation/links. */
-  --accent-2:        #0891b2;
-  --accent-2-hover:  #0e7490;
-  --accent-2-soft:   #ecfeff;
-  --accent-2-strong: #155e75;
+  /* Secondary accent — olive drab (class W/B/J cadmium finish). */
+  --accent-2:        #6b6a4b;
+  --accent-2-hover:  #56563d;
+  --accent-2-soft:   #efeee4;
+  --accent-2-strong: #3e3f2b;
 
-  /* Status */
-  --ok:        #047857;
-  --ok-soft:   #ecfdf5;
-  --warn:      #b45309;
-  --warn-soft: #fef3c7;
-  --danger:    #b91c1c;
-  --danger-soft: #fef2f2;
-  --review:    #b45309;
+  /* Status — on-brand: olive-green / brass / oxide-red. */
+  --ok:        #5c7a2e;
+  --ok-soft:   #eef2e2;
+  --warn:      #b0832e;
+  --warn-soft: #f6eedb;
+  --danger:    #b23a2e;
+  --danger-soft: #f7e9e6;
+  --review:    #b0832e;
+
+  /* Contact gold (copper-alloy / gold-plate contacts) — verified / highlight. */
+  --gold:      #9a7b2e;
+  --gold-soft: #f3ebd6;
 
   /* Diagram "paper" — the connector SVG follows the theme via these tokens.
      --diagram-ink-rgb drives every alpha-based neutral stroke in the drawing. */
-  --diagram-paper:    #ffffff;
-  --diagram-paper-2:  #f6f8fc;
-  --diagram-ink:      #111827;
-  --diagram-ink-rgb:  15, 23, 42;
+  --diagram-paper:    #fbfaf6;
+  --diagram-paper-2:  #f2f1ea;
+  --diagram-ink:      #1f2329;
+  --diagram-ink-rgb:  31, 35, 41;
 
-  /* Pin-symbol ink — distinct, colorblind-aware hue per contact gauge.
-     Used by .pin-symbol.gauge-* and the legend swatches. */
-  --pin-8:       #0f172a;
-  --pin-10:      #0e7490;
-  --pin-12:      #b45309;
-  --pin-16:      #7c3aed;
-  --pin-20:      #be185d;
-  --pin-22d:     #047857;
-  --pin-special: #111827;
-  --pin-other:   #111827;
-  --match:       #dbeafe;
+  /* Finish shell colors — drive [data-finish] on the connector drawing.
+     Representative renderings of the real MIL-DTL-38999 finishes. */
+  --finish-od-stroke:   #3e3f2b;  --finish-od-fill:   #6b6a4b;
+  --finish-gun-stroke:  #060708;  --finish-gun-fill:  #1a1d21;
+  --finish-grey-stroke: #33383d;  --finish-grey-fill: #565b61;
+  --finish-anod-stroke: #101316;  --finish-anod-fill: #24282e;
+  --finish-nik-stroke:  #6e7278;  --finish-nik-fill:  #a7abb1;
+  --finish-cad-stroke:  #9c977f;  --finish-cad-fill:  #d6d2c2;
+  /* Fluorosilicone interfacial seal (A-A-59588, Color Blue). */
+  --seal-blue:          #2e6fb0;
+  /* Insert dielectric (real view): high-grade rigid dielectric / LCP — a
+     dark olive resin, but not pitch black so the contacts read clearly. */
+  --insert-dielectric:  #3d4035;
+
+  /* Pin-symbol ink — distinct, colorblind-aware hue per contact gauge,
+     harmonized to the earthy D38999 family. */
+  --pin-8:       #1a1d21;
+  --pin-10:      #1e6e8c;
+  --pin-12:      #b0832e;
+  --pin-16:      #6e4fa8;
+  --pin-20:      #b43d6b;
+  --pin-22d:     #5c7a2e;
+  --pin-special: #1a1d21;
+  --pin-other:   #1a1d21;
+  --match:       #dce6f0;
   --selected:    var(--accent);
 
   /* Semantic / domain palette (shared across tabs; consumed incrementally) */
-  --gender-pin:        #1d4ed8;   /* male / pin */
-  --gender-pin-soft:   #e6edff;
-  --gender-socket:     #b45309;   /* female / socket */
-  --gender-socket-soft:#fdf1de;
-  --series-1:          #0e7490;
-  --series-2:          #2563eb;
-  --series-3:          #7c3aed;
-  --series-4:          #be185d;
-  --env-harsh:         #b91c1c;
-  --env-standard:      #047857;
-  --env-soft:          #f1f5f9;
-  --val-exact:         #047857;   /* verified exact catalog hit */
-  --val-verified:      #0e7490;   /* manufacturer-verified */
-  --val-inferred:      #b45309;   /* rule-inferred */
-  --val-review:        #b45309;   /* needs review */
+  --gender-pin:        #2f5c8a;   /* male / pin */
+  --gender-pin-soft:   #e7eef6;
+  --gender-socket:     #b0832e;   /* female / socket */
+  --gender-socket-soft:#f6eedb;
+  --series-1:          #1e6e8c;
+  --series-2:          #2f5c8a;
+  --series-3:          #6e4fa8;
+  --series-4:          #b43d6b;
+  --env-harsh:         #b23a2e;
+  --env-standard:      #5c7a2e;
+  --env-soft:          #edebe2;
+  --val-exact:         #5c7a2e;   /* verified exact catalog hit */
+  --val-verified:      #2f5c8a;   /* manufacturer-verified */
+  --val-inferred:      #b0832e;   /* rule-inferred */
+  --val-review:        #b0832e;   /* needs review */
 
   /* Typography */
   --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
@@ -141,60 +157,68 @@
 [data-theme="dark"] {
   color-scheme: dark;
 
-  --bg:           #0d1117;
-  --bg-2:         #131a26;
-  --surface:      #161c27;
-  --surface-2:    #1d2533;
-  --surface-3:    #273040;
-  --ink:          #f1f4f9;
-  --text:         #d7dce5;
-  --muted:        #9aa4b3;
-  --dim:          #8b95a7;
-  --line:         #2a3342;
-  --line-strong:  #3a4456;
-  --line-soft:    #212a38;
+  --bg:           #131517;
+  --bg-2:         #1a1d21;
+  --surface:      #1f2329;
+  --surface-2:    #272c33;
+  --surface-3:    #323841;
+  --ink:          #eceae0;
+  --text:         #cdcbc0;
+  --muted:        #8c8e84;
+  --dim:          #7e8076;
+  --line:         #2e333a;
+  --line-strong:  #3a4049;
+  --line-soft:    #23282e;
 
-  --focus-ring:    #818cf8;
+  --focus-ring:    #5e8fc4;
 
-  --accent:        #818cf8;
-  --accent-hover:  #a5b4fc;
-  --accent-soft:   #1e1b4b;
-  --accent-strong: #c7d2fe;
-  --brand:         #818cf8;
+  --accent:        #5e8fc4;
+  --accent-hover:  #7fb0e0;
+  --accent-soft:   #16263a;
+  --accent-strong: #9cc3e8;
+  --brand:         #a3a079;
 
-  --ok:        #34d399;
-  --ok-soft:   #0e2a22;
-  --warn:      #fbbf24;
+  --accent-2:        #9a9a6e;
+  --accent-2-hover:  #b0b083;
+  --accent-2-soft:   #25271b;
+  --accent-2-strong: #c3c293;
+
+  --ok:        #8dae54;
+  --ok-soft:   #1c2614;
+  --warn:      #d8b45c;
   --warn-soft: #2c2410;
-  --danger:    #f87171;
+  --danger:    #d2685a;
   --danger-soft: #2a1414;
-  --review:    #fbbf24;
+  --review:    #d8b45c;
+
+  --gold:      #d8b45c;
+  --gold-soft: #2c2410;
 
   /* Diagram now follows the dark theme: dark paper, light strokes/labels. */
-  --diagram-paper:    #131a26;
-  --diagram-paper-2:  #0e1622;
-  --diagram-ink:      #e6ecf6;
-  --diagram-ink-rgb:  205, 215, 230;
+  --diagram-paper:    #1a1d21;
+  --diagram-paper-2:  #15171a;
+  --diagram-ink:      #e8e6dc;
+  --diagram-ink-rgb:  232, 230, 220;
 
   /* Lighter, saturated pin hues so gauge symbols read on the dark paper. */
-  --pin-8:       #cbd5e1;
-  --pin-10:      #38bdf8;
-  --pin-12:      #fbbf24;
-  --pin-16:      #a78bfa;
-  --pin-20:      #f472b6;
-  --pin-22d:     #34d399;
-  --pin-special: #e2e8f0;
-  --pin-other:   #e2e8f0;
+  --pin-8:       #c2c6cb;
+  --pin-10:      #5bb5d6;
+  --pin-12:      #d8b45c;
+  --pin-16:      #b49be0;
+  --pin-20:      #e0789f;
+  --pin-22d:     #9dc56a;
+  --pin-special: #e8e6dc;
+  --pin-other:   #e8e6dc;
 
-  --gender-pin:        #6aacff;
-  --gender-pin-soft:   #16243a;
-  --gender-socket:     #fbbf24;
+  --gender-pin:        #7fb0e0;
+  --gender-pin-soft:   #16263a;
+  --gender-socket:     #d8b45c;
   --gender-socket-soft:#2c2410;
-  --env-soft:          #1d2533;
-  --val-exact:         #34d399;
-  --val-verified:      #38bdf8;
-  --val-inferred:      #fbbf24;
-  --val-review:        #fbbf24;
+  --env-soft:          #272c33;
+  --val-exact:         #9dc56a;
+  --val-verified:      #5bb5d6;
+  --val-inferred:      #d8b45c;
+  --val-review:        #d8b45c;
 
   /* Dark Refined Flat — borders carry the weight, shadows are only for overlays. */
   --elev-1: 0 0 0 1px rgba(255, 255, 255, 0.04), 0 1px 2px rgba(0, 0, 0, 0.40);
@@ -209,6 +233,168 @@
   --accent-2-hover:  #67e8f9;
   --accent-2-soft:   #102a33;
   --accent-2-strong: #a5f3fc;
+}
+
+/* =========================================================================
+   D38999 finish styles (v5)
+   Named, user-selectable styles that re-skin the whole app AND tint the
+   connector drawing to evoke a real MIL-DTL-38999 Table II finish. Selected
+   from the header style picker and applied as `data-style` on <html> on top of
+   a light or dark base (`data-theme`). Dark finishes ride data-theme="dark" so
+   they inherit every existing dark component rule for free; here we only
+   override the palette + the connector's default shell metal.
+   The connector default follows --default-shell-stroke / --default-shell-tint;
+   a decoded part's own [data-finish] still overrides per its real class.
+   ========================================================================= */
+
+/* ---- Olive Drab — class W/B/J cadmium, signature field finish (light) ----- */
+[data-style="olive"] {
+  --bg:           #e7e4d3;
+  --bg-2:         #ddd9c4;
+  --surface:      #f2f0e4;
+  --surface-2:    #e7e4d3;
+  --surface-3:    #d8d3bc;
+  --ink:          #23241a;
+  --text:         #34352a;
+  --muted:        #6c6c52;
+  --dim:          #7c7c63;
+  --line:         #cdc9b2;
+  --line-strong:  #b8b39a;
+  --line-soft:    #ddd9c4;
+  --focus-ring:   #5e6b35;
+  --accent:        #5e6b35;
+  --accent-hover:  #4a5529;
+  --accent-soft:   #e9e7d3;
+  --accent-strong: #3e3f2b;
+  --brand:         #56563d;
+  --accent-2:        #8a7a3e;
+  --accent-2-hover:  #6f6230;
+  --accent-2-soft:   #efe8d2;
+  --accent-2-strong: #574c24;
+  --diagram-paper:   #f2f0e4;
+  --diagram-paper-2: #e7e4d3;
+  --diagram-ink:     #23241a;
+  --diagram-ink-rgb: 35, 36, 26;
+  --default-shell-stroke: var(--finish-od-stroke);
+  --default-shell-tint:   var(--finish-od-fill);
+}
+
+/* ---- Cadmium — class A/U, silver to light iridescent gold (light) --------- */
+[data-style="cadmium"] {
+  --bg:           #f1ecdd;
+  --bg-2:         #e8e1cd;
+  --surface:      #faf6ec;
+  --surface-2:    #f1ecdd;
+  --surface-3:    #e4dcc4;
+  --ink:          #2a2418;
+  --text:         #3a3326;
+  --muted:        #7a6f54;
+  --dim:          #8a7f63;
+  --line:         #ddd2b8;
+  --line-strong:  #c9bd9c;
+  --line-soft:    #ece3cd;
+  --focus-ring:   #9a7b2e;
+  --accent:        #9a7b2e;
+  --accent-hover:  #856823;
+  --accent-soft:   #f3ebd6;
+  --accent-strong: #6b5318;
+  --brand:         #9a7b2e;
+  --accent-2:        #6b6a4b;
+  --accent-2-hover:  #56563d;
+  --accent-2-soft:   #efeee4;
+  --accent-2-strong: #3e3f2b;
+  --diagram-paper:   #faf6ec;
+  --diagram-paper-2: #f1ecdd;
+  --diagram-ink:     #2a2418;
+  --diagram-ink-rgb: 42, 36, 24;
+  --default-shell-stroke: #87826b;
+  --default-shell-tint:   var(--finish-cad-fill);
+}
+
+/* ---- Satin Nickel — class F/M/N, cool bright nickel (light) --------------- */
+[data-style="nickel"] {
+  --bg:           #ecedef;
+  --bg-2:         #e1e4e7;
+  --surface:      #f7f8f9;
+  --surface-2:    #ecedef;
+  --surface-3:    #dfe3e6;
+  --ink:          #1c2024;
+  --text:         #2b3036;
+  --muted:        #677079;
+  --dim:          #78818a;
+  --line:         #d2d7dc;
+  --line-strong:  #bcc3ca;
+  --line-soft:    #e4e7ea;
+  --focus-ring:   #4f6675;
+  --accent:        #4f6675;
+  --accent-hover:  #3d5160;
+  --accent-soft:   #e6ebef;
+  --accent-strong: #2c3d49;
+  --brand:         #6e7278;
+  --accent-2:        #5c7a2e;
+  --accent-2-hover:  #496325;
+  --accent-2-soft:   #e9eede;
+  --accent-2-strong: #3a4f1d;
+  --diagram-paper:   #f7f8f9;
+  --diagram-paper-2: #ecedef;
+  --diagram-ink:     #1c2024;
+  --diagram-ink-rgb: 28, 32, 36;
+  --default-shell-stroke: var(--finish-nik-stroke);
+  --default-shell-tint:   var(--finish-nik-fill);
+}
+
+/* ---- Black Zinc — class Z, zinc-nickel type D black (dark base) ----------- */
+[data-style="zinc"] {
+  --bg:           #121315;
+  --bg-2:         #17191b;
+  --surface:      #1c1e21;
+  --surface-2:    #242629;
+  --surface-3:    #2e3135;
+  --ink:          #eaebec;
+  --text:         #cdcfd1;
+  --line:         #2b2e31;
+  --line-strong:  #3a3e42;
+  --line-soft:    #212326;
+  --focus-ring:   #6d97c8;
+  --accent:        #6d97c8;
+  --accent-hover:  #8fb2dd;
+  --accent-soft:   #16222f;
+  --accent-strong: #aecbe8;
+  --brand:         #8b8d8f;
+  --diagram-paper:   #1a1c1e;
+  --diagram-paper-2: #141517;
+  --diagram-ink:     #e9eaeb;
+  --diagram-ink-rgb: 233, 234, 235;
+  --default-shell-stroke: #8b9197;
+  --default-shell-tint:   #4a4f55;
+}
+
+/* ---- Gun-Metal Grey — class T, Ni-PTFE nonreflective (dark base) ---------- */
+[data-style="grey"] {
+  --bg:           #24282c;
+  --bg-2:         #2b3035;
+  --surface:      #31363c;
+  --surface-2:    #3a4046;
+  --surface-3:    #454c53;
+  --ink:          #e9ebed;
+  --text:         #cfd3d6;
+  --muted:        #99a0a6;
+  --dim:          #889098;
+  --line:         #454c53;
+  --line-strong:  #566069;
+  --line-soft:    #383e44;
+  --focus-ring:   #8fb3d6;
+  --accent:        #8fb3d6;
+  --accent-hover:  #aecae6;
+  --accent-soft:   #243038;
+  --accent-strong: #c6dcef;
+  --brand:         #aab0b5;
+  --diagram-paper:   #2b3035;
+  --diagram-paper-2: #24282c;
+  --diagram-ink:     #e9ebed;
+  --diagram-ink-rgb: 233, 235, 237;
+  --default-shell-stroke: #aab0b6;
+  --default-shell-tint:   #6b7178;
 }
 
 /* -------------------------------------------------------------------------
@@ -1095,12 +1281,89 @@ body.is-home .header-home-button {
   color: var(--muted, #6b7280);
 }
 
+/* Rugged I/O multi-view switcher + figures --------------------------- */
+
+.rugged-view-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid var(--line, #d2d6dd);
+  border-radius: 999px;
+  background: var(--surface-2, #f1f5f9);
+}
+
+.rugged-view-btn {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 11px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted, #6b7280);
+  cursor: pointer;
+  text-transform: capitalize;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.rugged-view-btn:hover {
+  color: var(--ink, #2a2f3a);
+  background: var(--surface-3, #e2e8f0);
+}
+
+.rugged-view-btn.active {
+  background: var(--surface, #fff);
+  color: var(--accent, #1f5fae);
+  border-color: var(--line-strong, #cbd2dc);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.rugged-view-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+
+.rugged-view-figcap {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+  color: var(--muted, #6b7280);
+}
+
+.rugged-view-ref .rugged-mount-img {
+  opacity: 0.8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rugged-view-btn { transition: none; }
+}
+
 /* Connector SVG -------------------------------------------------------- */
+
+/* Finish-aware shell: data-finish on the drawing selects the metal color.
+   The default follows the active style (--default-shell-* set by data-style),
+   falling back to olive drab (class W/B/J), the signature D38999 finish.
+   A decoded part's own [data-finish] still overrides per its real class. */
+.connector-svg,
+.mini-connector-svg {
+  --shell-stroke: var(--default-shell-stroke, var(--finish-od-stroke));
+  --shell-tint:   var(--default-shell-tint,   var(--finish-od-fill));
+}
+.connector-svg[data-finish="gun"],  .mini-connector-svg[data-finish="gun"]  { --shell-stroke: var(--finish-gun-stroke);  --shell-tint: var(--finish-gun-fill); }
+.connector-svg[data-finish="grey"], .mini-connector-svg[data-finish="grey"] { --shell-stroke: var(--finish-grey-stroke); --shell-tint: var(--finish-grey-fill); }
+.connector-svg[data-finish="anod"], .mini-connector-svg[data-finish="anod"] { --shell-stroke: var(--finish-anod-stroke); --shell-tint: var(--finish-anod-fill); }
+.connector-svg[data-finish="nik"],  .mini-connector-svg[data-finish="nik"]  { --shell-stroke: var(--finish-nik-stroke);  --shell-tint: var(--finish-nik-fill); }
+.connector-svg[data-finish="cad"],  .mini-connector-svg[data-finish="cad"]  { --shell-stroke: var(--finish-cad-stroke);  --shell-tint: var(--finish-cad-fill); }
 
 .connector-svg .shell,
 .mini-connector-svg .shell {
   fill: none;
-  stroke: var(--diagram-ink);
+  stroke: var(--shell-stroke);
   stroke-width: 1.6;
   vector-effect: non-scaling-stroke;
 }
@@ -1113,7 +1376,7 @@ body.is-home .header-home-button {
 .connector-svg .shell-shadow-ring,
 .mini-connector-svg .shell-shadow-ring {
   fill: none;
-  stroke: rgba(var(--diagram-ink-rgb), .08);
+  stroke: color-mix(in srgb, var(--shell-tint) 50%, transparent);
   stroke-width: 3.2;
   vector-effect: non-scaling-stroke;
 }
@@ -1122,6 +1385,15 @@ body.is-home .header-home-button {
 .mini-connector-svg .shell-fill {
   fill: var(--diagram-paper);
   stroke: none;
+}
+
+/* Insert dielectric face — transparent in engineering view (paper shows
+   through); a dark dielectric disc in real view. */
+.connector-svg .insert-face,
+.mini-connector-svg .insert-face {
+  fill: transparent;
+  stroke: none;
+  pointer-events: none;
 }
 
 .connector-svg .mount-flange,
@@ -1135,7 +1407,7 @@ body.is-home .header-home-button {
 .connector-svg .mount-flange-inner,
 .mini-connector-svg .mount-flange-inner {
   fill: none;
-  stroke: rgba(14, 165, 233, 0.18);
+  stroke: color-mix(in srgb, var(--seal-blue) 45%, transparent);
   stroke-width: .65;
   vector-effect: non-scaling-stroke;
 }
@@ -1169,8 +1441,8 @@ body.is-home .header-home-button {
 .connector-svg .shell-face-ring,
 .mini-connector-svg .shell-face-ring {
   fill: none;
-  stroke: rgba(14, 165, 233, .14);
-  stroke-width: .75;
+  stroke: color-mix(in srgb, var(--seal-blue) 55%, transparent);
+  stroke-width: 1.1;
   vector-effect: non-scaling-stroke;
 }
 
@@ -1492,7 +1764,7 @@ body.is-home .header-home-button {
 
 .detail-summary {
   background:
-    radial-gradient(circle at 100% 0, rgba(14,165,233,.12), transparent 35%),
+    radial-gradient(circle at 100% 0, rgba(47, 92, 138,.12), transparent 35%),
     linear-gradient(135deg, #fff, #f8fafc);
   border-color: rgba(37, 99, 235, 0.18);
 }
@@ -1510,7 +1782,7 @@ body.is-home .header-home-button {
   border: 1px solid rgba(14, 116, 144, 0.2);
   border-radius: var(--radius-sm);
   background:
-    radial-gradient(circle at 100% 0, rgba(14, 165, 233, 0.12), transparent 38%),
+    radial-gradient(circle at 100% 0, rgba(47, 92, 138, 0.12), transparent 38%),
     linear-gradient(135deg, rgba(240, 249, 255, 0.95), rgba(236, 253, 245, 0.92));
 }
 
@@ -1519,7 +1791,7 @@ body.is-home .header-home-button {
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #0f766e;
+  color: #41571f;
 }
 
 .exact-catalog-hit-part {
@@ -1534,7 +1806,7 @@ body.is-home .header-home-button {
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: #155e75;
+  color: #41571f;
 }
 
 .environment-badge-row {
@@ -1549,9 +1821,9 @@ body.is-home .header-home-button {
   align-items: center;
   padding: 4px 9px;
   border-radius: 999px;
-  border: 1px solid rgba(13, 148, 136, 0.22);
-  background: rgba(13, 148, 136, 0.1);
-  color: #0f766e;
+  border: 1px solid rgba(92, 122, 46, 0.22);
+  background: rgba(92, 122, 46, 0.1);
+  color: #41571f;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -1567,7 +1839,7 @@ body.is-home .header-home-button {
   margin-top: 4px;
   font-size: 11px;
   line-height: 1.45;
-  color: #155e75;
+  color: #41571f;
 }
 
 .decoded-action-row {
@@ -1672,7 +1944,7 @@ body.is-home .header-home-button {
   grid-column: 1 / -1;
   background:
     radial-gradient(circle at 15% 8%, rgba(245, 158, 11, .18), transparent 30%),
-    radial-gradient(circle at 90% 18%, rgba(14, 165, 233, .18), transparent 34%),
+    radial-gradient(circle at 90% 18%, rgba(47, 92, 138, .18), transparent 34%),
     linear-gradient(135deg, rgba(255,255,255,.98), rgba(248,250,252,.94));
 }
 
@@ -1684,7 +1956,7 @@ body.is-home .header-home-button {
   grid-column: 1 / -1;
   background:
     radial-gradient(circle at 15% 8%, rgba(245, 158, 11, .18), transparent 30%),
-    radial-gradient(circle at 90% 18%, rgba(14, 165, 233, .18), transparent 34%),
+    radial-gradient(circle at 90% 18%, rgba(47, 92, 138, .18), transparent 34%),
     linear-gradient(135deg, rgba(255,255,255,.98), rgba(248,250,252,.94));
 }
 
@@ -1934,7 +2206,7 @@ body.is-home .header-home-button {
   border: 1px solid rgba(15, 23, 42, .08);
   border-radius: 16px;
   background:
-    radial-gradient(circle at 100% 0, rgba(14, 165, 233, 0.08), transparent 34%),
+    radial-gradient(circle at 100% 0, rgba(47, 92, 138, 0.08), transparent 34%),
     linear-gradient(135deg, rgba(248, 250, 252, 0.96), rgba(255, 255, 255, 0.92));
 }
 
@@ -1979,13 +2251,13 @@ body.is-home .header-home-button {
 
 .build-environment-btn:hover {
   border-color: rgba(14, 116, 144, .34);
-  color: #155e75;
+  color: #41571f;
 }
 
 .build-environment-btn.active {
   border-color: rgba(14, 116, 144, .28);
   background: linear-gradient(135deg, rgba(240, 249, 255, 0.98), rgba(236, 253, 245, 0.94));
-  color: #0f766e;
+  color: #41571f;
 }
 
 .selector-field {
@@ -2091,7 +2363,7 @@ body.is-home .header-home-button {
 .connector-svg .cover-lip,
 .mini-connector-svg .cover-lip {
   fill: none;
-  stroke: rgba(14, 165, 233, .22);
+  stroke: rgba(47, 92, 138, .22);
   stroke-width: .8;
   vector-effect: non-scaling-stroke;
 }
@@ -2635,7 +2907,7 @@ body.is-home .header-home-button {
   border-radius: 16px;
   background:
     linear-gradient(180deg, rgba(255,255,255,.95), rgba(248,250,252,.85)),
-    radial-gradient(circle at 20% 0, rgba(14,165,233,.16), transparent 40%);
+    radial-gradient(circle at 20% 0, rgba(47, 92, 138,.16), transparent 40%);
   text-align: left;
 }
 
@@ -2677,7 +2949,7 @@ body.is-home .header-home-button {
   border: 1px solid rgba(15, 23, 42, .1);
   border-radius: 20px;
   background:
-    radial-gradient(circle at 100% 0, rgba(14,165,233,.14), transparent 32%),
+    radial-gradient(circle at 100% 0, rgba(47, 92, 138,.14), transparent 32%),
     linear-gradient(135deg, #fff, #f8fafc);
   box-shadow: 0 14px 34px rgba(15, 23, 42, .08);
 }
@@ -3404,12 +3676,12 @@ body.is-home .header-home-button {
   line-height: 1.2;
 }
 
-.size-pill-8  { background: #7c3aed; }
-.size-pill-10 { background: #0891b2; }
-.size-pill-12 { background: #047857; }
-.size-pill-16 { background: #b45309; }
-.size-pill-20 { background: #be185d; }
-.size-pill-22d { background: #374151; }
+.size-pill-8  { background: #1a1d21; }
+.size-pill-10 { background: #1e6e8c; }
+.size-pill-12 { background: #b0832e; }
+.size-pill-16 { background: #6e4fa8; }
+.size-pill-20 { background: #b43d6b; }
+.size-pill-22d { background: #5c7a2e; }
 
 .catalog-card-footer {
   margin-top: auto;
@@ -3483,7 +3755,7 @@ body.is-home .header-home-button {
   border-color: var(--line);
 }
 .catalog-card-rugged-io:hover {
-  border-color: #0891b2;
+  border-color: var(--accent);
 }
 
 .catalog-card-svg-face {
@@ -3507,7 +3779,7 @@ body.is-home .header-home-button {
   letter-spacing: 0.03em;
   padding: 2px 6px;
   border-radius: 999px;
-  background: #0891b2;
+  background: var(--accent);
   color: #fff;
   line-height: 1.2;
 }
@@ -3589,6 +3861,23 @@ body.is-home .header-home-button {
   border: 1px solid var(--line, #e2e8f0);
   color: var(--text);
   line-height: 1.3;
+  cursor: pointer;
+  text-transform: capitalize;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+.io-view-tag:hover {
+  background: var(--surface-3, #e2e8f0);
+  border-color: var(--accent, #1f5fae);
+  color: var(--accent, #1f5fae);
+}
+
+.io-face-clickable {
+  cursor: zoom-in;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .io-view-tag { transition: none; }
 }
 
 .io-clear-inline-btn {
@@ -3748,6 +4037,64 @@ body.is-home .header-home-button {
 }
 
 .lightbox-primary-btn:hover { opacity: 0.88; }
+
+/* I/O connector view lightbox ---------------------------------------- */
+
+.io-lightbox-card {
+  grid-template-columns: 460px 260px;
+}
+
+.io-lightbox-stage-pane {
+  flex-direction: column;
+  gap: 14px;
+}
+
+.io-lightbox-stage-pane .rugged-face-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 3vw, 32px);
+  flex-wrap: wrap;
+}
+
+.io-lightbox-stage-pane .rugged-face-img {
+  width: clamp(180px, 26vw, 320px);
+  max-height: 60vh;
+}
+
+.io-lightbox-stage-pane .rugged-mount-img {
+  width: clamp(120px, 16vw, 200px);
+  max-height: 42vh;
+}
+
+.io-lightbox-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--ink);
+}
+
+.io-lightbox-meta > div {
+  display: flex;
+  gap: 8px;
+}
+
+.io-lb-label {
+  min-width: 92px;
+  color: var(--muted);
+  text-transform: uppercase;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  padding-top: 2px;
+}
+
+@media (max-width: 720px) {
+  .io-lightbox-card {
+    grid-template-columns: 1fr;
+    max-width: 94vw;
+  }
+}
 
 /* =========================================================================
    Mating / Reciprocal Connector panel
@@ -4287,8 +4634,8 @@ body.is-home .header-home-button {
 
 ::-webkit-scrollbar       { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 
 /* =========================================================================
    AI Chat Panel
@@ -4668,6 +5015,115 @@ body.is-home .header-home-button {
 [data-theme="dark"] .header-theme-button .theme-icon-sun  { display: none; }
 
 /* -------------------------------------------------------------------------
+   Style picker menu — named, selectable app + connector styles
+   ------------------------------------------------------------------------- */
+.style-picker { position: relative; display: inline-flex; }
+
+.style-menu {
+  position: fixed;
+  z-index: 1200;
+  min-width: 234px;
+  max-height: min(70vh, 540px);
+  overflow-y: auto;
+  padding: 6px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md, 8px);
+  box-shadow: var(--elev-2, 0 12px 32px rgba(0,0,0,0.25));
+  font-size: 13px;
+}
+.style-menu[hidden] { display: none; }
+
+.style-menu-group-label {
+  padding: 8px 10px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.style-menu-group + .style-menu-group .style-menu-group-label {
+  border-top: 1px solid var(--line-soft, var(--line));
+  margin-top: 4px;
+}
+
+.style-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: var(--radius-sm, 6px);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.style-menu-item:hover,
+.style-menu-item:focus-visible {
+  background: var(--surface-3);
+  outline: none;
+}
+.style-menu-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(0, 0, 0, .22);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .16);
+}
+.style-menu-name { flex: 1 1 auto; }
+.style-menu-check {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  color: var(--accent);
+  opacity: 0;
+}
+.style-menu-item[aria-checked="true"] .style-menu-check { opacity: 1; }
+.style-menu-item[aria-checked="true"] .style-menu-name { font-weight: 600; }
+
+/* -------------------------------------------------------------------------
+   Connector view-mode toggle — Engineering (X-ray) vs Real (true-color)
+   ------------------------------------------------------------------------- */
+.view-mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px;
+  gap: 2px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill, 999px);
+}
+.view-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: var(--radius-pill, 999px);
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.view-mode-btn svg { width: 14px; height: 14px; display: block; }
+.view-mode-btn:hover { color: var(--ink); }
+.view-mode-btn[aria-pressed="true"] {
+  background: var(--surface);
+  color: var(--accent);
+  font-weight: 600;
+  box-shadow: var(--elev-1);
+}
+.view-mode-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* -------------------------------------------------------------------------
    Reduced motion — respect the OS setting
    ------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
@@ -4920,70 +5376,70 @@ body.is-home .header-home-button {
    Dark-mode corrections — UI surfaces that were hardcoded to light values
    and did not adapt with the theme tokens. Light mode is unchanged.
    ------------------------------------------------------------------------- */
-[data-theme="dark"] .option-chip {
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .option-chip {
   background: var(--surface-2);
 }
-[data-theme="dark"] .option-chip.active {
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .option-chip.active {
   background: linear-gradient(180deg, color-mix(in srgb, var(--warn) 16%, var(--surface-2)), var(--surface-2));
   border-color: color-mix(in srgb, var(--warn) 45%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--warn) 26%, transparent);
 }
-[data-theme="dark"] .legend-filter:hover {
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .legend-filter:hover {
   background: var(--surface-3);
 }
-[data-theme="dark"] .legend-filter.active {
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .legend-filter.active {
   background: color-mix(in srgb, var(--warn) 18%, var(--surface-2));
   border-color: color-mix(in srgb, var(--warn) 40%, transparent);
   color: var(--ink);
 }
-[data-theme="dark"] .build-step-pill.done {
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .build-step-pill.done {
   background: var(--ok-soft);
   border-color: color-mix(in srgb, var(--ok) 40%, transparent);
 }
-[data-theme="dark"] .build-result {
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .build-result {
   background: var(--surface-2);
   border-color: var(--line);
 }
-[data-theme="dark"] .manual-part summary b {
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .manual-part summary b {
   background: var(--warn-soft);
   color: var(--warn);
   border-color: color-mix(in srgb, var(--warn) 40%, transparent);
 }
-[data-theme="dark"] .manual-part-explain {
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .manual-part-explain {
   background: var(--surface-2);
 }
-[data-theme="dark"] .pn-mini-card {
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .pn-mini-card {
   background: var(--surface-2);
 }
-[data-theme="dark"] .pn-mini-card b {
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .pn-mini-card b {
   color: var(--accent);
 }
-[data-theme="dark"] .shell-profile-item {
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .shell-profile-item {
   background: var(--surface-2);
   border-color: var(--line);
 }
-[data-theme="dark"] .environment-badge {
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .environment-badge {
   color: #5eead4;
   border-color: color-mix(in srgb, #5eead4 30%, transparent);
 }
-[data-theme="dark"] .environment-badge.conditional {
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .environment-badge.conditional {
   color: var(--warn);
   border-color: color-mix(in srgb, var(--warn) 32%, transparent);
 }
-[data-theme="dark"] .build-result-head span {
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .build-result-head span {
   color: var(--warn);
 }
 
 /* Rugged / I/O connector face & mount artwork are monochrome currentColor
    SVGs loaded as <img>, so they render as dark line art regardless of theme.
    Invert them in dark mode so they read as light strokes on the dark paper. */
-[data-theme="dark"] .rugged-face-img,
-[data-theme="dark"] .rugged-mount-img,
-[data-theme="dark"] .catalog-face-img,
-[data-theme="dark"] .rugged-io-svg-inline img {
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .rugged-face-img,
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .rugged-mount-img,
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .catalog-face-img,
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .rugged-io-svg-inline img {
   filter: invert(0.9) hue-rotate(180deg);
 }
-[data-theme="dark"] .catalog-face-placeholder {
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .catalog-face-placeholder {
   background: linear-gradient(135deg, var(--surface-3) 0%, var(--surface-2) 100%);
   color: var(--muted);
 }
@@ -5467,7 +5923,7 @@ h2 { letter-spacing: .06em; }
 /* Rugged I/O catalog: per-family gender rule + per-PN gender glyph */
 .io-gender-rule {
   font-size: 11.5px;
-  color: var(--text-muted, #6b7280);
+  color: var(--muted, #6b7280);
   font-style: italic;
   margin-top: 4px;
   line-height: 1.3;
@@ -5488,3 +5944,675 @@ h2 { letter-spacing: .06em; }
 [data-theme="blueprint-dark"] .io-gender-female { color: #ff9ec3; background: rgba(255, 110, 180, 0.18); }
 [data-theme="dark"] .io-gender-male,
 [data-theme="blueprint-dark"] .io-gender-male   { color: #9bc1ff; background: rgba(70, 130, 220, 0.22); }
+
+/* Smart manufacturer-PN suggestion banner under the decoder input */
+.smart-suggestion {
+  margin-top: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--line, #cbd5e1);
+  background: var(--surface-2, #f8fafc);
+  border-radius: 8px;
+  font-size: 13px;
+}
+.smart-suggestion-head {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  margin-bottom: 6px;
+}
+.smart-suggestion-msg { color: var(--muted, #475569); }
+.smart-suggestion-dismiss {
+  margin-inline-start: auto;
+  background: transparent; border: 1px solid var(--line, #cbd5e1);
+  border-radius: 6px; padding: 2px 8px; cursor: pointer;
+  font-size: 12px;
+}
+.smart-suggestion-body {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.smart-suggestion-pick {
+  border: 1px solid var(--accent, #1d4ed8);
+  color: var(--accent, #1d4ed8);
+  background: transparent;
+  padding: 4px 10px; border-radius: 6px; cursor: pointer;
+  font-size: 12px; font-family: inherit;
+}
+.smart-suggestion-pick:hover { background: var(--accent, #1d4ed8); color: #fff; }
+.smart-suggestion-vendor { opacity: 0.75; font-size: 11px; }
+
+/* Mate-options count badge (used on the cross-ref export button) */
+.mate-badge {
+  display: inline-block;
+  margin-inline-start: 6px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.32);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Decoder layout — give the sidebar more room so the Decoded panel
+   (which was previously on the right) can sit comfortably under the input. */
+#decoderPanel.app-shell {
+  grid-template-columns: minmax(380px, 460px) minmax(540px, 1fr) 280px;
+}
+.decoder-decoded-section {
+  /* Visual lift so the decoded card stands out as the primary result area. */
+  background: var(--surface-2, transparent);
+}
+.decoder-decoded-section .decoded-action-row {
+  flex-wrap: wrap;
+}
+@media (max-width: 1100px) {
+  #decoderPanel.app-shell {
+    grid-template-columns: 1fr;
+  }
+  #decoderPanel .right-panel,
+  #decoderPanel .sidebar,
+  #decoderPanel .main-panel {
+    max-height: none;
+  }
+}
+
+/* ---- Decoder viewer export toolbar ---- */
+.viewer-export-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 12px;
+  padding: 8px 12px;
+  background: var(--surface-2, #f1f5f9);
+  border: 1px solid var(--line, #cbd5e1);
+  border-radius: 8px;
+}
+.viewer-export-row button {
+  padding: 8px 14px;
+  font-weight: 600;
+}
+.viewer-export-row button[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.viewer-export-row .viewer-export-hint {
+  color: var(--muted, #64748b);
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* ---- Batch report dialog ---- */
+dialog.batch-report-dialog {
+  border: none;
+  border-radius: 12px;
+  padding: 0;
+  max-width: 640px;
+  width: min(92vw, 640px);
+  background: var(--surface, #fff);
+  color: var(--ink, #0b2545);
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.35);
+}
+dialog.batch-report-dialog::backdrop {
+  background: rgba(15, 23, 42, 0.55);
+}
+.batch-report-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px 20px;
+}
+.batch-report-form h2 {
+  margin: 0;
+  font-size: 18px;
+}
+.batch-report-hint {
+  margin: 0;
+  color: var(--muted, #475569);
+  font-size: 13px;
+}
+.batch-report-form textarea {
+  width: 100%;
+  min-height: 180px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line, #cbd5e1);
+  font-size: 13px;
+  resize: vertical;
+  background: var(--surface-2, #f8fafc);
+}
+.batch-report-status {
+  min-height: 1em;
+  font-size: 12px;
+  color: var(--muted, #475569);
+}
+.batch-report-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.viewer-export-hint.via-mfn {
+  color: #047857;
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* ---- Sprint A: dismissible disclaimer ---- */
+.app-disclaimer { position: relative; }
+.app-disclaimer-dismiss {
+  position: absolute;
+  top: 6px;
+  inset-inline-end: 8px;
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 6px;
+  opacity: 0.7;
+}
+.app-disclaimer-dismiss:hover { opacity: 1; background: rgba(0,0,0,0.05); }
+[data-theme="dark"] .app-disclaimer-dismiss:hover,
+[data-theme="blueprint-dark"] .app-disclaimer-dismiss:hover { background: rgba(255,255,255,0.08); }
+
+/* ---- Sprint A: header status pills (auto-hide) ---- */
+.header-pill { font-size: 11px; opacity: 0.85; }
+.header-pill[hidden] { display: none !important; }
+
+/* ---- Sprint A: decoder sidebar disclosures ---- */
+.decoder-disclosure > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 0;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink, inherit);
+  user-select: none;
+}
+.decoder-disclosure > summary::-webkit-details-marker { display: none; }
+.decoder-disclosure-caret {
+  transition: transform 120ms ease-out;
+  font-size: 12px;
+  opacity: 0.6;
+}
+.decoder-disclosure[open] > summary .decoder-disclosure-caret {
+  transform: rotate(180deg);
+}
+
+/* ---- Sprint A: decoded actions "More ▾" overflow ---- */
+.decoded-more { position: relative; display: inline-block; }
+.decoded-more > summary {
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  user-select: none;
+}
+.decoded-more > summary::-webkit-details-marker { display: none; }
+.decoded-more-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  inset-inline-end: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--line, #cbd5e1);
+  border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(15,23,42,0.18);
+  z-index: 25;
+  min-width: 160px;
+}
+.decoded-more-menu .decoded-action-btn {
+  text-align: start;
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 6px 10px;
+}
+.decoded-more-menu .decoded-action-btn:hover {
+  background: var(--surface-2, #f1f5f9);
+}
+
+/* ---- Sprint A: keying chip strip ---- */
+.keying-chip-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0 10px;
+  padding: 6px 8px;
+  background: var(--surface-2, #f1f5f9);
+  border: 1px solid var(--line, #cbd5e1);
+  border-radius: 8px;
+}
+.keying-chip-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted, #475569);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-inline-end: 4px;
+}
+.keying-chip {
+  min-width: 28px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--line, #cbd5e1);
+  background: var(--surface, #fff);
+  font-family: var(--mono, ui-monospace, monospace);
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+}
+.keying-chip:hover { border-color: var(--accent, #2f5c8a); color: var(--accent, #2f5c8a); }
+.keying-chip.active {
+  background: var(--accent, #2f5c8a);
+  border-color: var(--accent, #2f5c8a);
+  color: #fff;
+  cursor: default;
+}
+.keying-chip-note {
+  margin-inline-start: auto;
+  font-size: 11px;
+  font-style: italic;
+  color: var(--review, #b45309);
+}
+
+/* =========================================================================
+   Sprint B — design tokens, motion, SVG polish, tab grouping
+   ========================================================================= */
+
+:root {
+  /* Spacing scale (T-shirt sizes). Use these in new components; existing
+     hard-coded margins are left untouched to avoid layout regressions. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  /* Unified card token set */
+  --card-radius:   10px;
+  --card-padding:  var(--space-4);
+  --card-border:   1px solid var(--line, #cbd5e1);
+  --card-shadow:   0 1px 2px rgba(15,23,42,0.04), 0 8px 24px rgba(15,23,42,0.05);
+  --card-bg:       var(--surface, #fff);
+
+  /* Motion */
+  --motion-fast:    120ms;
+  --motion-medium:  180ms;
+  --motion-easing:  cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Semantic role tokens — initially aliased to existing hues. Future passes
+     can re-tune any one without touching component code. */
+  --role-primary:    var(--accent, #2f5c8a);
+  --role-primary-ink: #ffffff;
+  --role-link:       var(--accent, #2f5c8a);
+  --role-selection:  var(--accent, #2f5c8a);
+  --role-success:    #047857;
+  --role-warn:       #b45309;
+  --role-danger:     #b91c1c;
+}
+
+[data-theme="dark"],
+[data-theme="blueprint-dark"] {
+  --card-bg:     var(--surface, #0f172a);
+  --card-shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+}
+
+/* ---- Reusable card mixin (opt-in via class name) ---- */
+.card {
+  background: var(--card-bg);
+  border: var(--card-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  padding: var(--card-padding);
+}
+
+/* ---- Sprint B: motion ---- */
+@media (prefers-reduced-motion: no-preference) {
+  .tab-panel.active {
+    animation: sb-fade-in var(--motion-medium) var(--motion-easing);
+  }
+  .smart-suggestion[hidden="false"],
+  .smart-suggestion:not([hidden]) {
+    animation: sb-fade-in var(--motion-fast) var(--motion-easing);
+  }
+  .detail-summary,
+  .keying-chip-strip,
+  .viewer-export-row {
+    animation: sb-fade-in var(--motion-fast) var(--motion-easing);
+  }
+  .decoder-disclosure-caret { transition: transform var(--motion-fast) var(--motion-easing); }
+  .keying-chip,
+  .decoded-action-btn,
+  .tab-button,
+  .home-task-card,
+  .example-chip {
+    transition: background-color var(--motion-fast) var(--motion-easing),
+                border-color   var(--motion-fast) var(--motion-easing),
+                color          var(--motion-fast) var(--motion-easing),
+                transform      var(--motion-fast) var(--motion-easing);
+  }
+  .home-task-card:hover { transform: translateY(-1px); }
+}
+@keyframes sb-fade-in {
+  from { opacity: 0; transform: translateY(2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Sprint B: tab grouping (Use vs Reference) ---- */
+.top-tabs .tab-button[data-tab="catalog"] {
+  margin-inline-start: var(--space-4);
+  position: relative;
+}
+.top-tabs .tab-button[data-tab="catalog"]::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(var(--space-2) * -1);
+  top: 25%;
+  bottom: 25%;
+  width: 1px;
+  background: var(--line, #cbd5e1);
+  opacity: 0.7;
+}
+
+/* ---- Sprint B: connector SVG style polish ---- */
+/* Uses a CSS-defined linear gradient via filter — works inside the live
+   viewer and the cloned report SVG. Keeps print fidelity. */
+.connector-svg .shell {
+  filter: drop-shadow(0 1px 0 rgba(15, 23, 42, 0.06));
+}
+.connector-svg .shell-fill {
+  fill: url(#sbShellGradient);
+}
+/* Dark themes: the engineering-view connector interior (the shell-fill disc
+   painted with #sbShellGradient) must read dark too. Re-tint the gradient
+   stops from the active dark palette instead of the default light stops. */
+[data-theme="dark"] .connector-svg .sb-shell-stop-0,
+[data-theme="blueprint-dark"] .connector-svg .sb-shell-stop-0 {
+  stop-color: color-mix(in srgb, var(--diagram-paper) 80%, #fff 20%);
+}
+[data-theme="dark"] .connector-svg .sb-shell-stop-1,
+[data-theme="blueprint-dark"] .connector-svg .sb-shell-stop-1 {
+  stop-color: var(--diagram-paper);
+}
+[data-theme="dark"] .connector-svg .sb-shell-stop-2,
+[data-theme="blueprint-dark"] .connector-svg .sb-shell-stop-2 {
+  stop-color: var(--diagram-paper-2);
+}
+.connector-svg .pin-symbol {
+  filter: drop-shadow(0 1px 1.2px rgba(15, 23, 42, 0.18));
+}
+@media print {
+  .connector-svg .pin-symbol { filter: none; }
+}
+
+/* =========================================================================
+   Real view (data-view="real") — true-color connector face
+   The engineering view (default) keeps the X-ray schematic above. In real
+   view the shell fills with its finish metal, the insert face becomes a dark
+   dielectric, contacts render as gold pads, the fluorosilicone seal shows as a
+   blue ring, and the engineering guides/symbols are hidden.
+   Placed after the Sprint B polish so it overrides .shell-fill's gradient.
+   ========================================================================= */
+
+/* Shell body = finish metal (--shell-tint follows the decoded class or style). */
+.connector-svg[data-view="real"] .shell-fill {
+  fill: var(--shell-tint);
+}
+.connector-svg[data-view="real"] .shell {
+  stroke: var(--shell-stroke);
+  stroke-width: 2;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+}
+/* Metallic sheen overlay on the shell rim. */
+.connector-svg[data-view="real"] .shell-sheen {
+  fill: url(#shellSheenGrad);
+  stroke: none;
+  pointer-events: none;
+}
+/* Coupling-ring knurl ticks. */
+.connector-svg[data-view="real"] .knurl-tick {
+  stroke: color-mix(in srgb, var(--shell-stroke) 75%, #000 0%);
+  stroke-width: 0.7;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.55;
+  pointer-events: none;
+}
+/* Insert dielectric face. */
+.connector-svg[data-view="real"] .insert-face {
+  fill: var(--insert-dielectric);
+  stroke: rgba(0, 0, 0, 0.45);
+  stroke-width: 0.8;
+  vector-effect: non-scaling-stroke;
+}
+/* Receptacle mount hardware also reads as metal. */
+.connector-svg[data-view="real"] .mount-flange {
+  fill: var(--shell-tint);
+  stroke: var(--shell-stroke);
+}
+.connector-svg[data-view="real"] .mount-hole {
+  fill: var(--insert-dielectric);
+  stroke: rgba(0, 0, 0, 0.4);
+}
+.connector-svg[data-view="real"] .mount-flange-inner {
+  stroke: color-mix(in srgb, var(--seal-blue) 35%, transparent);
+}
+/* Fluorosilicone interfacial seal — a clear blue ring on the mating face. */
+.connector-svg[data-view="real"] .shell-face-ring {
+  stroke: var(--seal-blue);
+  stroke-width: 1.6;
+  opacity: 0.7;
+}
+/* Gold contacts (copper alloy, gold plate per M39029). */
+.connector-svg[data-view="real"] .pin-contact-real {
+  fill: url(#contactGoldGrad);
+  stroke: rgba(0, 0, 0, 0.5);
+  stroke-width: 0.5;
+}
+.connector-svg[data-view="real"] .pin-contact-bore {
+  fill: var(--insert-dielectric);
+  stroke: none;
+  pointer-events: none;
+}
+.connector-svg[data-view="real"] .pin-symbol { filter: none; }
+.connector-svg[data-view="real"] .pin:hover .pin-contact-real,
+.connector-svg[data-view="real"] .pin.selected .pin-contact-real {
+  stroke: var(--accent);
+  stroke-width: 1.1;
+}
+.connector-svg[data-view="real"] .pin-label {
+  fill: #f4ead0;
+  stroke: rgba(0, 0, 0, 0.55);
+  stroke-width: 0.5px;
+}
+/* Hide engineering-only guides in real view. */
+.connector-svg[data-view="real"] .insert-boundary,
+.connector-svg[data-view="real"] .guide-path,
+.connector-svg[data-view="real"] .keying-reference-ring,
+.connector-svg[data-view="real"] .keying-spoke {
+  display: none;
+}
+
+/* --- Sprint C polish ---------------------------------------------------- */
+.pn-copy-target {
+  appearance: none;
+  background: transparent;
+  border: 1px dashed transparent;
+  padding: 2px 6px;
+  margin: -2px -6px;
+  border-radius: 6px;
+  text-align: inherit;
+  cursor: copy;
+  color: inherit;
+  font: inherit;
+  transition: background-color 120ms ease-out, border-color 120ms ease-out;
+}
+.pn-copy-target:hover,
+.pn-copy-target:focus-visible {
+  background: var(--accent-soft, rgba(37, 99, 235, 0.08));
+  border-color: var(--accent, rgba(37, 99, 235, 0.5));
+  outline: none;
+}
+.pn-copied-flash {
+  background: var(--success-soft, rgba(16, 185, 129, 0.18)) !important;
+  border-color: var(--success, rgba(16, 185, 129, 0.6)) !important;
+}
+
+.decoded-empty {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 28px 20px;
+  text-align: center;
+}
+.decoded-empty-art {
+  width: 96px;
+  height: 64px;
+  color: var(--accent, #2563eb);
+  opacity: 0.85;
+}
+.decoded-empty-text {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .decoded-empty-art { animation: sb-fade-in 200ms ease-out both; }
+}
+
+/* =========================================================================
+   Dark-mode surface corrections
+   A cluster of cards/diagram frames were authored with hardcoded light
+   gradients (e.g. linear-gradient(135deg,#fff,#f8fafc)) and dark/green/navy
+   text colors. In dark mode those stayed bright while their token-colored
+   children (--ink/--text/--accent) flipped light → light-on-light invisibility.
+   These rules remap them to dark tokens. Placed at end of file so they win
+   by source order over the base light rules of equal specificity.
+   ========================================================================= */
+
+/* Decoded-result + catalog-hit cards */
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .detail-summary {
+  background: var(--surface-2);
+  border-color: var(--line);
+}
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .exact-catalog-hit {
+  background: var(--ok-soft);
+  border-color: color-mix(in srgb, var(--ok) 35%, transparent);
+}
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .exact-catalog-hit-title,
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .exact-catalog-hit-subtitle,
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .exact-catalog-hit-meta {
+  color: var(--ok);
+}
+
+/* Manual interactive PN guide */
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .selector-hero,
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .pn-explain-card,
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .pn-token-button {
+  background: var(--surface-2);
+  border-color: var(--line);
+}
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .pn-token-button.active,
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .pn-mini-card.active {
+  background: var(--warn-soft);
+  border-color: color-mix(in srgb, var(--warn) 55%, transparent);
+  box-shadow: none;
+}
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .pn-explain-kicker {
+  color: var(--accent-strong);
+}
+
+/* Build / selector environment buttons */
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .build-environment-btn:hover {
+  color: var(--ink);
+  border-color: var(--line-strong);
+}
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .build-environment-btn.active {
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  color: var(--accent-strong);
+}
+
+/* Diagram frames in the manual / build selector */
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .field-graphic,
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .shell-scale,
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .selector-shell-graphic {
+  background: var(--surface-2);
+  border-color: var(--line);
+}
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .selector-shell-graphic { border-bottom-color: var(--line); }
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .selector-chip.active .selector-shell-graphic {
+  background: var(--warn-soft);
+}
+
+/* Shell-type profile mini-diagrams (strokes/labels use currentColor) */
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .shell-profile-item .shell-profile-svg {
+  color: var(--diagram-ink);
+}
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .shell-profile-item.active .shell-profile-svg {
+  color: var(--accent-hover);
+}
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .shell-profile-item.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* Finish / contact decorative art */
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .contact-graphic .pin-contact {
+  background: var(--diagram-ink);
+}
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .contact-graphic .socket-contact {
+  background: var(--surface-3);
+  border-color: var(--diagram-ink);
+}
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .shell-scale span {
+  background: var(--surface-3);
+  color: var(--text);
+}
+
+/* =========================================================================
+   Dark-mode surface corrections — round 2 (blueprint-dark / Oscilloscope)
+   The manual accordion card (.manual-part) and decision-step card carried
+   hardcoded white gradients with no dark override (an earlier audit that read
+   only backgroundColor climbed past their gradients and missed them). Darken
+   for BOTH dark themes so their token-colored titles/subtitles read.
+   ========================================================================= */
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .manual-part {
+  background: var(--surface-2);
+  border-color: var(--line);
+}
+:is([data-theme="dark"],[data-theme="blueprint-dark"]) .decision-step {
+  background:
+    radial-gradient(circle at 100% 0, color-mix(in srgb, var(--warn) 14%, transparent), transparent 36%),
+    var(--surface-2);
+  border-color: var(--line);
+}
+
+/* Oscilloscope's accent (--accent #7dd3fc) is LIGHT, so the global
+   white-on-accent button text (color:#fff) drops to ~1.7:1. Use dark ink on
+   the accent fill for blueprint-dark only (other themes keep white). */
+[data-theme="blueprint-dark"] .primary-action:not(:disabled),
+[data-theme="blueprint-dark"] #decodeButton:not(:disabled),
+[data-theme="blueprint-dark"] .btn-primary:not(:disabled),
+[data-theme="blueprint-dark"] .skip-link,
+[data-theme="blueprint-dark"] .rugged-io-badge:not(.glenair-badge),
+[data-theme="blueprint-dark"] .lightbox-primary-btn:not(:disabled),
+[data-theme="blueprint-dark"] .mating-decode-btn:not(:disabled),
+[data-theme="blueprint-dark"] .catalog-open-btn:hover,
+[data-theme="blueprint-dark"] .io-pn-chip:hover,
+[data-theme="blueprint-dark"] .keying-chip.active,
+[data-theme="blueprint-dark"] .home-task-card:hover .home-task-icon,
+[data-theme="blueprint-dark"] .field-why-toggle[aria-expanded="true"] {
+  color: #07121f;
+}

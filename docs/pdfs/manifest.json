@@ -1,117 +1,1003 @@
-﻿[
-    {
-        "file":  "MIL-DTL-38999-dtl38999.pdf",
-        "url":  "https://landandmaritimeapps.dla.mil/Downloads/MilSpec/Docs/MIL-DTL-38999/dtl38999.pdf",
-        "bytes":  2677790
-    },
-    {
-        "file":  "Amphenol-MIL-DTL-38999-series-I-II.pdf",
-        "url":  "https://d38999.federalconnectors.com/datasheets/Amphenol/Amphenol-MIL-DTL-38999-series-I-II.pdf",
-        "bytes":  1835261
-    },
-    {
-        "file":  "Amphenol_D38999_Series_III.pdf",
-        "url":  "https://d38999.federalconnectors.com/datasheets/Amphenol/Amphenol_D38999_Series_III.pdf",
-        "bytes":  3592957
-    },
-    {
-        "file":  "Conesys-MIL-DTL-38999-Series-I.pdf",
-        "url":  "https://d38999.federalconnectors.com/datasheets/Conesys/Conesys-MIL-DTL-38999-Series-I.pdf",
-        "bytes":  967747
-    },
-    {
-        "file":  "Conesys-MIL-DTL-38999-Series-II.pdf",
-        "url":  "https://d38999.federalconnectors.com/datasheets/Conesys/Conesys-MIL-DTL-38999-Series-II.pdf",
-        "bytes":  819673
-    },
-    {
-        "file":  "Conesys-MIL-DTL-38999-Series-III.pdf",
-        "url":  "https://d38999.federalconnectors.com/datasheets/Conesys/Conesys-MIL-DTL-38999-Series-III.pdf",
-        "bytes":  734471
-    },
-    {
-        "file":  "Conesys-Hermetic.pdf",
-        "url":  "https://d38999.federalconnectors.com/datasheets/Conesys/Conesys-Hermetic.pdf",
-        "bytes":  8373532
-    },
-    {
-        "file":  "Eaton_D38999_Series_IV.pdf",
-        "url":  "https://d38999.federalconnectors.com/datasheets/Eaton/Eaton_D38999_Series_IV.pdf",
-        "bytes":  3179708
-    },
-    {
-        "file":  "Glenair-Mil-DTL-38999-Series-I-II-III-IV.pdf",
-        "url":  "https://d38999.federalconnectors.com/datasheets/Glenair/Glenair-Mil-DTL-38999-Series-I-II-III-IV.pdf",
-        "bytes":  12658461
-    },
-    {
-        "file":  "ITT-Cannon-38999-Series-I-II-III.pdf",
-        "url":  "https://d38999.federalconnectors.com/datasheets/ITT-Cannon/ITT-Cannon-38999-Series-I-II-III.pdf",
-        "bytes":  3082587
-    },
-    {
-        "file":  "Souriau-Mil-DTL-38999-Series-III.pdf",
-        "url":  "https://d38999.federalconnectors.com/datasheets/Souriau/Souriau-Mil-DTL-38999-Series-III.pdf",
-        "bytes":  4256679
-    },
-    {
-        "file":  "TE_Deutsch_D38999_Series_I.pdf",
-        "url":  "https://d38999.federalconnectors.com/datasheets/TE/TE_Deutsch_D38999_Series_I.pdf",
-        "bytes":  808797
-    },
-    {
-        "file":  "TE_Deutsch_D38999_Series_III.pdf",
-        "url":  "https://d38999.federalconnectors.com/datasheets/TE/TE_Deutsch_D38999_Series_III.pdf",
-        "bytes":  454588
-    },
-    {
-        "file":  "glenair-superseal-usb-3.0-ruggedized-solutions.pdf",
-        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/usb-3.0-ruggedized-solutions.pdf",
-        "bytes":  1315590
-    },
-    {
-        "file":  "glenair-superseal-usb-3.0-performance-specifications.pdf",
-        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/usb-3.0-performance-specifications.pdf",
-        "bytes":  126766
-    },
-    {
-        "file":  "glenair-superseal-usb-3.0-product-selection-guide.pdf",
-        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/usb-3.0-product-selection-guide.pdf",
-        "bytes":  664266
-    },
-    {
-        "file":  "glenair-superseal-usb3-233-350.pdf",
-        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-350.pdf",
-        "bytes":  723234
-    },
-    {
-        "file":  "glenair-superseal-usb3-233-352.pdf",
-        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-352.pdf",
-        "bytes":  671032
-    },
-    {
-        "file":  "glenair-superseal-usb3-233-353.pdf",
-        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-353.pdf",
-        "bytes":  649089
-    },
-    {
-        "file":  "glenair-superseal-usb3-233-354.pdf",
-        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-354.pdf",
-        "bytes":  722696
-    },
-    {
-        "file":  "glenair-superseal-usb3-233-355.pdf",
-        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-355.pdf",
-        "bytes":  759651
-    },
-    {
-        "file":  "glenair-superseal-usb3-233-357.pdf",
-        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-357.pdf",
-        "bytes":  642995
-    },
-    {
-        "file":  "glenair-superseal-usb3-233-358.pdf",
-        "url":  "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-358.pdf",
-        "bytes":  339633
-    }
+[
+  {
+    "file": "Amphenol-MIL-DTL-38999-series-I-II.pdf",
+    "path": "catalogs/amphenol/Amphenol-MIL-DTL-38999-series-I-II.pdf",
+    "category": "catalog/amphenol",
+    "bytes": 1835261,
+    "url": "https://d38999.federalconnectors.com/datasheets/Amphenol/Amphenol-MIL-DTL-38999-series-I-II.pdf"
+  },
+  {
+    "file": "Amphenol-TV-uCOM-10Gb-brochure.pdf",
+    "path": "catalogs/amphenol/Amphenol-TV-uCOM-10Gb-brochure.pdf",
+    "category": "catalog/amphenol",
+    "bytes": 3207565,
+    "url": "https://www.amphenolpcd.com/wp-content/uploads/2023/06/brochure_tv_ucom_10_gb_2.pdf"
+  },
+  {
+    "file": "Amphenol_D38999_Series_III.pdf",
+    "path": "catalogs/amphenol/Amphenol_D38999_Series_III.pdf",
+    "category": "catalog/amphenol",
+    "bytes": 3592957,
+    "url": "https://d38999.federalconnectors.com/datasheets/Amphenol/Amphenol_D38999_Series_III.pdf"
+  },
+  {
+    "file": "Rugged-Network-Solutions-Brochure.pdf",
+    "path": "catalogs/amphenol/Rugged-Network-Solutions-Brochure.pdf",
+    "category": "catalog/amphenol",
+    "bytes": 6235811,
+    "url": null
+  },
+  {
+    "file": "USB Field_catalog.pdf",
+    "path": "catalogs/amphenol/USB Field_catalog.pdf",
+    "category": "catalog/amphenol",
+    "bytes": 30029445,
+    "url": null
+  },
+  {
+    "file": "rj_field_catalog.pdf",
+    "path": "catalogs/amphenol/rj_field_catalog.pdf",
+    "category": "catalog/amphenol",
+    "bytes": 21034155,
+    "url": null
+  },
+  {
+    "file": "Conesys-Hermetic.pdf",
+    "path": "catalogs/conesys/Conesys-Hermetic.pdf",
+    "category": "catalog/conesys",
+    "bytes": 8373532,
+    "url": "https://d38999.federalconnectors.com/datasheets/Conesys/Conesys-Hermetic.pdf"
+  },
+  {
+    "file": "Conesys-MIL-DTL-38999-Series-I.pdf",
+    "path": "catalogs/conesys/Conesys-MIL-DTL-38999-Series-I.pdf",
+    "category": "catalog/conesys",
+    "bytes": 967747,
+    "url": "https://d38999.federalconnectors.com/datasheets/Conesys/Conesys-MIL-DTL-38999-Series-I.pdf"
+  },
+  {
+    "file": "Conesys-MIL-DTL-38999-Series-II.pdf",
+    "path": "catalogs/conesys/Conesys-MIL-DTL-38999-Series-II.pdf",
+    "category": "catalog/conesys",
+    "bytes": 819673,
+    "url": "https://d38999.federalconnectors.com/datasheets/Conesys/Conesys-MIL-DTL-38999-Series-II.pdf"
+  },
+  {
+    "file": "Conesys-MIL-DTL-38999-Series-III.pdf",
+    "path": "catalogs/conesys/Conesys-MIL-DTL-38999-Series-III.pdf",
+    "category": "catalog/conesys",
+    "bytes": 734471,
+    "url": "https://d38999.federalconnectors.com/datasheets/Conesys/Conesys-MIL-DTL-38999-Series-III.pdf"
+  },
+  {
+    "file": "Eaton_D38999_Series_IV.pdf",
+    "path": "catalogs/eaton/Eaton_D38999_Series_IV.pdf",
+    "category": "catalog/eaton",
+    "bytes": 3179708,
+    "url": "https://d38999.federalconnectors.com/datasheets/Eaton/Eaton_D38999_Series_IV.pdf"
+  },
+  {
+    "file": "RJ45.pdf",
+    "path": "catalogs/eaton/RJ45.pdf",
+    "category": "catalog/eaton",
+    "bytes": 583749,
+    "url": null
+  },
+  {
+    "file": "eaton-souriau-standard-aerospace-and-military-connector-8D-catalog--en-us.pdf",
+    "path": "catalogs/eaton/eaton-souriau-standard-aerospace-and-military-connector-8D-catalog--en-us.pdf",
+    "category": "catalog/eaton",
+    "bytes": 30343941,
+    "url": null
+  },
+  {
+    "file": "38999-catalog.pdf",
+    "path": "catalogs/general/38999-catalog.pdf",
+    "category": "catalog/general",
+    "bytes": 7746510,
+    "url": null
+  },
+  {
+    "file": "Catalog MIL DTL 38999.pdf",
+    "path": "catalogs/general/Catalog MIL DTL 38999.pdf",
+    "category": "catalog/general",
+    "bytes": 49004030,
+    "url": null
+  },
+  {
+    "file": "d38999-connector-catalog.pdf",
+    "path": "catalogs/general/d38999-connector-catalog.pdf",
+    "category": "catalog/general",
+    "bytes": 15499816,
+    "url": null
+  },
+  {
+    "file": "Glenair-Mil-DTL-38999-Series-I-II-III-IV.pdf",
+    "path": "catalogs/glenair/Glenair-Mil-DTL-38999-Series-I-II-III-IV.pdf",
+    "category": "catalog/glenair",
+    "bytes": 12658461,
+    "url": "https://d38999.federalconnectors.com/datasheets/Glenair/Glenair-Mil-DTL-38999-Series-I-II-III-IV.pdf"
+  },
+  {
+    "file": "ITT-Cannon-38999-Series-I-II-III.pdf",
+    "path": "catalogs/itt-cannon/ITT-Cannon-38999-Series-I-II-III.pdf",
+    "category": "catalog/itt-cannon",
+    "bytes": 3082587,
+    "url": "https://d38999.federalconnectors.com/datasheets/ITT-Cannon/ITT-Cannon-38999-Series-I-II-III.pdf"
+  },
+  {
+    "file": "Cata8D-nov07-311068.pdf",
+    "path": "catalogs/souriau/Cata8D-nov07-311068.pdf",
+    "category": "catalog/souriau",
+    "bytes": 5186159,
+    "url": null
+  },
+  {
+    "file": "Souriau-Mil-DTL-38999-Series-III.pdf",
+    "path": "catalogs/souriau/Souriau-Mil-DTL-38999-Series-III.pdf",
+    "category": "catalog/souriau",
+    "bytes": 4256679,
+    "url": "https://d38999.federalconnectors.com/datasheets/Souriau/Souriau-Mil-DTL-38999-Series-III.pdf"
+  },
+  {
+    "file": "ENG_DS_1-1773922-9_deutsch38999_0121.pdf",
+    "path": "catalogs/te-deutsch/ENG_DS_1-1773922-9_deutsch38999_0121.pdf",
+    "category": "catalog/te-deutsch",
+    "bytes": 26643306,
+    "url": null
+  },
+  {
+    "file": "TE_Deutsch_D38999_Series_I.pdf",
+    "path": "catalogs/te-deutsch/TE_Deutsch_D38999_Series_I.pdf",
+    "category": "catalog/te-deutsch",
+    "bytes": 808797,
+    "url": "https://d38999.federalconnectors.com/datasheets/TE/TE_Deutsch_D38999_Series_I.pdf"
+  },
+  {
+    "file": "TE_Deutsch_D38999_Series_III.pdf",
+    "path": "catalogs/te-deutsch/TE_Deutsch_D38999_Series_III.pdf",
+    "category": "catalog/te-deutsch",
+    "bytes": 454588,
+    "url": "https://d38999.federalconnectors.com/datasheets/TE/TE_Deutsch_D38999_Series_III.pdf"
+  },
+  {
+    "file": "rj45-233-300-coupler.pdf",
+    "path": "datasheets/glenair-products/rj45-233-300-coupler.pdf",
+    "category": "datasheet/glenair-products",
+    "bytes": 895595,
+    "url": null
+  },
+  {
+    "file": "rj45-233-301.pdf",
+    "path": "datasheets/glenair-products/rj45-233-301.pdf",
+    "category": "datasheet/glenair-products",
+    "bytes": 703528,
+    "url": null
+  },
+  {
+    "file": "rj45-233-312-plug.pdf",
+    "path": "datasheets/glenair-products/rj45-233-312-plug.pdf",
+    "category": "datasheet/glenair-products",
+    "bytes": 653241,
+    "url": null
+  },
+  {
+    "file": "rj45-panel-cutouts.pdf",
+    "path": "datasheets/glenair-products/rj45-panel-cutouts.pdf",
+    "category": "datasheet/glenair-products",
+    "bytes": 254597,
+    "url": null
+  },
+  {
+    "file": "usb-233-340-coupler.pdf",
+    "path": "datasheets/glenair-products/usb-233-340-coupler.pdf",
+    "category": "datasheet/glenair-products",
+    "bytes": 756350,
+    "url": null
+  },
+  {
+    "file": "usb-233-345.pdf",
+    "path": "datasheets/glenair-products/usb-233-345.pdf",
+    "category": "datasheet/glenair-products",
+    "bytes": 765952,
+    "url": null
+  },
+  {
+    "file": "usb-233-370-feedthru.pdf",
+    "path": "datasheets/glenair-products/usb-233-370-feedthru.pdf",
+    "category": "datasheet/glenair-products",
+    "bytes": 563505,
+    "url": null
+  },
+  {
+    "file": "usb3-233-350.pdf",
+    "path": "datasheets/glenair-products/usb3-233-350.pdf",
+    "category": "datasheet/glenair-products",
+    "bytes": 723234,
+    "url": null
+  },
+  {
+    "file": "space-grade-d38999-20-datasheet.pdf",
+    "path": "datasheets/glenair-space-grade/space-grade-d38999-20-datasheet.pdf",
+    "category": "datasheet/glenair-space-grade",
+    "bytes": 298939,
+    "url": null
+  },
+  {
+    "file": "space-grade-d38999-24-datasheet.pdf",
+    "path": "datasheets/glenair-space-grade/space-grade-d38999-24-datasheet.pdf",
+    "category": "datasheet/glenair-space-grade",
+    "bytes": 301522,
+    "url": null
+  },
+  {
+    "file": "space-grade-d38999-cable-receptacle-datasheet.pdf",
+    "path": "datasheets/glenair-space-grade/space-grade-d38999-cable-receptacle-datasheet.pdf",
+    "category": "datasheet/glenair-space-grade",
+    "bytes": 242554,
+    "url": null
+  },
+  {
+    "file": "space-grade-d38999-hermetic-box-mount-receptacle-datasheet.pdf",
+    "path": "datasheets/glenair-space-grade/space-grade-d38999-hermetic-box-mount-receptacle-datasheet.pdf",
+    "category": "datasheet/glenair-space-grade",
+    "bytes": 300091,
+    "url": null
+  },
+  {
+    "file": "space-grade-d38999-hermetic-solder-mount-receptacle-datasheet.pdf",
+    "path": "datasheets/glenair-space-grade/space-grade-d38999-hermetic-solder-mount-receptacle-datasheet.pdf",
+    "category": "datasheet/glenair-space-grade",
+    "bytes": 292092,
+    "url": null
+  },
+  {
+    "file": "glenair-superseal-usb-3.0-performance-specifications.pdf",
+    "path": "datasheets/glenair-superseal/glenair-superseal-usb-3.0-performance-specifications.pdf",
+    "category": "datasheet/glenair-superseal",
+    "bytes": 126766,
+    "url": "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/usb-3.0-performance-specifications.pdf"
+  },
+  {
+    "file": "glenair-superseal-usb-3.0-product-selection-guide.pdf",
+    "path": "datasheets/glenair-superseal/glenair-superseal-usb-3.0-product-selection-guide.pdf",
+    "category": "datasheet/glenair-superseal",
+    "bytes": 664266,
+    "url": "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/usb-3.0-product-selection-guide.pdf"
+  },
+  {
+    "file": "glenair-superseal-usb-3.0-ruggedized-solutions.pdf",
+    "path": "datasheets/glenair-superseal/glenair-superseal-usb-3.0-ruggedized-solutions.pdf",
+    "category": "datasheet/glenair-superseal",
+    "bytes": 1315590,
+    "url": "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/usb-3.0-ruggedized-solutions.pdf"
+  },
+  {
+    "file": "glenair-superseal-usb3-233-350.pdf",
+    "path": "datasheets/glenair-superseal/glenair-superseal-usb3-233-350.pdf",
+    "category": "datasheet/glenair-superseal",
+    "bytes": 723234,
+    "url": "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-350.pdf"
+  },
+  {
+    "file": "glenair-superseal-usb3-233-352.pdf",
+    "path": "datasheets/glenair-superseal/glenair-superseal-usb3-233-352.pdf",
+    "category": "datasheet/glenair-superseal",
+    "bytes": 671032,
+    "url": "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-352.pdf"
+  },
+  {
+    "file": "glenair-superseal-usb3-233-353.pdf",
+    "path": "datasheets/glenair-superseal/glenair-superseal-usb3-233-353.pdf",
+    "category": "datasheet/glenair-superseal",
+    "bytes": 649089,
+    "url": "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-353.pdf"
+  },
+  {
+    "file": "glenair-superseal-usb3-233-354.pdf",
+    "path": "datasheets/glenair-superseal/glenair-superseal-usb3-233-354.pdf",
+    "category": "datasheet/glenair-superseal",
+    "bytes": 722696,
+    "url": "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-354.pdf"
+  },
+  {
+    "file": "glenair-superseal-usb3-233-355.pdf",
+    "path": "datasheets/glenair-superseal/glenair-superseal-usb3-233-355.pdf",
+    "category": "datasheet/glenair-superseal",
+    "bytes": 759651,
+    "url": "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-355.pdf"
+  },
+  {
+    "file": "glenair-superseal-usb3-233-357.pdf",
+    "path": "datasheets/glenair-superseal/glenair-superseal-usb3-233-357.pdf",
+    "category": "datasheet/glenair-superseal",
+    "bytes": 642995,
+    "url": "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-357.pdf"
+  },
+  {
+    "file": "glenair-superseal-usb3-233-358.pdf",
+    "path": "datasheets/glenair-superseal/glenair-superseal-usb3-233-358.pdf",
+    "category": "datasheet/glenair-superseal",
+    "bytes": 339633,
+    "url": "https://www.glenair.com/superseal/38999-type/usb-3-0/pdf/233-358.pdf"
+  },
+  {
+    "file": "HDMI_datasheet.pdf",
+    "path": "datasheets/other/HDMI_datasheet.pdf",
+    "category": "datasheet/other",
+    "bytes": 2871134,
+    "url": null
+  },
+  {
+    "file": "OAHDMIFTV7.pdf",
+    "path": "datasheets/other/OAHDMIFTV7.pdf",
+    "category": "datasheet/other",
+    "bytes": 476087,
+    "url": null
+  },
+  {
+    "file": "USB3CF TV_datasheet.pdf",
+    "path": "datasheets/te-tv/USB3CF TV_datasheet.pdf",
+    "category": "datasheet/te-tv",
+    "bytes": 7040574,
+    "url": null
+  },
+  {
+    "file": "catalog_tv_ctv-1771941.pdf",
+    "path": "datasheets/te-tv/catalog_tv_ctv-1771941.pdf",
+    "category": "datasheet/te-tv",
+    "bytes": 6267871,
+    "url": null
+  },
+  {
+    "file": "d38999-contact-arrangements.pdf",
+    "path": "reference/d38999-contact-arrangements.pdf",
+    "category": "reference",
+    "bytes": 1270990,
+    "url": null
+  },
+  {
+    "file": "d38999-shell-keying.pdf",
+    "path": "reference/d38999-shell-keying.pdf",
+    "category": "reference",
+    "bytes": 281467,
+    "url": null
+  },
+  {
+    "file": "MIL-DTL-38999-dtl38999.pdf",
+    "path": "specs/MIL-DTL-38999-dtl38999.pdf",
+    "category": "specs",
+    "bytes": 2677790,
+    "url": "https://landandmaritimeapps.dla.mil/Downloads/MilSpec/Docs/MIL-DTL-38999/dtl38999.pdf"
+  },
+  {
+    "file": "dtl38999sup1.pdf",
+    "path": "specs/dtl38999sup1.pdf",
+    "category": "specs",
+    "bytes": 82509,
+    "url": null
+  },
+  {
+    "file": "dtl38999suppliersmemo.pdf",
+    "path": "specs/dtl38999suppliersmemo.pdf",
+    "category": "specs",
+    "bytes": 173050,
+    "url": null
+  },
+  {
+    "file": "ms27342.pdf",
+    "path": "specs/ms-sheets/ms27342.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 153375,
+    "url": null
+  },
+  {
+    "file": "ms27466.pdf",
+    "path": "specs/ms-sheets/ms27466.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 136491,
+    "url": null
+  },
+  {
+    "file": "ms27467.pdf",
+    "path": "specs/ms-sheets/ms27467.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 85503,
+    "url": null
+  },
+  {
+    "file": "ms27468.pdf",
+    "path": "specs/ms-sheets/ms27468.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 182797,
+    "url": null
+  },
+  {
+    "file": "ms27469.pdf",
+    "path": "specs/ms-sheets/ms27469.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 143202,
+    "url": null
+  },
+  {
+    "file": "ms27470.pdf",
+    "path": "specs/ms-sheets/ms27470.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 202729,
+    "url": null
+  },
+  {
+    "file": "ms27471.pdf",
+    "path": "specs/ms-sheets/ms27471.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 113040,
+    "url": null
+  },
+  {
+    "file": "ms27472.pdf",
+    "path": "specs/ms-sheets/ms27472.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 161176,
+    "url": null
+  },
+  {
+    "file": "ms27473.pdf",
+    "path": "specs/ms-sheets/ms27473.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 139441,
+    "url": null
+  },
+  {
+    "file": "ms27474.pdf",
+    "path": "specs/ms-sheets/ms27474.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 222116,
+    "url": null
+  },
+  {
+    "file": "ms27475.pdf",
+    "path": "specs/ms-sheets/ms27475.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 177238,
+    "url": null
+  },
+  {
+    "file": "ms27476.pdf",
+    "path": "specs/ms-sheets/ms27476.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 171788,
+    "url": null
+  },
+  {
+    "file": "ms27477.pdf",
+    "path": "specs/ms-sheets/ms27477.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 214144,
+    "url": null
+  },
+  {
+    "file": "ms27478.pdf",
+    "path": "specs/ms-sheets/ms27478.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 141564,
+    "url": null
+  },
+  {
+    "file": "ms27479.pdf",
+    "path": "specs/ms-sheets/ms27479.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 231118,
+    "url": null
+  },
+  {
+    "file": "ms27480.pdf",
+    "path": "specs/ms-sheets/ms27480.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 209016,
+    "url": null
+  },
+  {
+    "file": "ms27481not2.pdf",
+    "path": "specs/ms-sheets/ms27481not2.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 24587,
+    "url": null
+  },
+  {
+    "file": "ms27484.pdf",
+    "path": "specs/ms-sheets/ms27484.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 195790,
+    "url": null
+  },
+  {
+    "file": "ms27487not1.pdf",
+    "path": "specs/ms-sheets/ms27487not1.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 22767,
+    "url": null
+  },
+  {
+    "file": "ms27489.pdf",
+    "path": "specs/ms-sheets/ms27489.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 20652,
+    "url": null
+  },
+  {
+    "file": "ms27496.pdf",
+    "path": "specs/ms-sheets/ms27496.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 156537,
+    "url": null
+  },
+  {
+    "file": "ms27497.pdf",
+    "path": "specs/ms-sheets/ms27497.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 175521,
+    "url": null
+  },
+  {
+    "file": "ms27499.pdf",
+    "path": "specs/ms-sheets/ms27499.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 99698,
+    "url": null
+  },
+  {
+    "file": "ms27500.pdf",
+    "path": "specs/ms-sheets/ms27500.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 156949,
+    "url": null
+  },
+  {
+    "file": "ms27501.pdf",
+    "path": "specs/ms-sheets/ms27501.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 168055,
+    "url": null
+  },
+  {
+    "file": "ms27502.pdf",
+    "path": "specs/ms-sheets/ms27502.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 96966,
+    "url": null
+  },
+  {
+    "file": "ms27503.pdf",
+    "path": "specs/ms-sheets/ms27503.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 216687,
+    "url": null
+  },
+  {
+    "file": "ms27504not2.pdf",
+    "path": "specs/ms-sheets/ms27504not2.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 21659,
+    "url": null
+  },
+  {
+    "file": "ms27505.pdf",
+    "path": "specs/ms-sheets/ms27505.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 117987,
+    "url": null
+  },
+  {
+    "file": "ms27508.pdf",
+    "path": "specs/ms-sheets/ms27508.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 146350,
+    "url": null
+  },
+  {
+    "file": "ms27510.pdf",
+    "path": "specs/ms-sheets/ms27510.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 233000,
+    "url": null
+  },
+  {
+    "file": "ms27511.pdf",
+    "path": "specs/ms-sheets/ms27511.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 172695,
+    "url": null
+  },
+  {
+    "file": "ms27512.pdf",
+    "path": "specs/ms-sheets/ms27512.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 89758,
+    "url": null
+  },
+  {
+    "file": "ms27513.pdf",
+    "path": "specs/ms-sheets/ms27513.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 123391,
+    "url": null
+  },
+  {
+    "file": "ms27514.pdf",
+    "path": "specs/ms-sheets/ms27514.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 133762,
+    "url": null
+  },
+  {
+    "file": "ms27515.pdf",
+    "path": "specs/ms-sheets/ms27515.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 175582,
+    "url": null
+  },
+  {
+    "file": "ms27652.pdf",
+    "path": "specs/ms-sheets/ms27652.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 176180,
+    "url": null
+  },
+  {
+    "file": "ms27653.pdf",
+    "path": "specs/ms-sheets/ms27653.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 167054,
+    "url": null
+  },
+  {
+    "file": "ms27654.pdf",
+    "path": "specs/ms-sheets/ms27654.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 177384,
+    "url": null
+  },
+  {
+    "file": "ms27656.pdf",
+    "path": "specs/ms-sheets/ms27656.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 117156,
+    "url": null
+  },
+  {
+    "file": "ms27661.pdf",
+    "path": "specs/ms-sheets/ms27661.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 123217,
+    "url": null
+  },
+  {
+    "file": "ms27662.pdf",
+    "path": "specs/ms-sheets/ms27662.pdf",
+    "category": "specs/ms-sheets",
+    "bytes": 113626,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss10.pdf",
+    "path": "specs/slash-sheets/dtl38999ss10.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 182241,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss20.pdf",
+    "path": "specs/slash-sheets/dtl38999ss20.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 202763,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss21.pdf",
+    "path": "specs/slash-sheets/dtl38999ss21.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 175393,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss22.pdf",
+    "path": "specs/slash-sheets/dtl38999ss22.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 371025,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss23.pdf",
+    "path": "specs/slash-sheets/dtl38999ss23.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 158255,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss24.pdf",
+    "path": "specs/slash-sheets/dtl38999ss24.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 142011,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss25.pdf",
+    "path": "specs/slash-sheets/dtl38999ss25.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 104385,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss26.pdf",
+    "path": "specs/slash-sheets/dtl38999ss26.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 89242,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss28.pdf",
+    "path": "specs/slash-sheets/dtl38999ss28.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 115976,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss29.pdf",
+    "path": "specs/slash-sheets/dtl38999ss29.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 127249,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss30.pdf",
+    "path": "specs/slash-sheets/dtl38999ss30.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 127068,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss31.pdf",
+    "path": "specs/slash-sheets/dtl38999ss31.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 265079,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss32.pdf",
+    "path": "specs/slash-sheets/dtl38999ss32.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 145324,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss33.pdf",
+    "path": "specs/slash-sheets/dtl38999ss33.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 215351,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss34.pdf",
+    "path": "specs/slash-sheets/dtl38999ss34.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 133521,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss35.pdf",
+    "path": "specs/slash-sheets/dtl38999ss35.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 105519,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss36.pdf",
+    "path": "specs/slash-sheets/dtl38999ss36.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 454153,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss40.pdf",
+    "path": "specs/slash-sheets/dtl38999ss40.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 115460,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss41.pdf",
+    "path": "specs/slash-sheets/dtl38999ss41.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 102023,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss42.pdf",
+    "path": "specs/slash-sheets/dtl38999ss42.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 174370,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss43.pdf",
+    "path": "specs/slash-sheets/dtl38999ss43.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 113125,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss44.pdf",
+    "path": "specs/slash-sheets/dtl38999ss44.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 147912,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss45.pdf",
+    "path": "specs/slash-sheets/dtl38999ss45.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 108166,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss46.pdf",
+    "path": "specs/slash-sheets/dtl38999ss46.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 119802,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss47.pdf",
+    "path": "specs/slash-sheets/dtl38999ss47.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 131225,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss48.pdf",
+    "path": "specs/slash-sheets/dtl38999ss48.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 80093,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss49.pdf",
+    "path": "specs/slash-sheets/dtl38999ss49.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 106254,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss50.pdf",
+    "path": "specs/slash-sheets/dtl38999ss50.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 101846,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss51.pdf",
+    "path": "specs/slash-sheets/dtl38999ss51.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 138572,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss52.pdf",
+    "path": "specs/slash-sheets/dtl38999ss52.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 145697,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss60.pdf",
+    "path": "specs/slash-sheets/dtl38999ss60.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 165798,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss61.pdf",
+    "path": "specs/slash-sheets/dtl38999ss61.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 144886,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss62.pdf",
+    "path": "specs/slash-sheets/dtl38999ss62.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 115804,
+    "url": null
+  },
+  {
+    "file": "dtl38999ss9.pdf",
+    "path": "specs/slash-sheets/dtl38999ss9.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 160716,
+    "url": null
+  },
+  {
+    "file": "iddtl38999ss10.pdf",
+    "path": "specs/slash-sheets/iddtl38999ss10.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 325089,
+    "url": null
+  },
+  {
+    "file": "iddtl38999ss20.pdf",
+    "path": "specs/slash-sheets/iddtl38999ss20.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 384240,
+    "url": null
+  },
+  {
+    "file": "iddtl38999ss21.pdf",
+    "path": "specs/slash-sheets/iddtl38999ss21.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 340415,
+    "url": null
+  },
+  {
+    "file": "iddtl38999ss22.pdf",
+    "path": "specs/slash-sheets/iddtl38999ss22.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 577218,
+    "url": null
+  },
+  {
+    "file": "iddtl38999ss23.pdf",
+    "path": "specs/slash-sheets/iddtl38999ss23.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 366569,
+    "url": null
+  },
+  {
+    "file": "iddtl38999ss24.pdf",
+    "path": "specs/slash-sheets/iddtl38999ss24.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 325938,
+    "url": null
+  },
+  {
+    "file": "iddtl38999ss25.pdf",
+    "path": "specs/slash-sheets/iddtl38999ss25.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 312457,
+    "url": null
+  },
+  {
+    "file": "iddtl38999ss26.pdf",
+    "path": "specs/slash-sheets/iddtl38999ss26.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 270131,
+    "url": null
+  },
+  {
+    "file": "iddtl38999ss27.pdf",
+    "path": "specs/slash-sheets/iddtl38999ss27.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 336924,
+    "url": null
+  },
+  {
+    "file": "iddtl38999ss28.pdf",
+    "path": "specs/slash-sheets/iddtl38999ss28.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 294878,
+    "url": null
+  },
+  {
+    "file": "iddtl38999ss29.pdf",
+    "path": "specs/slash-sheets/iddtl38999ss29.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 311177,
+    "url": null
+  },
+  {
+    "file": "iddtl38999ss30.pdf",
+    "path": "specs/slash-sheets/iddtl38999ss30.pdf",
+    "category": "specs/slash-sheets",
+    "bytes": 310556,
+    "url": null
+  }
 ]

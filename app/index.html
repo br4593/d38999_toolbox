@@ -4,16 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-i18n="app.title">D38999 Toolbox</title>
-  <link rel="stylesheet" href="styles.css?v=blueprint-1">
+  <link rel="stylesheet" href="styles.css?v=d38999-darkfix3">
   <script>
-    // Resolve theme before first paint to avoid a flash.
+    // Resolve style before first paint to avoid a flash.
     (function () {
       try {
-        var allowed = ['light', 'dark', 'blueprint', 'blueprint-dark'];
+        // id -> base theme (data-theme) + optional D38999 finish overlay (data-style)
+        var BASE = {
+          'light': 'light', 'dark': 'dark', 'blueprint': 'blueprint', 'blueprint-dark': 'blueprint-dark',
+          'olive': 'light', 'cadmium': 'light', 'nickel': 'light', 'zinc': 'dark', 'grey': 'dark'
+        };
+        var FINISH = { 'olive': 'olive', 'cadmium': 'cadmium', 'nickel': 'nickel', 'zinc': 'zinc', 'grey': 'grey' };
         var saved = localStorage.getItem('d38999.theme');
-        if (allowed.indexOf(saved) === -1) saved = null;
-        var theme = saved || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        document.documentElement.setAttribute('data-theme', theme);
+        if (!BASE.hasOwnProperty(saved)) saved = null;
+        var id = saved || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', BASE[id]);
+        if (FINISH[id]) document.documentElement.setAttribute('data-style', FINISH[id]);
       } catch (e) {
         document.documentElement.setAttribute('data-theme', 'light');
       }
@@ -34,12 +40,13 @@
 </head>
 <body>
   <a class="skip-link" href="#mainContent" data-i18n="a11y.skip">Skip to main content</a>
-  <div class="app-disclaimer" role="note" aria-label="Reference disclaimer">
+  <div id="appDisclaimer" class="app-disclaimer" role="note" aria-label="Reference disclaimer">
     <svg class="app-disclaimer-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" d="M12 3l10 18H2L12 3z"/><path stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M12 10v5"/><circle cx="12" cy="18" r="1" fill="currentColor"/></svg>
     <span class="app-disclaimer-text">
       <span class="app-disclaimer-strong" data-i18n="disclaimer.lead">Reference only.</span>
       <span data-i18n="disclaimer.body">Data and decoded results may contain errors. Always cross-check against manufacturer datasheets and apply engineering judgment before specifying or installing any connector.</span>
     </span>
+    <button id="disclaimerDismiss" type="button" class="app-disclaimer-dismiss" data-i18n-aria="disclaimer.dismissAria" aria-label="Dismiss reference notice" title="Dismiss">×</button>
   </div>
   <header class="app-header">
     <div>
@@ -60,8 +67,8 @@
       </button>
       <button id="langToggle" class="header-theme-button header-lang-button" type="button" aria-label="Switch language" data-i18n-aria="header.langAria" lang="he">עברית</button>
       <button id="goHomeButton" class="header-home-button" type="button" data-home-target="home" data-i18n="nav.home">Home</button>
-      <span id="dataStatus">Loading data</span>
-      <span id="selectedStatus">No arrangement selected</span>
+      <span id="dataStatus" class="header-pill" hidden>Loading data</span>
+      <span id="selectedStatus" class="header-pill" hidden>No arrangement selected</span>
     </div>
   </header>
 
@@ -181,20 +188,35 @@
         <div id="decodeMessage" class="message"></div>
       </section>
 
+      <section class="decoder-decoded-section">
+        <h2 data-i18n="common.decoded">Decoded</h2>
+        <div id="decodedPanel" class="details-list" role="region" aria-label="Decoded part number details" aria-live="polite" data-i18n-aria="decoder.decodedAria"></div>
+      </section>
+
       <section class="decoder-hint-section">
-        <h2 data-i18n="common.examples">Examples</h2>
-        <div class="example-chips">
-          <button type="button" class="example-chip" data-example="D38999/26WA35PN">26WA35PN</button>
-          <button type="button" class="example-chip" data-example="D38999/26FB99PN">26FB99PN</button>
-          <button type="button" class="example-chip" data-example="D38999/26WJ90PN">26WJ90PN</button>
-          <button type="button" class="example-chip" data-example="D38999/24WD18SA">24WD18SA</button>
-        </div>
-        <p class="decoder-hint"><span data-i18n="decoder.hintPre">Enter a D38999 P/N or </span><a href="#" id="openCatalogLink" data-i18n="decoder.hintLink">browse arrangements</a><span data-i18n="decoder.hintPost">.</span></p>
+        <details id="decoderExamples" class="decoder-disclosure" open>
+          <summary>
+            <span data-i18n="common.examples">Examples</span>
+            <span class="decoder-disclosure-caret" aria-hidden="true">▾</span>
+          </summary>
+          <div class="example-chips">
+            <button type="button" class="example-chip" data-example="D38999/26WA35PN">26WA35PN</button>
+            <button type="button" class="example-chip" data-example="D38999/26FB99PN">26FB99PN</button>
+            <button type="button" class="example-chip" data-example="D38999/26WJ90PN">26WJ90PN</button>
+            <button type="button" class="example-chip" data-example="D38999/24WD18SA">24WD18SA</button>
+          </div>
+          <p class="decoder-hint"><span data-i18n="decoder.hintPre">Enter a D38999 P/N or </span><a href="#" id="openCatalogLink" data-i18n="decoder.hintLink">browse arrangements</a><span data-i18n="decoder.hintPost">.</span></p>
+        </details>
       </section>
 
       <section class="decoder-recent-section" id="recentSection" hidden>
-        <h2 data-i18n="common.recent">Recent</h2>
-        <div id="recentChips" class="recent-strip"></div>
+        <details id="decoderRecent" class="decoder-disclosure" open>
+          <summary>
+            <span data-i18n="common.recent">Recent</span>
+            <span class="decoder-disclosure-caret" aria-hidden="true">▾</span>
+          </summary>
+          <div id="recentChips" class="recent-strip"></div>
+        </details>
       </section>
     </aside>
 
@@ -206,6 +228,16 @@
             <div id="sourceInfo" class="source-line"></div>
           </div>
           <div class="toolbar">
+            <div class="view-mode-toggle" role="group" aria-label="Connector view mode" data-i18n-aria="viewer.viewModeAria">
+              <button id="viewModeEngBtn" type="button" class="view-mode-btn" data-mode="engineering" aria-pressed="true" title="Engineering view — X-ray outline with gauge symbols and pin labels" data-i18n-title="viewer.viewMode.engTitle">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.5"/><path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" d="M12 3.5v17M3.5 12h17"/></svg>
+                <span data-i18n="viewer.viewMode.eng">Engineering</span>
+              </button>
+              <button id="viewModeRealBtn" type="button" class="view-mode-btn" data-mode="real" aria-pressed="false" title="Real view — true finish colors with gold contacts" data-i18n-title="viewer.viewMode.realTitle">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="3.4" fill="currentColor"/></svg>
+                <span data-i18n="viewer.viewMode.real">Real</span>
+              </button>
+            </div>
             <button id="labelsToggle" type="button" class="pin-labels-toggle" role="switch" aria-checked="false" data-state="off" data-i18n-title="viewer.pinLabels" title="Pin labels">
               <span class="pin-labels-toggle-label" data-i18n="viewer.pinLabels">Pin labels</span>
               <span class="pin-labels-toggle-state" data-state-on data-i18n="viewer.labels.on">ON</span>
@@ -214,6 +246,16 @@
             <label class="check"><input id="outlineToggle" type="checkbox" checked> <span data-i18n="viewer.outline">Outline</span></label>
             <button id="resetViewButton" type="button" data-i18n="viewer.resetView">Reset view</button>
           </div>
+        </div>
+        <div class="viewer-export-row" role="group" aria-label="Export options">
+          <button id="viewerReportButton" type="button" class="primary-action" data-i18n-title="decoded.action.reportTitle" disabled>
+            <span data-i18n="decoded.action.report">Print / Export report</span>
+            <span id="viewerReportBadge" class="mate-badge" hidden></span>
+          </button>
+          <button id="viewerBatchButton" type="button" data-i18n-title="report.batchTitle">
+            <span data-i18n="report.batchOpen">Batch report…</span>
+          </button>
+          <span id="viewerExportHint" class="viewer-export-hint" data-i18n="report.exportHint">Decode a P/N to enable the report.</span>
         </div>
         <div class="viewer-search-row">
           <label for="pinSearchInput" data-i18n="viewer.pinLabel">Pin</label>
@@ -237,11 +279,6 @@
     </main>
 
     <aside class="right-panel panel">
-      <section>
-        <h2 data-i18n="common.decoded">Decoded</h2>
-        <div id="decodedPanel" class="details-list" role="region" aria-label="Decoded part number details" aria-live="polite" data-i18n-aria="decoder.decodedAria"></div>
-      </section>
-
       <section>
         <h2 data-i18n="common.guide">Guide</h2>
         <div id="partNumberGuidePanel" class="details-list"></div>
@@ -427,6 +464,7 @@
           </div>
           <button type="button" class="copy-d38999" data-i18n="converter.copyD38999">Copy D38999</button>
           <button type="button" class="open-in-decoder" data-i18n="converter.openInDecoder">Open in Decoder</button>
+          <button type="button" class="export-report primary-action" data-i18n="decoded.action.report" data-i18n-title="decoded.action.reportTitle">Print / Export report</button>
         </div>
         <dl class="decode-grid"></dl>
         <div class="table-wrap">
@@ -480,9 +518,22 @@
     </div>
   </section>
 
+  <dialog id="batchReportDialog" class="batch-report-dialog">
+    <form method="dialog" class="batch-report-form">
+      <h2 data-i18n="report.batchTitle">Batch cross-reference report</h2>
+      <p class="batch-report-hint" data-i18n="report.batchHint">Paste one part number per line. D38999 and any supported manufacturer P/N are accepted.</p>
+      <textarea id="batchReportInput" rows="10" class="mono" spellcheck="false" placeholder="D38999/26WD35PN&#10;TV06RW-15-35PN&#10;233-105-G6NF15-35PN"></textarea>
+      <div id="batchReportStatus" class="batch-report-status" aria-live="polite"></div>
+      <div class="batch-report-actions">
+        <button type="button" id="batchReportCancel" data-i18n="common.cancel">Cancel</button>
+        <button type="button" id="batchReportRun" class="primary-action" data-i18n="report.batchRun">Generate report</button>
+      </div>
+    </form>
+  </dialog>
+
   <script src="app-data.js"></script>
-  <script src="i18n.js"></script>
-  <script src="app.js"></script>
-  <script src="converter.js"></script>
+  <script src="i18n.js?v=d38999-realview"></script>
+  <script src="app.js?v=d38999-realview"></script>
+  <script src="converter.js?v=sprint-c-2"></script>
 </body>
 </html>

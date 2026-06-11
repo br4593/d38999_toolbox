@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>D38999 Toolbox — Color System Proposal</title>
+<style>
+  :root{
+    /* ---------- D38999 FINISH PALETTE (the "metal" colors) ---------- */
+    --od-900:#23241A; --od-700:#3E3F2B; --od-600:#56563D; --od-500:#6B6A4B; --od-400:#84845F; --od-300:#A3A079;
+    --gun-900:#131517; --gun-800:#1A1D21; --gun-700:#24282E; --gun-600:#343A42;
+    --nik-500:#8B8F95; --nik-400:#A7ABB1; --nik-300:#C2C6CB;
+    --cad:#D6D2C2;
+    --gold-600:#9A7B2E; --gold-500:#C19A3F; --gold-400:#D8B45C;
+    --steel-700:#25415E; --steel-600:#2F5C8A; --cobalt-500:#1E5BD6; --cobalt-600:#0C3C8F;
+
+    /* ---------- LIGHT-THEME UI ROLES ---------- */
+    --bg:#F4F3EE; --bg-2:#ECEAE2; --surface:#FBFAF6; --surface-2:#F4F3EE;
+    --ink:#1A1D21; --text:#2A2D31; --muted:#6A6E66; --line:#DAD8CE; --line-strong:#C7C5B8;
+    --accent:#2F5C8A; --accent-hover:#1E5BD6; --accent-strong:#0C3C8F;
+    --brand:#56563D; --accent-2:#6B6A4B; --gold:#C19A3F;
+    --ok:#5C7A2E; --warn:#B0832E; --danger:#B23A2E;
+
+    /* diagram tokens (schematic, light) */
+    --shell-fill:var(--od-500); --shell-stroke:var(--od-700);
+    --insert-face:#F7F6F1; --insert-stroke:#cfcdbf;
+    --pin-gold:var(--gold-500); --pin-nik:var(--nik-500);
+    --g8:#1A1D21; --g10:#1E6E8C; --g12:#B0832E; --g16:#6E4FA8; --g20:#B43D6B; --g22d:#5C7A2E;
+  }
+  body.dark{
+    --bg:#131517; --bg-2:#1A1D21; --surface:#1F2329; --surface-2:#272C33;
+    --ink:#ECEAE0; --text:#CDCBC0; --muted:#8C8E84; --line:#2E333A; --line-strong:#3A4049;
+    --accent:#5E8FC4; --accent-hover:#7FB0E0; --accent-strong:#9CC3E8;
+    --brand:#A3A079; --accent-2:#9A9A6E; --gold:#D8B45C;
+    --ok:#8DAE54; --warn:#D8B45C; --danger:#D2685A;
+    --insert-face:#1F2329; --insert-stroke:#3a4049;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--text);transition:background .2s,color .2s}
+  header{background:linear-gradient(100deg,var(--gun-900),var(--od-700) 75%);color:#ECEAE0;padding:28px 32px;border-bottom:3px solid var(--gold-500)}
+  header h1{margin:0 0 4px;font-size:24px;letter-spacing:.3px}
+  header p{margin:0;color:#C2C6CB;font-size:14px}
+  .wrap{max-width:1080px;margin:0 auto;padding:28px 32px 80px}
+  section{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin:22px 0;
+           box-shadow:0 1px 2px rgba(0,0,0,.05)}
+  h2{margin:0 0 4px;font-size:18px;color:var(--ink)}
+  h2 .tag{font-size:11px;font-weight:600;color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent);
+          padding:2px 8px;border-radius:999px;margin-left:8px;vertical-align:middle}
+  .sub{color:var(--muted);font-size:13px;margin:0 0 16px}
+  .grid{display:grid;gap:10px}
+  .swatches{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .sw{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface-2)}
+  .sw .chip{height:54px}
+  .sw .meta{padding:7px 10px;font-size:11.5px}
+  .sw .meta b{display:block;font-size:12.5px;color:var(--ink)}
+  .sw .meta code{color:var(--muted);font-size:11px}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+  th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px}
+  td code{background:var(--surface-2);padding:1px 6px;border-radius:5px;font-size:12px}
+  .dot{display:inline-block;width:13px;height:13px;border-radius:4px;vertical-align:-2px;margin-right:7px;border:1px solid rgba(0,0,0,.15)}
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+  button,select{font:inherit;font-size:13px;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);
+                padding:7px 12px;border-radius:9px;cursor:pointer}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  button.primary:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+  .chrome-demo{display:grid;grid-template-columns:1fr;gap:10px}
+  .demo-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 11px;border-radius:999px}
+  .pill.ok{color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,transparent)}
+  .pill.warn{color:var(--warn);background:color-mix(in srgb,var(--warn) 16%,transparent)}
+  .pill.danger{color:var(--danger);background:color-mix(in srgb,var(--danger) 14%,transparent)}
+  .pill.gold{color:var(--gold-600);background:color-mix(in srgb,var(--gold-500) 20%,transparent)}
+  .faces{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+  .face-card{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--surface-2);text-align:center}
+  .face-card h4{margin:0 0 2px;font-size:13.5px;color:var(--ink)}
+  .face-card p{margin:0 0 10px;font-size:11.5px;color:var(--muted)}
+  .legend{display:flex;flex-wrap:wrap;gap:10px 16px;font-size:12px;margin-top:14px;justify-content:center}
+  .legend span{display:inline-flex;align-items:center}
+  svg.face{width:100%;max-width:240px;height:auto;display:block;margin:0 auto;border-radius:10px}
+  .note{font-size:12.5px;color:var(--muted);border-left:3px solid var(--accent);padding:4px 0 4px 12px;margin:14px 0 0}
+  code.k{color:var(--accent);font-weight:600}
+</style>
+</head>
+<body>
+<header>
+  <h1>D38999 Toolbox — Color System Proposal</h1>
+  <p>Derived from the three reference renders + the MIL-DTL-38999 finish standard (Table II)</p>
+</header>
+
+<div class="wrap">
+  <div class="toolbar">
+    <button id="themeBtn" class="primary">Toggle dark theme</button>
+    <span class="sub" style="margin:0">Dark = gunmetal/anodized · Light = nickel/cadmium</span>
+  </div>
+
+  <!-- 1. WHAT THE IMAGES SHOWED -->
+  <section>
+    <h2>1 · What the reference renders use <span class="tag">extracted</span></h2>
+    <p class="sub">Background masked out; dominant connector-body colors, by image.</p>
+    <table>
+      <tr><th>Render</th><th>Read of the metal</th><th>Dominant body colors</th></tr>
+      <tr><td><b>connector1</b></td><td>Black / gunmetal anodized shell, satin-nickel coupling</td>
+        <td><span class="dot" style="background:#151617"></span><span class="dot" style="background:#474646"></span><span class="dot" style="background:#A4A8AA"></span><span class="dot" style="background:#314760"></span> + slate-blue highlight</td></tr>
+      <tr><td><b>connector2</b></td><td>Near-black shell, gold contacts, vivid cobalt insert/highlight</td>
+        <td><span class="dot" style="background:#060505"></span><span class="dot" style="background:#533E39"></span><span class="dot" style="background:#A8A9AA"></span><span class="dot" style="background:#0C3C8F"></span> + cobalt accent</td></tr>
+      <tr><td><b>connector3</b></td><td>Olive-drab cadmium shell — the signature D38999 finish</td>
+        <td><span class="dot" style="background:#26271F"></span><span class="dot" style="background:#5C5B41"></span><span class="dot" style="background:#737258"></span><span class="dot" style="background:#ADAEAC"></span> olive + nickel</td></tr>
+    </table>
+    <p class="note">The recurring language: <b>matte metal shell</b> (olive-drab OR gunmetal-black) · <b>satin-nickel</b> coupling ring · <b>gold</b> contacts · a single saturated <b>steel→cobalt blue</b> highlight. That blue is the natural UI accent and it reads as "engineering / blueprint".</p>
+  </section>
+
+  <!-- 2. FINISH PALETTE -->
+  <section>
+    <h2>2 · The finish palette <span class="tag">brand foundation</span></h2>
+    <p class="sub">Five real MIL-DTL-38999 finishes + contact gold + the cobalt highlight. These are the brand.</p>
+    <div class="grid swatches" id="finishSwatches"></div>
+  </section>
+
+  <!-- 3. UI ROLE MAPPING -->
+  <section>
+    <h2>3 · UI role mapping <span class="tag">replaces indigo/cyan</span></h2>
+    <p class="sub">Current app: generic indigo <code>#6366f1</code> + cyan on cool blue-grey. Proposed: warm nickel/olive neutrals, steel-blue accent, gunmetal dark theme — i.e. the connector itself.</p>
+    <table>
+      <tr><th>Role</th><th>Light</th><th>Dark</th><th>Source</th></tr>
+      <tr><td>Page background</td><td><code>#F4F3EE</code> warm nickel-white</td><td><code>#131517</code> gunmetal</td><td>cadmium / anodized body</td></tr>
+      <tr><td>Surface / panel</td><td><code>#FBFAF6</code></td><td><code>#1F2329</code></td><td>—</td></tr>
+      <tr><td>Ink / text</td><td><code>#1A1D21</code></td><td><code>#ECEAE0</code></td><td>gunmetal / cadmium</td></tr>
+      <tr><td>Brand / header</td><td colspan="2"><span class="dot" style="background:#56563D"></span>Olive drab <code>#56563D</code> → gunmetal gradient</td><td>finish W/B/J</td></tr>
+      <tr><td>Accent (links, focus, selection)</td><td><span class="dot" style="background:#2F5C8A"></span>Steel <code>#2F5C8A</code></td><td><span class="dot" style="background:#5E8FC4"></span><code>#5E8FC4</code></td><td>insert highlight</td></tr>
+      <tr><td>Accent hover / active</td><td><span class="dot" style="background:#1E5BD6"></span>Cobalt <code>#1E5BD6</code></td><td><span class="dot" style="background:#7FB0E0"></span><code>#7FB0E0</code></td><td>connector2 insert</td></tr>
+      <tr><td>Secondary accent</td><td colspan="2"><span class="dot" style="background:#6B6A4B"></span>Olive <code>#6B6A4B</code></td><td>finish W</td></tr>
+      <tr><td>Verified / qualified</td><td colspan="2"><span class="dot" style="background:#C19A3F"></span>Contact gold <code>#C19A3F</code></td><td>gold pins</td></tr>
+      <tr><td>OK · Warn · Danger</td><td colspan="2"><span class="dot" style="background:#5C7A2E"></span>olive-green · <span class="dot" style="background:#B0832E"></span>brass · <span class="dot" style="background:#B23A2E"></span>oxide-red</td><td>on-brand status</td></tr>
+    </table>
+
+    <div class="chrome-demo" style="margin-top:18px">
+      <div class="demo-row">
+        <button class="primary">Decode part number</button>
+        <button>Insert browser</button>
+        <button>Converter</button>
+        <span class="pill gold">VERIFIED · QPL</span>
+        <span class="pill ok">space OK</span>
+        <span class="pill warn">needs review</span>
+        <span class="pill danger">invalid combo</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. FRONT-FACE SVG -->
+  <section>
+    <h2>4 · Front-face SVG restyle <span class="tag">finish-aware</span></h2>
+    <p class="sub">Live mock using real arrangement <b>19-31</b> (shell 19). The big idea: <b>the shell ring color follows the decoded finish class</b>, so the drawing reflects the actual ordered part.</p>
+
+    <div class="toolbar">
+      <label>Finish class&nbsp;
+        <select id="finishSel">
+          <option value="od">W / B / J — olive drab cadmium</option>
+          <option value="gun">Z — black zinc-nickel</option>
+          <option value="grey">T — Ni-PTFE gun-metal grey</option>
+          <option value="anod">C — hard anodic (black)</option>
+          <option value="nik">F/M/N/S/L/R… — electroless nickel</option>
+          <option value="cad">A / U — cadmium iridescent</option>
+        </select>
+      </label>
+      <button id="modeBtn">Mode: schematic</button>
+    </div>
+
+    <div class="faces">
+      <div class="face-card">
+        <h4>Current style</h4>
+        <p>neutral ink-on-white, no finish identity</p>
+        <svg class="face" id="faceOld" viewBox="0 0 60 60"></svg>
+      </div>
+      <div class="face-card">
+        <h4>Proposed</h4>
+        <p id="propCap">schematic · finish-tinted</p>
+        <svg class="face" id="faceNew" viewBox="0 0 60 60"></svg>
+      </div>
+    </div>
+
+    <div class="legend" id="legend"></div>
+
+    <table style="margin-top:20px">
+      <tr><th>Class</th><th>Real-world finish + coating spec</th><th>Shell ring</th></tr>
+      <tr><td><code>W B</code></td><td>Olive drab cadmium per <b>AMS-QQ-P-416</b> over electroless nickel</td><td><span class="dot" style="background:#6B6A4B"></span>Olive drab <code>#6B6A4B</code></td></tr>
+      <tr><td><code>J</code></td><td>Olive drab cadmium, dynamic 500 hr salt spray</td><td><span class="dot" style="background:#6B6A4B"></span>Olive drab</td></tr>
+      <tr><td><code>Z</code></td><td>Zinc-nickel over electroless nickel — "non-reflective, conductive <b>black</b>" (Glenair ZN / Amphenol)</td><td><span class="dot" style="background:#1A1D21"></span>Black <code>#1A1D21</code></td></tr>
+      <tr><td><code>T</code></td><td>Ni-PTFE nickel-fluorocarbon polymer — "<b>gun-metal gray</b>, non-reflective, non-magnetic" (Glenair 1000 Hour Grey™)</td><td><span class="dot" style="background:#565B61"></span>Gun-metal grey <code>#565B61</code></td></tr>
+      <tr><td><code>C</code></td><td>Hard anodic / alumilite, non-conductive (MIL-A-8625) — black-graphite</td><td><span class="dot" style="background:#24282E"></span>Graphite <code>#24282E</code></td></tr>
+      <tr><td><code>F M N S L R H K Y E</code></td><td>Electroless / electro-deposited nickel (AMS-C-26074 / QQ-N-290) — satin silver</td><td><span class="dot" style="background:#A7ABB1"></span>Satin nickel <code>#A7ABB1</code></td></tr>
+      <tr><td><code>A U</code></td><td>Nickel + cadmium — "silver to light iridescent yellow" (dtl38999 Table II)</td><td><span class="dot" style="background:#D6D2C2"></span>Cadmium <code>#D6D2C2</code></td></tr>
+    </table>
+
+    <p class="note"><b>Where the colors come from.</b> MIL-DTL-38999 and the manufacturer catalogs define each finish by <b>plating material + coating standard + a verbal color</b> — there is <b>no RGB/hex or FED-STD-595 number</b> in the spec or any catalog in this repo. The hexes above are representative renderings of those real finishes. Verbatim sources in <code>docs/pdfs/</code>: Glenair Series I-IV p.C-1 (codes NF / ZN / MT), Amphenol &amp; ITT Cannon class tables, Souriau Series III, and <code>dtl38999.pdf</code> Table II (p.3 / p.14).</p>
+    <p class="note">Bonus real-spec anchor for the blue accent: the connector's <b>interfacial / peripheral seal is fluorosilicone per A-A-59588, "Color Blue"</b> (Glenair) — the blue in the renders maps to an actually-specified part color, not just artistic license.</p>
+  </section>
+
+  <!-- 5. INTERNAL COMPONENTS -->
+  <section>
+    <h2>5 · Internal components <span class="tag">spec-cited</span></h2>
+    <p class="sub">Everything behind the coupling ring — pulled from <code>dtl38999.pdf</code> + catalog material tables. Note: standard inserts have <b>no spec'd color</b> (material only); blue, however, is specified twice.</p>
+    <div class="grid swatches" id="internalSwatches"></div>
+    <table style="margin-top:16px">
+      <tr><th>Component</th><th>Material (real spec)</th><th>Color</th><th>Source</th></tr>
+      <tr><td>Pin / socket contacts</td><td>Copper alloy, <b>gold</b> plate over nickel (M39029)</td><td><span class="dot" style="background:#C19A3F"></span>Gold</td><td>dtl38999, MilNec, TE</td></tr>
+      <tr><td>Contact retention clips</td><td>Beryllium copper, gold / conductive plate</td><td><span class="dot" style="background:#C9A24A"></span>Bright gold</td><td>Eaton, TE</td></tr>
+      <tr><td>Insert / insulator</td><td>High-grade rigid dielectric · LCP (MIL-M-24519) · rugged-I/O = PPS</td><td><span class="dot" style="background:#26281F"></span>N.A. — dark*</td><td>spec, Glenair, Amphenol</td></tr>
+      <tr><td>Interfacial / peripheral seal, O-ring, grommet</td><td>Fluorosilicone elastomer per <b>A-A-59588</b></td><td><span class="dot" style="background:#2E6FB0"></span>Blue</td><td>Glenair p.C-1, dtl38999 §3</td></tr>
+      <tr><td>Rear-release retention band</td><td>Identification band per <b>EIA-359</b></td><td><span class="dot" style="background:#2F5C8A"></span>Blue band</td><td>dtl38999 (rear-release ⇒ blue band)</td></tr>
+    </table>
+    <p class="note">*Standard power/signal inserts are specified by <b>material, not color</b> ("high-grade rigid dielectric / N.A."); rugged I/O modules use <b>black PPS</b> (UL-94). So in <code class="k">realistic</code> mode the insert face renders as a neutral dark dielectric, and the <b>blue fluorosilicone interfacial seal</b> shows as a ring on the pin/plug mating face (try the front-face above in realistic mode).</p>
+    <p class="note"><b>Why this matters for the palette:</b> blue is a genuine D38999 color twice over — the fluorosilicone seal (A-A-59588) and the EIA-359 rear-release band — and gold is the dominant interior metal. That makes <b>steel/cobalt blue (accent) + contact gold (verified/highlight)</b> the most spec-honest UI accents, not arbitrary choices.</p>
+  </section>
+
+  <!-- 6. gauge palette -->
+  <section>
+    <h2>6 · Retuned gauge / contact-size palette</h2>
+    <p class="sub">Keeps hue separation for legibility, but pulls every hue toward the earthy D38999 family.</p>
+    <div class="grid swatches" id="gaugeSwatches"></div>
+  </section>
+</div>
+
+<script>
+/* ---------- palette data ---------- */
+const finishes=[
+  ["Olive drab","--od-500","#6B6A4B","class W / B / J — signature"],
+  ["Olive deep","--od-700","#3E3F2B","shadow / brand gradient"],
+  ["Gunmetal","--gun-800","#1A1D21","class Z · dark-theme base"],
+  ["Graphite","--gun-700","#24282E","class T / C matte"],
+  ["Satin nickel","--nik-400","#A7ABB1","class F / N coupling ring"],
+  ["Cadmium","--cad","#D6D2C2","class A / U iridescent"],
+  ["Contact gold","--gold-500","#C19A3F","gold pins · verified"],
+  ["Steel blue","--steel-600","#2F5C8A","UI accent · insert"],
+  ["Cobalt","--cobalt-500","#1E5BD6","accent hover · highlight"],
+];
+const gauges=[
+  ["22D","#5C7A2E","olive green"],["20","#B43D6B","rose"],["16","#6E4FA8","violet"],
+  ["12","#B0832E","brass"],["10","#1E6E8C","teal-steel"],["8 / coax","#1A1D21","gunmetal"],
+];
+const internalParts=[
+  ["Contacts","#C19A3F","gold over nickel · M39029"],
+  ["Retention clips","#C9A24A","BeCu, gold plate"],
+  ["Dielectric insert","#26281F","rigid dielectric / LCP · N.A."],
+  ["Rugged-I/O insert","#161616","PPS, UL-94 black"],
+  ["Interfacial seal","#2E6FB0","fluorosilicone · A-A-59588 blue"],
+  ["Rear-release band","#2F5C8A","EIA-359 blue band"],
+];
+function swatch(name,hex,note){
+  return `<div class="sw"><div class="chip" style="background:${hex}"></div>
+    <div class="meta"><b>${name}</b><code>${hex}</code><br>${note}</div></div>`;
+}
+document.getElementById('finishSwatches').innerHTML=finishes.map(f=>swatch(f[0],f[2],f[3])).join('');
+document.getElementById('gaugeSwatches').innerHTML=gauges.map(g=>swatch("Size "+g[0],g[1],g[2])).join('');
+document.getElementById('internalSwatches').innerHTML=internalParts.map(g=>swatch(g[0],g[1],g[2])).join('');
+
+/* ---------- real 19-31 arrangement ---------- */
+const contacts=[
+ {l:"V",x:19.63,y:14.57,s:"22d"},{l:"A",x:40.46,y:14.57,s:"22d"},{l:"f",x:29.61,y:17.35,s:"12"},
+ {l:"W",x:18.8,y:19.16,s:"22d"},{l:"C",x:41.22,y:19.16,s:"22d"},{l:"U",x:14.04,y:19.82,s:"22d"},
+ {l:"B",x:45.77,y:19.84,s:"22d"},{l:"h",x:17.74,y:29.94,s:"8"},{l:"g",x:41.87,y:29.94,s:"8"},
+ {l:"N",x:26.14,y:40.44,s:"22d"},{l:"K",x:33.21,y:40.44,s:"22d"},{l:"S",x:17.05,y:42.21,s:"22d"},
+ {l:"E",x:42.13,y:42.23,s:"22d"},{l:"R",x:22.47,y:44.19,s:"22d"},{l:"M",x:36.68,y:44.21,s:"22d"},
+];
+const gaugeCol={"22d":"#5C7A2E","20":"#B43D6B","16":"#6E4FA8","12":"#B0832E","10":"#1E6E8C","8":"#1A1D21"};
+const shellMap={
+  od:{fill:"#6B6A4B",stroke:"#3E3F2B",grad:["#84845F","#56563D","#2C2D1E"]},
+  gun:{fill:"#1A1D21",stroke:"#060708",grad:["#3A4048","#1A1D21","#0A0C0E"]},
+  grey:{fill:"#565B61",stroke:"#33383D",grad:["#7C828A","#565B61","#34383D"]},
+  anod:{fill:"#24282E",stroke:"#101316",grad:["#3E444C","#24282E","#121519"]},
+  nik:{fill:"#A7ABB1",stroke:"#6E7278",grad:["#E2E4E7","#A7ABB1","#70757B"]},
+  cad:{fill:"#D6D2C2",stroke:"#9C977F",grad:["#EFECE0","#D6D2C2","#A7A28A"]},
+};
+
+let realistic=false, finishKey="od";
+
+function drawFace(svg,{styleMode}){
+  const sm=shellMap[finishKey];
+  const cx=30,cy=30;
+  let defs=`<defs>
+    <radialGradient id="shellG" cx="38%" cy="32%" r="75%">
+      <stop offset="0%" stop-color="${sm.grad[0]}"/><stop offset="55%" stop-color="${sm.grad[1]}"/>
+      <stop offset="100%" stop-color="${sm.grad[2]}"/>
+    </radialGradient>
+    <radialGradient id="goldG" cx="38%" cy="32%" r="70%">
+      <stop offset="0%" stop-color="#E8CE86"/><stop offset="60%" stop-color="#C19A3F"/><stop offset="100%" stop-color="#7C611F"/>
+    </radialGradient>
+    <radialGradient id="nikG" cx="38%" cy="32%" r="70%">
+      <stop offset="0%" stop-color="#E2E4E7"/><stop offset="60%" stop-color="#A7ABB1"/><stop offset="100%" stop-color="#6E7278"/>
+    </radialGradient>
+  </defs>`;
+
+  // shell + coupling ring
+  let shellFill, faceFill, faceStroke, couplingStroke;
+  if(styleMode==="old"){
+    shellFill="#f6f8fc"; faceFill="#ffffff"; faceStroke="rgba(15,23,42,.28)"; couplingStroke="rgba(15,23,42,.18)";
+  }else if(realistic){
+    shellFill="url(#shellG)"; faceFill="#23241D"; faceStroke="rgba(0,0,0,.5)"; couplingStroke="rgba(255,255,255,.18)";
+  }else{ /* schematic finish-tinted */
+    shellFill=sm.fill; faceFill="var(--insert-face)"; faceStroke=sm.stroke; couplingStroke=sm.stroke;
+  }
+  const inkStroke = styleMode==="old" ? "rgba(15,23,42,.85)" : (realistic? "#ECEAE0" : "var(--ink)");
+
+  // keyway notch top
+  let s=defs;
+  s+=`<circle cx="${cx}" cy="${cy}" r="27" fill="${shellFill}" stroke="${styleMode==='old'?'rgba(15,23,42,.22)':sm.stroke}" stroke-width="1"/>`;
+  // knurl / coupling ring (outer ticks)
+  if(styleMode!=="old"){
+    let ticks="";
+    for(let a=0;a<360;a+=9){const r1=27,r2=24.8;const rad=a*Math.PI/180;
+      ticks+=`<line x1="${cx+r1*Math.cos(rad)}" y1="${cy+r1*Math.sin(rad)}" x2="${cx+r2*Math.cos(rad)}" y2="${cy+r2*Math.sin(rad)}" stroke="${couplingStroke}" stroke-width="0.6"/>`;}
+    s+=ticks;
+  }
+  s+=`<circle cx="${cx}" cy="${cy}" r="23" fill="${faceFill}" stroke="${faceStroke}" stroke-width="1"/>`;
+  // fluorosilicone interfacial seal (A-A-59588, Color Blue) — visible on a pin/plug mating face
+  if(realistic){
+    s+=`<circle cx="${cx}" cy="${cy}" r="22" fill="none" stroke="#2E6FB0" stroke-width="1.6" opacity="0.55"/>`;
+    s+=`<circle cx="${cx}" cy="${cy}" r="20.2" fill="#2E6FB0" opacity="0.10"/>`;
+  }
+  // master keyway
+  s+=`<path d="M ${cx-3} 8 L ${cx+3} 8 L ${cx+2} 12 L ${cx-2} 12 Z" fill="${realistic?'#0e0f0c':(styleMode==='old'?'#fff':'var(--insert-face)')}" stroke="${faceStroke}" stroke-width="0.8"/>`;
+
+  // contacts
+  for(const c of contacts){
+    const r = c.s==="8" ? 2.6 : (c.s==="12"?1.9:1.45);
+    let fill, stroke;
+    if(styleMode==="old"){
+      fill="#ffffff"; stroke=gaugeCol[c.s]; // current: white fill, gauge-colored ring
+    }else if(realistic){
+      fill="url(#goldG)"; stroke="rgba(0,0,0,.45)"; // gold pins
+    }else{
+      fill="var(--insert-face)"; stroke=gaugeCol[c.s];
+    }
+    s+=`<circle cx="${c.x}" cy="${c.y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${c.s==='8'?1.2:1.1}"/>`;
+    if(c.s==="8"){ // coax inner
+      s+=`<circle cx="${c.x}" cy="${c.y}" r="${r*0.42}" fill="${realistic?'#1A1D21':(styleMode==='old'?gaugeCol['8']:'var(--ink)')}" stroke="none"/>`;
+    }
+    // labels only in schematic-ish views
+    if(styleMode!=="old" && !realistic){
+      s+=`<text x="${c.x}" y="${c.y+0.9}" font-size="2.4" text-anchor="middle" fill="var(--muted)" font-family="monospace">${c.l}</text>`;
+    }
+  }
+  svg.innerHTML=s;
+}
+
+function legend(){
+  const items = realistic
+   ? [["url goldG?","gold pin / socket"]]
+   : gauges.map(g=>[g[1],"size "+g[0]]);
+  let html = realistic
+   ? `<span><span class="dot" style="background:#C19A3F"></span>gold contacts</span>
+      <span><span class="dot" style="background:#2E6FB0"></span>fluorosilicone interfacial seal</span>
+      <span><span class="dot" style="background:#23241D"></span>dielectric insert</span>
+      <span><span class="dot" style="background:${shellMap[finishKey].fill}"></span>finish shell</span>`
+   : gauges.map(g=>`<span><span class="dot" style="background:${g[1]}"></span>size ${g[0]}</span>`).join('');
+  document.getElementById('legend').innerHTML=html;
+}
+
+function render(){
+  drawFace(document.getElementById('faceOld'),{styleMode:"old"});
+  drawFace(document.getElementById('faceNew'),{styleMode:"new"});
+  legend();
+  document.getElementById('propCap').textContent = realistic? "realistic · brushed metal + dielectric" : "schematic · finish-tinted";
+  document.getElementById('modeBtn').textContent = "Mode: "+(realistic?"realistic":"schematic");
+}
+document.getElementById('finishSel').onchange=e=>{finishKey=e.target.value;render();};
+document.getElementById('modeBtn').onclick=()=>{realistic=!realistic;render();};
+document.getElementById('themeBtn').onclick=()=>document.body.classList.toggle('dark');
+render();
+</script>
+</body>
+</html>

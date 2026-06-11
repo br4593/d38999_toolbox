@@ -486,8 +486,8 @@
     { prefix: "C-RJFTV", family: "C-RJFTV", vendor: "Cinch", interface: "RJ45 Ethernet", shellSize: "19", relation: "D38999 Series III style rugged RJ45", gender: "Varies by PN (RJ45 jack = female, plug = male)", svg: "rjftv-face.svg" },
     { prefix: "CRJFTV", family: "C-RJFTV", vendor: "Cinch", interface: "RJ45 Ethernet", shellSize: "19", relation: "D38999 Series III style rugged RJ45", gender: "Varies by PN (RJ45 jack = female, plug = male)", svg: "rjftv-face.svg" },
     { prefix: "RJF", family: "RJF", vendor: "Amphenol Socapex", interface: "RJ45 Ethernet", shellSize: "18", relation: "MIL-DTL-26482 bayonet style rugged RJ45", gender: "Varies by PN (RJ45 jack = female, plug = male)", svg: "rjf-face.svg" },
-    { prefix: "UTO", family: "Souriau UTO/UTS RJ45", vendor: "Souriau / Eaton", interface: "RJ45 Ethernet", shellSize: "18", relation: "Souriau UTO bayonet-coupling rugged Cat5e RJ45 (MIL-DTL-26482 style, NOT D38999 Series III intermateable)", gender: "Varies by PN (plug = male RJ45 cordset, receptacle = female RJ45)" },
-    { prefix: "UTS", family: "Souriau UTO/UTS RJ45", vendor: "Souriau / Eaton", interface: "RJ45 Ethernet", shellSize: "18", relation: "Souriau UTS thermoplastic bayonet-coupling rugged Cat5e RJ45 (MIL-DTL-26482 style, NOT D38999 Series III intermateable)", gender: "Varies by PN (plug = male RJ45 cordset, receptacle = female RJ45)" },
+    { prefix: "UTO", family: "Souriau UTO/UTS RJ45", vendor: "Souriau / Eaton", interface: "RJ45 Ethernet", shellSize: "18", relation: "Souriau UTO bayonet-coupling rugged Cat5e RJ45 (MIL-DTL-26482 style, NOT D38999 Series III intermateable)", gender: "Varies by PN (plug = male RJ45 cordset, receptacle = female RJ45)", svg: "souriau-uto-uts-rj45-face.svg" },
+    { prefix: "UTS", family: "Souriau UTO/UTS RJ45", vendor: "Souriau / Eaton", interface: "RJ45 Ethernet", shellSize: "18", relation: "Souriau UTS thermoplastic bayonet-coupling rugged Cat5e RJ45 (MIL-DTL-26482 style, NOT D38999 Series III intermateable)", gender: "Varies by PN (plug = male RJ45 cordset, receptacle = female RJ45)", svg: "souriau-uto-uts-rj45-face.svg" },
     { prefix: "USB3CFTV", family: "USB3CFTV", vendor: "Amphenol Socapex", interface: "USB-C / USB 3.2", shellSize: "11", relation: "Size 11 D38999-style rugged USB-C", gender: "Varies by PN (USB-C receptacle = female, plug = male)", svg: "usb3cftv-face.svg" },
     { prefix: "USB3FTV", family: "USB3FTV", vendor: "Amphenol Socapex", interface: "USB 3.x Type-A", shellSize: "15", relation: "MIL-DTL-38999 Series III style rugged USB 3", gender: "Varies by PN (USB Type-A receptacle = female, plug = male)", svg: "usb3ftv-face.svg" },
     { prefix: "USBFTV", family: "USBFTV", vendor: "Amphenol Socapex", interface: "USB 2.0 Type-A", shellSize: "15", relation: "MIL-DTL-38999 Series III style rugged USB", gender: "Varies by PN (USB Type-A receptacle = female, plug = male)", svg: "usbftv-face.svg" },
@@ -786,6 +786,7 @@
       const sourceLine = node.querySelector(".source-line");
       const copyD38999 = node.querySelector(".copy-d38999");
       const openInDecoder = node.querySelector(".open-in-decoder");
+      const exportReport = node.querySelector(".export-report");
       const decodeGrid = node.querySelector(".decode-grid");
       const tbody = node.querySelector("tbody");
 
@@ -802,6 +803,19 @@
           if (tabBtn) tabBtn.click();
           const decBtn = document.getElementById("decodeButton");
           if (decBtn) decBtn.click();
+        });
+      }
+      if (exportReport) {
+        exportReport.addEventListener("click", () => {
+          const pn = result.parsed.normalized;
+          if (!pn) return;
+          const userInput = (document.getElementById("pnInput")?.value || "").trim();
+          const viaInput = (payload.mode === "manufacturer" && userInput && userInput.toUpperCase() !== pn.toUpperCase())
+            ? userInput : null;
+          const vendor = payload.mode === "manufacturer" ? (result.source || "").split(" ")[0] : null;
+          document.dispatchEvent(new CustomEvent("d38999:export-report", {
+            detail: { partNumber: pn, viaInput, vendor },
+          }));
         });
       }
 
@@ -894,10 +908,63 @@
     renderEmpty(panel);
   }
 
+  function partNumberFromParsed(p) {
+    if (!p) return "";
+    return `D38999/${p.shellType}${p.serviceClass}${p.shellSizeCode}${p.insert}${p.contact}${p.key || "N"}`;
+  }
+
+  const KNOWN_VENDORS = [
+    "Amphenol", "Conesys", "Eaton", "Glenair",
+    "ITT Cannon", "Souriau", "TE Deutsch", "TE Connectivity",
+  ];
+
+  function vendorFromSource(source) {
+    const s = String(source || "");
+    for (const v of KNOWN_VENDORS) {
+      if (s.startsWith(v)) return v;
+    }
+    const space = s.indexOf(" ");
+    return space > 0 ? s.slice(0, space) : s;
+  }
+
+  // Public smart-decoder helper: given any string, returns ranked candidates that
+  // map a manufacturer PN back to a normalized D38999 PN with full vendor
+  // cross-reference. Empty array if nothing matches.
+  function reverseConvert(value) {
+    const trimmed = String(value || "").trim();
+    if (!trimmed) return [];
+    const rows = reverseParseManufacturerPin(trimmed);
+    const out = [];
+    const seen = new Set();
+    rows.forEach((row) => {
+      const d38999 = partNumberFromParsed(row.parsed);
+      if (!d38999) return;
+      const key = `${row.source}|${d38999}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      out.push({
+        vendor: vendorFromSource(row.source),
+        source: row.source,
+        d38999PartNumber: d38999,
+        parsed: row.parsed,
+        confidence: typeof row.parsed.confidence === "number" ? row.parsed.confidence : 0.85,
+        candidates: convertParsed(row.parsed),
+      });
+    });
+    out.sort((a, b) =>
+      (b.confidence - a.confidence) ||
+      a.vendor.localeCompare(b.vendor) ||
+      a.d38999PartNumber.localeCompare(b.d38999PartNumber)
+    );
+    return out;
+  }
+
   const api = {
     rules,
     parseD38999Pin,
     reverseParseManufacturerPin,
+    reverseConvert,
+    partNumberFromParsed,
     convertInput,
     convertParsed,
     recognizeRuggedIo,

@@ -26,25 +26,25 @@ installation needed beyond `pymupdf` (already in `requirements.txt`):
 
 ```bash
 # Dump plain text of the main standard
-python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/dtl38999.pdf --text
+python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/specs/MIL-DTL-38999-dtl38999.pdf --text
 
 # Search across the whole document
-python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/dtl38999.pdf --search "shell size"
+python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/specs/MIL-DTL-38999-dtl38999.pdf --search "shell size"
 
 # Show metadata and table of contents
-python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/dtl38999.pdf --meta --toc
+python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/specs/MIL-DTL-38999-dtl38999.pdf --meta --toc
 
 # Word-level bounding boxes for specific pages (JSON)
-python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/dtl38999.pdf --words --pages 3 --pages 4
+python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/specs/MIL-DTL-38999-dtl38999.pdf --words --pages 3 --pages 4
 
 # Text blocks with bounding boxes
-python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/dtl38999.pdf --blocks --pages 7
+python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/specs/MIL-DTL-38999-dtl38999.pdf --blocks --pages 7
 
 # Export page 6 as SVG
-python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/dtl38999.pdf --svg 6
+python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/specs/MIL-DTL-38999-dtl38999.pdf --svg 6
 
 # Save JSON output to file
-python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/dtl38999.pdf --text --out /tmp/dtl38999_text.json
+python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/specs/MIL-DTL-38999-dtl38999.pdf --text --out /tmp/dtl38999_text.json
 ```
 
 ### All flags
@@ -71,7 +71,7 @@ python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/dtl38999.pdf --text --
 ```python
 import fitz
 
-doc = fitz.open("docs/pdfs/dtl38999.pdf")
+doc = fitz.open("docs/pdfs/specs/MIL-DTL-38999-dtl38999.pdf")
 for page in doc:
     text = page.get_text("text")   # plain text
     # page.number is 0-based
@@ -249,7 +249,7 @@ Use `--words` to get bounding boxes, then group by Y coordinate to reconstruct r
 import fitz, json
 from collections import defaultdict
 
-doc = fitz.open("docs/pdfs/dtl38999.pdf")
+doc = fitz.open("docs/pdfs/specs/MIL-DTL-38999-dtl38999.pdf")
 page = doc[2]  # page 3 (0-based)
 words = page.get_text("words")
 
@@ -270,7 +270,7 @@ doc.close()
 ```python
 import fitz
 
-doc = fitz.open("docs/pdfs/d38999-contact-arrangements.pdf")
+doc = fitz.open("docs/pdfs/reference/d38999-contact-arrangements.pdf")
 page = doc[0]
 paths = page.get_drawings()
 
@@ -292,7 +292,7 @@ doc.close()
 import fitz
 from pathlib import Path
 
-doc = fitz.open("docs/pdfs/d38999-contact-arrangements.pdf")
+doc = fitz.open("docs/pdfs/reference/d38999-contact-arrangements.pdf")
 out_dir = Path("app/assets/svg")
 out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -307,22 +307,31 @@ doc.close()
 
 ## Source PDFs in this repository
 
+PDFs are organized into the following sub-directories under `docs/pdfs/`:
+
+- `specs/` — MIL-DTL-38999 main standard, supplements, and supplier memo
+- `specs/slash-sheets/` — DLA slash-sheet supplements (`dtl38999ss*.pdf`, `iddtl38999ss*.pdf`)
+- `specs/ms-sheets/` — MS27xxx contact / accessory military standard sheets
+- `reference/` — visual aids (contact arrangements, Series III shell keying)
+- `catalogs/<vendor>/` — manufacturer catalogs (amphenol, conesys, eaton, glenair, itt-cannon, souriau, te-deutsch, general)
+- `datasheets/` — single-product datasheets (Glenair Superseal USB, space-grade, RJ45/USB products, TE TV/CTV, etc.)
+
 | File | Contents |
 |------|----------|
-| `docs/pdfs/dtl38999.pdf` | MIL-DTL-38999 main standard; part-number fields, series, shell sizes, classes, contact styles, polarization. |
-| `docs/pdfs/d38999-contact-arrangements.pdf` | Insert arrangement drawings; contact locations and labels for all 63 arrangements. |
-| `docs/pdfs/d38999-shell-keying.pdf` | Series III keying tooth angle table (Figure 6). |
-| `docs/pdfs/dtl38999ss*.pdf` | DLA slash-sheet supplement PDFs (one per slash-sheet). |
-| `docs/pdfs/dla/*.pdf` | DLA MIL-DTL-38999 shell-type source catalog PDFs. |
-| `docs/pdfs/Amphenol_D38999_Series_III.pdf` | Amphenol Series III catalog. |
-| `docs/pdfs/Amphenol-MIL-DTL-38999-series-I-II.pdf` | Amphenol Series I/II catalog. |
-| `docs/pdfs/Conesys-MIL-DTL-38999-Series-III.pdf` | Conesys Series III catalog. |
-| `docs/pdfs/Conesys-Hermetic.pdf` | Conesys hermetic catalog. |
-| `docs/pdfs/Eaton_D38999_Series_IV.pdf` | Eaton Series IV catalog. |
-| `docs/pdfs/Glenair-Mil-DTL-38999-Series-I-II-III-IV.pdf` | Glenair all-series catalog. |
-| `docs/pdfs/ITT-Cannon-38999-Series-I-II-III.pdf` | ITT Cannon catalog. |
-| `docs/pdfs/Souriau-Mil-DTL-38999-Series-III.pdf` | Souriau 8D Series III catalog. |
-| `docs/pdfs/TE_Deutsch_D38999_Series_III.pdf` | TE Deutsch DTS/ACT Series III catalog. |
+| `docs/pdfs/specs/MIL-DTL-38999-dtl38999.pdf` | MIL-DTL-38999 main standard; part-number fields, series, shell sizes, classes, contact styles, polarization. |
+| `docs/pdfs/reference/d38999-contact-arrangements.pdf` | Insert arrangement drawings; contact locations and labels for all 63 arrangements. |
+| `docs/pdfs/reference/d38999-shell-keying.pdf` | Series III keying tooth angle table (Figure 6). |
+| `docs/pdfs/specs/slash-sheets/dtl38999ss*.pdf` | DLA slash-sheet supplement PDFs (one per slash-sheet). |
+| `docs/pdfs/specs/slash-sheets/*.pdf` | DLA MIL-DTL-38999 shell-type source catalog PDFs. |
+| `docs/pdfs/catalogs/amphenol/Amphenol_D38999_Series_III.pdf` | Amphenol Series III catalog. |
+| `docs/pdfs/catalogs/amphenol/Amphenol-MIL-DTL-38999-series-I-II.pdf` | Amphenol Series I/II catalog. |
+| `docs/pdfs/catalogs/conesys/Conesys-MIL-DTL-38999-Series-III.pdf` | Conesys Series III catalog. |
+| `docs/pdfs/catalogs/conesys/Conesys-Hermetic.pdf` | Conesys hermetic catalog. |
+| `docs/pdfs/catalogs/eaton/Eaton_D38999_Series_IV.pdf` | Eaton Series IV catalog. |
+| `docs/pdfs/catalogs/glenair/Glenair-Mil-DTL-38999-Series-I-II-III-IV.pdf` | Glenair all-series catalog. |
+| `docs/pdfs/catalogs/itt-cannon/ITT-Cannon-38999-Series-I-II-III.pdf` | ITT Cannon catalog. |
+| `docs/pdfs/catalogs/souriau/Souriau-Mil-DTL-38999-Series-III.pdf` | Souriau 8D Series III catalog. |
+| `docs/pdfs/catalogs/te-deutsch/TE_Deutsch_D38999_Series_III.pdf` | TE Deutsch DTS/ACT Series III catalog. |
 | `data/reference/std1560.pdf` | MIL-STD-1560 reference; used to cross-check insert arrangement labels. |
 
 ---

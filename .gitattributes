@@ -1,9 +1,9 @@
 # Source datasheets - large, redistributed under upstream terms.
 # Consider tracking with Git LFS:
 #   git lfs install
-#   git lfs track "docs/pdfs/*.pdf"
+#   git lfs track "docs/pdfs/**/*.pdf"
 #   git lfs track "data/reference/*.pdf"
-docs/pdfs/*.pdf    binary
+docs/pdfs/**/*.pdf    binary
 data/reference/*.pdf binary
 
 # Generated SVG arrangement crops - text but lots of them.

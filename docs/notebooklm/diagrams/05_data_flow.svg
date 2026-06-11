@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 380" font-family="Inter, Arial, sans-serif">
+  <defs>
+    <style>
+      .title { font-size: 22px; font-weight: 700; fill: #0b2545; }
+      .h     { font-size: 13px; font-weight: 700; fill: #ffffff; }
+      .t     { font-size: 12px; fill: #1f3a64; }
+      .lane  { fill: #f8fafc; stroke: #cbd5e1; }
+      .b1 { fill: #0b2545; }
+      .b2 { fill: #1d4ed8; }
+      .b3 { fill: #15803d; }
+      .b4 { fill: #6d28d9; }
+      .arrow { stroke: #0b2545; stroke-width: 1.8; fill: none; marker-end: url(#mk4); }
+    </style>
+    <marker id="mk4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0b2545"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="40" class="title">Decode → Mate → Convert: data flow inside the browser</text>
+
+  <!-- Lane -->
+  <rect class="lane" x="40" y="80" width="880" height="60"/>
+  <rect class="lane" x="40" y="160" width="880" height="60"/>
+  <rect class="lane" x="40" y="240" width="880" height="60"/>
+
+  <text x="50" y="100" class="t" font-weight="700">Input</text>
+  <text x="50" y="180" class="t" font-weight="700">Engine</text>
+  <text x="50" y="260" class="t" font-weight="700">Output</text>
+
+  <!-- Boxes -->
+  <g>
+    <rect class="b1" x="140" y="86" width="170" height="48" rx="6"/>
+    <text x="225" y="116" text-anchor="middle" class="h">Part number (typed)</text>
+
+    <rect class="b1" x="350" y="86" width="170" height="48" rx="6"/>
+    <text x="435" y="116" text-anchor="middle" class="h">Arrangement code</text>
+
+    <rect class="b1" x="560" y="86" width="170" height="48" rx="6"/>
+    <text x="645" y="116" text-anchor="middle" class="h">Manufacturer PN</text>
+  </g>
+
+  <g>
+    <rect class="b2" x="140" y="166" width="170" height="48" rx="6"/>
+    <text x="225" y="196" text-anchor="middle" class="h">parsePartNumber()</text>
+
+    <rect class="b2" x="350" y="166" width="170" height="48" rx="6"/>
+    <text x="435" y="196" text-anchor="middle" class="h">lookupArrangement()</text>
+
+    <rect class="b2" x="560" y="166" width="170" height="48" rx="6"/>
+    <text x="645" y="196" text-anchor="middle" class="h">convert() (rules)</text>
+  </g>
+
+  <g>
+    <rect class="b3" x="140" y="246" width="170" height="48" rx="6"/>
+    <text x="225" y="276" text-anchor="middle" class="h">Decoded fields</text>
+
+    <rect class="b4" x="350" y="246" width="170" height="48" rx="6"/>
+    <text x="435" y="276" text-anchor="middle" class="h">Drawing + pin table</text>
+
+    <rect class="b3" x="560" y="246" width="170" height="48" rx="6"/>
+    <text x="645" y="276" text-anchor="middle" class="h">Cross-ref candidates</text>
+  </g>
+
+  <!-- Arrows -->
+  <path class="arrow" d="M225,134 L225,166"/>
+  <path class="arrow" d="M435,134 L435,166"/>
+  <path class="arrow" d="M645,134 L645,166"/>
+  <path class="arrow" d="M225,214 L225,246"/>
+  <path class="arrow" d="M435,214 L435,246"/>
+  <path class="arrow" d="M645,214 L645,246"/>
+
+  <!-- horizontal flow -->
+  <path class="arrow" d="M310,190 L350,190"/>
+  <path class="arrow" d="M520,190 L560,190"/>
+
+  <text x="760" y="330" class="t">All three flows share the bundled JSON in app-data.js — no network call.</text>
+</svg>

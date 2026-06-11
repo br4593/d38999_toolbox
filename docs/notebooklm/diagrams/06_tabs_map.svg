@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" font-family="Inter, Arial, sans-serif">
+  <defs>
+    <style>
+      .title { font-size: 22px; font-weight: 700; fill: #0b2545; }
+      .h     { font-size: 14px; font-weight: 700; fill: #0b2545; }
+      .t     { font-size: 12px; fill: #1f3a64; }
+      .tab   { fill: #ffffff; stroke: #0b2545; stroke-width: 1.5; }
+      .pill  { fill: #0b2545; }
+      .pillt { fill: #ffffff; font-size: 12px; font-weight: 700; }
+    </style>
+  </defs>
+
+  <text x="40" y="40" class="title">The eight tabs at a glance</text>
+
+  <g>
+    <!-- Row 1 -->
+    <g transform="translate(40,80)">
+      <rect class="tab" width="220" height="110" rx="10"/>
+      <rect class="pill" x="14" y="14" width="60" height="22" rx="11"/>
+      <text x="44" y="30" text-anchor="middle" class="pillt">HOME</text>
+      <text x="14" y="62" class="t">Landing dashboard, quick</text>
+      <text x="14" y="80" class="t">search, recent activity,</text>
+      <text x="14" y="98" class="t">links into every tool.</text>
+    </g>
+
+    <g transform="translate(280,80)">
+      <rect class="tab" width="220" height="110" rx="10"/>
+      <rect class="pill" x="14" y="14" width="80" height="22" rx="11"/>
+      <text x="54" y="30" text-anchor="middle" class="pillt">DECODE</text>
+      <text x="14" y="62" class="t">Type a PN; see every field,</text>
+      <text x="14" y="80" class="t">drawing, polarization teeth,</text>
+      <text x="14" y="98" class="t">pin table with search/export.</text>
+    </g>
+
+    <g transform="translate(520,80)">
+      <rect class="tab" width="220" height="110" rx="10"/>
+      <rect class="pill" x="14" y="14" width="80" height="22" rx="11"/>
+      <text x="54" y="30" text-anchor="middle" class="pillt">MATING</text>
+      <text x="14" y="62" class="t">Compute reciprocal mate:</text>
+      <text x="14" y="80" class="t">shell type, P↔S, polariz.,</text>
+      <text x="14" y="98" class="t">side-by-side compare.</text>
+    </g>
+
+    <g transform="translate(760,80)">
+      <rect class="tab" width="170" height="110" rx="10"/>
+      <rect class="pill" x="14" y="14" width="80" height="22" rx="11"/>
+      <text x="54" y="30" text-anchor="middle" class="pillt">CATALOG</text>
+      <text x="14" y="62" class="t">Browse all 63</text>
+      <text x="14" y="80" class="t">arrangements as a</text>
+      <text x="14" y="98" class="t">visual gallery.</text>
+    </g>
+
+    <!-- Row 2 -->
+    <g transform="translate(40,220)">
+      <rect class="tab" width="220" height="110" rx="10"/>
+      <rect class="pill" x="14" y="14" width="90" height="22" rx="11"/>
+      <text x="59" y="30" text-anchor="middle" class="pillt">RUGGED I/O</text>
+      <text x="14" y="62" class="t">Vendor variants for</text>
+      <text x="14" y="80" class="t">HDMI / USB / RJ45 /</text>
+      <text x="14" y="98" class="t">DisplayPort behind D38999.</text>
+    </g>
+
+    <g transform="translate(280,220)">
+      <rect class="tab" width="220" height="110" rx="10"/>
+      <rect class="pill" x="14" y="14" width="100" height="22" rx="11"/>
+      <text x="64" y="30" text-anchor="middle" class="pillt">CONVERTER</text>
+      <text x="14" y="62" class="t">D38999 ↔ Amphenol, Glenair,</text>
+      <text x="14" y="80" class="t">Conesys, ITT, Souriau,</text>
+      <text x="14" y="98" class="t">TE Deutsch, Eaton.</text>
+    </g>
+
+    <g transform="translate(520,220)">
+      <rect class="tab" width="220" height="110" rx="10"/>
+      <rect class="pill" x="14" y="14" width="80" height="22" rx="11"/>
+      <text x="54" y="30" text-anchor="middle" class="pillt">BUILD PN</text>
+      <text x="14" y="62" class="t">Assemble a valid PN</text>
+      <text x="14" y="80" class="t">field-by-field with</text>
+      <text x="14" y="98" class="t">guardrails &amp; previews.</text>
+    </g>
+
+    <g transform="translate(760,220)">
+      <rect class="tab" width="170" height="110" rx="10"/>
+      <rect class="pill" x="14" y="14" width="80" height="22" rx="11"/>
+      <text x="54" y="30" text-anchor="middle" class="pillt">MANUAL</text>
+      <text x="14" y="62" class="t">Beginner primer:</text>
+      <text x="14" y="80" class="t">click each chip,</text>
+      <text x="14" y="98" class="t">DLA index, glossary.</text>
+    </g>
+  </g>
+
+  <text x="40" y="380" class="h">Global controls</text>
+  <text x="40" y="400" class="t">• Header search (PN, arrangement, manufacturer)   • Theme toggle (light / dark / blueprint)   • EN ↔ HE language toggle (RTL aware)</text>
+  <text x="40" y="420" class="t">• Keyboard shortcuts (press ?)   • Reference disclaimer banner   • Home button always returns to the dashboard</text>
+</svg>

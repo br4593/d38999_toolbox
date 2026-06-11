@@ -19,19 +19,19 @@ Options:
 
 Examples:
   # Dump full plain text of a PDF
-  python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/dtl38999.pdf --text
+  python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/specs/MIL-DTL-38999-dtl38999.pdf --text
 
   # Search for a pattern across all pages
-  python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/dtl38999.pdf --search "shell size"
+  python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/specs/MIL-DTL-38999-dtl38999.pdf --search "shell size"
 
   # Extract word-level blocks from pages 3-5 as JSON
-  python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/dtl38999.pdf --words --pages 3 --pages 4 --pages 5
+  python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/specs/MIL-DTL-38999-dtl38999.pdf --words --pages 3 --pages 4 --pages 5
 
   # Get document metadata and TOC
-  python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/dtl38999.pdf --meta --toc
+  python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/specs/MIL-DTL-38999-dtl38999.pdf --meta --toc
 
   # Export page 6 as SVG
-  python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/dtl38999.pdf --svg 6
+  python .github/skills/pdf-parser/extract_pdf.py docs/pdfs/specs/MIL-DTL-38999-dtl38999.pdf --svg 6
 """
 
 from __future__ import annotations

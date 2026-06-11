@@ -106,6 +106,9 @@
     activeGaugeFilter: "",
     buildEnvironmentFilter: "",
     buildCurrentFilter: 0,
+    ruggedView: null,
+    ruggedViewFamily: null,
+    viewMode: "engineering",
   };
 
   const EXACT_VALIDATION_STATUSES = new Set(["EXACT_PN_MATCH", "VERIFIED_EXISTS", "SECONDARY_SOURCE_EXACT"]);
@@ -287,7 +290,18 @@
     sourceInfo: $("sourceInfo"),
     labelsToggle: $("labelsToggle"),
     outlineToggle: $("outlineToggle"),
+    viewModeEngBtn: $("viewModeEngBtn"),
+    viewModeRealBtn: $("viewModeRealBtn"),
     resetViewButton: $("resetViewButton"),
+    viewerReportButton: $("viewerReportButton"),
+    viewerReportBadge: $("viewerReportBadge"),
+    viewerBatchButton: $("viewerBatchButton"),
+    viewerExportHint: $("viewerExportHint"),
+    batchReportDialog: $("batchReportDialog"),
+    batchReportInput: $("batchReportInput"),
+    batchReportStatus: $("batchReportStatus"),
+    batchReportRun: $("batchReportRun"),
+    batchReportCancel: $("batchReportCancel"),
     pinSearchInput: $("pinSearchInput"),
     searchMessage: $("searchMessage"),
     connectorSvg: $("connectorSvg"),
@@ -975,6 +989,10 @@
     if (compact.startsWith("D38999/")) return compact;
     if (compact.startsWith("D38999")) return compact.replace(/^D38999\/?/, "D38999/");
     if (compact.startsWith("/")) return `D38999${compact}`;
+    const ruggedConv = globalThis.D38999Converter;
+    if (ruggedConv && ruggedConv.recognizeRuggedIo && ruggedConv.recognizeRuggedIo(compact).recognized) {
+      return compact;
+    }
     if (/^\d{2}/.test(compact)) return `D38999/${compact}`;
     return compact;
   }
@@ -1025,6 +1043,7 @@
         id: state.selectedArrangement.id,
         count: state.selectedArrangement.contact_count,
       });
+      els.selectedStatus.hidden = false;
       renderSourceInfo();
       renderPinDetail();
     }
@@ -1132,30 +1151,159 @@
   function bindThemeToggle() {
     const toggle = document.getElementById("themeToggle");
     if (!toggle) return;
-    const THEMES = ["light", "dark", "blueprint", "blueprint-dark"];
-    const LABELS = {
-      "light":           "Theme: Light (click for Dark)",
-      "dark":            "Theme: Dark (click for Blueprint)",
-      "blueprint":       "Theme: Blueprint (click for Blueprint Dark)",
-      "blueprint-dark":  "Theme: Blueprint Dark (click for Light)",
-    };
-    const apply = (theme) => {
-      if (!THEMES.includes(theme)) theme = "light";
-      document.documentElement.setAttribute("data-theme", theme);
-      const isDarkLike = theme === "dark" || theme === "blueprint-dark";
+
+    // Each named style maps to a base theme (drives all existing component
+    // rules) plus an optional D38999 finish overlay (data-style) that re-skins
+    // the palette and tints the connector drawing's default shell.
+    const STYLE_GROUPS = [
+      {
+        label: "Interface",
+        items: [
+          { id: "light",          name: "Light",          base: "light",          finish: null, swatch: ["#fbfaf6", "#2f5c8a"] },
+          { id: "dark",           name: "Dark",           base: "dark",           finish: null, swatch: ["#1f2329", "#5e8fc4"] },
+          { id: "blueprint",      name: "Blueprint",      base: "blueprint",      finish: null, swatch: ["#f6f1e1", "#1f5fa8"] },
+          { id: "blueprint-dark", name: "Oscilloscope",   base: "blueprint-dark", finish: null, swatch: ["#0a1322", "#7dd3fc"] },
+        ],
+      },
+      {
+        label: "D38999 finishes",
+        items: [
+          { id: "olive",   name: "Olive Drab",     base: "light", finish: "olive",   swatch: ["#6b6a4b", "#3e3f2b"] },
+          { id: "cadmium", name: "Cadmium",        base: "light", finish: "cadmium", swatch: ["#d6d2c2", "#9a7b2e"] },
+          { id: "nickel",  name: "Satin Nickel",   base: "light", finish: "nickel",  swatch: ["#a7abb1", "#4f6675"] },
+          { id: "zinc",    name: "Black Zinc",     base: "dark",  finish: "zinc",    swatch: ["#1a1c1e", "#6d97c8"] },
+          { id: "grey",    name: "Gun-Metal Grey", base: "dark",  finish: "grey",    swatch: ["#565b61", "#8fb3d6"] },
+        ],
+      },
+    ];
+    const STYLES = {};
+    STYLE_GROUPS.forEach((g) => g.items.forEach((it) => { STYLES[it.id] = it; }));
+
+    const root = document.documentElement;
+    let menu = null;
+
+    const apply = (id) => {
+      const def = STYLES[id] || STYLES.light;
+      root.setAttribute("data-theme", def.base);
+      if (def.finish) root.setAttribute("data-style", def.finish);
+      else root.removeAttribute("data-style");
+      const isDarkLike = def.base === "dark" || def.base === "blueprint-dark";
       toggle.setAttribute("aria-pressed", isDarkLike ? "true" : "false");
-      toggle.setAttribute("title", LABELS[theme]);
-      toggle.setAttribute("aria-label", LABELS[theme]);
+      const label = "Style: " + def.name;
+      toggle.setAttribute("title", label);
+      toggle.setAttribute("aria-label", label);
+      if (menu) {
+        menu.querySelectorAll(".style-menu-item").forEach((btn) => {
+          btn.setAttribute("aria-checked", btn.dataset.styleId === def.id ? "true" : "false");
+        });
+      }
     };
+
+    // Infer the active style id from persisted value, falling back to the
+    // attributes resolved by the pre-paint bootstrap.
+    const currentId = () => {
+      let saved = null;
+      try { saved = localStorage.getItem("d38999.theme"); } catch (e) { /* ignore */ }
+      if (saved && STYLES[saved]) return saved;
+      const style = root.getAttribute("data-style");
+      if (style) {
+        const hit = Object.values(STYLES).find((s) => s.finish === style);
+        if (hit) return hit.id;
+      }
+      const theme = root.getAttribute("data-theme");
+      const baseHit = Object.values(STYLES).find((s) => !s.finish && s.base === theme);
+      return baseHit ? baseHit.id : "light";
+    };
+
+    const closeMenu = () => {
+      if (!menu) return;
+      menu.hidden = true;
+      toggle.setAttribute("aria-expanded", "false");
+      document.removeEventListener("click", onDocClick, true);
+      document.removeEventListener("keydown", onKeyDown, true);
+      window.removeEventListener("resize", closeMenu);
+      window.removeEventListener("scroll", closeMenu, true);
+    };
+
+    const onDocClick = (e) => {
+      if (menu && !menu.contains(e.target) && e.target !== toggle && !toggle.contains(e.target)) closeMenu();
+    };
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") { closeMenu(); toggle.focus(); }
+    };
+
+    const buildMenu = () => {
+      menu = document.createElement("div");
+      menu.className = "style-menu";
+      menu.setAttribute("role", "menu");
+      menu.setAttribute("aria-label", "App style");
+      menu.hidden = true;
+      STYLE_GROUPS.forEach((group) => {
+        const wrap = document.createElement("div");
+        wrap.className = "style-menu-group";
+        const lab = document.createElement("div");
+        lab.className = "style-menu-group-label";
+        lab.textContent = group.label;
+        wrap.appendChild(lab);
+        group.items.forEach((it) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "style-menu-item";
+          btn.setAttribute("role", "menuitemradio");
+          btn.dataset.styleId = it.id;
+          const sw = document.createElement("span");
+          sw.className = "style-menu-swatch";
+          sw.style.background = `linear-gradient(135deg, ${it.swatch[0]} 0 54%, ${it.swatch[1]} 54% 100%)`;
+          const nm = document.createElement("span");
+          nm.className = "style-menu-name";
+          nm.textContent = it.name;
+          const ck = document.createElement("span");
+          ck.className = "style-menu-check";
+          ck.innerHTML = '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+          btn.append(sw, nm, ck);
+          btn.addEventListener("click", () => {
+            apply(it.id);
+            try { localStorage.setItem("d38999.theme", it.id); } catch (e) { /* storage unavailable */ }
+            closeMenu();
+            toggle.focus();
+          });
+          wrap.appendChild(btn);
+        });
+        menu.appendChild(wrap);
+      });
+      document.body.appendChild(menu);
+    };
+
+    const openMenu = () => {
+      if (!menu) buildMenu();
+      apply(currentId()); // refresh checked state
+      menu.hidden = false;
+      toggle.setAttribute("aria-expanded", "true");
+      const r = toggle.getBoundingClientRect();
+      menu.style.visibility = "hidden";
+      const mw = menu.offsetWidth;
+      let left = r.right - mw;
+      if (left < 8) left = 8;
+      menu.style.left = left + "px";
+      menu.style.top = (r.bottom + 6) + "px";
+      menu.style.visibility = "";
+      const firstChecked = menu.querySelector('.style-menu-item[aria-checked="true"]') || menu.querySelector(".style-menu-item");
+      if (firstChecked) firstChecked.focus();
+      document.addEventListener("click", onDocClick, true);
+      document.addEventListener("keydown", onKeyDown, true);
+      window.addEventListener("resize", closeMenu);
+      window.addEventListener("scroll", closeMenu, true);
+    };
+
+    toggle.setAttribute("aria-haspopup", "menu");
+    toggle.setAttribute("aria-expanded", "false");
     toggle.addEventListener("click", () => {
-      const current = document.documentElement.getAttribute("data-theme") || "light";
-      const idx = THEMES.indexOf(current);
-      const next = THEMES[(idx + 1) % THEMES.length] || "light";
-      apply(next);
-      try { localStorage.setItem("d38999.theme", next); } catch (e) { /* storage unavailable */ }
+      if (menu && !menu.hidden) closeMenu();
+      else openMenu();
     });
+
     // Track system changes only while the user has no explicit preference,
-    // and only between the two non-blueprint base themes.
+    // and only between the two non-finish base themes.
     if (window.matchMedia) {
       const mq = window.matchMedia("(prefers-color-scheme: dark)");
       const onChange = (event) => {
@@ -1166,7 +1314,7 @@
       if (mq.addEventListener) mq.addEventListener("change", onChange);
       else if (mq.addListener) mq.addListener(onChange);
     }
-    apply(document.documentElement.getAttribute("data-theme") || "light");
+    apply(currentId());
   }
 
   /* ---------------------------------------------------------------------
@@ -1440,6 +1588,8 @@
           target.isContentEditable);
       if (event.key === "Escape") {
         if (closeShortcutsOverlay()) return;
+        const sm = document.getElementById("decodeSmartSuggestion");
+        if (sm && !sm.hidden) { clearSmartSuggestion(); return; }
         if (typing && typeof target.blur === "function") target.blur();
         return;
       }
@@ -1486,6 +1636,8 @@
     }
     els.decodeButton.addEventListener("click", decodeFromInput);
     els.partNumberInput.addEventListener("input", () => decodeFromInput({ automatic: true }));
+    bindSmartSuggestionHandlers();
+    bindViewerExportControls();
     els.partNumberInput.addEventListener("focus", () => {
       if (!els.partNumberInput.value.trim()) els.partNumberInput.value = "D38999/";
     });
@@ -1570,6 +1722,9 @@
       }
     });
     els.outlineToggle.addEventListener("change", renderViewer);
+    if (els.viewModeEngBtn) els.viewModeEngBtn.addEventListener("click", () => setViewMode("engineering"));
+    if (els.viewModeRealBtn) els.viewModeRealBtn.addEventListener("click", () => setViewMode("real"));
+    initViewMode();
     els.resetViewButton.addEventListener("click", resetView);
     els.pinSearchInput.addEventListener("input", searchPin);
     document.querySelectorAll("[data-gauge-filter]").forEach((button) => {
@@ -1583,6 +1738,106 @@
       button.addEventListener("click", () => selectTab(button.dataset.tab));
     });
     bindPanZoom();
+    bindSprintAEnhancements();
+  }
+
+  /* ---------- Sprint A UX enhancements ---------- */
+  const SA_KEYS = {
+    disclaimer: "d38999.disclaimer.dismissed",
+    lastPn: "d38999.lastPn",
+  };
+
+  function safeStorageGet(key) {
+    try { return localStorage.getItem(key); } catch (e) { return null; }
+  }
+  function safeStorageSet(key, value) {
+    try { localStorage.setItem(key, value); } catch (e) { /* ignore */ }
+  }
+  function safeStorageDel(key) {
+    try { localStorage.removeItem(key); } catch (e) { /* ignore */ }
+  }
+
+  function bindSprintAEnhancements() {
+    // 1) Dismissible disclaimer (persisted).
+    const disclaimer = document.getElementById("appDisclaimer");
+    const dismissBtn = document.getElementById("disclaimerDismiss");
+    if (disclaimer && safeStorageGet(SA_KEYS.disclaimer) === "1") {
+      disclaimer.hidden = true;
+    }
+    if (dismissBtn) {
+      dismissBtn.addEventListener("click", () => {
+        if (disclaimer) disclaimer.hidden = true;
+        safeStorageSet(SA_KEYS.disclaimer, "1");
+      });
+    }
+
+    // 2) Paste-aware decode: collapse the immediate input-handler decode and
+    //    run a single decode after the paste settles into the input.
+    if (els.partNumberInput) {
+      els.partNumberInput.addEventListener("paste", () => {
+        state._sprintAPasteIncoming = true;
+        // Two RAF + 0ms gives the input value time to update across browsers.
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          state._sprintAPasteIncoming = false;
+          decodeFromInput({ automatic: true });
+        }));
+      });
+    }
+
+    // 3) Persist last decoded P/N; prefill on next visit only when input is
+    //    empty / placeholder so we never overwrite an in-progress entry.
+    if (els.partNumberInput && !els.partNumberInput.value.replace(/D38999\/?/i, "").trim()) {
+      const stored = safeStorageGet(SA_KEYS.lastPn);
+      if (stored && stored.length >= 4) {
+        els.partNumberInput.value = stored;
+      }
+    }
+
+    // 4) Sprint C: global click-to-copy on any [data-copy-pn] element.
+    document.addEventListener("click", (event) => {
+      const target = event.target.closest("[data-copy-pn]");
+      if (!target) return;
+      const value = target.getAttribute("data-copy-pn");
+      if (!value) return;
+      copyTextSimple(value).then(() => flashCopied(target));
+    });
+  }
+
+  function copyTextSimple(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).catch(() => copyTextFallback(text));
+    }
+    return Promise.resolve(copyTextFallback(text));
+  }
+
+  function copyTextFallback(text) {
+    try {
+      const area = document.createElement("textarea");
+      area.value = text;
+      area.setAttribute("readonly", "");
+      area.style.position = "fixed";
+      area.style.opacity = "0";
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand("copy");
+      document.body.removeChild(area);
+    } catch (e) { /* swallow */ }
+  }
+
+  function flashCopied(el) {
+    if (!el) return;
+    el.classList.add("pn-copied-flash");
+    const prevTitle = el.getAttribute("title");
+    el.setAttribute("title", T("common.copied") || "Copied");
+    setTimeout(() => {
+      el.classList.remove("pn-copied-flash");
+      if (prevTitle != null) el.setAttribute("title", prevTitle);
+    }, 900);
+  }
+
+  function rememberLastPartNumber(pn) {
+    if (!pn || pn.length < 4) { safeStorageDel(SA_KEYS.lastPn); return; }
+    safeStorageSet(SA_KEYS.lastPn, pn);
   }
 
   function clearFilters() {
@@ -1686,6 +1941,8 @@
   }
 
   function onDecodedPanelClick(event) {
+    const keyChip = event.target.closest("[data-keying-letter]");
+    if (keyChip) { onKeyingChipClick(event); return; }
     const whyToggle = event.target.closest("[data-why-toggle]");
     if (whyToggle) {
       const chip = whyToggle.closest(".decoded-field-chip");
@@ -1901,6 +2158,28 @@
     return "";
   }
 
+  // Condense a long interface_gender ordering rule into a short list of the
+  // connector variants for the catalog card. The full rule stays in the lightbox.
+  function ioGenderSummary(rule, fallback) {
+    const s = String(rule || "").toLowerCase();
+    if (!s) return fallback || "";
+    const hasPlug = /\bplug\b|free connector|cable[- ]?side|cable plug|cordset/.test(s);
+    const recepTypes = [];
+    if (/square[- ]?flange/.test(s) && !/no square[- ]?flange/.test(s)) recepTypes.push("square-flange");
+    if (/jam[- ]?nut/.test(s) && !/no jam[- ]?nut/.test(s)) recepTypes.push("jam-nut");
+    if (/wall[- ]?mount/.test(s) && !/no wall[- ]?mount/.test(s)) recepTypes.push("wall-mount");
+    const parts = [];
+    if (hasPlug) parts.push("plug");
+    if (recepTypes.length) {
+      parts.push(recepTypes.join(" / ") + (recepTypes.length > 1 ? " receptacles" : " receptacle"));
+    } else if (/receptacle|jack/.test(s)) {
+      parts.push("panel receptacle");
+    }
+    if (/feed[- ]?thr(u|ough)/.test(s)) parts.push("feedthrough");
+    if (/bulkhead/.test(s)) parts.push("bulkhead");
+    return parts.length ? parts.join(", ") : (fallback || "");
+  }
+
   // Friendly labels for the view variants available in FAMILY_SVG_MAP.
   const IO_VIEW_LABELS = {
     face: "face",
@@ -1918,12 +2197,157 @@
     "square-flange-receptacle", "reduced-flange-receptacle", "standoff-receptacle", "through-bulkhead",
   ];
 
-  function ioFamilyViews(entry) {
+  // ---- Rugged I/O multi-view helpers (face / side / mount variants) ----
+
+  function ruggedFamilyViewMap(family) {
     const converter = globalThis.D38999Converter;
     const map = converter && converter.FAMILY_SVG_MAP;
-    const svgs = map ? map[entry.family] : null;
-    if (!svgs) return [];
-    return IO_VIEW_ORDER.filter((k) => svgs[k]).map((k) => IO_VIEW_LABELS[k] || k);
+    return (map && map[family]) || {};
+  }
+
+  function ruggedAvailableViewKeys(family) {
+    const svgs = ruggedFamilyViewMap(family);
+    return IO_VIEW_ORDER.filter((k) => svgs[k]);
+  }
+
+  function ruggedViewLabel(key) {
+    return IO_VIEW_LABELS[key] || key;
+  }
+
+  // Map the SVG that recognizeRuggedIo() auto-picked back to a view key so the
+  // switcher opens on the same drawing the decoder chose.
+  function ruggedDefaultViewKey(decoded) {
+    const svgs = ruggedFamilyViewMap(decoded.family);
+    const picked = decoded.svg;
+    for (const k of IO_VIEW_ORDER) {
+      if (svgs[k] && svgs[k] === picked) return k;
+    }
+    if (svgs.face && decoded.face_svg === svgs.face) return "face";
+    const keys = ruggedAvailableViewKeys(decoded.family);
+    return keys.includes("face") ? "face" : keys[0] || "face";
+  }
+
+  function ruggedViewSwitcherHtml(views, selectedView, attr) {
+    if (!views || views.length <= 1) return "";
+    const dataAttr = attr || "data-rugged-view";
+    return `<div class="rugged-view-switcher" role="tablist" aria-label="${escapeHtml(T("rugged.viewsAria", "Connector views"))}">${views
+      .map((k) => `<button type="button" role="tab" class="rugged-view-btn${k === selectedView ? " active" : ""}" aria-selected="${k === selectedView ? "true" : "false"}" ${dataAttr}="${escapeHtml(k)}">${escapeHtml(ruggedViewLabel(k))}</button>`)
+      .join("")}</div>`;
+  }
+
+  // Builds the main image (selected view) plus the face as a small reference when
+  // a non-face view is selected. `family` resolves the SVG set; `altBase` labels it.
+  function ruggedViewStageHtml(family, selectedView, altBase) {
+    const svgs = ruggedFamilyViewMap(family);
+    const mainSvg = svgs[selectedView] || svgs.face;
+    const faceSvg = svgs.face;
+    const base = escapeHtml(altBase || family);
+    if (!mainSvg) {
+      return `<div class="rugged-face-placeholder">${escapeHtml(Tf("rugged.faceUnavailable", { family: altBase || family }))}</div>`;
+    }
+    const showFaceRef = faceSvg && selectedView !== "face";
+    const mainFig = `
+      <figure class="rugged-view-figure rugged-view-main">
+        <img class="rugged-face-img" src="assets/svg/${escapeHtml(mainSvg)}" alt="${base} ${escapeHtml(ruggedViewLabel(selectedView))}"/>
+        <figcaption class="rugged-view-figcap">${escapeHtml(ruggedViewLabel(selectedView))}</figcaption>
+      </figure>`;
+    const refFig = showFaceRef ? `
+      <figure class="rugged-view-figure rugged-view-ref">
+        <img class="rugged-mount-img" src="assets/svg/${escapeHtml(faceSvg)}" alt="${base} ${escapeHtml(ruggedViewLabel("face"))}"/>
+        <figcaption class="rugged-view-figcap">${escapeHtml(ruggedViewLabel("face"))}</figcaption>
+      </figure>` : "";
+    return `<div class="rugged-face-stage">${mainFig}${refFig}</div>`;
+  }
+
+  // ---- Rugged I/O reciprocal (mating) suggestions ----
+  // Mating axis for rugged I/O is the shell coupling: a cable "plug" shell mates a
+  // panel "receptacle" shell (jam-nut / wall / flange / feed-thru). recognizeRuggedIo()
+  // already derives that coupling as `mounting_type`, so we classify from it rather than
+  // from vendor description text (Glenair calls some female jacks "plug coupler").
+
+  function ruggedRoleFromMounting(mountingType) {
+    const s = String(mountingType || "").toLowerCase();
+    if (!s) return "";
+    if (s === "plug" || /\bplug\b|drive[- ]?thru|cordset|memory stick|cable/.test(s)) return "plug";
+    if (/receptacle|jam[- ]?nut|wall|flange|stand[- ]?off|feed[- ]?thru|bulkhead/.test(s)) return "receptacle";
+    return "";
+  }
+
+  function ruggedRoleLabel(role) {
+    if (role === "plug") return T("rugged.rolePlug", "cable plug");
+    if (role === "receptacle") return T("rugged.roleReceptacle", "panel receptacle");
+    return T("rugged.roleUnknown", "coupling not auto-detected");
+  }
+
+  // Given a recognized rugged-I/O result, returns reciprocal candidates drawn ONLY from
+  // catalog PNs (verified → VERIFIED_EXISTS, example → VALID_FORMAT_BUT_NOT_CONFIRMED).
+  function ruggedMateCandidatesFor(decoded) {
+    const converter = globalThis.D38999Converter;
+    if (!decoded?.rugged_io || !converter?.recognizeRuggedIo) return null;
+
+    const family = decoded.family;
+    const sourceNorm = normalizedCatalogPartNumber(decoded.part_number || decoded.input || "");
+    const sourceRole = ruggedRoleFromMounting(decoded.mounting_type);
+
+    const rich = ioRichFor({ family });
+    const warnings = [...(rich?.warnings || [])];
+    const intermateNote = /not\s+(d38999|mil-dtl-38999)|does not mate/i.test(String(decoded.d38999_relation || "") + (rich?.warnings || []).join(" "));
+
+    // Gather catalog PNs for the family: verified (high trust) + example (format-valid).
+    const seen = new Set();
+    const pool = [];
+    (rich?.verified_purchasable_pns || []).forEach((v) => {
+      if (v && v.pn) pool.push({ pn: v.pn, description: v.description || "", status: "VERIFIED_EXISTS" });
+    });
+    (rich?.example_pns || []).forEach((pn) => {
+      if (pn) pool.push({ pn, description: "", status: "VALID_FORMAT_BUT_NOT_CONFIRMED" });
+    });
+
+    const candidates = [];
+    for (const item of pool) {
+      const norm = normalizedCatalogPartNumber(item.pn);
+      if (!norm || norm === sourceNorm || seen.has(norm)) continue;
+      const rec = converter.recognizeRuggedIo(item.pn);
+      if (!rec.recognized || rec.family !== family) continue;
+      const role = ruggedRoleFromMounting(rec.mounting_type);
+      if (!role) continue;
+      // Keep opposite-coupling members; if the source coupling is unknown, surface both.
+      if (sourceRole && role === sourceRole) continue;
+      seen.add(norm);
+      candidates.push({
+        partNumber: item.pn,
+        description: item.description || rec.d38999_relation || "",
+        role,
+        roleLabel: ruggedRoleLabel(role),
+        mountingType: rec.mounting_type || "",
+        interface: rec.interface || decoded.interface,
+        shellSize: rec.shell_size || decoded.shell_size,
+        family,
+        status: item.status,
+        sources: rich?.sources || [],
+        recognized: rec,
+      });
+    }
+
+    // Rank: verified first, then opposite-role match certainty, then PN.
+    candidates.sort((a, b) => {
+      if (a.status !== b.status) return a.status === "VERIFIED_EXISTS" ? -1 : 1;
+      return naturalCompare(a.partNumber, b.partNumber);
+    });
+
+    return {
+      recognized: true,
+      family,
+      interface: decoded.interface,
+      shellSize: decoded.shell_size,
+      vendor: decoded.vendor,
+      sourceRole,
+      sourceRoleLabel: ruggedRoleLabel(sourceRole),
+      candidates: candidates.slice(0, 12),
+      selectionQuestions: rich?.selection_questions || [],
+      warnings,
+      notIntermateable: intermateNote,
+    };
   }
 
   function filteredIoConnectors() {
@@ -1958,17 +2382,19 @@
       : "";
     const rich = ioRichFor(entry);
     const genderRule = rich && rich.interface_gender ? rich.interface_gender : "";
-    const genderHtml = genderRule
-      ? `<div class="io-gender-rule">${escapeHtml(genderRule)}</div>`
+    const genderSummary = ioGenderSummary(genderRule, entry.gender);
+    const genderHtml = genderSummary
+      ? `<div class="io-gender-rule"${genderRule ? ` title="${escapeHtml(genderRule)}"` : ""}>${escapeHtml(genderSummary)}</div>`
       : "";
-    const views = ioFamilyViews(entry);
-    const viewsHtml = views.length > 1
-      ? `<div class="io-views-row"><span class="io-views-label">${escapeHtml(T("io.views"))}</span>${views
-          .map((v) => `<span class="io-view-tag">${escapeHtml(v)}</span>`)
+    const viewKeys = ruggedAvailableViewKeys(entry.family);
+    const hasViewer = viewKeys.length > 0 || Boolean(entry.svg);
+    const viewsHtml = viewKeys.length > 1
+      ? `<div class="io-views-row"><span class="io-views-label">${escapeHtml(T("io.views"))}</span>${viewKeys
+          .map((k) => `<button type="button" class="io-view-tag" data-io-view="${escapeHtml(k)}" title="${escapeHtml(Tf("io.viewOpen", { view: ruggedViewLabel(k) }))}">${escapeHtml(ruggedViewLabel(k))}</button>`)
           .join("")}</div>`
       : "";
     card.innerHTML = `
-      <div class="catalog-card-svg catalog-card-svg-face">
+      <div class="catalog-card-svg catalog-card-svg-face${hasViewer ? " io-face-clickable" : ""}"${hasViewer ? ` title="${escapeHtml(T("io.viewOpenDefault", "View drawings"))}"` : ""}>
         ${svgContent}
       </div>
       <div class="catalog-card-body">
@@ -1989,6 +2415,15 @@
       </div>
     `;
     card.addEventListener("click", (event) => {
+      const viewBtn = event.target.closest("[data-io-view]");
+      if (viewBtn) {
+        openIoLightbox(entry, viewBtn.dataset.ioView);
+        return;
+      }
+      if (hasViewer && event.target.closest(".catalog-card-svg-face")) {
+        openIoLightbox(entry);
+        return;
+      }
       const chip = event.target.closest("[data-io-pn]");
       const pn = chip ? chip.dataset.ioPn : entry.prefix;
       els.partNumberInput.value = pn;
@@ -1996,6 +2431,92 @@
       selectTab("decoder");
     });
     return card;
+  }
+
+  // ---- I/O connector view lightbox (face / side / mount variants) ----
+
+  function openIoLightbox(entry, initialView) {
+    closeLightbox();
+    const family = entry.family;
+    const views = ruggedAvailableViewKeys(family);
+    const fallbackImg = entry.svg || "";
+    let current = views.includes(initialView)
+      ? initialView
+      : (views.includes("face") ? "face" : views[0] || "");
+
+    const examples = ioExamplePns(entry);
+    const rich = ioRichFor(entry);
+    const genderRule = rich && rich.interface_gender ? rich.interface_gender : (entry.gender || "");
+    const vendorLabel = ioVendorLabel(entry);
+
+    const overlay = document.createElement("div");
+    overlay.className = "lightbox-overlay io-lightbox-overlay";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-label", `${family} views`);
+
+    function stageHtml() {
+      if (views.length) return ruggedViewStageHtml(family, current, family);
+      if (fallbackImg) {
+        return `<div class="rugged-face-stage"><figure class="rugged-view-figure rugged-view-main"><img class="rugged-face-img" src="assets/svg/${escapeHtml(fallbackImg)}" alt="${escapeHtml(family)}"/></figure></div>`;
+      }
+      return `<div class="rugged-face-placeholder">${escapeHtml(Tf("rugged.faceUnavailable", { family }))}</div>`;
+    }
+
+    function render() {
+      overlay.innerHTML = `
+        <div class="lightbox-card io-lightbox-card" role="document">
+          <div class="lightbox-svg-pane io-lightbox-stage-pane">
+            ${ruggedViewSwitcherHtml(views, current)}
+            ${stageHtml()}
+          </div>
+          <div class="lightbox-info-pane io-lightbox-info">
+            <div class="lightbox-header">
+              <div class="lightbox-id">${escapeHtml(family)}</div>
+              <button type="button" class="lightbox-close" aria-label="${escapeHtml(T("common.close"))}">✕</button>
+            </div>
+            <div class="io-lightbox-meta">
+              <div><span class="io-lb-label">${escapeHtml(T("rugged.vendor"))}</span> <span>${escapeHtml(vendorLabel)}</span></div>
+              <div><span class="io-lb-label">${escapeHtml(T("rugged.interface"))}</span> <span>${escapeHtml(entry.interface)}</span></div>
+              <div><span class="io-lb-label">${escapeHtml(T("card.shell"))}</span> <span>${escapeHtml(entry.shellSize)}</span></div>
+              ${genderRule ? `<div><span class="io-lb-label">${escapeHtml(T("rugged.interfaceGender"))}</span> <span>${escapeHtml(genderRule)}</span></div>` : ""}
+            </div>
+            ${examples.length ? `<div class="io-example-row">${examples
+              .map((ex) => `<button type="button" class="io-pn-chip" data-io-pn="${escapeHtml(ex.pn)}"${ex.description ? ` title="${escapeHtml(ex.description)}"` : ""}>${ioGenderGlyph(ex.gender)}${escapeHtml(ex.pn)}</button>`)
+              .join("")}</div>` : ""}
+            <div class="lightbox-actions">
+              <button type="button" class="lightbox-primary-btn" data-io-open-decoder>${escapeHtml(T("lightbox.openDecoder"))}</button>
+            </div>
+          </div>
+        </div>
+      `;
+      overlay.querySelectorAll("[data-rugged-view]").forEach((btn) => {
+        btn.addEventListener("click", () => { current = btn.dataset.ruggedView; render(); });
+      });
+    }
+    render();
+
+    function decodeAndClose(pn) {
+      closeLightbox();
+      els.partNumberInput.value = pn;
+      els.decodeButton.click();
+      selectTab("decoder");
+    }
+
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay || event.target.closest(".lightbox-close")) {
+        closeLightbox();
+        return;
+      }
+      const pnChip = event.target.closest("[data-io-pn]");
+      if (pnChip) { decodeAndClose(pnChip.dataset.ioPn); return; }
+      if (event.target.closest("[data-io-open-decoder]")) { decodeAndClose(entry.prefix); }
+    });
+    overlay._escHandler = (event) => { if (event.key === "Escape") closeLightbox(); };
+    document.addEventListener("keydown", overlay._escHandler);
+
+    document.body.appendChild(overlay);
+    state.lightboxOpen = true;
   }
 
   let _ioFiltersPopulated = false;
@@ -2301,6 +2822,7 @@
     renderSourceInfo();
     renderPinDetail();
     els.selectedStatus.textContent = Tf("status.selected", { id: arrangement.id, count: arrangement.contact_count });
+    els.selectedStatus.hidden = false;
     // Update active highlight in catalog grid without full re-render
     document.querySelectorAll(".catalog-card").forEach((card) => {
       const idEl = card.querySelector(".catalog-card-id");
@@ -2342,6 +2864,41 @@
     return [outline.center_x - size / 2, outline.center_y - size / 2, size, size];
   }
 
+  // Fit a viewBox to the *rendered* connector content (geometry bounds via
+  // getBBox), independent of the current pan/zoom. Used for export/report so
+  // wide mount hardware that overflows the fixed base viewBox is never clipped.
+  function connectorContentViewBox(liveSvg, fallback) {
+    if (!liveSvg) return fallback;
+    let box;
+    try {
+      box = liveSvg.getBBox();
+    } catch (e) {
+      return fallback;
+    }
+    if (!box || !(box.width > 0) || !(box.height > 0)) return fallback;
+    const margin = Math.max(Math.max(box.width, box.height) * 0.05, 4);
+    return [box.x - margin, box.y - margin, box.width + margin * 2, box.height + margin * 2];
+  }
+
+  // Maps a MIL-DTL-38999 class/finish letter to a shell-color key consumed by
+  // [data-finish] in styles.css. Defaults to olive drab (the signature finish).
+  const FINISH_KEY_BY_CLASS = {
+    W: "od", B: "od", J: "od",
+    Z: "gun",
+    T: "grey",
+    C: "anod",
+    A: "cad", U: "cad",
+    F: "nik", G: "nik", N: "nik", S: "nik", L: "nik", R: "nik", M: "nik",
+    H: "nik", K: "nik", Y: "nik", E: "nik", P: "nik", D: "nik", V: "nik",
+    AA: "nik", AB: "nik",
+  };
+
+  function finishKeyFromClass(classField) {
+    if (!classField) return "od";
+    const code = String(classField).replace(/-$/, "").toUpperCase();
+    return FINISH_KEY_BY_CLASS[code] || "od";
+  }
+
   function renderViewer() {
     const arr = state.selectedArrangement;
     if (!arr) return;
@@ -2349,7 +2906,36 @@
     const svg = els.connectorSvg;
     svg.innerHTML = "";
     svg.setAttribute("class", "connector-svg");
+    const decodedFinish = state.decoded?.ok && state.decoded.arrangement_id === arr.id
+      ? state.decoded.class_field
+      : null;
+    svg.dataset.finish = finishKeyFromClass(decodedFinish);
+    svg.dataset.view = state.viewMode;
     svg.setAttribute("viewBox", (state.viewBox || connectorBaseViewBox(arr)).join(" "));
+
+    // Sprint B: subtle radial gradient for the shell fill. Inlined as <defs>
+    // so it survives cloning into the printable report popup. The real-view
+    // gold-contact and metal-sheen gradients live here too.
+    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+    defs.innerHTML = `
+      <radialGradient id="sbShellGradient" cx="50%" cy="38%" r="65%">
+        <stop class="sb-shell-stop-0" offset="0%" stop-color="rgba(255,255,255,0.85)"/>
+        <stop class="sb-shell-stop-1" offset="60%" stop-color="rgba(241,245,249,1)"/>
+        <stop class="sb-shell-stop-2" offset="100%" stop-color="rgba(214,222,233,1)"/>
+      </radialGradient>
+      <radialGradient id="contactGoldGrad" cx="38%" cy="32%" r="72%">
+        <stop offset="0%" stop-color="#E8CE86"/>
+        <stop offset="58%" stop-color="#C19A3F"/>
+        <stop offset="100%" stop-color="#7C611F"/>
+      </radialGradient>
+      <radialGradient id="shellSheenGrad" cx="40%" cy="28%" r="78%">
+        <stop offset="0%" stop-color="rgba(255,255,255,0.55)"/>
+        <stop offset="45%" stop-color="rgba(255,255,255,0.10)"/>
+        <stop offset="100%" stop-color="rgba(0,0,0,0.24)"/>
+      </radialGradient>`;
+    svg.appendChild(defs);
+
+    const realView = state.viewMode === "real";
 
     if (els.outlineToggle.checked && arr.outline) {
       const shell = svgEl("g", { class: "shell-layer" });
@@ -2368,6 +2954,25 @@
           cx: arr.outline.center_x,
           cy: arr.outline.center_y,
           r: arr.outline.radius * 1.04,
+        })
+      );
+      if (realView) {
+        shell.appendChild(couplingKnurl(arr));
+        shell.appendChild(
+          svgEl("circle", {
+            class: "shell-sheen",
+            cx: arr.outline.center_x,
+            cy: arr.outline.center_y,
+            r: arr.outline.radius * 1.04,
+          })
+        );
+      }
+      shell.appendChild(
+        svgEl("circle", {
+          class: "insert-face",
+          cx: arr.outline.center_x,
+          cy: arr.outline.center_y,
+          r: arr.outline.radius * 0.9,
         })
       );
       shell.appendChild(
@@ -2660,6 +3265,28 @@
     renderViewer();
   }
 
+  function reflectViewModeButtons() {
+    const isReal = state.viewMode === "real";
+    if (els.viewModeEngBtn) els.viewModeEngBtn.setAttribute("aria-pressed", isReal ? "false" : "true");
+    if (els.viewModeRealBtn) els.viewModeRealBtn.setAttribute("aria-pressed", isReal ? "true" : "false");
+  }
+
+  function initViewMode() {
+    let saved = null;
+    try { saved = localStorage.getItem("d38999.viewMode"); } catch (e) { /* ignore */ }
+    state.viewMode = saved === "real" ? "real" : "engineering";
+    reflectViewModeButtons();
+  }
+
+  function setViewMode(mode) {
+    const next = mode === "real" ? "real" : "engineering";
+    if (state.viewMode === next) return;
+    state.viewMode = next;
+    try { localStorage.setItem("d38999.viewMode", next); } catch (e) { /* storage unavailable */ }
+    reflectViewModeButtons();
+    renderViewer();
+  }
+
   function gaugeToken(contact) {
     const size = String(contact.size || "").toLowerCase();
     if (size.includes("22d")) return "22d";
@@ -2687,6 +3314,15 @@
 
   function appendContactSymbol(group, contact, radius) {
     const token = gaugeToken(contact);
+    if (state.viewMode === "real") {
+      // True-color contacts: gold pads (copper alloy, gold plate per M39029),
+      // with a dark bore for the size-8 coax/power contacts.
+      group.appendChild(svgEl("circle", { class: "pin-symbol pin-contact-real", cx: contact.x, cy: contact.y, r: radius }));
+      if (token === "8") {
+        group.appendChild(svgEl("circle", { class: "pin-contact-bore", cx: contact.x, cy: contact.y, r: radius * 0.42 }));
+      }
+      return;
+    }
     const attrs = { class: `pin-symbol gauge-${token}`, cx: contact.x, cy: contact.y, r: radius };
     if (token === "8") {
       group.appendChild(svgEl("circle", attrs));
@@ -2707,6 +3343,24 @@
     } else {
       group.appendChild(svgEl("circle", attrs));
     }
+  }
+
+  function couplingKnurl(arr) {
+    const o = arr.outline;
+    const group = svgEl("g", { class: "coupling-knurl" });
+    const r1 = o.radius * 1.04;
+    const r2 = o.radius * 0.96;
+    for (let a = 0; a < 360; a += 7.5) {
+      const rad = (a * Math.PI) / 180;
+      group.appendChild(svgEl("line", {
+        class: "knurl-tick",
+        x1: o.center_x + r1 * Math.cos(rad),
+        y1: o.center_y + r1 * Math.sin(rad),
+        x2: o.center_x + r2 * Math.cos(rad),
+        y2: o.center_y + r2 * Math.sin(rad),
+      }));
+    }
+    return group;
   }
 
   function appendCross(group, x, y, radius, mode) {
@@ -2997,12 +3651,29 @@
   }
 
   function decodeFromInput(options = {}) {
+    if (options.automatic && state._sprintAPasteIncoming) return;
     const partNumber = normalizePartNumber(els.partNumberInput.value);
     state.currentPartNumber = partNumber;
     const decoded = decodePartNumber(partNumber);
     if (options.automatic && !decoded.ok && isIncompletePartNumber(partNumber)) {
       setMessage(els.decodeMessage, T("decode.hint"));
       return;
+    }
+    if (decoded.ok) {
+      clearSmartSuggestion();
+    } else {
+      const raw = String(els.partNumberInput.value || "").trim();
+      const looksLikeMfn = raw.length >= 6 && !/^D38999/i.test(raw) && !/^\//.test(raw);
+      const allowSmart = !options.skipSmart && (!options.automatic || looksLikeMfn) && !isIncompletePartNumber(partNumber);
+      if (allowSmart) {
+        const candidates = reverseConvertSafe(raw);
+        if (candidates.length) {
+          renderSmartSuggestion(raw, candidates);
+          setMessage(els.decodeMessage, T("decode.smartTitle"));
+          return;
+        }
+      }
+      clearSmartSuggestion();
     }
     state.decoded = decoded;
     renderDecoded(decoded);
@@ -3015,6 +3686,7 @@
       return;
     }
     pushRecentPartNumber(decoded.part_number);
+    rememberLastPartNumber(decoded.part_number);
     syncRouteHash();
     if (decoded.rugged_io) {
       renderRuggedIoViewer(decoded);
@@ -3052,6 +3724,7 @@
           family: ruggedResult.family,
           vendor: ruggedResult.vendor,
           interface: ruggedResult.interface,
+          interface_gender: ruggedResult.interface_gender,
           shell_size: ruggedResult.shell_size,
           d38999_relation: ruggedResult.d38999_relation,
           connector_type: ruggedResult.connector_type,
@@ -3367,6 +4040,11 @@
       return;
     }
 
+    if (decoded.rugged_io) {
+      renderRuggedMatingPanel(panel, decoded);
+      return;
+    }
+
     const slashSheet = decoded.slash_sheet;
     const style = styleEntryForSlashSheet(slashSheet);
     const candidates = mateCandidatesForDecoded(decoded);
@@ -3448,6 +4126,140 @@
       btn.addEventListener("click", () => {
         state.selectedMateSheet = btn.dataset.mateSheet;
         renderMatingPanel();
+      });
+    });
+  }
+
+  // ---- Rugged I/O mating panel ----
+
+  function matingWarnRow(text) {
+    return `
+      <div class="mating-warn">
+        <svg class="mating-warn-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 2L14 13H2L8 2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M8 7v3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.5" r="0.55" fill="currentColor"/></svg>
+        <span>${escapeHtml(text)}</span>
+      </div>`;
+  }
+
+  function ruggedMatingCardStageHtml(family, recognized) {
+    if (ruggedAvailableViewKeys(family).length) {
+      return ruggedViewStageHtml(family, ruggedDefaultViewKey(recognized), family);
+    }
+    const svg = recognized?.svg || recognized?.face_svg;
+    return svg
+      ? `<div class="rugged-face-stage"><figure class="rugged-view-figure rugged-view-main"><img class="rugged-face-img" src="assets/svg/${escapeHtml(svg)}" alt="${escapeHtml(family || "")}"/></figure></div>`
+      : "";
+  }
+
+  function ruggedMatingSourceCard(decoded, result) {
+    const stage = ruggedMatingCardStageHtml(decoded.family, decoded);
+    return `
+      <div class="mating-source-card">
+        <div class="mating-source-header">
+          <span class="mating-source-label">Decoded Connector</span>
+          <span class="mating-source-pn mono">${escapeHtml(decoded.part_number || decoded.entered_part_number || "")}</span>
+        </div>
+        <div class="mating-source-body">
+          ${stage ? `<div class="mating-source-svg">${stage}</div>` : ""}
+          <div class="mating-source-chips">
+            ${optionChip(decoded.family || "—", "family", decoded.vendor || "")}
+            ${optionChip(decoded.interface || "—", "interface", decoded.interface_gender || "")}
+            ${decoded.shell_size ? optionChip(`size ${decoded.shell_size}`, "shell size", "") : ""}
+            ${optionChip(result?.sourceRoleLabel || ruggedRoleLabel(""), "coupling", decoded.mounting_type || "")}
+          </div>
+          ${decoded.d38999_relation ? `<div class="detail-item"><div class="label">D38999 relation</div><div class="value">${escapeHtml(decoded.d38999_relation)}</div></div>` : ""}
+        </div>
+      </div>`;
+  }
+
+  function ruggedMatingMateCard(c) {
+    const stage = ruggedMatingCardStageHtml(c.family, c.recognized);
+    return `
+      <div class="mating-source-card">
+        <div class="mating-source-header">
+          <span class="mating-source-label">Mating Connector</span>
+          <span class="mating-source-pn mono">${escapeHtml(c.partNumber)}</span>
+        </div>
+        <div class="mating-source-body">
+          ${stage ? `<div class="mating-source-svg">${stage}</div>` : ""}
+          ${validationBadgeHtml(c.status)}
+          <div class="mating-source-chips">
+            ${optionChip(c.family || "—", "family", "")}
+            ${optionChip(c.interface || "—", "interface", "")}
+            ${c.shellSize ? optionChip(`size ${c.shellSize}`, "shell size", "") : ""}
+            ${optionChip(c.roleLabel, "coupling", c.mountingType || "")}
+          </div>
+          ${c.description ? `<div class="detail-item"><div class="label">Description</div><div class="value">${escapeHtml(c.description)}</div></div>` : ""}
+          <div class="mating-option-actions">
+            <button type="button" class="mating-decode-btn" data-mating-pn="${escapeHtml(c.partNumber)}">Open in Decoder →</button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function renderRuggedMatingPanel(panel, decoded) {
+    const result = ruggedMateCandidatesFor(decoded);
+    const warningsHtml = (result?.warnings || []).map(matingWarnRow).join("");
+    const intermateHtml = result?.notIntermateable
+      ? matingWarnRow("This family does not intermate with standard MIL-DTL-38999 Series III connectors — its reciprocal is another connector of the same family.")
+      : "";
+    const sqHtml = (result?.selectionQuestions || []).length
+      ? `<div class="mating-hermetic-note"><strong>Before you choose</strong><ul>${result.selectionQuestions.map((q) => `<li>${escapeHtml(q)}</li>`).join("")}</ul></div>`
+      : "";
+
+    if (!result || !result.candidates.length) {
+      const wanted = result?.sourceRole === "plug" ? "panel receptacle" : "cable plug";
+      panel.innerHTML = `
+        ${warningsHtml}${intermateHtml}
+        ${ruggedMatingSourceCard(decoded, result)}
+        <div class="mating-hermetic-note">
+          <strong>No catalog-backed reciprocal found</strong>
+          <p>No opposite-coupling part number for the ${escapeHtml(decoded.family || "this")} family is loaded in the dataset. Check the manufacturer catalog for the mating ${escapeHtml(wanted)}.</p>
+        </div>
+        ${sqHtml}
+      `;
+      return;
+    }
+
+    if (!state.selectedMateSheet || !result.candidates.some((c) => c.partNumber === state.selectedMateSheet)) {
+      state.selectedMateSheet = result.candidates[0].partNumber;
+    }
+    const selected = result.candidates.find((c) => c.partNumber === state.selectedMateSheet) || result.candidates[0];
+
+    const selectorHtml = result.candidates.length > 1 ? `
+      <div class="mating-selector">
+        ${result.candidates.map((c) => `
+          <button type="button" class="mating-sel-btn${c.partNumber === selected.partNumber ? " active" : ""}" data-rugged-mate="${escapeHtml(c.partNumber)}">
+            <span class="mating-sel-code mono">${escapeHtml(c.partNumber)}</span>
+            <span class="mating-sel-desc">${escapeHtml(`${c.roleLabel} | ${validationLabel(c.status)}`)}</span>
+          </button>
+        `).join("")}
+      </div>
+    ` : "";
+
+    panel.innerHTML = `
+      ${warningsHtml}${intermateHtml}
+      ${selectorHtml}
+      <div class="mating-pair">
+        ${ruggedMatingSourceCard(decoded, result)}
+        <div class="mating-pair-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M14 7l5 5-5 5"/></svg>
+        </div>
+        ${ruggedMatingMateCard(selected)}
+      </div>
+      ${sqHtml}
+    `;
+
+    panel.querySelectorAll("[data-rugged-mate]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.selectedMateSheet = btn.dataset.ruggedMate;
+        renderMatingPanel();
+      });
+    });
+    panel.querySelectorAll("[data-mating-pn]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        els.partNumberInput.value = btn.dataset.matingPn;
+        decodeFromInput();
+        selectTab("decoder");
       });
     });
   }
@@ -3558,18 +4370,40 @@
 
   function renderDecoded(decoded) {
     if (!decoded) {
-      els.decodedPanel.innerHTML = `<div class="detail-item"><div class="value">${escapeHtml(T("decoded.empty"))}</div></div>`;
+      els.decodedPanel.innerHTML = `
+        <div class="empty-state decoded-empty">
+          <svg class="decoded-empty-art" viewBox="0 0 120 80" aria-hidden="true">
+            <defs>
+              <radialGradient id="decEmptyShell" cx="50%" cy="38%" r="55%">
+                <stop offset="0%" stop-color="rgba(255,255,255,0.95)"/>
+                <stop offset="100%" stop-color="rgba(214,222,233,0.9)"/>
+              </radialGradient>
+            </defs>
+            <circle cx="60" cy="40" r="28" fill="url(#decEmptyShell)" stroke="currentColor" stroke-opacity="0.35" stroke-width="1.5"/>
+            <circle cx="60" cy="40" r="20" fill="none" stroke="currentColor" stroke-opacity="0.18" stroke-dasharray="2 3"/>
+            <g fill="currentColor" fill-opacity="0.35">
+              <circle cx="52" cy="34" r="2.2"/><circle cx="60" cy="32" r="2.2"/><circle cx="68" cy="34" r="2.2"/>
+              <circle cx="50" cy="42" r="2.2"/><circle cx="60" cy="40" r="2.2"/><circle cx="70" cy="42" r="2.2"/>
+              <circle cx="52" cy="48" r="2.2"/><circle cx="60" cy="48" r="2.2"/><circle cx="68" cy="48" r="2.2"/>
+            </g>
+          </svg>
+          <div class="decoded-empty-text">${escapeHtml(T("decoded.empty"))}</div>
+        </div>`;
+      updateViewerExportState();
       return;
     }
     if (!decoded.ok) {
       els.decodedPanel.innerHTML = `<div class="detail-item"><div class="value">${escapeHtml(decoded.message)}</div></div>`;
+      updateViewerExportState();
       return;
     }
     if (decoded.rugged_io) {
       els.decodedPanel.innerHTML = ruggedIoSummaryCard(decoded);
+      updateViewerExportState();
       return;
     }
     els.decodedPanel.innerHTML = decodedSummaryCard(decoded);
+    updateViewerExportState();
   }
 
   function clearRuggedIoViewer() {
@@ -3589,23 +4423,49 @@
       layer.className = "rugged-face-layer";
       frame.appendChild(layer);
     }
-    const faceSvg = decoded.face_svg || decoded.svg;
-    const mountSvg = decoded.svg && decoded.svg !== faceSvg ? decoded.svg : "";
-    const captionBits = [decoded.interface, decoded.shell_size ? Tf("rugged.shellCaption", { size: decoded.shell_size }) : "", decoded.mounting_type || ""].filter(Boolean);
+
+    const views = ruggedAvailableViewKeys(decoded.family);
+    if (state.ruggedViewFamily !== decoded.family || !views.includes(state.ruggedView)) {
+      state.ruggedView = ruggedDefaultViewKey(decoded);
+      state.ruggedViewFamily = decoded.family;
+    }
+    const selectedView = views.includes(state.ruggedView) ? state.ruggedView : (views[0] || "face");
+
+    let stageHtml;
+    if (views.length) {
+      stageHtml = ruggedViewStageHtml(decoded.family, selectedView, decoded.family);
+    } else {
+      // Families without a registered FAMILY_SVG_MAP entry fall back to the
+      // single auto-picked drawing from recognizeRuggedIo().
+      const faceSvg = decoded.face_svg || decoded.svg;
+      const mountSvg = decoded.svg && decoded.svg !== faceSvg ? decoded.svg : "";
+      stageHtml = `
+        <div class="rugged-face-stage">
+          ${faceSvg
+            ? `<img class="rugged-face-img" src="assets/svg/${escapeHtml(faceSvg)}" alt="${escapeHtml(decoded.family)} front face"/>`
+            : `<div class="rugged-face-placeholder">${escapeHtml(Tf("rugged.faceUnavailable", { family: decoded.family }))}</div>`}
+          ${mountSvg
+            ? `<img class="rugged-mount-img" src="assets/svg/${escapeHtml(mountSvg)}" alt="${escapeHtml(decoded.family)} ${escapeHtml(decoded.mounting_type || "profile")}"/>`
+            : ""}
+        </div>`;
+    }
+
+    const viewNote = views.length ? ruggedViewLabel(selectedView) : (decoded.mounting_type || "");
+    const captionBits = [decoded.interface, decoded.shell_size ? Tf("rugged.shellCaption", { size: decoded.shell_size }) : "", viewNote].filter(Boolean);
     layer.innerHTML = `
-      <div class="rugged-face-stage">
-        ${faceSvg
-          ? `<img class="rugged-face-img" src="assets/svg/${escapeHtml(faceSvg)}" alt="${escapeHtml(decoded.family)} front face"/>`
-          : `<div class="rugged-face-placeholder">${escapeHtml(Tf("rugged.faceUnavailable", { family: decoded.family }))}</div>`}
-        ${mountSvg
-          ? `<img class="rugged-mount-img" src="assets/svg/${escapeHtml(mountSvg)}" alt="${escapeHtml(decoded.family)} ${escapeHtml(decoded.mounting_type || "profile")}"/>`
-          : ""}
-      </div>
+      ${ruggedViewSwitcherHtml(views, selectedView)}
+      ${stageHtml}
       <div class="rugged-face-caption">
         <span class="rugged-face-pn mono">${escapeHtml(decoded.part_number || "")}</span>
         ${captionBits.length ? `<span class="rugged-face-meta">${escapeHtml(captionBits.join(" • "))}</span>` : ""}
       </div>
     `;
+    layer.querySelectorAll("[data-rugged-view]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.ruggedView = btn.dataset.ruggedView;
+        renderRuggedIoViewer(decoded);
+      });
+    });
     els.viewerTitle.textContent = Tf("rugged.frontFace", { family: decoded.family });
     if (els.sourceInfo) {
       els.sourceInfo.textContent = `${decoded.vendor || ""}${decoded.vendor ? " • " : ""}${decoded.d38999_relation || ""}`.trim();
@@ -3645,6 +4505,41 @@
     `;
   }
 
+  function keyingChipStrip(decoded) {
+    if (!decoded?.ok) return "";
+    const current = String(decoded.polarization || "N").toUpperCase();
+    const letters = ["N", "A", "B", "C", "D"];
+    const chips = letters.map((l) => {
+      const active = (l === current) ? " active" : "";
+      const title = (l === "N") ? T("decoded.keying.normal") : "";
+      return `<button type="button" class="keying-chip${active}" data-keying-letter="${l}" title="${escapeHtml(title)}">${l}</button>`;
+    }).join("");
+    const note = decoded.polarization_defaulted
+      ? `<span class="keying-chip-note">${escapeHtml(T("decoded.keying.defaultNote"))}</span>`
+      : "";
+    return `<div class="keying-chip-strip" role="group" aria-label="${escapeHtml(T("decoded.keying.aria"))}">
+      <span class="keying-chip-label">${escapeHtml(T("decoded.keying.label"))}</span>
+      ${chips}
+      ${note}
+    </div>`;
+  }
+
+  function onKeyingChipClick(event) {
+    const chip = event.target.closest("[data-keying-letter]");
+    if (!chip) return;
+    if (!state.decoded?.ok || !state.decoded.part_number) return;
+    const letter = chip.dataset.keyingLetter;
+    if (!letter) return;
+    const cur = String(state.decoded.polarization || "N").toUpperCase();
+    if (cur === letter) return;
+    // The polarization letter is the final character of the canonical D38999 P/N.
+    const pn = state.decoded.part_number;
+    if (!/[A-Z]$/i.test(pn)) return;
+    const nextPn = pn.slice(0, -1) + letter;
+    els.partNumberInput.value = nextPn;
+    decodeFromInput();
+  }
+
   function decodedSummaryCard(decoded) {
     const items = manualFieldItems(decoded);
     const validation = catalogValidationForDecoded(decoded);
@@ -3655,17 +4550,25 @@
     return `
       <div class="detail-item detail-summary">
         <div class="name">${escapeHtml(T("decoder.partNumberLabel"))}</div>
-        <div class="value mono">${escapeHtml(items.map((item) => item.token).join(""))}</div>
+        <button type="button" class="value mono pn-copy-target" data-copy-pn="${escapeHtml(decoded.part_number)}" title="${escapeHtml(T("common.copy"))}">${escapeHtml(items.map((item) => item.token).join(""))}</button>
         ${connectorSummaryDetailHtml(decoded, { validation })}
         ${validationSummaryHtml(validation, { partNumber: decoded.part_number })}
         <div class="decoded-status-note">${escapeHtml(validationEvidence || T("decoded.fallbackEvidence"))}</div>
+        ${keyingChipStrip(decoded)}
         <div class="decoded-action-row">
           <button type="button" class="primary-action decoded-action-btn" data-decoded-action="mating">${escapeHtml(T("decoded.action.mate"))}</button>
           <button type="button" class="decoded-action-btn" data-decoded-action="build">${escapeHtml(T("decoded.action.build"))}</button>
-          <button type="button" class="decoded-action-btn" data-decoded-action="catalog">${escapeHtml(T("decoded.action.browse"))}</button>
-          <button type="button" class="decoded-action-btn" data-decoded-action="converter">${escapeHtml(T("converter.convert"))}</button>
-          <button type="button" class="decoded-action-btn" data-decoded-action="csv" title="${escapeHtml(T("decoded.action.csvTitle"))}">${escapeHtml(T("decoded.action.csv"))}</button>
-          <button type="button" class="decoded-action-btn" data-decoded-action="print" title="${escapeHtml(T("decoded.action.printTitle"))}">${escapeHtml(T("decoded.action.print"))}</button>
+          <details class="decoded-more">
+            <summary class="decoded-action-btn decoded-more-summary" aria-label="${escapeHtml(T("decoded.action.more"))}">
+              ${escapeHtml(T("decoded.action.more"))} <span aria-hidden="true">▾</span>
+            </summary>
+            <div class="decoded-more-menu" role="menu">
+              <button type="button" class="decoded-action-btn" role="menuitem" data-decoded-action="catalog">${escapeHtml(T("decoded.action.browse"))}</button>
+              <button type="button" class="decoded-action-btn" role="menuitem" data-decoded-action="converter">${escapeHtml(T("converter.convert"))}</button>
+              <button type="button" class="decoded-action-btn" role="menuitem" data-decoded-action="csv" title="${escapeHtml(T("decoded.action.csvTitle"))}">${escapeHtml(T("decoded.action.csv"))}</button>
+              <button type="button" class="decoded-action-btn" role="menuitem" data-decoded-action="print" title="${escapeHtml(T("decoded.action.printTitle"))}">${escapeHtml(T("decoded.action.print"))}</button>
+            </div>
+          </details>
         </div>
         <div class="manual-stat-grid">
           ${items.map((item) => decodedFieldChip(item)).join("")}
@@ -3972,7 +4875,7 @@
         label: "Shell type",
         icon: "BODY",
         summary: slashMeaning,
-        use: `${slashDescription} This is not the shell size. It chooses the body style: plug, wall-mount receptacle, jam-nut receptacle, hermetic body, or Series IV shell type. It answers: what connector body am I ordering?`,
+        use: `${slashDescription} Not the shell size — it sets the body style: plug, wall-mount or jam-nut receptacle, hermetic, or Series IV. It answers: which connector body am I ordering?`,
         source: active.ok ? sourceRef(active.slash_sheet_definition || active.source_pattern?.fields?.[1]) : ""
       },
       {
@@ -3981,7 +4884,7 @@
         label: "Class / finish",
         icon: "FINISH",
         summary: classMeaning,
-        use: "This describes material and plating/finish. Use it to match the environment: corrosion resistance, conductivity, composite body, stainless, hermetic, or finish restrictions.",
+        use: "Material and plating/finish. Use it to match the environment: corrosion resistance, conductivity, composite, stainless, or hermetic.",
         source: active.ok ? sourceRef(active.class_definition) : ""
       },
       {
@@ -3990,7 +4893,7 @@
         label: "Shell code",
         icon: "SIZE",
         summary: active.ok ? `Code ${active.shell_code} maps to physical shell size ${active.shell_size}.` : "The letter maps to a numeric physical shell size.",
-        use: "This is the shell size field. In this PN format it is a letter, not the shell type. Combine the numeric shell size with the insert number to find the exact pinout drawing.",
+        use: "The shell-size field — a letter here, not the shell type. Combine the numeric shell size with the insert number to find the exact pinout.",
         source: active.ok ? sourceRef(active.shell_size_definition) : ""
       },
       {
@@ -4010,7 +4913,7 @@
         label: "Contacts",
         icon: "PIN",
         summary: contactMeaning,
-        use: "This tells whether the connector is supplied with pins, sockets, no contacts, or a special contact termination option. The mating connector normally uses the opposite contact gender.",
+        use: "Whether the connector ships with pins, sockets, no contacts, or a special termination. The mate normally uses the opposite contact gender.",
         source: active.ok ? sourceRef(active.contact_definition) : ""
       },
       {
@@ -4019,7 +4922,7 @@
         label: "Keying",
         icon: "KEY",
         summary: keyingMeaning,
-        use: "This is the angular key position. Use the same polarization only when connectors are meant to mate; use alternate keying to prevent wrong mating.",
+        use: "The angular key position. Match polarization only on connectors meant to mate; use alternate keying to prevent wrong mating.",
         source: active.ok ? sourceRef(active.polarization_definition || active.source_pattern?.fields?.[6]) : ""
       }
     ];
@@ -4077,9 +4980,9 @@
     const insert = active.ok ? `${active.arrangement_id}` : "shell-insert arrangement";
     const contacts = arr ? `${arr.contact_count} contacts` : "contact count from insert drawing";
     const steps = [
-      ["1", "Body", body, "The shell type tells what mechanical connector body to buy."],
-      ["2", "Finish", active.ok ? active.class_field : "class", "The class tells material and finish for the operating environment."],
-      ["3", "Shell", shell, "The shell-size code becomes the physical circular shell size."],
+      ["1", "Body", body, "The shell type is the mechanical connector body to buy."],
+      ["2", "Finish", active.ok ? active.class_field : "class", "The class sets material and finish for the operating environment."],
+      ["3", "Shell", shell, "The shell-size code is the physical circular shell size."],
       ["4", "Insert", insert, `The insert defines the pin map and ${contacts}.`],
       ["5", "Mate", active.ok ? `${active.contact_style} / ${active.polarization}` : "contacts / keying", "Contact gender and keying determine what it can mate with."]
     ];
@@ -4202,6 +5105,749 @@
   function csvEscape(value) {
     const text = String(value == null ? "" : value);
     return /[",\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Smart input: accept a manufacturer P/N in the decoder
+  // ---------------------------------------------------------------------------
+
+  function getSmartSuggestionEl() {
+    if (!els.decodeMessage) return null;
+    let el = document.getElementById("decodeSmartSuggestion");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "decodeSmartSuggestion";
+      el.className = "smart-suggestion";
+      el.hidden = true;
+      els.decodeMessage.parentNode.insertBefore(el, els.decodeMessage.nextSibling);
+    }
+    return el;
+  }
+
+  function clearSmartSuggestion() {
+    const el = document.getElementById("decodeSmartSuggestion");
+    if (el) {
+      el.hidden = true;
+      el.innerHTML = "";
+    }
+    state.reportCandidate = null;
+    updateViewerExportState();
+  }
+
+  function reverseConvertSafe(value) {
+    const conv = globalThis.D38999Converter;
+    if (!conv || typeof conv.reverseConvert !== "function") return [];
+    try { return conv.reverseConvert(value) || []; } catch { return []; }
+  }
+
+  function renderSmartSuggestion(rawInput, candidates) {
+    const el = getSmartSuggestionEl();
+    if (!el || !candidates.length) return;
+    const top = candidates[0];
+    const more = candidates.slice(1, 6);
+    const oneLine = candidates.length === 1
+      ? Tf("decode.smartOne", { pn: top.d38999PartNumber, vendor: top.vendor })
+      : Tf("decode.smartMany", { count: candidates.length });
+    const useBtn = (cand) =>
+      `<button type="button" class="smart-suggestion-pick" data-suggest-pn="${escapeHtml(cand.d38999PartNumber)}" title="${escapeHtml(cand.source)}">`
+      + escapeHtml(Tf("decode.smartUse", { pn: cand.d38999PartNumber }))
+      + ` <span class="smart-suggestion-vendor">(${escapeHtml(cand.vendor)})</span></button>`;
+    el.innerHTML = `
+      <div class="smart-suggestion-head">
+        <strong>${escapeHtml(T("decode.smartTitle"))}</strong>
+        <span class="smart-suggestion-msg">${escapeHtml(oneLine)}</span>
+        <button type="button" class="smart-suggestion-dismiss" data-suggest-dismiss>${escapeHtml(T("decode.smartDismiss"))}</button>
+      </div>
+      <div class="smart-suggestion-body">
+        ${useBtn(top)}
+        ${more.map(useBtn).join("")}
+      </div>
+    `;
+    el.hidden = false;
+    // Stash a ready-to-export candidate so the viewer's "Print / Export report"
+    // button can be used directly from a manufacturer P/N without first
+    // accepting the smart suggestion.
+    const decoded = top?.d38999PartNumber ? decodePartNumber(top.d38999PartNumber) : null;
+    state.reportCandidate = decoded?.ok
+      ? { decoded, vendor: top.vendor, source: top.source, originalInput: rawInput }
+      : null;
+    updateViewerExportState();
+  }
+
+  function bindSmartSuggestionHandlers() {
+    const el = getSmartSuggestionEl();
+    if (!el || el.dataset.bound) return;
+    el.dataset.bound = "1";
+    el.addEventListener("click", (event) => {
+      const dismiss = event.target.closest("[data-suggest-dismiss]");
+      if (dismiss) { clearSmartSuggestion(); return; }
+      const pick = event.target.closest("[data-suggest-pn]");
+      if (!pick) return;
+      const pn = pick.dataset.suggestPn;
+      if (!pn) return;
+      clearSmartSuggestion();
+      els.partNumberInput.value = pn;
+      decodeFromInput();
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // Cross-reference + mate report
+  // ---------------------------------------------------------------------------
+
+  function describeDecodedConnector(decoded) {
+    if (!decoded?.ok) return { shellTypeLabel: "", mountingStyle: "", matingRole: "", summary: "" };
+    const style = styleEntryForSlashSheet(decoded.slash_sheet) || {};
+    const shellTypeLabel = getShellStyleLabel(decoded) || decoded.slash_sheet || "";
+    const summary = (getShellStyleDescription(decoded) || "").trim();
+    const matingRole = (style.matingRole || "").toString();
+    let mountingStyle = "";
+    const lc = `${shellTypeLabel} ${summary}`.toLowerCase();
+    if (/jam[- ]?nut/.test(lc)) mountingStyle = "jam-nut";
+    else if (/wall[- ]?mount/.test(lc)) mountingStyle = "wall mount";
+    else if (/square[- ]?flange/.test(lc)) mountingStyle = "square flange";
+    else if (/panel/.test(lc)) mountingStyle = "panel mount";
+    else if (/in[- ]?line/.test(lc)) mountingStyle = "in-line";
+    else if (/cap|dummy|protective/.test(lc)) mountingStyle = "accessory";
+    else if (/straight|cable/.test(lc) || matingRole === "plug") mountingStyle = "cable";
+    return { shellTypeLabel, mountingStyle, matingRole, summary };
+  }
+
+  function vendorRowsForParsed(parsed) {
+    const conv = globalThis.D38999Converter;
+    if (!conv || !parsed || typeof conv.convertParsed !== "function") return [];
+    try {
+      return (conv.convertParsed(parsed) || []).map((c) => ({
+        vendor: String(c.manufacturer || "").split(" / ")[0].trim() || "—",
+        productLine: c.product_line || "",
+        partNumber: c.manufacturer_part_number || "",
+        confidence: c.confidence,
+        notes: c.notes || "",
+      }));
+    } catch { return []; }
+  }
+
+  function parsedFromDecoded(decoded) {
+    const conv = globalThis.D38999Converter;
+    if (!conv || !decoded?.ok) return null;
+    try { return conv.parseD38999Pin(decoded.part_number); } catch { return null; }
+  }
+
+  function buildConnectorBlock(decoded, mateIndex) {
+    if (!decoded?.ok) return null;
+    const parsed = parsedFromDecoded(decoded);
+    return {
+      mateIndex,
+      d38999: decoded.part_number,
+      decoded: {
+        slashSheet: decoded.slash_sheet,
+        classField: decoded.class_field,
+        shellCode: decoded.shell_code,
+        shellSize: decoded.shell_size,
+        insertArrangement: decoded.insert_arrangement,
+        arrangementId: decoded.arrangement_id,
+        contactStyle: decoded.contact_style,
+        polarization: decoded.polarization,
+      },
+      description: describeDecodedConnector(decoded),
+      vendors: parsed ? vendorRowsForParsed(parsed) : [],
+    };
+  }
+
+  function buildCrossRefReport(decoded) {
+    if (!decoded?.ok) return null;
+    const generatedAt = new Date().toISOString();
+    const self = buildConnectorBlock(decoded, 0);
+
+    const candidates = mateCandidatesForDecoded(decoded) || [];
+    let mate = candidates
+      .map((c, i) => {
+        if (!c.targetDecoded?.ok) {
+          return {
+            mateIndex: i + 1,
+            d38999: c.candidatePartNumber || "",
+            description: { shellTypeLabel: "", mountingStyle: "", matingRole: "", summary: "" },
+            vendors: [],
+            status: c.status || "MISSING_DATA",
+            isValidMate: false,
+            reasons: [...(c.conflictingFields || []), ...(c.warnings || [])],
+            confidence: c.confidence || 0,
+          };
+        }
+        const block = buildConnectorBlock(c.targetDecoded, i + 1);
+        block.status = c.status;
+        block.isValidMate = !!c.isValidMate;
+        block.reasons = [...(c.conflictingFields || []), ...(c.warnings || [])];
+        block.confidence = c.confidence || 0;
+        return block;
+      })
+      .sort((a, b) =>
+        (Number(b.isValidMate) - Number(a.isValidMate)) ||
+        (b.confidence - a.confidence) ||
+        String(a.d38999).localeCompare(String(b.d38999))
+      )
+      .map((m, i) => ({ ...m, mateIndex: i + 1 }));
+
+    if (!mate.length) {
+      mate = [{
+        mateIndex: 1,
+        d38999: "",
+        description: { shellTypeLabel: "", mountingStyle: "", matingRole: "", summary: T("report.noMate") },
+        vendors: [],
+        status: "NO_MATE",
+        isValidMate: false,
+        reasons: [T("report.noMate")],
+        confidence: 0,
+      }];
+    }
+
+    return {
+      meta: {
+        generatedAt,
+        sourcePartNumber: decoded.part_number,
+        appName: "D38999 Toolbox",
+        disclaimer: T("report.disclaimer"),
+      },
+      self,
+      mate,
+    };
+  }
+
+  function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function safeFilename(stem, ext) {
+    const safe = String(stem || "d38999_report").replace(/[^A-Za-z0-9]+/g, "_");
+    const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    return `d38999_xref_${safe}_${date}.${ext}`;
+  }
+
+  function cloneLiveConnectorSvg() {
+    const live = els.connectorSvg;
+    if (!live) return "";
+    const clone = live.cloneNode(true);
+    clone.removeAttribute("id");
+    clone.querySelectorAll("[id]").forEach((node) => {
+      // Keep paint-server ids (gradients in <defs>) so CSS url(#…) fills like
+      // the real-view gold contacts and shell gradients still resolve in the
+      // cloned/exported SVG. Strip every other stray id to avoid collisions.
+      if (node.closest("defs")) return;
+      node.removeAttribute("id");
+    });
+    clone.querySelectorAll(".pin.selected, .pin.match").forEach((node) =>
+      node.classList.remove("selected", "match")
+    );
+    // Drop the floating per-pin label box that tracks the hovered/selected
+    // contact. The report shows the static front face, not a transient tooltip.
+    clone.querySelectorAll(".hover-pin-label").forEach((node) => node.remove());
+    // Reset viewBox to the full connector so user pan/zoom doesn't crop the
+    // report face. Fit to the *rendered* content bounds (via getBBox on the
+    // live SVG) so wide mount hardware — wall/box flanges, jamnut rings,
+    // plug coupling marks — isn't clipped outside the frame the way the fixed
+    // base viewBox can clip it. Fall back to the base outline viewBox.
+    const arr = state.selectedArrangement;
+    const fitViewBox = connectorContentViewBox(live, arr ? connectorBaseViewBox(arr) : null);
+    if (fitViewBox) {
+      clone.setAttribute("viewBox", fitViewBox.map((value) => Number(value).toFixed(3)).join(" "));
+    }
+    clone.setAttribute("preserveAspectRatio", "xMidYMid meet");
+    // Let CSS size it; remove any inline width/height that could fight max-*.
+    clone.removeAttribute("width");
+    clone.removeAttribute("height");
+    clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    return clone.outerHTML;
+  }
+
+  function profileAssetForSlashSheet(slashSheet) {
+    const type = SHELL_PROFILE_TYPE[slashSheet];
+    return type ? SHELL_PROFILE_ASSET[type] : "";
+  }
+
+  function reportFaceFigure(svg, caption, mode, arrId) {
+    if (!svg) return "";
+    return `<figure class="report-art-face" data-view="${escapeHtml(mode)}" data-arr="${escapeHtml(arrId || "")}">
+      ${svg}
+      <figcaption class="report-art-face-cap">${escapeHtml(caption)}</figcaption>
+    </figure>`;
+  }
+
+  function reportConnectorArtwork(block, faceVariants) {
+    const slashSheet = block?.decoded?.slashSheet;
+    const arrId = block?.decoded?.arrangementId;
+    const bodyPath = profileAssetForSlashSheet(slashSheet);
+    const variants = faceVariants || {};
+    const faces = [
+      reportFaceFigure(variants.engineering, T("viewer.viewMode.eng"), "engineering", arrId),
+      reportFaceFigure(variants.real, T("viewer.viewMode.real"), "real", arrId),
+    ].filter(Boolean);
+    const parts = [];
+    if (bodyPath) {
+      const absBody = new URL(bodyPath, document.baseURI).href;
+      parts.push(`<img class="report-art-body" src="${escapeHtml(absBody)}" alt="connector body"/>`);
+    }
+    if (faces.length) {
+      parts.push(`<div class="report-art-faces">${faces.join("")}</div>`);
+    }
+    if (!parts.length) return "";
+    return `<div class="report-art">${parts.join("")}</div>`;
+  }
+
+  function reportBodyFragment(report, faceVariants, options = {}) {
+    const sourceHeading = options.sourceHeading || T("report.sourceConnector");
+    const matesHeading = options.matesHeading || T("report.matesHeading");
+    const itemTitle = options.itemTitle;
+    const rowsHtml = (block) => {
+      const vendors = block.vendors || [];
+      const lines = [
+        `<tr><td>MIL-DTL-38999</td><td>D38999</td><td class="mono">${escapeHtml(block.d38999 || "—")}</td><td></td></tr>`,
+        ...vendors.map((v) =>
+          `<tr><td>${escapeHtml(v.vendor)}</td><td>${escapeHtml(v.productLine)}</td><td class="mono">${escapeHtml(v.partNumber)}</td><td>${escapeHtml(v.notes || "")}</td></tr>`
+        ),
+      ];
+      return lines.join("");
+    };
+    const blockSection = (block, heading, role) => {
+      const desc = block.description || {};
+      const subtitle = [desc.shellTypeLabel, desc.mountingStyle, desc.matingRole].filter(Boolean).join(" — ");
+      const reasons = block.reasons && block.reasons.length
+        ? `<p class="report-reasons">${escapeHtml(block.reasons.join(" | "))}</p>` : "";
+      const decoded = block.decoded || {};
+      const decodedLine = decoded.slashSheet
+        ? `<p class="report-decoded">${escapeHtml(`${decoded.slashSheet} · class ${decoded.classField || "?"} · shell ${decoded.shellCode || "?"} (${decoded.shellSize || "?"}) · arr ${decoded.arrangementId || "?"} · contact ${decoded.contactStyle || "?"} · keying ${decoded.polarization || "?"}`)}</p>`
+        : "";
+      const artwork = reportConnectorArtwork(block, faceVariants);
+      return `
+        <section class="report-block report-block-${role}">
+          <h3>${escapeHtml(heading)}</h3>
+          <p class="report-subtitle">${escapeHtml(subtitle || (block.d38999 || ""))}</p>
+          ${block.d38999 ? `<p class="report-pn mono">${escapeHtml(block.d38999)}</p>` : ""}
+          ${desc.summary ? `<p class="report-summary">${escapeHtml(desc.summary)}</p>` : ""}
+          ${decodedLine}
+          ${artwork}
+          ${reasons}
+          <table>
+            <thead><tr><th>Vendor</th><th>Product line</th><th>Part number</th><th>Notes</th></tr></thead>
+            <tbody>${rowsHtml(block)}</tbody>
+          </table>
+        </section>`;
+    };
+    const mateSections = report.mate.map((m) =>
+      blockSection(m, Tf("report.mateOption", { k: m.mateIndex, n: report.mate.length }), "mate")
+    ).join("");
+    const matesGroup = report.mate.length
+      ? `<div class="report-group report-group-mates">
+           <div class="report-group-heading">
+             <span class="report-group-tag">${escapeHtml(matesHeading)}</span>
+             <span class="report-group-meta">${escapeHtml(Tf("report.mateCount", { count: report.mate.length }))}</span>
+           </div>
+           ${mateSections}
+         </div>`
+      : `<div class="report-group report-group-mates report-group-empty">
+           <div class="report-group-heading">
+             <span class="report-group-tag">${escapeHtml(matesHeading)}</span>
+           </div>
+           <p class="report-empty">${escapeHtml(T("report.noMate"))}</p>
+         </div>`;
+    const itemHeader = itemTitle
+      ? `<div class="report-item-header"><span class="report-item-index">${escapeHtml(options.itemIndex || "")}</span><span class="report-item-title mono">${escapeHtml(itemTitle)}</span></div>`
+      : "";
+    return `
+      <article class="report-item">
+        ${itemHeader}
+        <div class="report-group report-group-source">
+          <div class="report-group-heading">
+            <span class="report-group-tag">${escapeHtml(sourceHeading)}</span>
+            <span class="report-group-meta mono">${escapeHtml(report.meta.sourcePartNumber)}</span>
+          </div>
+          ${blockSection(report.self, T("report.sourceConnector"), "source")}
+        </div>
+        ${matesGroup}
+      </article>`;
+  }
+
+  function reportShellMarkup(titleText, metaText, fragmentsHtml) {
+    const dir = (document.documentElement.getAttribute("dir") === "rtl") ? "rtl" : "ltr";
+    const baseHref = document.baseURI || (location.href.replace(/[^/]*$/, ""));
+    const stylesHref = new URL("styles.css", baseHref).href;
+    return `<!doctype html><html dir="${dir}"><head><meta charset="utf-8">
+      <base href="${escapeHtml(baseHref)}">
+      <title>${escapeHtml(titleText)}</title>
+      <link rel="stylesheet" href="${escapeHtml(stylesHref)}">
+      <style>
+        @page { size: A4; margin: 14mm; }
+        body { font-family: Inter, Arial, sans-serif; color: #0b2545; padding: 24px; max-width: 960px; margin: auto; background: #fff; }
+        h1 { font-size: 22px; margin-bottom: 4px; }
+        h3 { font-size: 14px; margin: 14px 0 4px; }
+        .report-meta { color: #475569; font-size: 12px; margin-bottom: 18px; }
+        .report-disclaimer { background: #fef3c7; border: 1px solid #d97706; padding: 8px 12px; border-radius: 6px; font-size: 12px; margin-bottom: 18px; }
+        .report-item { border: 1px solid #cbd5e1; border-radius: 8px; padding: 14px 16px; margin-bottom: 22px; background: #fff; }
+        .report-item-header { display: flex; gap: 10px; align-items: baseline; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px dashed #cbd5e1; }
+        .report-item-index { display: inline-block; min-width: 28px; padding: 2px 8px; background: #1d4ed8; color: #fff; border-radius: 999px; font-size: 12px; font-weight: 700; text-align: center; }
+        .report-item-title { font-size: 15px; font-weight: 700; }
+        .report-group { margin: 10px 0 18px; padding: 0; border-radius: 6px; overflow: hidden; }
+        .report-group-source { border: 2px solid #1d4ed8; background: #eff6ff; }
+        .report-group-mates { border: 2px solid #047857; background: #ecfdf5; }
+        .report-group-empty { background: #f1f5f9; border-color: #94a3b8; }
+        .report-group-heading {
+          display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+          gap: 12px; padding: 8px 14px; font-weight: 700; letter-spacing: 0.04em;
+          text-transform: uppercase; font-size: 12px;
+        }
+        .report-group-source .report-group-heading { background: #1d4ed8; color: #fff; }
+        .report-group-mates  .report-group-heading { background: #047857; color: #fff; }
+        .report-group-empty  .report-group-heading { background: #475569; color: #fff; }
+        .report-group-meta { font-weight: 600; font-size: 12px; opacity: 0.95; text-transform: none; letter-spacing: 0; }
+        .report-empty { padding: 12px 16px; color: #475569; font-style: italic; margin: 0; }
+        .report-block { padding: 10px 16px 16px; background: #fff; }
+        .report-block + .report-block { border-top: 1px dashed #cbd5e1; }
+        .report-subtitle { font-weight: 600; margin: 0 0 4px; color: #1d4ed8; }
+        .report-block-mate .report-subtitle { color: #047857; }
+        .report-pn { margin: 0 0 6px; font-size: 14px; }
+        .report-decoded { margin: 0 0 8px; color: #475569; font-size: 11px; }
+        .report-summary { margin: 0 0 8px; color: #1f3a64; font-size: 13px; }
+        .report-reasons { margin: 8px 0; color: #b45309; font-size: 12px; font-style: italic; }
+        .report-art {
+          display: flex; flex-wrap: wrap; align-items: center; gap: 18px;
+          margin: 8px 0 12px; padding: 10px; background: #f8fafc;
+          border: 1px solid #e2e8f0; border-radius: 6px;
+        }
+        .report-art-body { max-width: 240px; max-height: 130px; height: auto; }
+        .report-art-faces { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px; }
+        .report-art-face { margin: 0; width: 200px; max-width: 200px; text-align: center; }
+        .report-art-face svg { width: 100%; height: auto; max-width: 200px; max-height: 200px; display: block; background: #fff; }
+        .report-art-face-cap {
+          margin-top: 4px; font-size: 11px; font-weight: 600; color: #475569;
+          text-transform: uppercase; letter-spacing: 0.04em;
+        }
+        .report-art-face .pin-state-ring,
+        .report-art-face .pin-hit-area { display: none !important; }
+        .report-art-face .pin { cursor: default; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th, td { border: 1px solid #cbd5e1; padding: 4px 8px; text-align: ${dir === "rtl" ? "right" : "left"}; }
+        th { background: #f1f5f9; }
+        .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+        .report-print-bar { position: fixed; top: 12px; right: 12px; z-index: 9999; }
+        .report-print-bar button { padding: 8px 14px; border: 1px solid #1d4ed8; background: #1d4ed8; color: #fff; border-radius: 6px; cursor: pointer; font: inherit; }
+        @media print {
+          body { padding: 0; }
+          h3 { break-after: avoid; }
+          .report-item { break-inside: avoid-page; page-break-inside: avoid; border-color: #000; }
+          .report-group { break-inside: avoid; page-break-inside: avoid; }
+          .report-group-heading { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .report-print-bar { display: none; }
+        }
+      </style></head><body>
+      <div class="report-print-bar"><button type="button" onclick="window.print()">${escapeHtml(T("decoded.action.report"))}</button></div>
+      <h1>${escapeHtml(titleText)}</h1>
+      <div class="report-meta">${escapeHtml(metaText)}</div>
+      <div class="report-disclaimer">${escapeHtml(T("report.disclaimer"))}</div>
+      ${fragmentsHtml}
+      </body></html>`;
+  }
+
+  function reportHtmlMarkup(report) {
+    const arr = report?.self?.decoded?.arrangementId
+      ? arrangementById(report.self.decoded.arrangementId)
+      : state.selectedArrangement;
+    const faceVariants = renderFaceVariants(arr);
+    const fragment = reportBodyFragment(report, faceVariants, {});
+    const title = `${T("report.title")} — ${report.meta.sourcePartNumber}`;
+    const meta = `${report.meta.sourcePartNumber} · ${report.meta.generatedAt}`;
+    return reportShellMarkup(title, meta, fragment);
+  }
+
+  function exportReportHtml(decoded, options = {}) {
+    if (!decoded?.ok) return;
+    const report = buildCrossRefReport(decoded);
+    if (!report) return;
+    const arr = decoded.arrangement_id ? arrangementById(decoded.arrangement_id) : null;
+    const faceVariants = renderFaceVariants(arr);
+    const fragment = reportBodyFragment(report, faceVariants, {});
+    const titleText = `${T("report.title")} — ${report.meta.sourcePartNumber}`;
+    const metaParts = [report.meta.sourcePartNumber, report.meta.generatedAt];
+    if (options.viaInput && options.viaInput !== report.meta.sourcePartNumber) {
+      metaParts.unshift(Tf("report.viaInput", { input: options.viaInput, vendor: options.vendor || "?" }));
+    }
+    const html = reportShellMarkup(titleText, metaParts.join(" · "), fragment);
+    const w = window.open("", "_blank");
+    if (!w) {
+      const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+      downloadBlob(blob, safeFilename(decoded.part_number, "html"));
+      return;
+    }
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+  }
+
+  function renderArrangementToSvgString(arr) {
+    if (!arr) return "";
+    const liveSvg = els.connectorSvg;
+    const prevArr = state.selectedArrangement;
+    const prevViewBox = state.viewBox;
+    const prevBaseViewBox = state.baseViewBox;
+    try {
+      state.selectedArrangement = arr;
+      state.baseViewBox = connectorBaseViewBox(arr);
+      state.viewBox = state.baseViewBox.slice();
+      renderViewer();
+      return cloneLiveConnectorSvg();
+    } catch (err) {
+      console.error("renderArrangementToSvgString failed", err);
+      return "";
+    } finally {
+      state.selectedArrangement = prevArr;
+      state.viewBox = prevViewBox;
+      state.baseViewBox = prevBaseViewBox;
+      if (prevArr) {
+        try { renderViewer(); } catch (err) { /* ignore */ }
+      } else {
+        liveSvg.innerHTML = "";
+      }
+    }
+  }
+
+  // Renders the arrangement face in BOTH view modes so a report can embed the
+  // engineering schematic and the true-colour ("real") face side by side. The
+  // user's current view mode and live viewer are restored afterwards.
+  function renderFaceVariants(arr) {
+    const variants = { engineering: "", real: "" };
+    if (!arr) return variants;
+    const prevMode = state.viewMode;
+    try {
+      state.viewMode = "engineering";
+      variants.engineering = renderArrangementToSvgString(arr);
+      state.viewMode = "real";
+      variants.real = renderArrangementToSvgString(arr);
+    } catch (err) {
+      console.error("renderFaceVariants failed", err);
+    } finally {
+      state.viewMode = prevMode;
+      if (state.selectedArrangement) {
+        try { renderViewer(); } catch (err) { /* ignore */ }
+      }
+    }
+    return variants;
+  }
+
+  function decodeBatchEntry(rawInput) {
+    const trimmed = String(rawInput || "").trim();
+    if (!trimmed) return { ok: false, raw: trimmed, reason: "empty" };
+    let decoded = decodePartNumber(trimmed);
+    if (decoded?.ok) return { ok: true, raw: trimmed, decoded };
+    const reverse = reverseConvertSafe(trimmed);
+    if (reverse && reverse.d38999) {
+      decoded = decodePartNumber(reverse.d38999);
+      if (decoded?.ok) {
+        return { ok: true, raw: trimmed, decoded, reverseSource: reverse.source };
+      }
+    }
+    return { ok: false, raw: trimmed, reason: "unrecognized" };
+  }
+
+  function buildBatchReportHtml(entries) {
+    const now = new Date().toISOString().slice(0, 19).replace("T", " ");
+    const items = [];
+    const failures = [];
+    entries.forEach((entry, index) => {
+      const idx = index + 1;
+      if (!entry.ok) {
+        failures.push({ index: idx, raw: entry.raw, reason: entry.reason });
+        return;
+      }
+      const report = buildCrossRefReport(entry.decoded);
+      if (!report) {
+        failures.push({ index: idx, raw: entry.raw, reason: "no-report" });
+        return;
+      }
+      const arr = entry.decoded.arrangement_id ? arrangementById(entry.decoded.arrangement_id) : null;
+      const faceVariants = renderFaceVariants(arr);
+      const fragment = reportBodyFragment(report, faceVariants, {
+        itemTitle: report.meta.sourcePartNumber,
+        itemIndex: String(idx),
+      });
+      items.push(fragment);
+    });
+    const failuresFragment = failures.length
+      ? `<article class="report-item report-item-failures">
+           <div class="report-item-header">
+             <span class="report-item-index" style="background:#b91c1c">!</span>
+             <span class="report-item-title">${escapeHtml(T("report.batchUnrecognized"))}</span>
+           </div>
+           <ul class="report-failure-list">
+             ${failures.map((f) => `<li class="mono">${escapeHtml(f.raw || "(empty)")} — ${escapeHtml(T("report.batchSkipped"))}</li>`).join("")}
+           </ul>
+         </article>`
+      : "";
+    const title = T("report.batchTitle");
+    const meta = Tf("report.batchMeta", { ok: items.length, total: entries.length, generated: now });
+    return reportShellMarkup(title, meta, items.join("") + failuresFragment);
+  }
+
+  function openBatchReportDialog() {
+    const dlg = els.batchReportDialog;
+    if (!dlg) return;
+    if (els.batchReportStatus) els.batchReportStatus.textContent = "";
+    if (typeof dlg.showModal === "function") {
+      try { dlg.showModal(); }
+      catch (err) { dlg.setAttribute("open", ""); }
+    } else {
+      dlg.setAttribute("open", "");
+    }
+    if (els.batchReportInput) {
+      setTimeout(() => els.batchReportInput.focus(), 30);
+    }
+  }
+
+  function closeBatchReportDialog() {
+    const dlg = els.batchReportDialog;
+    if (!dlg) return;
+    if (typeof dlg.close === "function" && dlg.open) {
+      try { dlg.close(); return; } catch (err) { /* fall through */ }
+    }
+    dlg.removeAttribute("open");
+  }
+
+  function runBatchReport() {
+    const text = els.batchReportInput ? els.batchReportInput.value : "";
+    const lines = String(text || "")
+      .split(/\r?\n|;|\t/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+    if (!lines.length) {
+      if (els.batchReportStatus) els.batchReportStatus.textContent = T("report.batchNeedInput");
+      return;
+    }
+    const entries = lines.map((line) => decodeBatchEntry(line));
+    const okCount = entries.filter((e) => e.ok).length;
+    if (!okCount) {
+      if (els.batchReportStatus) {
+        const failed = entries.filter((e) => !e.ok).map((e) => e.raw).slice(0, 5).join(", ");
+        els.batchReportStatus.textContent = `${T("report.batchAllFailed")} (${failed}${entries.length > 5 ? "…" : ""})`;
+      }
+      return;
+    }
+    if (els.batchReportStatus) {
+      els.batchReportStatus.textContent = Tf("report.batchProgress", { ok: okCount, total: entries.length });
+    }
+    const html = buildBatchReportHtml(entries);
+    const w = window.open("", "_blank");
+    if (!w) {
+      // Popup blocked — fall back to a download and keep dialog open with notice.
+      const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+      downloadBlob(blob, safeFilename(`d38999_batch_${entries.length}`, "html"));
+      if (els.batchReportStatus) {
+        els.batchReportStatus.textContent = T("report.batchPopupBlocked");
+      }
+      return;
+    }
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    closeBatchReportDialog();
+  }
+
+  function getReportTarget() {
+    if (state.decoded?.ok) {
+      return { decoded: state.decoded };
+    }
+    if (state.reportCandidate?.decoded?.ok) {
+      return {
+        decoded: state.reportCandidate.decoded,
+        viaInput: state.reportCandidate.originalInput,
+        vendor: state.reportCandidate.vendor,
+      };
+    }
+    return null;
+  }
+
+  function updateViewerExportState() {
+    const target = getReportTarget();
+    const ok = Boolean(target);
+    if (els.viewerReportButton) els.viewerReportButton.disabled = !ok;
+    if (els.viewerExportHint) {
+      if (ok && target.viaInput) {
+        els.viewerExportHint.hidden = false;
+        els.viewerExportHint.textContent = Tf("report.viaInputHint", {
+          input: target.viaInput,
+          pn: target.decoded.part_number,
+          vendor: target.vendor || "?",
+        });
+        els.viewerExportHint.classList.add("via-mfn");
+      } else {
+        els.viewerExportHint.hidden = ok;
+        els.viewerExportHint.textContent = T("report.exportHint");
+        els.viewerExportHint.classList.remove("via-mfn");
+      }
+    }
+    if (els.viewerReportBadge) {
+      const text = ok ? mateBadgeText(target.decoded) : "";
+      els.viewerReportBadge.textContent = text;
+      els.viewerReportBadge.hidden = !text;
+    }
+  }
+
+  function bindViewerExportControls() {
+    if (els.viewerReportButton) {
+      els.viewerReportButton.addEventListener("click", () => {
+        const target = getReportTarget();
+        if (!target) return;
+        exportReportHtml(target.decoded, {
+          viaInput: target.viaInput,
+          vendor: target.vendor,
+        });
+      });
+    }
+    if (els.viewerBatchButton) {
+      els.viewerBatchButton.addEventListener("click", openBatchReportDialog);
+    }
+    if (els.batchReportRun) {
+      els.batchReportRun.addEventListener("click", runBatchReport);
+    }
+    if (els.batchReportCancel) {
+      els.batchReportCancel.addEventListener("click", closeBatchReportDialog);
+    }
+    if (els.batchReportDialog) {
+      els.batchReportDialog.addEventListener("cancel", (e) => {
+        e.preventDefault();
+        closeBatchReportDialog();
+      });
+    }
+    document.addEventListener("d38999:export-report", (event) => {
+      const detail = event.detail || {};
+      const pn = String(detail.partNumber || "").trim();
+      if (!pn) return;
+      const decoded = decodePartNumber(pn);
+      if (!decoded?.ok) {
+        if (typeof setMessage === "function" && els.decodeMessage) {
+          setMessage(els.decodeMessage, decoded?.message || T("decode.enterPn"), true);
+        } else if (typeof window !== "undefined" && window.alert) {
+          window.alert(decoded?.message || "Could not decode part number for report.");
+        }
+        return;
+      }
+      exportReportHtml(decoded, {
+        viaInput: detail.viaInput || null,
+        vendor: detail.vendor || null,
+      });
+    });
+    updateViewerExportState();
+  }
+
+  function mateBadgeText(decoded) {
+    if (!decoded?.ok) return "";
+    const candidates = mateCandidatesForDecoded(decoded) || [];
+    if (!candidates.length) return T("report.mateBadgeNone");
+    if (candidates.length === 1) return T("report.mateBadgeOne");
+    return Tf("report.mateBadge", { count: candidates.length });
   }
 
   function exportDecodedCsv(decoded) {
@@ -4359,20 +6005,20 @@
 
   function manualQuickReference() {
     return `
-      <div class="manual-note"><strong>View orientation:</strong> All insert drawings in this toolbox show the <em>front face of the pin insert</em> (mating face). This is how you see the connector when looking into it from the cable side of the mating connector.</div>
-      <div class="manual-note"><strong>Wire-side view:</strong> When wiring from behind the connector, the view is mirrored left-to-right. Pin labels stay the same but their physical left/right positions swap. The Layout Designer provides an explicit mating-face vs. wire-side toggle.</div>
-      <div class="manual-note"><strong>Mating rule:</strong> A plug (P contacts) mates with a receptacle (S contacts) of the same shell size, insert arrangement, and keying. The mating tool automatically finds the reciprocal connector.</div>
-      <div class="manual-note"><strong>Shell type ≠ shell size:</strong> The slash sheet (e.g. /26) identifies the body style (plug, jam-nut, wall-mount). The shell size is determined by the later letter code (e.g. E = shell 17).</div>
-      <div class="manual-note"><strong>Keying positions:</strong> N (normal) is the standard key angle. Alternate keying (A–E) rotates the key/keyway to prevent wrong mating between connectors on the same panel.</div>
+      <div class="manual-note"><strong>View orientation:</strong> Drawings show the insert's front (mating) face — the view looking into the connector from the mating side.</div>
+      <div class="manual-note"><strong>Wire-side view:</strong> Wiring from behind mirrors the view left-to-right: labels stay the same but their left/right positions swap. The Layout Designer has a mating-face vs. wire-side toggle.</div>
+      <div class="manual-note"><strong>Mating rule:</strong> A plug (P contacts) mates with a receptacle (S contacts) of the same shell size, insert arrangement, and keying. The mating tool finds the reciprocal connector for you.</div>
+      <div class="manual-note"><strong>Shell type ≠ shell size:</strong> The slash sheet (e.g. /26) sets the body style (plug, jam-nut, wall-mount). The shell size comes from the later letter code (e.g. E = shell 17).</div>
+      <div class="manual-note"><strong>Keying positions:</strong> N (normal) is the standard key angle. Alternate keying (A–E) rotates the key/keyway to prevent wrong mating on the same panel.</div>
     `;
   }
 
   function manualCoverage() {
     return `
       <div class="manual-note">Strong coverage: Series III/IV part-number field order, shell-size codes, contact styles, class/finish text, and Series III polarization table.</div>
-      <div class="manual-note">The manual is meant to answer three practical questions: what shell style the connector uses, what physical shell size it is, and what insert/pin arrangement will be inside that shell.</div>
+      <div class="manual-note">The manual answers three practical questions: the shell style, the physical shell size, and the insert/pin arrangement inside the shell.</div>
       <div class="manual-note">DLA document pass: ${escapeHtml(dlaDocs.downloaded_count || 0)} official PDFs parsed from the MIL-DTL-38999 list, including approved shell-type source documents and initial drafts.</div>
-      <div class="manual-note">Limited coverage: Series IV polarization is still not tabulated in this data set.</div>
+      <div class="manual-note">Limited coverage: Series IV polarization isn't tabulated yet in this data set.</div>
     `;
   }
 
@@ -4380,13 +6026,13 @@
     const pattern = (partRules.part_number_patterns || [])[0] || {};
     const example = pattern.example || defs.part_number_examples?.series_iii_iv?.example || "D38999/26WE35PN";
     const fieldHelp = {
-      family: "Connector family. D38999 identifies a MIL-DTL-38999 circular connector, not a manufacturer-specific commercial series.",
-      slash_sheet: "Shell type. This is the /20, /24, /26, /46, etc. field. It tells the connector body type; it is not the physical shell size.",
-      class: "Material and finish class. This is the plating/material/environmental finish code, for example cadmium, nickel, stainless, composite, or hermetic classes depending on the shell type.",
-      shell_size_code: "Physical shell size code. Series III/IV use letters A, B, C, D, E, F, G, H, and J, which map to numeric shell sizes 9 through 25.",
-      insert_arrangement: "Insert layout number. Combine the numeric shell size with this number to identify the actual pin arrangement, for example shell code E plus insert 35 becomes arrangement 17-35.",
-      contact_style: "Contact option. This tells whether the connector is supplied with pin contacts, socket contacts, less contacts, PC-tail contacts, eyelet contacts, or high-cycle contacts.",
-      polarization: "Keying position. This prevents mismating between connectors with the same shell and insert by rotating the key/keyway position."
+      family: "Connector family. D38999 = a MIL-DTL-38999 circular connector, not a commercial series.",
+      slash_sheet: "Shell type (the /20, /24, /26, /46 field). Sets the body type — not the shell size.",
+      class: "Material and finish class — the plating/material/environment code (e.g. cadmium, nickel, stainless, composite, hermetic).",
+      shell_size_code: "Physical shell-size code. Series III/IV use letters A–J, mapping to numeric sizes 9–25.",
+      insert_arrangement: "Insert layout number. Combine the numeric shell size with it to get the pin arrangement (e.g. shell E + insert 35 = 17-35).",
+      contact_style: "Contact option: pin, socket, less contacts, PC-tail, eyelet, or high-cycle.",
+      polarization: "Keying position. Rotating the key/keyway prevents mismating between connectors with the same shell and insert."
     };
     const fields = (pattern.fields || []).map((field) => `
       <div class="manual-card">
@@ -4398,7 +6044,7 @@
     const steps = (partRules.decode_algorithm || []).map((step) => `<li>${escapeHtml(step)}</li>`).join("");
     return `
       <div class="manual-note">Example: <span class="mono">${escapeHtml(example)}</span></div>
-      <div class="manual-note">Read the PN from left to right: family, shell type, class, shell-size letter, insert arrangement, contact style, then keying.</div>
+      <div class="manual-note">Read left to right: family, shell type, class, shell-size letter, insert arrangement, contact style, keying.</div>
       ${fields}
       <ol class="manual-steps">${steps}</ol>
     `;
@@ -4439,12 +6085,12 @@
 
   function shellAndPinArrangementHelp() {
     const shellRows = Object.entries(defs.shell_size_codes_series_iii_iv || {})
-      .map(([code, value]) => `<tr><td class="mono">${escapeHtml(code)}</td><td>${escapeHtml(value.shell_size)}</td><td>Use this numeric shell size with the insert number to select the pinout.</td></tr>`)
+      .map(([code, value]) => `<tr><td class="mono">${escapeHtml(code)}</td><td>${escapeHtml(value.shell_size)}</td><td>Combine with the insert number to select the pinout.</td></tr>`)
       .join("");
     return `
-      <div class="manual-note">The shell-size letter is the physical connector shell. Larger numeric shell sizes generally allow larger or denser inserts.</div>
-      <div class="manual-note">The insert arrangement is the pin layout inside the shell. The toolbox names each layout as numeric-shell-size plus insert number, such as <span class="mono">17-35</span> or <span class="mono">25-35</span>.</div>
-      <div class="manual-note">The pin table and drawing show the contact labels, contact size, and any separation lines needed to understand the layout zones.</div>
+      <div class="manual-note">The shell-size letter is the physical shell. Larger sizes allow larger or denser inserts.</div>
+      <div class="manual-note">The insert arrangement is the pin layout inside the shell, named as numeric-shell-size plus insert number, such as <span class="mono">17-35</span> or <span class="mono">25-35</span>.</div>
+      <div class="manual-note">The pin table and drawing show contact labels, contact size, and any separation lines for the layout zones.</div>
       <div class="manual-table-wrap"><table class="manual-table"><tbody>${shellRows}</tbody></table></div>
     `;
   }

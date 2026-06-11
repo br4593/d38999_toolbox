@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" font-family="Inter, Arial, sans-serif">
+  <defs>
+    <style>
+      .box { fill: #ffffff; stroke: #0b2545; stroke-width: 1.6; }
+      .pdf { fill: #fde4cf; stroke: #c2410c; }
+      .py  { fill: #dbeafe; stroke: #1d4ed8; }
+      .data{ fill: #dcfce7; stroke: #15803d; }
+      .app { fill: #ede9fe; stroke: #6d28d9; }
+      .title { font-size: 22px; font-weight: 700; fill: #0b2545; }
+      .h     { font-size: 14px; font-weight: 700; fill: #0b2545; }
+      .t     { font-size: 12px; fill: #1f3a64; }
+      .arrow { stroke: #0b2545; stroke-width: 1.6; fill: none; marker-end: url(#mk); }
+      .lbl   { font-size: 11px; fill: #0b2545; font-style: italic; }
+    </style>
+    <marker id="mk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#0b2545"/>
+    </marker>
+  </defs>
+
+  <text x="40" y="40" class="title">D38999 Toolbox — System Architecture</text>
+  <text x="40" y="62" class="t">Offline single-page app. PDFs → Python extractors → JSON → bundled JS → browser.</text>
+
+  <!-- PDFs -->
+  <g>
+    <rect class="box pdf" x="40"  y="100" width="180" height="70" rx="8"/>
+    <text x="130" y="125" text-anchor="middle" class="h">Source PDFs</text>
+    <text x="130" y="145" text-anchor="middle" class="t">MIL-DTL-38999, DLA</text>
+    <text x="130" y="160" text-anchor="middle" class="t">contact arrangements</text>
+
+    <rect class="box pdf" x="40"  y="200" width="180" height="60" rx="8"/>
+    <text x="130" y="225" text-anchor="middle" class="h">Manufacturer PDFs</text>
+    <text x="130" y="245" text-anchor="middle" class="t">Amphenol · Glenair · ITT…</text>
+  </g>
+
+  <!-- Python extractors -->
+  <g>
+    <rect class="box py" x="300" y="90"  width="220" height="80" rx="8"/>
+    <text x="410" y="115" text-anchor="middle" class="h">extract_*.py + build_app.py</text>
+    <text x="410" y="135" text-anchor="middle" class="t">PyMuPDF + Pillow</text>
+    <text x="410" y="152" text-anchor="middle" class="t">arrangements, standards, DLA</text>
+
+    <rect class="box py" x="300" y="200" width="220" height="70" rx="8"/>
+    <text x="410" y="225" text-anchor="middle" class="h">d38999_rules.py</text>
+    <text x="410" y="245" text-anchor="middle" class="t">manufacturer rule database</text>
+    <text x="410" y="260" text-anchor="middle" class="t">→ csv + sqlite + JS bundle</text>
+  </g>
+
+  <!-- Generated -->
+  <g>
+    <rect class="box data" x="600" y="90"  width="220" height="80" rx="8"/>
+    <text x="710" y="115" text-anchor="middle" class="h">app/data/*.json + svg/</text>
+    <text x="710" y="135" text-anchor="middle" class="t">63 arrangements, 1,747 contacts</text>
+    <text x="710" y="152" text-anchor="middle" class="t">77 vector assets</text>
+
+    <rect class="box data" x="600" y="200" width="220" height="70" rx="8"/>
+    <text x="710" y="225" text-anchor="middle" class="h">app/app-data.js</text>
+    <text x="710" y="245" text-anchor="middle" class="t">bundle: data + rules</text>
+  </g>
+
+  <!-- Browser -->
+  <g>
+    <rect class="box app" x="220" y="340" width="520" height="160" rx="10"/>
+    <text x="480" y="365" text-anchor="middle" class="title" font-size="18">app/index.html (browser, offline)</text>
+
+    <g transform="translate(240,385)">
+      <rect class="box" x="0"   y="0" width="100" height="30" rx="6"/><text x="50" y="20" text-anchor="middle" class="t">Home</text>
+      <rect class="box" x="110" y="0" width="100" height="30" rx="6"/><text x="160" y="20" text-anchor="middle" class="t">Decode</text>
+      <rect class="box" x="220" y="0" width="100" height="30" rx="6"/><text x="270" y="20" text-anchor="middle" class="t">Mating</text>
+      <rect class="box" x="330" y="0" width="100" height="30" rx="6"/><text x="380" y="20" text-anchor="middle" class="t">Catalog</text>
+
+      <rect class="box" x="0"   y="40" width="100" height="30" rx="6"/><text x="50" y="60"  text-anchor="middle" class="t">Rugged I/O</text>
+      <rect class="box" x="110" y="40" width="100" height="30" rx="6"/><text x="160" y="60" text-anchor="middle" class="t">Converter</text>
+      <rect class="box" x="220" y="40" width="100" height="30" rx="6"/><text x="270" y="60" text-anchor="middle" class="t">Build PN</text>
+      <rect class="box" x="330" y="40" width="100" height="30" rx="6"/><text x="380" y="60" text-anchor="middle" class="t">Manual</text>
+    </g>
+    <text x="480" y="490" text-anchor="middle" class="t">app.js · converter.js · i18n.js · styles.css — no fetch, no server, no build at runtime</text>
+  </g>
+
+  <!-- arrows -->
+  <path class="arrow" d="M220,135 L300,130"/>
+  <path class="arrow" d="M220,230 L300,235"/>
+  <path class="arrow" d="M520,130 L600,130"/>
+  <path class="arrow" d="M520,235 L600,235"/>
+  <path class="arrow" d="M710,170 L710,200"/>
+  <path class="arrow" d="M710,270 L710,340"/>
+
+  <text x="540" y="118" class="lbl">PyMuPDF parse</text>
+  <text x="540" y="225" class="lbl">build_app.py</text>
+  <text x="725" y="320" class="lbl">&lt;script src&gt;</text>
+</svg>
