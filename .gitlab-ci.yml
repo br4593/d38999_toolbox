@@ -124,6 +124,7 @@ build_sanity:
 
 pages:
   stage: deploy
+  pages: true
   dependencies:
     - build_sanity
   rules:
