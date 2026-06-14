@@ -30,15 +30,15 @@ start app/index.html
 
 ## Host on GitHub Pages
 
-This repo ships a workflow (`.github/workflows/pages.yml`) that publishes the `app/` folder to GitHub Pages on every push to `main`. To turn it on:
+This repo ships a CI/CD pair: `.github/workflows/ci.yml` validates the repo, and `.github/workflows/pages.yml` deploys `app/` to GitHub Pages only after `CI` succeeds on a push to the default branch (`main` or `master`). To turn it on:
 
 1. Push the repo to GitHub.
 2. Repo **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-3. (Optional) Push any change to `main`, or trigger **Actions → Deploy to GitHub Pages → Run workflow** manually.
+3. Push to your default branch (`main` or `master`) and let `CI` finish successfully, or trigger **Actions → Deploy to GitHub Pages → Run workflow** manually.
 
 The site will be served at `https://<your-user>.github.io/<repo-name>/` (or your project page URL). All asset paths in the app are relative, so it works correctly under any project sub-path.
 
-If you'd rather not use Actions, you can instead point Pages directly at a branch + folder. Make a `gh-pages` branch whose contents are the files in `app/`, or change Pages **Source** to `main` / `/ (root)` after copying `app/` to the repo root. The Actions workflow is the recommended route because it rebuilds `app/` from sources on every push.
+If you'd rather not use Actions, you can instead point Pages directly at a branch + folder. Make a `gh-pages` branch whose contents are the files in `app/`, or change Pages **Source** to your default branch / `/ (root)` after copying `app/` to the repo root. The Actions workflow is the recommended route because it rebuilds `app/` from sources from the exact commit that passed CI, then deploys that artifact.
 
 ## Project Layout
 
