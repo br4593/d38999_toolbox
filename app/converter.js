@@ -582,6 +582,8 @@
     "RJFTV":    { plug: "rjftv-plug.svg", "jam-nut-receptacle": "rjftv-jam-nut-receptacle.svg", "square-flange-receptacle": "rjftv-square-flange-receptacle.svg", "reduced-flange-receptacle": "rjftv-reduced-flange-receptacle.svg", "through-bulkhead": "rjftv-through-bulkhead.svg", "standoff-receptacle": "rjftv-standoff-receptacle.svg", face: "rjftv-face.svg" },
     "C-RJFTV":  { plug: "rjftv-plug.svg", "jam-nut-receptacle": "rjftv-jam-nut-receptacle.svg", "square-flange-receptacle": "rjftv-square-flange-receptacle.svg", face: "rjftv-face.svg" },
     "RJF":      { plug: "rjf-plug.svg", "jam-nut-receptacle": "rjf-jam-nut-receptacle.svg", face: "rjf-face.svg" },
+    // Souriau UTO/UTS is a MIL-DTL-26482 bayonet-coupling RJ45 (not D38999 intermateable); only a face view is drawn.
+    "Souriau UTO/UTS RJ45": { face: "souriau-uto-uts-rj45-face.svg" },
     "USB3CFTV": { plug: "usb3cftv-plug.svg", "jam-nut-receptacle": "usb3cftv-jam-nut-receptacle.svg", "square-flange-receptacle": "usb3cftv-square-flange-receptacle.svg", "standoff-receptacle": "usb3cftv-standoff-receptacle.svg", face: "usb3cftv-face.svg" },
     "USB3FTV":  { plug: "usb3ftv-plug.svg", "jam-nut-receptacle": "usb3ftv-jam-nut-receptacle.svg", "square-flange-receptacle": "usb3ftv-square-flange-receptacle.svg", "reduced-flange-receptacle": "usb3ftv-reduced-flange-receptacle.svg", "standoff-receptacle": "usb3ftv-standoff-receptacle.svg", face: "usb3ftv-face.svg" },
     "USBFTV":   { plug: "usbftv-plug.svg", "jam-nut-receptacle": "usbftv-jam-nut-receptacle.svg", "square-flange-receptacle": "usbftv-square-flange-receptacle.svg", "through-bulkhead": "usbftv-through-bulkhead.svg", face: "usbftv-face.svg" },

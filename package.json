@@ -5,7 +5,8 @@
   "description": "Offline MIL-DTL-38999 / D38999 connector toolbox: part-number decoder, insert-arrangement browser, and manufacturer cross-reference converter.",
   "scripts": {
     "validate": "node tests/validate_app.js",
-    "validate:data": "python3 scripts/validate_dataset_consistency.py"
+    "validate:data": "python3 scripts/validate_dataset_consistency.py",
+    "validate:svg": "python3 scripts/io_svg_smoke_test.py"
   },
   "engines": {
     "node": ">=18"

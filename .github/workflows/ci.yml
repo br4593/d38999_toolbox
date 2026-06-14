@@ -117,6 +117,9 @@ jobs:
       - name: Validate part numbers, arrangements, conversions and specs are 1:1
         run: python scripts/validate_dataset_consistency.py
 
+      - name: I/O connector SVG smoke test (graphics, drawings, shape, catalog correctness)
+        run: python scripts/io_svg_smoke_test.py
+
 
   build-sanity:
     name: Build sanity check
