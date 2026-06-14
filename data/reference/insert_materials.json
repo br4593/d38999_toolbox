@@ -1,0 +1,104 @@
+{
+  "_description": "Reference for the MIL-DTL-38999 insert system — the insulating material(s) that house and seal the pins/sockets — and their real-world coloring. Covers the hard dielectric insert, the resilient interfacial seal and rear grommet, hermetic (glass) inserts, and sealing/potting compound.",
+  "_important": "MIL-DTL-38999 specifies insert/seal MATERIALS but does NOT specify or standardize their COLOR. Insert and seal color is not spec-controlled: it varies by manufacturer, material grade, and lot, and MUST NOT be used to identify, qualify, mate-check, or verify a connector. Colors listed under 'colors_observed' are field/industry observations only.",
+  "_sources": [
+    "MIL-DTL-38999 (rev N w/ Amendment 1) — docs/pdfs/specs/MIL-DTL-38999-dtl38999.pdf: Materials (3.3.2), Mating/interfacial & peripheral seals (3.4.3.4), Cavity fill (3.4.7), Definitions (section 6), Marking (p.29)",
+    "Amphenol MIL-DTL-38999 Series I/II catalog (insert = rigid dielectric; fluorinated-silicone interfacial seal wafer; epoxy inserts / fluorosilicone grommet)",
+    "Amphenol MIL-DTL-38999 Series III catalog (red band = fully mated; blue band = rear-release retention)",
+    "Conesys Hermetic catalog p.6 (sintered compression glass insulator; interfacial pin insert seal)",
+    "Souriau / Amphenol Socapex 'Catalog MIL DTL 38999' p.114, 118 (E vs V insert material grades)",
+    "DLA slash-sheet drawings /40, /42, /47 via data/reference/dla_documents.json (Series IV breech BLUE COLOR BAND + RED unmated indicator)"
+  ],
+  "source_pdf": "dtl38999.pdf",
+  "source_pdf_sha256": "1eeb3b693b25812a3e56fb4507388fe0700c576895ee559d515906f18c7252ba",
+
+  "components": {
+    "hard_dielectric_insert": {
+      "role": "Rigid structural insulator that positions and retains the contacts. It is the hard face you see looking into a SOCKET/receptacle (with the socket entry holes), and the body the contacts seat in on a pin connector.",
+      "spec_material": "Reinforced epoxy resin or other suitable rigid dielectric; molded as one piece, or no more than two bonded pieces.",
+      "typical_real_materials": [
+        "Glass-fiber-reinforced thermoset, e.g. diallyl phthalate (DAP)",
+        "Epoxy",
+        "High-temperature thermoplastics (PPS, LCP, PEEK) on some modern/high-temp lines"
+      ],
+      "spec_color": null,
+      "color_is_standardized": false,
+      "colors_observed": ["blue", "green", "tan / buff / cream", "black / charcoal", "brown"],
+      "predominant_color": "varies by maker/material — most often blue or green",
+      "spec_source": {"source_pdf": "dtl38999.pdf", "source_pages": [13, 14, 17, 67], "sections": ["3.3.2 Materials (Insert)", "3.4.3 (rigid dielectric construction)", "6 Definitions (Insert)"]},
+      "confidence": {"material": "high (spec)", "color": "observational (not spec-controlled)"}
+    },
+
+    "interfacial_seal": {
+      "role": "Resilient wafer bonded to the FRONT face of PIN inserts, with raised individual barriers ('donut' rings) around each pin that form individual contact moisture seals when mated. This rubbery ringed face is what you typically see looking into a pin connector.",
+      "spec_material": "Resilient silicone or fluorosilicone rubber (elastomer).",
+      "spec_color": null,
+      "color_is_standardized": false,
+      "colors_observed": ["blue", "red / orange", "grey"],
+      "predominant_color": "blue (the signature look of a 38999 pin face)",
+      "spec_source": {"source_pdf": "dtl38999.pdf", "source_pages": [13, 17, 19, 67], "sections": ["3.3.2 Materials (gaskets, grommet, interface seals)", "3.4.3.4 Mating (interfacial and peripheral) seals", "6 Definitions (Interfacial seal)"]},
+      "confidence": {"material": "high (spec)", "color": "observational (not spec-controlled)"}
+    },
+
+    "rear_grommet": {
+      "role": "Resilient back section of the insert (environment-resisting classes). Seals around each wire where it enters and accepts sealing plugs in unused cavities.",
+      "spec_material": "Resilient silicone or fluorosilicone rubber (elastomer).",
+      "spec_color": null,
+      "color_is_standardized": false,
+      "colors_observed": ["blue", "red / orange", "grey / black"],
+      "predominant_color": "blue",
+      "spec_source": {"source_pdf": "dtl38999.pdf", "source_pages": [13, 14, 19, 21, 67], "sections": ["3.3.2 Materials", "3.4.3.3 Grommet sealing plugs", "3.4.7 Cavity fill", "6 Definitions (Grommet)"]},
+      "confidence": {"material": "high (spec)", "color": "observational (not spec-controlled)"}
+    },
+
+    "hermetic_insert": {
+      "role": "On hermetic connectors the contacts are fused into glass instead of a polymer insert, giving a hermetic (air-leak-proof) seal.",
+      "spec_material": "Vitreous (glass) seal for contact styles P, C, X, R, G; vitreous seal plus a reinforced rigid dielectric socket-support member for styles D, S, Z, M, U. (Sintered / compression glass.)",
+      "spec_color": null,
+      "color_is_standardized": false,
+      "colors_observed": ["green", "amber / honey", "blue-green"],
+      "appearance": "translucent fused glass around each contact, set directly in the metal shell",
+      "spec_source": {"source_pdf": "dtl38999.pdf", "source_pages": [13, 17], "sections": ["3.3.2 Materials (hermetic insert)"]},
+      "catalog_source": "Conesys Hermetic catalog p.6 (sintered compression glass insulator)",
+      "confidence": {"material": "high (spec)", "color": "observational (not spec-controlled)"}
+    },
+
+    "sealing_and_potting_compound": {
+      "role": "Bonding/cavity-fill sealing compound (e.g. between shell and grommet) and rear potting in potted (class P) connectors.",
+      "spec_material": "RTV silicone in accordance with MIL-A-46146, or equivalent.",
+      "spec_source": {"source_pdf": "dtl38999.pdf", "source_pages": [13, 14, 21], "sections": ["3.3.2 Materials (Ground/seal)", "3.4.7 Cavity fill"]},
+      "confidence": {"material": "high (spec)"}
+    }
+  },
+
+  "material_grade_vs_color": {
+    "_note": "Color often differs because the qualified insert MATERIAL differs (to meet different CTI / temperature / arc-tracking requirements). The material grade — not the color — is the meaningful identifier, and it is only loosely correlated with color.",
+    "examples": [
+      {
+        "vendor": "Souriau / Amphenol Socapex",
+        "grades": {
+          "E insert": "CTI <= 100 V, withstands up to 200 C",
+          "V insert": "CTI <= 400 V, developed per VG96944, better resistance to arc-tracking on disconnection"
+        },
+        "source": "Catalog MIL DTL 38999.pdf p.114, 118"
+      }
+    ]
+  },
+
+  "shell_color_features_not_the_insert": {
+    "_note": "These ARE spec-controlled colors, but they are on the SHELL / coupling hardware, NOT on the dielectric insert. Documented here to prevent confusion with insert coloring.",
+    "red_band": "Series III/IV fully-mated visual indicator: a red band is exposed/concealed to confirm correct mating.",
+    "blue_band": "Identifies the rear-release contact-retention system on certain Series III/IV connectors.",
+    "series_iv_breech": "Slash sheets /40, /42, /47 call out a BLUE COLOR BAND and a RED unmated indicator band on breech-coupling connectors.",
+    "contact_id_characters": "Pin/socket identifying characters marked on the insert face — preferred marking color is WHITE.",
+    "sources": ["MIL-DTL-38999 p.29 (marking), p.45 (red band dimension)", "Amphenol Series III catalog p.47-61", "data/reference/dla_documents.json (/40, /42, /47 drawing text)"]
+  },
+
+  "practical_guidance": [
+    "Do NOT identify, qualify, mate-check, or verify a 38999 connector by insert or seal color — color is not specified by MIL-DTL-38999 and varies by manufacturer and material.",
+    "Looking into a PIN connector you normally see the resilient interfacial seal: silicone/fluorosilicone rubber, usually blue, with a raised ring around each pin.",
+    "Looking into a SOCKET connector you see the hard dielectric insert face: commonly blue or green (also tan or black), with the socket entry holes.",
+    "Hermetic connectors show translucent glass (green/amber) fused around the contacts instead of a polymer face.",
+    "For a realistic render: a blue resilient seal/grommet plus a hard insert in blue/green/tan reads as authentic; contact ID numerals are white."
+  ]
+}

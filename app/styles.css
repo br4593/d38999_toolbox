@@ -15,6 +15,7 @@
   --ink:          #1a1d21;
   --text:         #2a2d31;
   --muted:        #6a6e66;
+  --text-muted:   var(--muted);
   --dim:          #7a7e74;
   --line:         #dad8ce;
   --line-strong:  #c7c5b8;
@@ -58,17 +59,24 @@
 
   /* Finish shell colors — drive [data-finish] on the connector drawing.
      Representative renderings of the real MIL-DTL-38999 finishes. */
-  --finish-od-stroke:   #3e3f2b;  --finish-od-fill:   #6b6a4b;
-  --finish-gun-stroke:  #060708;  --finish-gun-fill:  #1a1d21;
-  --finish-grey-stroke: #33383d;  --finish-grey-fill: #565b61;
-  --finish-anod-stroke: #101316;  --finish-anod-fill: #24282e;
-  --finish-nik-stroke:  #6e7278;  --finish-nik-fill:  #a7abb1;
-  --finish-cad-stroke:  #9c977f;  --finish-cad-fill:  #d6d2c2;
+  --finish-od-stroke:   #4a503a;  --finish-od-fill:   #707657;
+  --finish-gun-stroke:  #14181d;  --finish-gun-fill:  #2a2f35;
+  --finish-grey-stroke: #3b4148;  --finish-grey-fill: #60666d;
+  --finish-anod-stroke: #15191d;  --finish-anod-fill: #2a2f34;
+  --finish-nik-stroke:  #6d767f;  --finish-nik-fill:  #b1b8bf;
+  --finish-cad-stroke:  #9b9176;  --finish-cad-fill:  #ddd6bd;  /* A/U: silver→light iridescent yellow */
+  --finish-steel-stroke:#59626b;  --finish-steel-fill:#9299a1;
+  --finish-tin-stroke:  #91979b;  --finish-tin-fill:  #d0d4d6;
+  --finish-tinz-stroke: #6d7883;  --finish-tinz-fill: #a6aeb6;
+  --finish-zinc-stroke: #232830;  --finish-zinc-fill: #474d55;
   /* Fluorosilicone interfacial seal (A-A-59588, Color Blue). */
   --seal-blue:          #2e6fb0;
   /* Insert dielectric (real view): high-grade rigid dielectric / LCP — a
      dark olive resin, but not pitch black so the contacts read clearly. */
   --insert-dielectric:  #3d4035;
+  /* Rendered pin-face seal tint — muted grey-green so the resilient front face
+     stays visually consistent with the rest of the connector artwork. */
+  --seal-render-tint:   color-mix(in srgb, var(--insert-dielectric) 74%, var(--diagram-paper));
 
   /* Pin-symbol ink — distinct, colorblind-aware hue per contact gauge,
      harmonized to the earthy D38999 family. */
@@ -102,7 +110,7 @@
 
   /* Typography */
   --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
-  --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif;
 
   /* Type scale (px) — single source of truth. */
   --fs-xs:   11px;
@@ -1534,6 +1542,28 @@ body.is-home .header-home-button {
   color: var(--muted);
 }
 
+/* Finish swatch on the side profile — the [data-finish] on .side-view-figure
+   resolves --shell-tint/--shell-stroke (see the [data-finish] rules), so this
+   chip shows the decoded class's metal color even when the profile art is an
+   external (non-recolorable) <img>. */
+.side-view-finish {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.side-view-finish-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--shell-tint, var(--finish-od-fill));
+  border: 1px solid var(--shell-stroke, var(--finish-od-stroke));
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.25);
+}
+
 .side-view-empty {
   padding: 40px 28px;
   border: 1px dashed var(--line);
@@ -1616,12 +1646,20 @@ body.is-home .header-home-button {
 .mini-connector-svg {
   --shell-stroke: var(--default-shell-stroke, var(--finish-od-stroke));
   --shell-tint:   var(--default-shell-tint,   var(--finish-od-fill));
+  --shell-sheen-opacity: .22;
+  --seal-ring-opacity: .46;
+  --seal-ring-stroke: var(--seal-render-tint);
 }
-.connector-svg[data-finish="gun"],  .mini-connector-svg[data-finish="gun"]  { --shell-stroke: var(--finish-gun-stroke);  --shell-tint: var(--finish-gun-fill); }
-.connector-svg[data-finish="grey"], .mini-connector-svg[data-finish="grey"] { --shell-stroke: var(--finish-grey-stroke); --shell-tint: var(--finish-grey-fill); }
-.connector-svg[data-finish="anod"], .mini-connector-svg[data-finish="anod"] { --shell-stroke: var(--finish-anod-stroke); --shell-tint: var(--finish-anod-fill); }
-.connector-svg[data-finish="nik"],  .mini-connector-svg[data-finish="nik"]  { --shell-stroke: var(--finish-nik-stroke);  --shell-tint: var(--finish-nik-fill); }
-.connector-svg[data-finish="cad"],  .mini-connector-svg[data-finish="cad"]  { --shell-stroke: var(--finish-cad-stroke);  --shell-tint: var(--finish-cad-fill); }
+.connector-svg[data-finish="od"],   .mini-connector-svg[data-finish="od"],   .side-view-figure[data-finish="od"]   { --shell-stroke: var(--finish-od-stroke);   --shell-tint: var(--finish-od-fill);   --shell-sheen-opacity: .12; }
+.connector-svg[data-finish="gun"],  .mini-connector-svg[data-finish="gun"],  .side-view-figure[data-finish="gun"]  { --shell-stroke: var(--finish-gun-stroke);  --shell-tint: var(--finish-gun-fill);  --shell-sheen-opacity: .08; }
+.connector-svg[data-finish="steel"],.mini-connector-svg[data-finish="steel"],.side-view-figure[data-finish="steel"]{ --shell-stroke: var(--finish-steel-stroke);--shell-tint: var(--finish-steel-fill);--shell-sheen-opacity: .16; }
+.connector-svg[data-finish="grey"], .mini-connector-svg[data-finish="grey"], .side-view-figure[data-finish="grey"] { --shell-stroke: var(--finish-grey-stroke); --shell-tint: var(--finish-grey-fill); --shell-sheen-opacity: .09; }
+.connector-svg[data-finish="anod"], .mini-connector-svg[data-finish="anod"], .side-view-figure[data-finish="anod"] { --shell-stroke: var(--finish-anod-stroke); --shell-tint: var(--finish-anod-fill); --shell-sheen-opacity: .05; }
+.connector-svg[data-finish="nik"],  .mini-connector-svg[data-finish="nik"],  .side-view-figure[data-finish="nik"]  { --shell-stroke: var(--finish-nik-stroke);  --shell-tint: var(--finish-nik-fill);  --shell-sheen-opacity: .28; }
+.connector-svg[data-finish="cad"],  .mini-connector-svg[data-finish="cad"],  .side-view-figure[data-finish="cad"]  { --shell-stroke: var(--finish-cad-stroke);  --shell-tint: var(--finish-cad-fill);  --shell-sheen-opacity: .26; }
+.connector-svg[data-finish="tin"],  .mini-connector-svg[data-finish="tin"],  .side-view-figure[data-finish="tin"]  { --shell-stroke: var(--finish-tin-stroke);  --shell-tint: var(--finish-tin-fill);  --shell-sheen-opacity: .14; }
+.connector-svg[data-finish="tinz"], .mini-connector-svg[data-finish="tinz"], .side-view-figure[data-finish="tinz"] { --shell-stroke: var(--finish-tinz-stroke); --shell-tint: var(--finish-tinz-fill); --shell-sheen-opacity: .12; }
+.connector-svg[data-finish="zinc"], .mini-connector-svg[data-finish="zinc"], .side-view-figure[data-finish="zinc"] { --shell-stroke: var(--finish-zinc-stroke); --shell-tint: var(--finish-zinc-fill); --shell-sheen-opacity: .1; }
 
 .connector-svg .shell,
 .mini-connector-svg .shell {
@@ -1670,7 +1708,7 @@ body.is-home .header-home-button {
 .connector-svg .mount-flange-inner,
 .mini-connector-svg .mount-flange-inner {
   fill: none;
-  stroke: color-mix(in srgb, var(--seal-blue) 45%, transparent);
+  stroke: color-mix(in srgb, var(--seal-ring-stroke) 45%, transparent);
   stroke-width: .65;
   vector-effect: non-scaling-stroke;
 }
@@ -1704,7 +1742,7 @@ body.is-home .header-home-button {
 .connector-svg .shell-face-ring,
 .mini-connector-svg .shell-face-ring {
   fill: none;
-  stroke: color-mix(in srgb, var(--seal-blue) 55%, transparent);
+  stroke: color-mix(in srgb, var(--seal-ring-stroke) 55%, transparent);
   stroke-width: 1.1;
   vector-effect: non-scaling-stroke;
 }
@@ -2068,6 +2106,70 @@ body.is-home .header-home-button {
   color: var(--ink);
 }
 
+.validation-stack {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.validation-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.validation-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.validation-pill.is-manufacturer {
+  border-color: color-mix(in srgb, var(--accent) 32%, transparent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  color: var(--accent-strong);
+}
+
+.validation-pill.is-qpl {
+  border-color: color-mix(in srgb, var(--ok) 36%, transparent);
+  background: color-mix(in srgb, var(--ok) 12%, var(--surface));
+  color: var(--ok);
+}
+
+.validation-pill.is-format {
+  border-color: color-mix(in srgb, var(--warn) 38%, transparent);
+  background: color-mix(in srgb, var(--warn) 12%, var(--surface));
+  color: var(--warn);
+}
+
+.validation-pill.is-secondary {
+  border-color: color-mix(in srgb, var(--gold) 38%, transparent);
+  background: color-mix(in srgb, var(--gold) 12%, var(--surface));
+  color: var(--gold);
+}
+
+.validation-pill.is-review,
+.validation-pill.is-missing,
+.validation-pill.is-confidence {
+  border-color: color-mix(in srgb, var(--line-strong) 72%, transparent);
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+.validation-pill.is-invalid {
+  border-color: color-mix(in srgb, var(--danger) 38%, transparent);
+  background: color-mix(in srgb, var(--danger) 10%, var(--surface));
+  color: var(--danger);
+}
+
 .exact-catalog-hit-subtitle {
   margin-top: 8px;
   font-size: 11px;
@@ -2119,6 +2221,59 @@ body.is-home .header-home-button {
 
 .decoded-action-btn {
   border-radius: 999px;
+}
+
+.decoded-workflow-card {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent-soft) 42%, var(--surface)) 0%, var(--surface) 100%);
+}
+
+.decoded-workflow-head {
+  display: grid;
+  gap: 3px;
+  margin-bottom: 10px;
+}
+
+.decoded-workflow-title {
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.decoded-workflow-body {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.decoded-action-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.decoded-action-grid .decoded-action-btn {
+  width: 100%;
+  min-height: 38px;
+  text-align: start;
+  border-radius: var(--radius-md);
+}
+
+.primary-action.decoded-action-btn.decoded-action-btn-secondary {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  border-color: color-mix(in srgb, var(--accent) 36%, transparent);
+}
+
+.primary-action.decoded-action-btn.decoded-action-btn-secondary:hover {
+  background: color-mix(in srgb, var(--accent-soft) 65%, var(--surface));
+  color: var(--accent-strong);
+  border-color: color-mix(in srgb, var(--accent) 48%, transparent);
 }
 
 .detail-summary .value {
@@ -2189,49 +2344,44 @@ body.is-home .header-home-button {
 }
 
 .manual-panel .panel-title-row { margin-bottom: 14px; }
-.manual-panel .panel-title-row h2 { font-size: 16px; }
+.manual-panel .panel-title-row h2 { font-size: 14px; }
 .manual-panel .source-line { font-family: var(--sans); margin-top: 4px; font-size: 13px; }
 
 .manual-content {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 16px;
 }
 
 .manual-section {
+  display: grid;
+  gap: 12px;
   min-width: 0;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  padding: 14px 16px;
+  padding: 16px 18px;
   background: var(--surface);
   animation: manualRise .42s ease both;
 }
 
-.manual-section:nth-child(1),
-.manual-section:nth-child(2) {
-  grid-column: 1 / -1;
-  background:
-    radial-gradient(circle at 15% 8%, rgba(245, 158, 11, .18), transparent 30%),
-    radial-gradient(circle at 90% 18%, rgba(47, 92, 138, .18), transparent 34%),
-    linear-gradient(135deg, rgba(255,255,255,.98), rgba(248,250,252,.94));
-}
-
-.manual-section:nth-child(3) {
-  grid-column: 1 / -1;
-}
-
+.manual-section--wide,
 .build-section {
   grid-column: 1 / -1;
+}
+
+.manual-section--feature,
+.build-section {
   background:
-    radial-gradient(circle at 15% 8%, rgba(245, 158, 11, .18), transparent 30%),
-    radial-gradient(circle at 90% 18%, rgba(47, 92, 138, .18), transparent 34%),
-    linear-gradient(135deg, rgba(255,255,255,.98), rgba(248,250,252,.94));
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--accent-soft) 55%, var(--surface)) 0%,
+      var(--surface) 100%);
+  border-color: var(--line-strong);
 }
 
 .manual-section h3 {
-  margin: 0 0 10px;
+  margin: 0;
   color: var(--ink);
-  font-size: 13px;
+  font-size: var(--fs-base);
   font-weight: 600;
   text-transform: none;
   letter-spacing: 0;
@@ -2240,8 +2390,8 @@ body.is-home .header-home-button {
 .manual-card,
 .manual-note {
   display: grid;
-  gap: 4px;
-  padding: 8px 0;
+  gap: 6px;
+  padding: 10px 0;
   border-bottom: 1px solid var(--line-soft);
 }
 
@@ -2249,11 +2399,15 @@ body.is-home .header-home-button {
 .manual-note:last-child { border-bottom: 0; }
 
 .manual-card span,
-.manual-note { color: var(--text); font-size: 12.5px; }
+.manual-note {
+  color: var(--text);
+  font-size: var(--fs-base);
+  line-height: 1.6;
+}
 
 .manual-card em {
   color: var(--dim);
-  font-size: 11px;
+  font-size: var(--fs-sm);
   font-style: normal;
 }
 
@@ -2291,9 +2445,17 @@ body.is-home .header-home-button {
   white-space: nowrap;
 }
 
-.datasource-role { color: var(--text); font-size: 12.5px; }
+.datasource-role {
+  color: var(--text);
+  font-size: var(--fs-md);
+  line-height: 1.55;
+}
 
-.datasource-used { color: var(--text); font-size: 12.5px; }
+.datasource-used {
+  color: var(--text);
+  font-size: var(--fs-md);
+  line-height: 1.55;
+}
 
 .datasource-used-label { color: var(--dim); font-weight: 600; }
 
@@ -2725,25 +2887,25 @@ body.is-home .header-home-button {
 
 .manual-accordion {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 .manual-part {
-  border: 1px solid rgba(15, 23, 42, .1);
-  border-radius: 18px;
-  background: linear-gradient(180deg, #fff, #fbfdff);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
   overflow: hidden;
   animation: manualRise .35s ease both;
   animation-delay: calc(var(--step) * 45ms);
 }
 
 .manual-part[open] {
-  box-shadow: 0 14px 32px rgba(15, 23, 42, .08);
+  border-color: var(--line-strong);
 }
 
 .manual-part summary {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
@@ -2754,28 +2916,30 @@ body.is-home .header-home-button {
 .manual-part summary::-webkit-details-marker { display: none; }
 
 .manual-part summary::after {
-  content: "+";
+  content: "▾";
   display: grid;
   place-items: center;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 999px;
-  background: var(--accent-soft);
+  background: var(--surface-2);
   color: var(--accent-strong);
-  font-weight: 900;
-  grid-column: 4;
+  font-weight: 700;
+  justify-self: end;
+  transition: transform var(--dur-fast) var(--ease-out),
+              background var(--dur-fast) var(--ease-out);
 }
 
 .manual-part[open] summary::after {
-  content: "-";
+  transform: rotate(180deg);
 }
 
 .manual-part summary b {
-  padding: 5px 9px;
+  padding: 5px 10px;
   border-radius: 999px;
-  background: #fff7ed;
-  color: #9a3412;
-  border: 1px solid rgba(245, 158, 11, .34);
+  background: color-mix(in srgb, var(--accent-soft) 72%, var(--surface));
+  color: var(--accent-strong);
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
 }
 
 .manual-part summary strong {
@@ -2795,40 +2959,40 @@ body.is-home .header-home-button {
 .manual-part-icon {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 14px;
-  background: #0f172a;
-  color: #fbbf24;
-  font-size: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: .06em;
 }
 
 .manual-part-body {
   display: grid;
-  gap: 14px;
+  gap: 12px;
   padding: 0 16px 16px;
 }
 
 .manual-part-explain {
   padding: 12px 14px;
-  border-radius: 14px;
-  background: #f8fafc;
-  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
 }
 
 .manual-part-explain strong {
   display: block;
   color: var(--ink);
-  font-size: 13px;
+  font-size: var(--fs-md);
 }
 
 .manual-part-explain p {
   margin: 6px 0 0;
   color: var(--text);
-  font-size: 12.5px;
-  line-height: 1.5;
+  font-size: var(--fs-md);
+  line-height: 1.55;
 }
 
 .option-grid,
@@ -2849,27 +3013,28 @@ body.is-home .header-home-button {
   display: grid;
   gap: 4px;
   min-width: 0;
-  padding: 10px 11px;
-  border-radius: 14px;
-  border: 1px solid var(--line-soft);
-  background: rgba(255,255,255,.82);
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
 }
 
 .option-chip.active {
-  border-color: rgba(245, 158, 11, .75);
-  background: linear-gradient(180deg, #fff7ed, #fffbeb);
-  box-shadow: inset 0 0 0 1px rgba(245, 158, 11, .22);
+  border-color: color-mix(in srgb, var(--accent) 32%, transparent);
+  background: color-mix(in srgb, var(--accent-soft) 62%, var(--surface));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 .option-chip strong {
   color: var(--ink);
-  font-size: 13px;
+  font-size: var(--fs-md);
+  line-height: 1.3;
 }
 
 .option-chip span {
   color: var(--text);
-  font-size: 12px;
-  line-height: 1.35;
+  font-size: var(--fs-sm);
+  line-height: 1.45;
 }
 
 .option-chip em {
@@ -2886,11 +3051,9 @@ body.is-home .header-home-button {
 .keying-graphic,
 .shell-scale {
   min-height: 118px;
-  border: 1px solid rgba(15, 23, 42, .08);
-  border-radius: 18px;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(245, 158, 11, .18), transparent 24%),
-    linear-gradient(135deg, #fff, #f8fafc);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
   overflow: hidden;
   position: relative;
 }
@@ -2899,7 +3062,7 @@ body.is-home .header-home-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 12px;
+  padding: 12px 14px;
 }
 
 .manual-preview-svg {
@@ -2923,9 +3086,9 @@ body.is-home .header-home-button {
 
 .shell-type-graphic.shell-profiles-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  padding: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(136px, 1fr));
+  gap: 10px;
+  padding: 10px;
   height: auto;
 }
 
@@ -2933,47 +3096,50 @@ body.is-home .header-home-button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  border: 1.5px solid rgba(15, 23, 42, 0.1);
-  border-radius: 8px;
-  padding: 6px;
-  background: rgba(255, 255, 255, 0.6);
-  transition: border-color 0.15s, box-shadow 0.15s;
+  justify-content: center;
+  gap: 6px;
+  min-height: 92px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 10px 8px;
+  background: var(--surface);
+  transition: background var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out);
 }
 
 .shell-profile-item .shell-profile-asset {
   width: 100%;
   max-width: 100%;
-  max-height: 60px;
+  max-height: 54px;
   height: auto;
+  object-fit: contain;
 }
 
 .shell-profile-item-label {
-  font-size: 0.66rem;
-  line-height: 1.15;
+  font-size: var(--fs-xs);
+  line-height: 1.25;
   text-align: center;
-  color: var(--muted, #64748b);
+  color: var(--muted);
 }
 
 .shell-profile-item.active .shell-profile-item-label {
-  color: var(--accent, #2563eb);
+  color: var(--accent-strong);
   font-weight: 600;
 }
 
 .shell-profile-item.active {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
-  background: rgba(37, 99, 235, 0.04);
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  background: color-mix(in srgb, var(--accent-soft) 68%, var(--surface));
 }
 
 .shell-profile-item .shell-profile-svg {
   width: 100%;
   height: auto;
-  color: #1e293b;
+  color: var(--muted);
 }
 
 .shell-profile-item.active .shell-profile-svg {
-  color: #1d4ed8;
+  color: var(--accent-strong);
 }
 
 .shell-type-graphic .shell-ring,
@@ -3166,51 +3332,47 @@ body.is-home .header-home-button {
 }
 
 .pn-hero {
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  justify-content: space-between;
-  gap: 14px;
-  min-height: 142px;
-  padding: 18px;
-  border: 1px solid rgba(15, 23, 42, .1);
-  border-radius: 22px;
+  display: grid;
+  gap: 10px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
   background:
-    linear-gradient(120deg, rgba(15, 23, 42, .94), rgba(30, 64, 175, .82)),
-    radial-gradient(circle at 78% 20%, rgba(251, 191, 36, .5), transparent 34%);
-  color: #fff;
-  box-shadow: 0 20px 50px rgba(15, 23, 42, .18);
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--accent-soft) 55%, var(--surface)) 0%,
+      var(--surface) 100%);
+  color: var(--ink);
 }
 
 .pn-guide.compact .pn-hero {
   min-height: 0;
-  padding: 13px;
-  border-radius: 16px;
+  padding: 14px;
+  border-radius: var(--radius-md);
 }
 
 .pn-eyebrow {
   font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: .12em;
-  color: rgba(255,255,255,.72);
+  letter-spacing: .08em;
+  color: var(--accent-strong);
 }
 
 .pn-big {
-  margin-top: 8px;
-  font-size: clamp(24px, 4vw, 44px);
+  margin-top: 0;
+  font-size: clamp(22px, 4vw, 36px);
   line-height: 1;
-  letter-spacing: -.06em;
-  color: #fff;
-  text-shadow: 0 8px 28px rgba(0,0,0,.25);
+  letter-spacing: -.04em;
+  color: var(--ink);
 }
 
-.pn-guide.compact .pn-big { font-size: 21px; }
+.pn-guide.compact .pn-big { font-size: 20px; }
 
 .pn-hero p {
-  max-width: 560px;
-  margin: 10px 0 0;
-  color: rgba(255,255,255,.78);
-  font-size: 13px;
+  max-width: 60ch;
+  margin: 0;
+  color: var(--text);
+  font-size: var(--fs-base);
+  line-height: 1.55;
 }
 
 .pn-orbit {
@@ -3254,53 +3416,51 @@ body.is-home .header-home-button {
 .pn-token-button,
 .pn-mini-card {
   appearance: none;
-  border: 1px solid rgba(15, 23, 42, .11);
+  border: 1px solid var(--line);
   cursor: pointer;
   color: var(--ink);
-  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+  transition: background var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out),
+              color var(--dur-fast) var(--ease-out);
   animation: manualRise .38s ease both;
   animation-delay: calc(var(--step) * 45ms);
 }
 
 .pn-token-button {
   display: grid;
-  gap: 3px;
-  min-width: 92px;
-  padding: 11px 13px;
-  border-radius: 16px;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.95), rgba(248,250,252,.85)),
-    radial-gradient(circle at 20% 0, rgba(47, 92, 138,.16), transparent 40%);
+  gap: 4px;
+  min-width: 104px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
   text-align: left;
 }
 
 .pn-token-button:hover,
 .pn-mini-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px rgba(15, 23, 42, .12);
+  background: var(--surface-2);
+  border-color: var(--line-strong);
 }
 
 .pn-token-button.active,
 .pn-mini-card.active {
-  border-color: rgba(245, 158, 11, .7);
-  background:
-    linear-gradient(180deg, rgba(255,251,235,.98), rgba(254,243,199,.86)),
-    radial-gradient(circle at 20% 0, rgba(245,158,11,.24), transparent 45%);
-  box-shadow: 0 16px 32px rgba(146, 64, 14, .16);
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  background: color-mix(in srgb, var(--accent-soft) 68%, var(--surface));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 16%, transparent);
 }
 
 .pn-token-value {
   font-family: var(--mono);
-  font-weight: 800;
-  font-size: 17px;
-  letter-spacing: -.04em;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -.03em;
 }
 
 .pn-token-label {
   color: var(--muted);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: .07em;
+  font-size: var(--fs-xs);
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .pn-explain-card {
@@ -3309,66 +3469,64 @@ body.is-home .header-home-button {
   gap: 14px;
   align-items: start;
   padding: 16px;
-  border: 1px solid rgba(15, 23, 42, .1);
-  border-radius: 20px;
-  background:
-    radial-gradient(circle at 100% 0, rgba(47, 92, 138,.14), transparent 32%),
-    linear-gradient(135deg, #fff, #f8fafc);
-  box-shadow: 0 14px 34px rgba(15, 23, 42, .08);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
 }
 
 .pn-guide.compact .pn-explain-card {
   grid-template-columns: 1fr;
   padding: 12px;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
 }
 
 .pn-icon {
   display: grid;
   place-items: center;
-  min-width: 72px;
-  min-height: 72px;
+  min-width: 56px;
+  min-height: 56px;
   padding: 8px;
-  border-radius: 18px;
-  background: #0f172a;
-  color: #fbbf24;
+  border-radius: var(--radius-md);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
   font-weight: 900;
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: .08em;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);
 }
 
 .pn-guide.compact .pn-icon { display: none; }
 
 .pn-explain-kicker {
-  color: #2563eb;
+  color: var(--accent-strong);
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: .08em;
+  letter-spacing: .06em;
 }
 
 .pn-explain-card h4 {
   margin: 4px 0 6px;
   color: var(--ink);
-  font-size: 18px;
-  line-height: 1.25;
+  font-size: 16px;
+  line-height: 1.3;
 }
+
+.pn-explain-card h4 .mono { color: var(--accent-strong); }
 
 .pn-guide.compact .pn-explain-card h4 { font-size: 13px; }
 
 .pn-explain-card p {
   margin: 0;
   color: var(--text);
-  font-size: 13px;
+  font-size: var(--fs-md);
   line-height: 1.55;
 }
 
 .pn-explain-card em {
   display: block;
-  margin-top: 9px;
+  margin-top: 8px;
   color: var(--dim);
-  font-size: 11px;
+  font-size: var(--fs-sm);
   font-style: normal;
 }
 
@@ -5814,15 +5972,15 @@ body.is-home .header-home-button {
   border-color: var(--line);
 }
 :is([data-theme="dark"],[data-theme="blueprint-dark"]) .manual-part summary b {
-  background: var(--warn-soft);
-  color: var(--warn);
-  border-color: color-mix(in srgb, var(--warn) 40%, transparent);
+  background: color-mix(in srgb, var(--accent-soft) 76%, var(--surface-2));
+  color: var(--accent-strong);
+  border-color: color-mix(in srgb, var(--accent) 38%, transparent);
 }
 :is([data-theme="dark"],[data-theme="blueprint-dark"]) .manual-part-explain {
   background: var(--surface-2);
 }
 :is([data-theme="dark"],[data-theme="blueprint-dark"]) .pn-mini-card {
-  background: var(--surface-2);
+  background: var(--surface);
 }
 :is([data-theme="dark"],[data-theme="blueprint-dark"]) .pn-mini-card b {
   color: var(--accent);
@@ -6070,7 +6228,7 @@ h2 { letter-spacing: .06em; }
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-ring) 22%, transparent);
 }
 .header-search::after {
-  content: "⌘K";
+  content: attr(data-shortcut-hint);
   position: absolute;
   right: 10px;
   top: 50%;
@@ -6087,10 +6245,72 @@ h2 { letter-spacing: .06em; }
   letter-spacing: 0.02em;
 }
 
+.header-search[data-launcher-open="true"]::after {
+  opacity: 0;
+}
+
+.launcher-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 40;
+  max-height: min(420px, 72vh);
+  overflow: auto;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--surface) 96%, var(--surface-2));
+  box-shadow: var(--shadow-lift);
+}
+
+.launcher-menu[hidden] {
+  display: none !important;
+}
+
+.launcher-section {
+  padding: 8px 8px 4px;
+  color: var(--dim);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.launcher-option {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  text-align: start;
+}
+
+.launcher-option:hover,
+.launcher-option.active {
+  border-color: color-mix(in srgb, var(--accent) 22%, transparent);
+  background: color-mix(in srgb, var(--accent-soft) 78%, var(--surface));
+}
+
+.launcher-option-title {
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.launcher-option-desc {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
 /* On narrow viewports, drop the ⌘K hint so the input keeps its breathing room. */
 @media (max-width: 720px) {
   .header-search::after { display: none; }
   #globalSearch { padding-right: 12px; }
+  .decoded-action-grid { grid-template-columns: 1fr; }
 }
 
 /* ---- Header accent dot: align with indigo glow ------------------------- */
@@ -6767,7 +6987,10 @@ dialog.batch-report-dialog::backdrop {
   filter: drop-shadow(0 1px 0 rgba(15, 23, 42, 0.06));
 }
 .connector-svg .shell-fill {
-  fill: var(--grad-shell, rgba(241, 245, 249, 1));
+  /* Engineering view: a light wash of the decoded finish so the connector body
+     reads in its true metal colour while staying pale enough for the schematic
+     contacts and labels to remain legible. The real view (below) fills it fully. */
+  fill: color-mix(in srgb, var(--shell-tint) 22%, var(--diagram-paper));
 }
 /* Dark themes: the engineering-view connector interior (the shell-fill disc
    painted with #sbShellGradient) must read dark too. Re-tint the gradient
@@ -6795,8 +7018,8 @@ dialog.batch-report-dialog::backdrop {
    Real view (data-view="real") — true-color connector face
    The engineering view (default) keeps the X-ray schematic above. In real
    view the shell fills with its finish metal, the insert face becomes a dark
-   dielectric, contacts render as gold pads, the fluorosilicone seal shows as a
-   blue ring, and the engineering guides/symbols are hidden.
+   dielectric, contacts render as gold pads, the front-face seal picks up a
+   muted grey-green tint, and the engineering guides/symbols are hidden.
    Placed after the Sprint B polish so it overrides .shell-fill's gradient.
    ========================================================================= */
 
@@ -6813,6 +7036,7 @@ dialog.batch-report-dialog::backdrop {
 .connector-svg[data-view="real"] .shell-sheen {
   fill: var(--grad-sheen, rgba(255, 255, 255, 0.18));
   stroke: none;
+  opacity: var(--shell-sheen-opacity, 0.22);
   pointer-events: none;
 }
 /* Coupling-ring knurl ticks. */
@@ -6830,23 +7054,30 @@ dialog.batch-report-dialog::backdrop {
   stroke-width: 0.8;
   vector-effect: non-scaling-stroke;
 }
+/* Front face material differs by contact gender: a pin insert normally presents
+   the resilient front-face seal, while a socket insert presents the hard
+   dielectric face with socket entry holes. */
+.connector-svg[data-view="real"][data-gender="pin"] .insert-face {
+  fill: var(--seal-render-tint);
+  stroke: color-mix(in srgb, var(--seal-render-tint) 62%, rgba(0, 0, 0, 0.55));
+}
 /* Receptacle mount hardware also reads as metal. */
 .connector-svg[data-view="real"] .mount-flange {
   fill: var(--shell-tint);
   stroke: var(--shell-stroke);
 }
 .connector-svg[data-view="real"] .mount-hole {
-  fill: var(--insert-dielectric);
-  stroke: rgba(0, 0, 0, 0.4);
+  fill: color-mix(in srgb, var(--diagram-paper) 94%, #000 6%);
+  stroke: rgba(0, 0, 0, 0.32);
 }
 .connector-svg[data-view="real"] .mount-flange-inner {
-  stroke: color-mix(in srgb, var(--seal-blue) 35%, transparent);
+  stroke: color-mix(in srgb, var(--shell-stroke) 40%, transparent);
 }
-/* Fluorosilicone interfacial seal — a clear blue ring on the mating face. */
+/* Front-face seal ridge around the mating face. */
 .connector-svg[data-view="real"] .shell-face-ring {
-  stroke: var(--seal-blue);
+  stroke: var(--seal-ring-stroke, var(--seal-blue));
   stroke-width: 1.6;
-  opacity: 0.7;
+  opacity: var(--seal-ring-opacity, 0.46);
 }
 /* Gold contacts (copper alloy, gold plate per M39029). */
 .connector-svg[data-view="real"] .pin-contact-real {
@@ -6858,6 +7089,11 @@ dialog.batch-report-dialog::backdrop {
   fill: var(--insert-dielectric);
   stroke: none;
   pointer-events: none;
+}
+/* Shielded-contact bores should sit in the same front-face material being shown:
+   muted seal tint on pin faces, hard dielectric on socket faces. */
+.connector-svg[data-view="real"][data-gender="pin"] .pin-contact-bore {
+  fill: color-mix(in srgb, var(--seal-render-tint) 68%, var(--insert-dielectric));
 }
 /* Female socket: recessed gold sleeve with a dark entry bore (depth via gradient). */
 .connector-svg[data-view="real"] .pin-contact-socket-bore {
@@ -6900,6 +7136,11 @@ dialog.batch-report-dialog::backdrop {
   stroke: rgba(0, 0, 0, 0.55);
   stroke-width: 0.5px;
 }
+/* The front-face seal is a pin-face feature, not the normal socket-face
+   appearance, so don't show the ring on female/socket views. */
+.connector-svg[data-view="real"][data-gender="socket"] .shell-face-ring {
+  display: none;
+}
 /* Hide engineering-only guides in real view. */
 .connector-svg[data-view="real"] .insert-boundary,
 .connector-svg[data-view="real"] .keying-reference-ring,
@@ -6907,10 +7148,15 @@ dialog.batch-report-dialog::backdrop {
   display: none;
 }
 
-/* Keep the layout-zone separation lines in real view, drawn in white so they
-   read against the dark dielectric insert face. */
+/* Layout-zone separation lines read as the raised, molded ridges that physically
+   divide contact-size zones on a real insert. In the real view they are drawn as
+   a white highlight (the dielectric beneath is dark, --insert-dielectric #3d4035)
+   instead of the engineering blue. The guide layer is drawn before the contacts
+   and clipped to the insert face, so the ridges sit only on the dielectric and
+   never cross the metal shell ring or cover a contact. */
 .connector-svg[data-view="real"] .guide-path {
-  stroke: rgba(255, 255, 255, 0.8);
+  stroke: rgba(255, 255, 255, 0.55);
+  stroke-width: 0.8;
 }
 
 /* Real view: show true-to-life keys/keyways and drop the schematic markers
@@ -7040,9 +7286,9 @@ dialog.batch-report-dialog::backdrop {
 }
 :is([data-theme="dark"],[data-theme="blueprint-dark"]) .pn-token-button.active,
 :is([data-theme="dark"],[data-theme="blueprint-dark"]) .pn-mini-card.active {
-  background: var(--warn-soft);
-  border-color: color-mix(in srgb, var(--warn) 55%, transparent);
-  box-shadow: none;
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface-2));
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 20%, transparent);
 }
 :is([data-theme="dark"],[data-theme="blueprint-dark"]) .pn-explain-kicker {
   color: var(--accent-strong);

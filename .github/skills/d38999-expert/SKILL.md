@@ -51,6 +51,7 @@ memory. Cite the file you used.
 | `part_number_rules.json` | Shell-size codes, contact styles and the decode algorithm. |
 | `pinout_rules.json` | Pin-label / gauge rules used by the pinout decoder. |
 | `insert_arrangements.json` | 63 arrangements, ~1,747 contacts: per-contact x/y, contact size, service rating, SVG crop. |
+| `insert_materials.json` | Insert-system **materials & coloring**: hard dielectric insert, resilient interfacial seal / rear grommet, hermetic glass insert, potting compound — with spec citations and (non-standardized) observed colors. |
 | `contact_current_ratings.json` | Per-contact-size test current (A) + wire AWG range, with catalog sources. |
 | `connector_engineering_reference.json` | Current ratings, **derating** tables, parallel-contact engineering, protocol wiring, pin-allocation guidance, selection scoring. |
 | `high_speed_interface_wiring_reference.json` | USB 2/3/C, HDMI, DisplayPort, DVI, VGA, DPI wiring + D38999 design rules. |
@@ -265,6 +266,36 @@ Series III keying letters: `A`, `B`, `C`, `D`, `E` (rotated positions) and `N` (
 The app includes **63 insert arrangements** and **1,747 contacts** extracted from `d38999-contact-arrangements.pdf`. Each arrangement is indexed by shell size and arrangement number (e.g., `17-35` = shell size 17, arrangement 35). Arrangement data lives in `app/data/insert_arrangements.json` and SVG crops in `app/assets/svg/`.
 
 Each contact entry has: pin label, contact size (gauge), x/y coordinates, and a gauge symbol for the drawing.
+
+---
+
+## Insert Materials & Coloring
+
+The **insert** is "the insulating dielectric within a connector shell… [it] houses the
+contacts" (`dtl38999.pdf` §6 definitions, p.67). MIL-DTL-38999 controls the insert/seal
+**materials** but **not their color** — insert and seal color is **not standardized**,
+varies by manufacturer / material grade / lot, and **must never be used to identify,
+qualify, mate-check, or verify a connector**. Data: `data/reference/insert_materials.json`.
+
+| Part (what you see) | Spec material | Typical real-world color (observation only) |
+|---------------------|---------------|---------------------------------------------|
+| **Hard dielectric insert** — rigid body that retains contacts; the face of a socket connector | Reinforced epoxy resin or other rigid dielectric (often glass-filled DAP/epoxy; PPS/LCP/PEEK on high-temp lines) | Varies — most often **blue or green**; also tan/buff, black, brown |
+| **Interfacial seal** — resilient front face of pin inserts, with raised rings around each pin | Silicone or fluorosilicone rubber | **Blue** predominates (the signature 38999 pin face); also red/orange, grey |
+| **Rear grommet** — resilient back section, seals around each wire | Silicone or fluorosilicone rubber | **Blue** predominates; also red/orange, grey/black |
+| **Hermetic insert** — contacts fused in glass (no polymer face) | Vitreous (sintered/compression) glass; + rigid dielectric socket support for styles D/S/Z/M/U | Translucent **green / amber / blue-green** |
+| Sealing / cavity-fill / potting compound | RTV silicone per MIL-A-46146 | n/a |
+
+Source: `dtl38999.pdf` §3.3.2 Materials (p.13–14), §3.4.3.4 Mating seals (p.19), §3.4.7
+Cavity fill (p.21), §6 Definitions (p.67); Conesys Hermetic catalog p.6 (glass insulator).
+
+- **Color tracks material grade, not the reverse.** Different qualified insert materials
+  (for different CTI / temperature / arc-tracking needs) can look different — e.g. Souriau /
+  Amphenol Socapex **"E" inserts** (CTI ≤100 V, ≤200 °C) vs **"V" inserts** (CTI ≤400 V, per
+  VG96944). The grade is the real identifier, not the color (`Catalog MIL DTL 38999.pdf` p.114, 118).
+- **Don't confuse with SHELL color features (these *are* spec-controlled):** Series III/IV
+  **red band** = fully mated, **blue band** = rear-release contact retention; Series IV breech
+  sheets `/40`, `/42`, `/47` call out a **blue color band** + **red unmated indicator**;
+  contact ID characters marked on the insert face are preferably **white** (`dtl38999.pdf` p.29).
 
 ---
 
@@ -660,6 +691,7 @@ The app (`app/index.html`) is a self-contained offline single-page web app. No s
 | `data/standard_definitions.json` | Classes, contact styles, series definitions, keying angles. |
 | `data/part_number_rules.json`    | Shell-size codes, contact styles, decode algorithm. |
 | `data/insert_arrangements.json`  | 63 arrangements and contact coordinates. |
+| `data/insert_materials.json` | Insert-system materials & coloring (hard insert, interfacial seal, grommet, hermetic glass). |
 | `data/connector_engineering_reference.json` | Current ratings, derating, protocol wiring, selection scoring. |
 | `data/high_speed_interface_wiring_reference.json` | USB / HDMI / DisplayPort / DVI / VGA wiring rules. |
 | `data/rugged_io_d38999_style_connectors.json` | Rugged D38999-style RJ45 / USB / video / 10G families. |

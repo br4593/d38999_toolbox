@@ -92,6 +92,9 @@ jobs:
           python scripts/convert_d38999.py D38999/26WD35PN | tee /tmp/out.txt
           grep -qi "amphenol" /tmp/out.txt
 
+      - name: Keying smoke test (setups, variations, shapes are true to life)
+        run: python scripts/keying_smoke_test.py --full
+
   dataset-consistency:
     name: Dataset 1:1 consistency
     runs-on: ubuntu-latest

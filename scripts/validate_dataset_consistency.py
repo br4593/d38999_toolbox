@@ -63,6 +63,10 @@ sys.path.insert(0, str(ROOT))
 
 from scripts import d38999_rules as rules  # noqa: E402
 from scripts.dataset_io import data_path, load_dataset  # noqa: E402
+from scripts.build_valid_d38999_pns import (  # noqa: E402
+    decode_part_number as valid_pn_builder_decode_part_number,
+    keying_letter_valid,
+)
 
 APP_DATA_JS = ROOT / "app" / "app-data.js"
 
@@ -347,6 +351,22 @@ def validate_part_numbers(rep: Report) -> None:
     rep.check(not partial_field_errors,
               "non-canonical entries keep consistent partial decode fields"
               + (f" ({len(partial_field_errors)} bad, e.g. {partial_field_errors[:3]})" if partial_field_errors else ""))
+
+    # Every corpus PN's keying letter must be legal for its connector series
+    # (MIL-DTL-38999 Figures 6 & 7): Series III (/20-/27) = N,A,B,C,D,E,
+    # Series IV (/40-/49) = N,A,B,C,D,K,L,M,R. The corpus build drops illegal
+    # keys; this re-verifies the committed corpus so a stray/typo keying letter
+    # (e.g. a finish code scraped into the keying slot) can never slip back in.
+    keying_violations = [
+        f"{rec.get('partNumber')} (slash {(rec.get('decoded') or {}).get('slashSheet')}, "
+        f"key {(rec.get('decoded') or {}).get('keying')}, {rec.get('evidenceLevel')})"
+        for rec in records
+        if not keying_letter_valid((rec.get("decoded") or {}).get("slashSheet"),
+                                   (rec.get("decoded") or {}).get("keying"))
+    ]
+    rep.check(not keying_violations,
+              "every corpus PN keying letter is legal for its series"
+              + (f" ({len(keying_violations)} illegal, e.g. {keying_violations[:3]})" if keying_violations else ""))
     if non_canonical:
         total_nc = sum(non_canonical.values())
         print(f"  INFO  corpus has {total_nc} non-canonical entries: "
@@ -603,7 +623,41 @@ def validate_technical_specs(rep: Report) -> None:
                   f"{sorted(valid_keys.get(series, set()))}"
                   + (f" (extra {sorted(extra_keys)})" if extra_keys else ""))
 
-    # E5. Current ratings: overlapping sizes agree across both rating tables.
+    # E5. The valid-PN builder's canonical decoder must agree with the converter's
+    # parser on representative Series III/IV PNs, including double-letter classes
+    # that use an optional hyphen in the published part number.
+    builder_decode_mismatches = []
+    for pn in (
+        "D38999/26WE35PN",
+        "D38999/26AAE35PN",
+        "D38999/26AA-E35PN",
+        "D38999/46ABE35PN",
+        "D38999/46AB-E35PN",
+    ):
+        parsed = rules.parse_d38999_pin(pn)
+        decoded = valid_pn_builder_decode_part_number(pn) or {}
+        expected = {
+            "slashSheet": f"/{parsed.shell_type}",
+            "class": parsed.service_class,
+            "shellSizeCode": parsed.shell_size_code,
+            "insertArrangement": parsed.insert,
+            "contactStyle": parsed.contact,
+            "keying": parsed.key,
+        }
+        mismatched = [
+            f"{field}={decoded.get(field)!r} expected {value!r}"
+            for field, value in expected.items()
+            if str(decoded.get(field, "")).upper() != str(value).upper()
+        ]
+        if mismatched:
+            builder_decode_mismatches.append(f"{pn}: {', '.join(mismatched)}")
+    rep.check(
+        not builder_decode_mismatches,
+        "valid-PN builder parser matches canonical parser for representative Series III/IV PNs"
+        + (f" ({builder_decode_mismatches[:3]})" if builder_decode_mismatches else ""),
+    )
+
+    # E6. Current ratings: overlapping sizes agree across both rating tables.
     ccr = {str(r["contact_size"]): r for r in read_json("contact_current_ratings.json")["ratings"]}
     eng = read_json("connector_engineering_reference.json")["contact_current_ratings"]["ratings"]
     amp_conflicts = []
@@ -624,7 +678,7 @@ def validate_technical_specs(rep: Report) -> None:
               "engineering-table wire gauge falls in the rating AWG range"
               + (f" ({awg_conflicts})" if awg_conflicts else ""))
 
-    # E6. Series definitions cover the slash-sheet shell types in use.
+    # E7. Series definitions cover the slash-sheet shell types in use.
     series_keys = set(read_json("standard_definitions.json")["definitions"]["series"].keys())
     used_series = set(rules.SERIES_BY_SHELL_TYPE.values())
     rep.check(used_series <= series_keys,

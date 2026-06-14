@@ -10,6 +10,7 @@ from typing import Any
 
 from d38999_environment import build_environment_outputs, ENVIRONMENT_FILTER_DEFINITIONS
 from dataset_io import write_sharded_dataset, data_path
+from d38999_rules import parse_d38999_pin
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -17,9 +18,6 @@ DATA_DIR = ROOT / "data"
 DEFAULT_OUTPUT = data_path("d38999_valid_part_numbers.json")
 DEFAULT_ENVIRONMENT_OUTPUT = data_path("d38999_environment_classification.json")
 
-STANDARD_PART_NUMBER_RE = re.compile(
-    r"^D38999/(?P<slashSheet>\d{2})(?P<class>[A-Z])(?P<shellSizeCode>[A-Z]{1,2})(?P<insertArrangement>\d{1,3})(?P<contactStyle>[A-Z])(?P<keying>[A-Z])$"
-)
 SHELL25_LANYARD_RE = re.compile(
     r"^D38999/(?P<slashSheet>31|36)(?P<class>[A-Z])(?P<lanyardLengthCode>[A-Z])(?P<insertArrangement>\d{1,3})(?P<contactStyle>[A-Z])(?P<keying>[A-Z])(?P<typeNumber>\d)$"
 )
@@ -50,6 +48,33 @@ SHELL_SIZE_NUMBER_TO_CODE = {
 KNOWN_CONTACT_STYLES = set("PSHJXZCDRMGUAB")
 KNOWN_SHELL_SIZE_CODES = set(SHELL_SIZE_NUMBER_TO_CODE.values())
 
+# Valid keying (polarization) letters per series, from MIL-DTL-38999 Figures 6 &
+# 7. Series III (/20-/27) uses N,A,B,C,D,E; Series IV (/40-/49) uses
+# N,A,B,C,D,K,L,M,R. Part numbers whose trailing keying letter is illegal for
+# their series (e.g. a finish code W or Z scraped into the keying slot) are
+# dropped so downstream tools never suggest a key the spec does not define.
+SERIES_III_SLASH_SHEETS = {"/20", "/21", "/23", "/24", "/25", "/26", "/27"}
+SERIES_IV_SLASH_SHEETS = {"/40", "/41", "/42", "/43", "/44", "/45", "/46", "/47", "/48", "/49"}
+SERIES_III_KEYING = set("NABCDE")
+SERIES_IV_KEYING = set("NABCDKLMR")
+KNOWN_KEYING_LETTERS = SERIES_III_KEYING | SERIES_IV_KEYING  # N,A,B,C,D,E,K,L,M,R
+
+
+def keying_letter_valid(slash_sheet: str | None, keying: str | None) -> bool:
+    """True if ``keying`` is a legal polarization letter for the connector series.
+
+    Accessory / cover / lanyard sheets (not in the Series III or IV environmental
+    sets) are checked against the union of known letters, so obvious typos are
+    still rejected without dropping a legitimate series-specific key.
+    """
+    if not keying:
+        return True
+    if slash_sheet in SERIES_III_SLASH_SHEETS:
+        return keying in SERIES_III_KEYING
+    if slash_sheet in SERIES_IV_SLASH_SHEETS:
+        return keying in SERIES_IV_KEYING
+    return keying in KNOWN_KEYING_LETTERS
+
 
 def read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
@@ -64,11 +89,19 @@ def canonical_part_number(part_number: str) -> str:
 
 
 def decode_part_number(part_number: str) -> dict[str, str] | None:
-    match = STANDARD_PART_NUMBER_RE.match(part_number)
-    if match:
-        decoded = match.groupdict()
-        decoded["slashSheet"] = f"/{decoded['slashSheet']}"
-        return decoded
+    try:
+        parsed = parse_d38999_pin(part_number)
+    except ValueError:
+        parsed = None
+    if parsed is not None:
+        return {
+            "slashSheet": f"/{parsed.shell_type}",
+            "class": parsed.service_class,
+            "shellSizeCode": parsed.shell_size_code,
+            "insertArrangement": parsed.insert,
+            "contactStyle": parsed.contact,
+            "keying": parsed.key,
+        }
 
     match = SHELL25_LANYARD_RE.match(part_number)
     if match:
@@ -103,6 +136,8 @@ def is_d38999_part_number(part_number: str) -> bool:
         return False
     shell_size_code = decoded.get("shellSizeCode")
     if shell_size_code is not None and shell_size_code and shell_size_code not in KNOWN_SHELL_SIZE_CODES:
+        return False
+    if not keying_letter_valid(decoded.get("slashSheet"), decoded.get("keying")):
         return False
     return True
 

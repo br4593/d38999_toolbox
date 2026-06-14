@@ -289,7 +289,36 @@ async function main() {
     assert(converterAudit.firstCandidate.includes("TV06RW-15-35PN"), "Converter shows an Amphenol candidate");
     await cdp.eval(`document.querySelector('.tab-button[data-tab="decoder"]').click(); true;`);
 
+    const launcherAudit = await cdp.eval(`(() => {
+      const search = document.querySelector("#globalSearch");
+      search.focus();
+      search.value = "mate 26WE35PN";
+      search.dispatchEvent(new Event("input", { bubbles: true }));
+      const menu = document.querySelector("#launcherMenu");
+      const optionTitles = [...menu.querySelectorAll(".launcher-option-title")].map((node) => node.textContent.trim());
+      const menuOpenBefore = !menu.hidden;
+      search.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+      return {
+        menuOpenBefore,
+        optionTitles,
+        activeTab: document.querySelector(".tab-button.active")?.dataset.tab || "",
+        inputValue: document.querySelector("#partNumberInput").value,
+      };
+    })()`);
+    assert(launcherAudit.menuOpenBefore, "Command launcher opens from the header search");
+    assert(launcherAudit.optionTitles.some((text) => /find mate for d38999\/26we35pn/i.test(text)), "Command launcher suggests a mating workflow for a decoded PN query");
+    assert(launcherAudit.activeTab === "mating", "Command launcher routes a 'mate ...' query to the mating tab");
+    assert(launcherAudit.inputValue === "D38999/26WE35PN", "Command launcher normalizes shorthand D38999 input before routing");
+    await cdp.eval(`document.querySelector('.tab-button[data-tab="decoder"]').click(); true;`);
+
     const pinSearch = await cdp.eval(`(() => {
+      document.querySelector('.tab-button[data-tab="catalog"]').click();
+      const af = document.querySelector("#arrangementFilter");
+      af.value = "17-26";
+      af.dispatchEvent(new Event("input", { bubbles: true }));
+      [...document.querySelectorAll(".catalog-card .catalog-card-id")]
+        .find((node) => node.textContent.trim() === "17-26").closest(".catalog-card").click();
+      document.querySelector('.tab-button[data-tab="decoder"]').click();
       const input = document.querySelector("#pinSearchInput");
       input.value = "A";
       input.dispatchEvent(new Event("input", { bubbles: true }));
@@ -320,13 +349,323 @@ async function main() {
       return {
         exactTitles: [...panel.querySelectorAll(".exact-catalog-hit-title")].map((node) => node.textContent.trim()),
         exactBadgeTexts: [...panel.querySelectorAll(".mating-validation span")].map((node) => node.textContent.trim()),
+        evidenceBadges: [...panel.querySelectorAll(".validation-pill")].map((node) => node.textContent.trim()),
+        workflowButtons: [...panel.querySelectorAll(".decoded-action-grid [data-decoded-action]")].map((node) => node.textContent.trim()),
         summaries: [...panel.querySelectorAll(".connector-summary .value")].map((node) => node.textContent.trim()),
       };
     })()`);
     assert(exactUiAudit.exactTitles.filter((text) => /exact part-number match/i.test(text)).length === 1, "Decoded exact match renders one exact-match block");
     assert(exactUiAudit.exactBadgeTexts.filter((text) => /exact part-number match/i.test(text)).length === 0, "Decoded exact match does not also render a duplicate validation badge");
+    assert(exactUiAudit.evidenceBadges.some((text) => /qpl qualified/i.test(text)), "Decoded exact match shows the QPL trust badge");
+    assert(exactUiAudit.workflowButtons.some((text) => /find mate/i.test(text)) && exactUiAudit.workflowButtons.some((text) => /convert pn/i.test(text)) && exactUiAudit.workflowButtons.some((text) => /print \/ export report/i.test(text)), "Decoded action hub exposes the main next-step workflows");
     assert(exactUiAudit.summaries.some((text) => /wall-mount receptacle/i.test(text) && /panel|flange/i.test(text)), "Decoded summary explains the shell style in plain language");
     assert(exactUiAudit.summaries.every((text) => !/QPL-validated/i.test(text)), "Decoded summary does not repeat QPL validation wording");
+
+    const frontFaceAudit = await cdp.eval(`(() => {
+      const decode = (pn) => {
+        document.querySelector("#partNumberInput").value = pn;
+        document.querySelector("#decodeButton").click();
+      };
+      decode("D38999/26FB35PN");
+      const plugViewBox = document.querySelector("#connectorSvg").getAttribute("viewBox");
+      decode("D38999/20FB35PN");
+      const flangeViewBox = document.querySelector("#connectorSvg").getAttribute("viewBox");
+      const flangeInnerCount = document.querySelectorAll("#connectorSvg .mount-flange-inner").length;
+      document.querySelector("#viewModeRealBtn").click();
+      const visibleRealGuides = [...document.querySelectorAll("#connectorSvg .guide-path")]
+        .filter((node) => getComputedStyle(node).display !== "none").length;
+      const wallFinish = document.querySelector("#connectorSvg").dataset.finish || "";
+      const decodeFinish = (pn) => {
+        decode(pn);
+        return document.querySelector("#connectorSvg").dataset.finish || "";
+      };
+      const finishMap = {
+        W: decodeFinish("D38999/26WE35PN"),
+        Z: decodeFinish("D38999/26ZE35PN"),
+        T: decodeFinish("D38999/26TE35PN"),
+        D: decodeFinish("D38999/26DE35PN"),
+        V: decodeFinish("D38999/26VE35PN"),
+        E: decodeFinish("D38999/26EE35PN"),
+        F: decodeFinish("D38999/26FE35PN"),
+        C: decodeFinish("D38999/26CE35PN"),
+      };
+      // Olive drab (class W/B/J -> data-finish="od") must render olive even when a
+      // non-olive finish style is active. Previously "od" had no explicit
+      // [data-finish] rule, so it inherited the theme's --default-shell-tint.
+      const prevStyle = document.documentElement.getAttribute("data-style");
+      document.documentElement.setAttribute("data-style", "nickel");
+      decode("D38999/26WE35PN");
+      document.querySelector("#viewModeRealBtn").click();
+      const odShellFillUnderNickel = getComputedStyle(document.querySelector("#connectorSvg .shell-fill")).fill;
+
+      // Comprehensive finish-color audit: EVERY class letter must render its true
+      // finish metal in the real view, independent of the active style AND the
+      // shell type (plug vs wall receptacle). data-finish drives --shell-tint, so
+      // this guards every [data-finish] rule and the class -> finish-key map at
+      // once. The style stays pinned to "nickel" (a deliberate mismatch) so any
+      // rule that silently falls back to --default-shell-tint is caught.
+      const expectedFinishRgb = {
+        od:    "rgb(112, 118, 87)",
+        gun:   "rgb(42, 47, 53)",
+        zinc:  "rgb(71, 77, 85)",
+        anod:  "rgb(42, 47, 52)",
+        cad:   "rgb(221, 214, 189)",
+        tin:   "rgb(208, 212, 214)",
+        tinz:  "rgb(166, 174, 182)",
+        nik:   "rgb(177, 184, 191)",
+        steel: "rgb(146, 153, 161)",
+      };
+      const classToFinish = {
+        W: "od", B: "od", J: "od", Z: "gun", T: "zinc", C: "anod", A: "cad", U: "cad",
+        D: "tin", V: "tinz", AB: "tinz",
+        F: "nik", G: "nik", N: "nik", S: "nik", L: "nik", R: "nik", M: "nik", AA: "nik",
+        H: "steel", K: "steel", Y: "steel", E: "steel",
+      };
+      const finishColorMismatches = [];
+      // [slashSheet, shellCode] pairs: a plug and a wall-mount receptacle so the
+      // shell body AND the mount flange (both use --shell-tint) are checked.
+      [["26", "E"], ["20", "B"]].forEach(([sheet, shellCode]) => {
+        Object.keys(classToFinish).forEach((cls) => {
+          const expectedKey = classToFinish[cls];
+          const expectedRgb = expectedFinishRgb[expectedKey];
+          decode("D38999/" + sheet + cls + shellCode + "35PN");
+          const svg = document.querySelector("#connectorSvg");
+          const key = svg.dataset.finish || "";
+          const fillEl = svg.querySelector(".shell-fill");
+          const fill = fillEl ? getComputedStyle(fillEl).fill : "(no shell-fill)";
+          if (key !== expectedKey) {
+            finishColorMismatches.push("class " + cls + " /" + sheet + ": data-finish=" + key + " expected " + expectedKey);
+          } else if (fill !== expectedRgb) {
+            finishColorMismatches.push("class " + cls + " /" + sheet + " (" + expectedKey + "): fill " + fill + " expected " + expectedRgb);
+          }
+        });
+      });
+
+      if (prevStyle) document.documentElement.setAttribute("data-style", prevStyle);
+      else document.documentElement.removeAttribute("data-style");
+      decode("D38999/26WE35PE");
+      const seriesIIIKeying = {
+        active: document.querySelector(".keying-chip.active")?.textContent.trim() || "",
+        spokeCount: document.querySelectorAll("#connectorSvg .keying-spoke").length,
+      };
+      decode("D38999/46WB35PK");
+      const seriesIVKeying = {
+        chips: [...document.querySelectorAll(".keying-chip")].map((node) => node.textContent.trim()),
+        active: document.querySelector(".keying-chip.active")?.textContent.trim() || "",
+        spokeCount: document.querySelectorAll("#connectorSvg .keying-spoke").length,
+      };
+      document.querySelector("#viewModeEngBtn").click();
+      return {
+        plugViewBox,
+        flangeViewBox,
+        flangeInnerCount,
+        visibleRealGuides,
+        wallFinish,
+        finishMap,
+        odShellFillUnderNickel,
+        finishColorMismatches,
+        seriesIIIKeying,
+        seriesIVKeying,
+      };
+    })()`);
+    const plugWidth = Number((frontFaceAudit.plugViewBox || "0 0 0 0").split(/\s+/)[2] || 0);
+    const flangeWidth = Number((frontFaceAudit.flangeViewBox || "0 0 0 0").split(/\s+/)[2] || 0);
+    assert(flangeWidth > plugWidth, "Wall-flange front-face viewBox expands beyond the plug view to avoid clipping shell hardware");
+    assert(frontFaceAudit.flangeInnerCount === 0, "Front-face flange rendering no longer draws the inner inset line between mounting holes");
+    assert(frontFaceAudit.visibleRealGuides === 0, "Real view hides engineering guide paths");
+    assert(frontFaceAudit.finishMap.W === "od" && frontFaceAudit.finishMap.Z === "gun" && frontFaceAudit.finishMap.T === "zinc" && frontFaceAudit.finishMap.D === "tin" && frontFaceAudit.finishMap.V === "tinz" && frontFaceAudit.finishMap.E === "steel" && frontFaceAudit.finishMap.F === "nik" && frontFaceAudit.finishMap.C === "anod", "Decoded class/finish colors map to the expected render families");
+    assert(/^rgb\(\s*112\s*,\s*118\s*,\s*87\s*\)$/.test(frontFaceAudit.odShellFillUnderNickel || ""), "Olive-drab (class W) real-view body renders olive green regardless of the active finish style");
+    assert((frontFaceAudit.finishColorMismatches || []).length === 0, "Every class letter renders its true finish color across shell types: " + (frontFaceAudit.finishColorMismatches || []).join(" | "));
+    assert(frontFaceAudit.seriesIIIKeying.active === "E" && frontFaceAudit.seriesIIIKeying.spokeCount === 4, "Series III E keying renders the E selection and updates the four keyed minor positions");
+    assert(
+      frontFaceAudit.seriesIVKeying.active === "K"
+      && frontFaceAudit.seriesIVKeying.spokeCount === 6
+      && ["N", "A", "B", "C", "K"].every((key) => frontFaceAudit.seriesIVKeying.chips.includes(key))
+      && ["L", "M", "R"].every((key) => !frontFaceAudit.seriesIVKeying.chips.includes(key)),
+      "Series IV keying renders six face markers and only suggests valid-source keying letters (hides unsourced L/M/R for 46WB35)"
+    );
+
+    // ---- Keying geometry is true to life (rendered SVG vs the standard) ----
+    // Recover each rendered keying marker's angle from its SVG attributes and
+    // compare to the MIL-DTL-38999 Figure 6 (series III) / Figure 7 (series IV)
+    // angles in standard_definitions.json. Marker attributes are computed
+    // un-mirrored (the socket-face mirror is a parent <g> transform), so the
+    // recovered angle equals the standard angle for both pin and socket parts.
+    const standardDefs = JSON.parse(fs.readFileSync(path.join(projectRoot, "data", "reference", "standard_definitions.json"), "utf8"));
+    const polz = standardDefs.definitions.polarization;
+    const expectedIII = (shell, letter) => {
+      const row = polz.series_iii.rotations_by_shell_size[String(shell)] && polz.series_iii.rotations_by_shell_size[String(shell)][letter];
+      return row ? [row.AR_or_AP_deg, row.BR_or_BP_deg, row.CR_or_CP_deg, row.DR_or_DP_deg] : null;
+    };
+    const expectedIV = (shell, letter) => {
+      const minor = polz.series_iv.minor_key_polarity_arrangements.arrangements[letter];
+      const main = polz.series_iv.main_key_by_shell_size.shell_sizes[String(shell)];
+      return minor && main ? [main.P_deg, main.Q_deg, main.R_deg, main.S_deg, minor.X_or_XX_deg, minor.Y_or_YY_deg] : null;
+    };
+    const angleSetMatches = (rendered, expected, tol = 1.0) => {
+      if (!expected || rendered.length !== expected.length) return false;
+      const r = [...rendered].sort((a, b) => a - b);
+      const e = [...expected].sort((a, b) => a - b);
+      return r.every((v, i) => Math.min(Math.abs(v - e[i]), 360 - Math.abs(v - e[i])) <= tol);
+    };
+    const fmt = (angles) => "[" + angles.map((n) => Number(n).toFixed(1)).join(", ") + "]";
+
+    // shell-size codes: 9=A 11=B 13=C 15=D 17=E 19=F 21=G 23=H 25=J.
+    const keyingCases = [
+      // Series III plug (/26), pin: smallest, mid and largest shells x default + alternates.
+      { pn: "D38999/26WA35PN", series: "III", shell: 9, letter: "N", role: "plug", gender: "pin", count: 4, master: true },
+      { pn: "D38999/26WA35PA", series: "III", shell: 9, letter: "A", role: "plug", gender: "pin", count: 4, master: true },
+      { pn: "D38999/26WA35PE", series: "III", shell: 9, letter: "E", role: "plug", gender: "pin", count: 4, master: true },
+      { pn: "D38999/26WE35PN", series: "III", shell: 17, letter: "N", role: "plug", gender: "pin", count: 4, master: true },
+      { pn: "D38999/26WE35PA", series: "III", shell: 17, letter: "A", role: "plug", gender: "pin", count: 4, master: true },
+      { pn: "D38999/26WE35PE", series: "III", shell: 17, letter: "E", role: "plug", gender: "pin", count: 4, master: true },
+      { pn: "D38999/26WJ35PN", series: "III", shell: 25, letter: "N", role: "plug", gender: "pin", count: 4, master: true },
+      { pn: "D38999/26WJ35PE", series: "III", shell: 25, letter: "E", role: "plug", gender: "pin", count: 4, master: true },
+      // Series III receptacle (/20), socket: role + face-mirror behaviour.
+      { pn: "D38999/20WE35SN", series: "III", shell: 17, letter: "N", role: "receptacle", gender: "socket", count: 4, master: true },
+      // Series IV plug (/46), pin: no 12-o'clock master; six markers incl. wide K.
+      { pn: "D38999/46WB35PN", series: "IV", shell: 11, letter: "N", role: "plug", gender: "pin", count: 6, master: false },
+      { pn: "D38999/46WB35PK", series: "IV", shell: 11, letter: "K", role: "plug", gender: "pin", count: 6, master: false },
+      { pn: "D38999/46WB35PR", series: "IV", shell: 11, letter: "R", role: "plug", gender: "pin", count: 6, master: false },
+      { pn: "D38999/46WE35PN", series: "IV", shell: 17, letter: "N", role: "plug", gender: "pin", count: 6, master: false },
+      { pn: "D38999/46WE35PK", series: "IV", shell: 17, letter: "K", role: "plug", gender: "pin", count: 6, master: false },
+      { pn: "D38999/46WJ35PR", series: "IV", shell: 25, letter: "R", role: "plug", gender: "pin", count: 6, master: false },
+      // Series IV receptacle (/40), socket.
+      { pn: "D38999/40WE35SN", series: "IV", shell: 17, letter: "N", role: "receptacle", gender: "socket", count: 6, master: false },
+    ];
+    const keyingPns = keyingCases.map((c) => c.pn);
+
+    const keyingGeometry = await cdp.eval(`(() => {
+      const $ = (s) => document.querySelector(s);
+      const input = $("#partNumberInput"), btn = $("#decodeButton");
+      const engBtn = $("#viewModeEngBtn"), realBtn = $("#viewModeRealBtn");
+      const norm = (a) => ((a % 360) + 360) % 360;
+      const ang = (cx, cy, x, y) => norm(Math.atan2(x - cx, cy - y) * 180 / Math.PI);
+      const rectCenterAngle = (cx, cy, el) => ang(cx, cy, (+el.getAttribute("x")) + (+el.getAttribute("width")) / 2, (+el.getAttribute("y")) + (+el.getAttribute("height")) / 2);
+      const spokeAngles = (svg, cx, cy) => [...svg.querySelectorAll(".keying-spoke")].map((l) => ang(cx, cy, +l.getAttribute("x2"), +l.getAttribute("y2")));
+      const audit = (pn) => {
+        input.value = pn; btn.click(); engBtn.click();
+        const svg = $("#connectorSvg");
+        const ring = svg.querySelector(".keying-reference-ring");
+        if (!ring) return { pn: pn, ok: false };
+        const cx = +ring.getAttribute("cx"), cy = +ring.getAttribute("cy");
+        const spokes = spokeAngles(svg, cx, cy);
+        const masters = [...svg.querySelectorAll(".keying-real-master")];
+        const masterAngles = masters.map((m) => rectCenterAngle(cx, cy, m));
+        const drawing = svg.querySelector(".keying-drawing");
+        realBtn.click();
+        const keyEl = svg.querySelector(".keying-real-key"), kwEl = svg.querySelector(".keying-real-keyway");
+        const keyShown = keyEl ? getComputedStyle(keyEl).display !== "none" : false;
+        const kwShown = kwEl ? getComputedStyle(kwEl).display !== "none" : false;
+        const firstSpoke = svg.querySelector(".keying-spoke");
+        const spokeHidden = firstSpoke ? getComputedStyle(firstSpoke).display === "none" : true;
+        engBtn.click();
+        return { pn: pn, ok: true, spokes: spokes, count: spokes.length,
+                 role: drawing ? (drawing.dataset.role || "") : "",
+                 mirrored: svg.dataset.mirrored === "true", gender: svg.dataset.gender || "",
+                 masterCount: masters.length, masterAngles: masterAngles,
+                 keyShown: keyShown, kwShown: kwShown, spokeHidden: spokeHidden };
+      };
+      const audits = {};
+      ${JSON.stringify(keyingPns)}.forEach((pn) => { audits[pn] = audit(pn); });
+      // Keying-chip interaction: decode letter N then click the "B" chip and re-read.
+      input.value = "D38999/26WE35PN"; btn.click(); engBtn.click();
+      const svg0 = $("#connectorSvg"), ring0 = svg0.querySelector(".keying-reference-ring");
+      const beforeActive = (document.querySelector(".keying-chip.active") || {}).textContent;
+      const beforeSpokes = spokeAngles(svg0, +ring0.getAttribute("cx"), +ring0.getAttribute("cy"));
+      const chipB = [...document.querySelectorAll(".keying-chip")].find((c) => c.textContent.trim() === "B");
+      if (chipB) chipB.click();
+      const svg1 = $("#connectorSvg"), ring1 = svg1.querySelector(".keying-reference-ring");
+      const afterActive = (document.querySelector(".keying-chip.active") || {}).textContent;
+      const afterSpokes = spokeAngles(svg1, +ring1.getAttribute("cx"), +ring1.getAttribute("cy"));
+      engBtn.click();
+      return { audits: audits, chip: {
+        beforeActive: (beforeActive || "").trim(), afterActive: (afterActive || "").trim(),
+        beforeSpokes: beforeSpokes, afterSpokes: afterSpokes } };
+    })()`);
+
+    keyingCases.forEach((c) => {
+      const a = keyingGeometry.audits[c.pn];
+      const expected = c.series === "IV" ? expectedIV(c.shell, c.letter) : expectedIII(c.shell, c.letter);
+      assert(a && a.ok, `Keying ${c.pn} renders keying geometry`);
+      if (!a || !a.ok) return;
+      assert(a.count === c.count, `Keying ${c.pn} draws ${c.count} polarizing markers (got ${a.count})`);
+      assert(angleSetMatches(a.spokes, expected), `Keying ${c.pn} markers sit at the Figure 6/7 angles ${expected ? fmt(expected) : "?"} (rendered ${fmt(a.spokes)})`);
+      assert(a.role === c.role, `Keying ${c.pn} shell group carries role "${c.role}" (got "${a.role}")`);
+      if (c.master) {
+        assert(a.masterCount >= 1 && a.masterAngles.every((m) => Math.min(Math.abs(m), 360 - Math.abs(m)) <= 1.0), `Keying ${c.pn} master key/keyway sits at 12 o'clock (0 deg)`);
+      } else {
+        assert(a.masterCount === 0, `Keying ${c.pn} (series IV) has no 12-o'clock master marker`);
+      }
+      if (c.role === "plug") assert(a.keyShown && !a.kwShown, `Keying ${c.pn} real view shows raised plug keys (not keyways)`);
+      if (c.role === "receptacle") assert(a.kwShown && !a.keyShown, `Keying ${c.pn} real view shows recessed receptacle keyways (not keys)`);
+      assert(a.spokeHidden, `Keying ${c.pn} hides engineering spokes in the real view`);
+      assert(a.mirrored === (c.gender === "socket"), `Keying ${c.pn} face-mirror flag matches its ${c.gender} contacts`);
+    });
+
+    // Different keying letters must render geometrically distinct shapes (anti-mismate).
+    const sameShellIII = ["N", "A", "E"].map((L) => keyingGeometry.audits["D38999/26WE35P" + L]).filter((a) => a && a.ok);
+    const distinctIII = new Set(sameShellIII.map((a) => [...a.spokes].sort((x, y) => x - y).map((n) => n.toFixed(1)).join(",")));
+    assert(distinctIII.size === sameShellIII.length && sameShellIII.length === 3, "Each series III keying letter renders a geometrically distinct key shape (anti-mismate)");
+
+    // Clicking a keying chip repositions the markers to the new letter, same count.
+    const chip = keyingGeometry.chip;
+    assert(chip.beforeActive === "N" && chip.afterActive === "B", "Clicking the B keying chip switches the active keying from N to B");
+    assert(chip.afterSpokes.length === 4 && chip.beforeSpokes.length === 4, "Keying chip switch preserves the four series III markers");
+    assert(angleSetMatches(chip.afterSpokes, expectedIII(17, "B")), "Keying chip switch repositions markers to the B angles from Figure 6");
+    const beforeSorted = [...chip.beforeSpokes].sort((a, b) => a - b);
+    const afterSorted = [...chip.afterSpokes].sort((a, b) => a - b);
+    assert(beforeSorted.some((v, i) => Math.abs(v - afterSorted[i]) > 1.0), "Keying chip switch visibly rotates at least one marker");
+
+    // ---- Only suggest keying + connector examples backed by a valid source ----
+    const validSourceAudit = await cdp.eval(`(() => {
+      const $ = (s) => document.querySelector(s);
+      const decode = (pn) => { $("#partNumberInput").value = pn; $("#decodeButton").click(); };
+      const norm = (s) => String(s || "").toUpperCase().replace(/[\\s-]+/g, "");
+      const VALID = new Set(["manufacturer_verified_exact", "qpl_and_secondary_exact", "qpl_qualified_source"]);
+      const vpns = ((window.D38999_TOOLBOX_DATA.research || {}).validPartNumbers || {}).partNumbers || [];
+      const level = new Map(vpns.map((r) => [norm(r.normalizedPartNumber || r.partNumber), r.evidenceLevel]));
+      const exampleChips = [...document.querySelectorAll(".example-chip[data-example]")].map((c) => c.dataset.example);
+      const exampleNonCompliant = exampleChips.filter((pn) => !VALID.has(level.get(norm(pn))));
+      const chipLetters = () => [...document.querySelectorAll(".keying-chip")].map((c) => c.textContent.trim()).sort();
+      decode("D38999/20FF11BN");
+      const limitedKeying = chipLetters();
+      decode("D38999/26WE35PN");
+      const fullKeying = chipLetters();
+      // Engineering-view body now carries a finish wash (a colour, not a url() gradient).
+      $("#viewModeEngBtn").click();
+      const engFill = getComputedStyle($("#connectorSvg .shell-fill")).fill;
+      return { exampleCount: exampleChips.length, exampleNonCompliant, limitedKeying, fullKeying, engFill };
+    })()`);
+    assert(validSourceAudit.exampleCount >= 5, "Decoder still offers a set of connector example chips");
+    assert(validSourceAudit.exampleNonCompliant.length === 0, `Every connector example chip is QPL/manufacturer-verified (offenders: ${validSourceAudit.exampleNonCompliant.join(", ") || "none"})`);
+    assert(JSON.stringify(validSourceAudit.limitedKeying) === JSON.stringify(["N"]), "Keying suggestions for D38999/20FF11BN are limited to the valid-source letter N");
+    assert(["N", "A", "B", "C", "D", "E"].every((l) => validSourceAudit.fullKeying.includes(l)), "Keying suggestions for D38999/26WE35PN expose every valid-source letter N–E");
+    assert(!/^url\(/.test(validSourceAudit.engFill) && validSourceAudit.engFill !== "none", "Engineering view tints the connector body with the decoded finish (not a neutral gradient)");
+
+    const sideViewAudit = await cdp.eval(`(() => {
+      const decode = (pn) => {
+        document.querySelector("#partNumberInput").value = pn;
+        document.querySelector("#decodeButton").click();
+      };
+      const readSide = (pn) => {
+        decode(pn);
+        document.querySelector("#viewModeSideBtn").click();
+        const fig = document.querySelector("#sideViewLayer .side-view-figure");
+        const sw = fig && fig.querySelector(".side-view-finish-swatch");
+        return {
+          finish: fig ? (fig.dataset.finish || "") : "",
+          hasSwatch: Boolean(sw),
+          swatchBg: sw ? getComputedStyle(sw).backgroundColor : "",
+        };
+      };
+      const z = readSide("D38999/26ZE35PN");
+      const w = readSide("D38999/26WE35PN");
+      document.querySelector("#viewModeEngBtn").click();
+      return { z, w };
+    })()`);
+    assert(sideViewAudit.z.finish === "gun" && sideViewAudit.w.finish === "od", "Side-view profile carries the decoded class finish");
+    assert(sideViewAudit.z.hasSwatch && Boolean(sideViewAudit.z.swatchBg) && sideViewAudit.z.swatchBg !== sideViewAudit.w.swatchBg, "Side-view finish swatch renders and tints per decoded finish");
 
     const guideAndGaugeAudit = await cdp.eval(`(() => {
       const selectByArrangement = (id) => {
@@ -351,7 +690,12 @@ async function main() {
     assert(guideAndGaugeAudit.sizes.filter((size) => size === "20").length === 40, "25-46 assigns forty #20 contacts");
     assert(guideAndGaugeAudit.has8 && guideAndGaugeAudit.has16 && guideAndGaugeAudit.has20, "25-46 renders gauge-specific symbols");
     assert(guideAndGaugeAudit.guides > 0, "17-35 renders extracted separator guide paths");
-    assert(guideAndGaugeAudit.manualText.includes("Strong coverage") && guideAndGaugeAudit.manualText.includes("Contact Styles"), "Manual tab renders simplified standard guide");
+    assert(
+      guideAndGaugeAudit.manualText.includes("Reference & rules") &&
+      guideAndGaugeAudit.manualText.includes("Contact Styles") &&
+      guideAndGaugeAudit.manualText.includes("Data sources"),
+      "Manual tab renders simplified standard guide"
+    );
 
     const glossaryAudit = await cdp.eval(`(() => {
       document.querySelector('.tab-button[data-tab="catalog"]').click();
@@ -408,6 +752,60 @@ async function main() {
       return { count: cards.length, all17: cards.every((text) => text.startsWith("17-")) };
     })()`);
     assert(manualFilter.count > 0 && manualFilter.all17, "Manual shell-size filter returns shell 17 arrangements");
+
+    const contextFilterAudit = await cdp.eval(`(() => {
+      document.querySelector('.tab-button[data-tab="catalog"]').click();
+      const setValue = (selector, value) => {
+        const node = document.querySelector(selector);
+        node.value = value;
+        node.dispatchEvent(new Event(node.tagName === "SELECT" ? "change" : "input", { bubbles: true }));
+      };
+      setValue("#arrangementFilter", "");
+      setValue("#shellFilter", "");
+      setValue("#countFilter", "");
+      setValue("#sizeFilter", "");
+      setValue("#typeFilter", "");
+      setValue("#genderFilter", "");
+      setValue("#keyingFilter", "");
+      setValue("#shellStyleFilter", "");
+      setValue("#slashSheetFilter", "");
+      const total = document.querySelectorAll(".catalog-card .catalog-card-id").length;
+      setValue("#slashSheetFilter", "/46");
+      const afterSlash = [...document.querySelectorAll(".catalog-card .catalog-card-id")].map((node) => node.textContent.trim());
+      setValue("#shellStyleFilter", "receptacle");
+      const afterWrongRole = document.querySelectorAll(".catalog-card .catalog-card-id").length;
+      setValue("#shellStyleFilter", "plug");
+      const afterMatchingRole = document.querySelectorAll(".catalog-card .catalog-card-id").length;
+      return {
+        total,
+        afterSlashCount: afterSlash.length,
+        afterSlashHas1739: afterSlash.includes("17-39"),
+        afterWrongRole,
+        afterMatchingRole,
+      };
+    })()`);
+    assert(contextFilterAudit.afterSlashCount > 0 && contextFilterAudit.afterSlashCount < contextFilterAudit.total, "Slash-sheet filter narrows arrangement results");
+    assert(!contextFilterAudit.afterSlashHas1739, "Slash-sheet filter excludes arrangements without matching exact catalog context");
+    assert(contextFilterAudit.afterWrongRole === 0, "Shell-style filter excludes incompatible slash-sheet contexts");
+    assert(contextFilterAudit.afterMatchingRole === contextFilterAudit.afterSlashCount, "Compatible shell-style context preserves matching slash-sheet arrangements");
+
+    // The keying filter must offer Series IV minor keys (K,L,M,R), not just the
+    // Series III set — they exist in the corpus and were previously unfilterable.
+    const keyingFilterOptions = await cdp.eval(`[...document.querySelectorAll("#keyingFilter option")].map((o) => o.value)`);
+    assert(["N", "A", "B", "C", "D", "E", "K", "L", "M", "R"].every((k) => keyingFilterOptions.includes(k)), "Keying filter dropdown offers Series III (N-E) and Series IV (K,L,M,R) keying letters");
+
+    const ruggedIoAudit = await cdp.eval(`(() => {
+      document.querySelector("#partNumberInput").value = "TV06UCOMCF11P";
+      document.querySelector("#decodeButton").click();
+      return {
+        ruggedCard: Boolean(document.querySelector("#decodedPanel .rugged-io-decoded")),
+        decodedText: document.querySelector("#decodedPanel").textContent,
+        ruggedImages: document.querySelectorAll("#ruggedFaceLayer img").length,
+      };
+    })()`);
+    assert(ruggedIoAudit.ruggedCard, "TV µCOM rugged I/O part numbers decode into the rugged connector summary");
+    assert(ruggedIoAudit.decodedText.includes("TV µCOM-10Gb+") && ruggedIoAudit.decodedText.includes("11"), "TV µCOM decode shows the family name and shell size");
+    assert(ruggedIoAudit.ruggedImages >= 1, "TV µCOM decode renders rugged connector artwork");
 
     // Switch to the mating tab for catalog-backed reciprocal tests
     await cdp.eval(`document.querySelector('.tab-button[data-tab="mating"]').click(); true;`);
@@ -496,10 +894,22 @@ async function main() {
         "decoder-side pin catalog is removed",
         "pin search highlights and opens detail",
         "part number lookup selects 17-35",
+        "command launcher routes query-driven workflows",
         "decoded exact-match cards render one exact-match block and one human summary",
+        "decoded evidence badges show trust level",
+        "decoded action hub exposes next-step workflows",
+        "front-face shell hardware expands without clipping and keeps flange renderings neutral",
+        "front-face finish colors map to the decoded class families",
+        "side-view profile reflects the decoded class finish with a color swatch",
+        "series III and IV keying geometry renders from the loaded polarization data",
+        "series III/IV keying markers render at the true Figure 6/7 angles with role-correct keys/keyways, master, anti-mismate and chip switching",
+        "only valid-source (QPL/manufacturer-verified) keying letters and connector example chips are suggested; engineering view tints the body with the finish",
+        "keying filter dropdown offers Series IV minor keys K,L,M,R in addition to the Series III set",
         "manual shell filter works",
         "Svc rating and contact-size pills open glossary popovers",
         "coax/twinax #8 contacts render distinct bore patterns",
+        "advanced catalog context filters work",
+        "TV µCOM rugged I/O part numbers decode and render artwork",
         "signal-assignment controls are absent",
         "mating panel renders catalog-backed mating PN with paired connector cards",
         "mating shell option switching updates the candidate PN when multiple options exist",

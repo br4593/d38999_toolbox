@@ -1,22 +1,22 @@
 {
   "schema_version": "2026-05-20",
-  "generated_at": "2026-06-11T05:58:24Z",
+  "generated_at": "2026-06-14T07:48:02Z",
   "description": "Unified database of valid MIL D38999 part numbers built from all PN-bearing JSON datasets in the repository.",
   "inputs": {
-    "manufacturerVerified": "data/d38999_verified_part_numbers.json",
-    "catalogExamples": "data/d38999_part_number_examples.json",
-    "federalConnectors": "data/d38999_federalconnectors_secondary_source.json",
+    "manufacturerVerified": "data/part_numbers/d38999_verified_part_numbers.json",
+    "catalogExamples": "data/part_numbers/d38999_part_number_examples.json",
+    "federalConnectors": "data/part_numbers/d38999_federalconnectors_secondary_source.json",
     "qplFiles": [
       "qpl_1122_part_details.json"
     ]
   },
   "summary": {
-    "uniquePartNumbers": 37030,
+    "uniquePartNumbers": 37026,
     "sourceCounts": {
       "manufacturerVerified": 3,
       "catalogExample": 3,
-      "federalConnectorsExact": 35243,
-      "federalConnectorsImportable": 35243,
+      "federalConnectorsExact": 35239,
+      "federalConnectorsImportable": 35239,
       "qpl": 6017,
       "qplQualified": 6017
     },
@@ -26,30 +26,30 @@
       "manufacturer_verified_exact": 3,
       "qpl_and_secondary_exact": 4227,
       "qpl_qualified_source": 1787,
-      "secondary_exact_supported": 31013
+      "secondary_exact_supported": 31009
     },
     "qplFiles": [
       "qpl_1122_part_details.json"
     ],
     "environmentTagCounts": {
-      "aerospace_general": 36858,
-      "aircraft_fixed_wing": 36858,
-      "coastal": 20496,
-      "desert_dust": 36858,
-      "fuel_oil_hydraulic_exposure": 36858,
-      "high_emi_rfi": 36855,
-      "high_shock": 36858,
-      "high_temperature": 19523,
-      "high_vibration": 36858,
-      "industrial": 36858,
-      "land_general": 36858,
-      "land_military": 36858,
-      "land_vehicle": 36858,
-      "low_temperature": 36858,
-      "marine_above_deck": 20496,
-      "outdoor_exposed": 26374,
-      "salt_fog": 20496,
-      "sealed_weatherproof": 36858,
+      "aerospace_general": 36854,
+      "aircraft_fixed_wing": 36854,
+      "coastal": 20495,
+      "desert_dust": 36854,
+      "fuel_oil_hydraulic_exposure": 36854,
+      "high_emi_rfi": 36851,
+      "high_shock": 36854,
+      "high_temperature": 19519,
+      "high_vibration": 36854,
+      "industrial": 36854,
+      "land_general": 36854,
+      "land_military": 36854,
+      "land_vehicle": 36854,
+      "low_temperature": 36854,
+      "marine_above_deck": 20495,
+      "outdoor_exposed": 26370,
+      "salt_fog": 20495,
+      "sealed_weatherproof": 36854,
       "space": 885,
       "vacuum": 10454
     }
@@ -111,7 +111,7 @@
   ],
   "_sharding": {
     "array_key": "partNumbers",
-    "record_count": 37030,
+    "record_count": 37026,
     "shard_count": 2,
     "max_shard_bytes": 44040192,
     "shards": [

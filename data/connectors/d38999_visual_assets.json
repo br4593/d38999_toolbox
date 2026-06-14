@@ -186,6 +186,23 @@
       "file": "assets/svg/rjftv-face.svg"
     },
     {
+      "id": "tv-ucom-face",
+      "type": "interface_face_drawing",
+      "manufacturer": "Repo-generated",
+      "series": "TV µCOM-10Gb+",
+      "interface": "10G+ Ethernet",
+      "shellStyle": "threaded shell face",
+      "shellSize": "11",
+      "source": "Amphenol PCD TV µCOM-10Gb+ brochure (how-to-order and product overview)",
+      "usage": [
+        "rugged I/O family face identifier",
+        "TV µCOM family decoder preview"
+      ],
+      "copyrightStatus": "recreated_simplified_svg",
+      "status": "recreated",
+      "file": "assets/svg/tv-ucom-face.svg"
+    },
+    {
       "id": "usbftv-face",
       "type": "interface_face_drawing",
       "manufacturer": "Repo-generated",

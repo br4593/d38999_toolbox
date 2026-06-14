@@ -74,10 +74,11 @@ d38999-toolbox/
 |   |-- d38999_rules.py           # converter rule database
 |   |-- convert_d38999.py         # CLI converter
 |   |-- build_d38999_database.py  # rebuilds data/converter + data/rules csv/sqlite from d38999_rules.py
-|   |-- extract_arrangements.py   # PDF -> app/data/*.json + app/assets/svg/
+|   |-- extract_arrangements.py   # PDF -> data/reference/*.json + data/rules/review_needed.json + assets/svg/
 |   |-- extract_standard_definitions.py
 |   |-- extract_dla_documents.py
 |   |-- build_app.py              # regenerates app/app-data.js
+|   |-- keying_smoke_test.py      # offline keying setups/variations/shapes vs the standard
 |   `-- validate_app.js           # headless-Chrome smoke test
 |-- docs/
 |   |-- D38999_manufacturer_guide.md  # plus other research / guide .md files
@@ -164,15 +165,15 @@ If a source PDF does not contain a definition, generated JSON marks the value as
 
 The repo ships with generated app artifacts so it works immediately. The
 extract scripts write directly into `app/data/` and `app/assets/svg/`; the
-build script bundles `app/data/*.json` + `scripts/d38999_rules.py` into
+build script bundles canonical `data/*` JSON + `scripts/d38999_rules.py` into
 `app/app-data.js`. To regenerate from source PDFs:
 
 ```bash
 python -m pip install -r requirements.txt
 
-python scripts/extract_arrangements.py            # writes app/data/insert_arrangements.json + app/assets/svg/
-python scripts/extract_standard_definitions.py    # writes app/data/standard_definitions.json + part_number_rules.json
-python scripts/extract_dla_documents.py           # writes app/data/dla_documents.json
+python scripts/extract_arrangements.py            # writes data/reference/insert_arrangements.json + data/rules/review_needed.json + assets/svg/
+python scripts/extract_standard_definitions.py    # writes data/reference/standard_definitions.json + data/rules/part_number_rules.json
+python scripts/extract_dla_documents.py           # writes data/reference/dla_documents.json
 python scripts/build_d38999_database.py           # refreshes data/converter + data/rules csv/sqlite from d38999_rules.py
 python scripts/build_app.py                       # bakes app/app-data.js
 ```
@@ -192,6 +193,23 @@ npm run validate
 ```
 
 The validator checks app loading, part-number decoding, arrangement filtering, SVG rendering, gauge symbols, label uniqueness, pin search, CSV export, and manual rendering.
+
+### Keying smoke test (offline)
+
+Verify that every connector **keying** setup (polarization letter), every variation
+(shell size / series), and its rendered key/keyway **shape** is true to life — i.e.
+matches MIL-DTL-38999 Figure 6 (series III) and Figure 7 (series IV). The test
+cross-checks three layers: the source PDF tables, the app's
+`standard_definitions.json`, and the SVG marker geometry produced by `app.js`.
+
+```bash
+npm run validate:keying            # smoke subset (no browser, no network)
+python3 scripts/keying_smoke_test.py --full      # exhaustive shell x letter grid
+python3 scripts/keying_smoke_test.py --refresh    # re-extract PDF ground truth (needs PyMuPDF)
+```
+
+Ground truth is cached in `data/reference/keying_ground_truth.json` (regenerated
+from the PDF with `--refresh`), so normal runs and CI need only the standard library.
 
 ## GitHub Upload Notes
 

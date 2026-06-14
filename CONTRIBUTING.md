@@ -34,14 +34,14 @@ If you cannot point to a source page, the corresponding JSON should be marked
 ## Adding an insert arrangement
 
 Edit the extraction logic in `scripts/extract_arrangements.py` rather than
-hand-editing `data/insert_arrangements.json`. Then re-run:
+hand-editing `data/reference/insert_arrangements.json`. Then re-run:
 
 ```
 python scripts/extract_arrangements.py
 python scripts/build_app.py
 ```
 
-If the arrangement requires manual review, add it to the `review_needed.json`
+If the arrangement requires manual review, add it to the `data/rules/review_needed.json`
 output produced by the extraction script and document the ambiguity in the
 script's review-emission code path.
 
@@ -50,6 +50,6 @@ script's review-emission code path.
 - [ ] `python scripts/build_app.py` succeeds.
 - [ ] `python scripts/convert_d38999.py D38999/26WD35PN` still produces an
       Amphenol / Conesys / Glenair / ITT Cannon / Souriau row.
-- [ ] No new `?` labels appear in `app/data/insert_arrangements.json`.
-- [ ] No new entries in `data/review_needed.json` go undocumented.
+- [ ] No new `?` labels appear in `data/reference/insert_arrangements.json`.
+- [ ] No new entries in `data/rules/review_needed.json` go undocumented.
 - [ ] CI is green.

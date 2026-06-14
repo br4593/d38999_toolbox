@@ -97,6 +97,7 @@
     panViewBox: null,
     panPending: false,
     panPointerId: null,
+    didPan: false,
     activeTab: "home",
     activeManualField: "slash_sheet",
     catalogSort: "id",
@@ -111,7 +112,16 @@
     ruggedView: null,
     ruggedViewFamily: null,
     viewMode: "engineering",
+    viewModeUserChosen: false,
     labelScale: 1,
+    launcherOpen: false,
+    launcherIndex: 0,
+    launcherItems: [],
+    lastConverterInput: "",
+    reportCandidate: null,
+    lightboxOpen: false,
+    routingReady: false,
+    suppressHashRoute: false,
   };
 
   const EXACT_VALIDATION_STATUSES = new Set(["EXACT_PN_MATCH", "VERIFIED_EXISTS", "SECONDARY_SOURCE_EXACT"]);
@@ -188,7 +198,6 @@
       <line x1="62" y1="10" x2="62" y2="48" stroke-width="0.7" opacity="0.45"/>
       <line x1="70" y1="10" x2="70" y2="48" stroke-width="0.7" opacity="0.45"/>
       <line x1="78" y1="10" x2="78" y2="48" stroke-width="0.7" opacity="0.45"/>
-      <text x="50" y="56.5" text-anchor="middle" font-size="7.5" font-family="system-ui,sans-serif" fill="currentColor" stroke="none" opacity="0.65">Straight Plug</text>
     </svg>`,
     wall_receptacle: `<svg viewBox="0 0 100 58" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" class="shell-profile-svg">
       <line x1="2" y1="26" x2="14" y2="26" stroke-width="1.2" stroke-linecap="round"/>
@@ -198,7 +207,6 @@
       <circle cx="64" cy="14" r="2.5" stroke-width="1.3"/>
       <circle cx="64" cy="44" r="2.5" stroke-width="1.3"/>
       <line x1="74" y1="2" x2="74" y2="56" stroke-width="1" stroke-dasharray="3 2.5" opacity="0.35"/>
-      <text x="44" y="56.5" text-anchor="middle" font-size="7.5" font-family="system-ui,sans-serif" fill="currentColor" stroke="none" opacity="0.65">Wall Flange</text>
     </svg>`,
     jamnut_receptacle: `<svg viewBox="0 0 100 58" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" class="shell-profile-svg">
       <line x1="2" y1="26" x2="12" y2="26" stroke-width="1.2" stroke-linecap="round"/>
@@ -209,7 +217,6 @@
       <line x1="41" y1="11" x2="41" y2="47" stroke-width="0.8" opacity="0.4"/>
       <line x1="45" y1="11" x2="45" y2="47" stroke-width="0.8" opacity="0.4"/>
       <line x1="49" y1="11" x2="49" y2="47" stroke-width="0.8" opacity="0.4"/>
-      <text x="50" y="56.5" text-anchor="middle" font-size="7.5" font-family="system-ui,sans-serif" fill="currentColor" stroke="none" opacity="0.65">Jam-Nut</text>
     </svg>`,
     box_receptacle: `<svg viewBox="0 0 100 58" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" class="shell-profile-svg">
       <rect x="6" y="10" width="70" height="38" rx="2.5" stroke-width="1.5"/>
@@ -218,13 +225,11 @@
       <circle cx="11" cy="42" r="2.5" stroke-width="1.3"/>
       <circle cx="71" cy="16" r="2.5" stroke-width="1.3"/>
       <circle cx="71" cy="42" r="2.5" stroke-width="1.3"/>
-      <text x="44" y="56.5" text-anchor="middle" font-size="7.5" font-family="system-ui,sans-serif" fill="currentColor" stroke="none" opacity="0.65">Box Mount</text>
     </svg>`,
     cover: `<svg viewBox="0 0 100 58" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" class="shell-profile-svg">
       <rect x="4" y="15" width="54" height="28" rx="3" stroke-width="1.5"/>
       <path d="M58 15 Q72 29 58 43" stroke-width="1.5"/>
       <rect x="62" y="22" width="22" height="14" rx="2" stroke-width="1.2" opacity="0.7"/>
-      <text x="45" y="56.5" text-anchor="middle" font-size="7.5" font-family="system-ui,sans-serif" fill="currentColor" stroke="none" opacity="0.65">Protective Cover</text>
     </svg>`,
     inline_receptacle: `<svg viewBox="0 0 100 58" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg" class="shell-profile-svg">
       <line x1="2" y1="26" x2="14" y2="26" stroke-width="1.2" stroke-linecap="round"/>
@@ -232,7 +237,6 @@
       <rect x="14" y="15" width="72" height="28" rx="2.5" stroke-width="1.5"/>
       <line x1="86" y1="26" x2="98" y2="26" stroke-width="1.2" stroke-linecap="round"/>
       <line x1="86" y1="32" x2="98" y2="32" stroke-width="1.2" stroke-linecap="round"/>
-      <text x="50" y="56.5" text-anchor="middle" font-size="7.5" font-family="system-ui,sans-serif" fill="currentColor" stroke="none" opacity="0.65">In-Line</text>
     </svg>`,
   };
 
@@ -267,11 +271,17 @@
     inline_receptacle: "In-Line",
     cover: "Protective Cover",
   };
+  const SEARCH_SHORTCUT_HINT = (() => {
+    const platform = String(globalThis.navigator?.platform || globalThis.navigator?.userAgent || "");
+    return /Mac|iPhone|iPad|iPod/i.test(platform) ? "⌘K" : "Ctrl K";
+  })();
 
   const els = {
     dataStatus: $("dataStatus"),
     selectedStatus: $("selectedStatus"),
     goHomeButton: $("goHomeButton"),
+    globalSearch: $("globalSearch"),
+    launcherMenu: $("launcherMenu"),
     partNumberInput: $("partNumberInput"),
     decodeButton: $("decodeButton"),
     decodeMessage: $("decodeMessage"),
@@ -348,6 +358,50 @@
 
   function normalizedCatalogPartNumber(value) {
     return String(value || "").toUpperCase().replace(/[\s-]+/g, "");
+  }
+
+  // A part number "complies with a valid source" when it is QPL-qualified or
+  // manufacturer-verified — NOT merely present in the lower-trust secondary
+  // distributor index. Gates the keying and connector examples we suggest.
+  const VALID_SOURCE_EVIDENCE = new Set([
+    "manufacturer_verified_exact",
+    "qpl_and_secondary_exact",
+    "qpl_qualified_source",
+  ]);
+
+  function partNumberHasValidSource(partNumber) {
+    const key = normalizedCatalogPartNumber(partNumber);
+    if (!key) return false;
+    const validEntry = validPartNumberMap.get(key);
+    if (validEntry && VALID_SOURCE_EVIDENCE.has(String(validEntry.evidenceLevel || ""))) return true;
+    // Manufacturer catalog-verified parts are a valid (high-trust) source too.
+    return verifiedPartNumberMap.has(key);
+  }
+
+  // Removes any curated decoder example chip whose part number does not comply
+  // with a valid source, so we never suggest an unsourced example.
+  function filterExampleChipsToValidSource() {
+    document.querySelectorAll(".example-chip[data-example]").forEach((chip) => {
+      if (!partNumberHasValidSource(chip.dataset.example)) chip.remove();
+    });
+  }
+
+  // Legal polarization letters per series (MIL-DTL-38999 Figures 6 & 7): Series III
+  // (/20-/27) = N,A,B,C,D,E; Series IV (/40-/49) = N,A,B,C,D,K,L,M,R. Keeps a
+  // stray/typo keying letter scraped into a part number from polluting the
+  // catalog context index (defense-in-depth; the corpus build also drops these).
+  const SERIES_III_SLASH_SHEETS = new Set(["/20", "/21", "/23", "/24", "/25", "/26", "/27"]);
+  const SERIES_IV_SLASH_SHEETS = new Set(["/40", "/41", "/42", "/43", "/44", "/45", "/46", "/47", "/48", "/49"]);
+  const SERIES_III_KEYING_LETTERS = new Set(["N", "A", "B", "C", "D", "E"]);
+  const SERIES_IV_KEYING_LETTERS = new Set(["N", "A", "B", "C", "D", "K", "L", "M", "R"]);
+  const KNOWN_KEYING_LETTERS = new Set([...SERIES_III_KEYING_LETTERS, ...SERIES_IV_KEYING_LETTERS]);
+
+  function keyingLetterValidForSlash(slashSheet, keying) {
+    if (!keying) return true;
+    const letter = String(keying).toUpperCase();
+    if (SERIES_III_SLASH_SHEETS.has(slashSheet)) return SERIES_III_KEYING_LETTERS.has(letter);
+    if (SERIES_IV_SLASH_SHEETS.has(slashSheet)) return SERIES_IV_KEYING_LETTERS.has(letter);
+    return KNOWN_KEYING_LETTERS.has(letter);
   }
 
   function styleEntryForSlashSheet(slashSheet) {
@@ -770,6 +824,7 @@
     if (!validation) return "";
     const sourcePresence = validation.exactPart?.sourcePresence || {};
     if (sourcePresence.manufacturerVerified) return "It is backed by manufacturer catalog research.";
+    if (sourcePresence.qplQualified || sourcePresence.qpl) return "It is backed by QPL-qualified sources.";
     if (sourcePresence.federalConnectorsExact) return "It is backed by Federal Connectors data.";
     if (sourcePresence.catalogExample) return "It matches a catalog example in the loaded research data.";
     if (validation.status === "VERIFIED_EXISTS") return "It is backed by the catalog research dataset.";
@@ -874,14 +929,62 @@
     </div>`;
   }
 
+  function pushValidationEvidenceEntry(entries, tone, label) {
+    if (!label) return;
+    if (entries.some((entry) => entry.label === label)) return;
+    entries.push({ tone, label });
+  }
+
+  function validationEvidenceEntries(validation, options = {}) {
+    if (!validation) return [];
+    const entries = [];
+    const status = String(validation.status || "");
+    const exactPart = validation.exactPart;
+    const sourcePresence = exactPart?.sourcePresence || {};
+    if (options.includeStatus && status && !isExactValidationStatus(status)) {
+      const tone = status === "VALID_FORMAT_BUT_NOT_CONFIRMED"
+        ? "format"
+        : status === "MANUFACTURER_SPECIFIC_UNCERTAIN"
+          ? "review"
+          : status === "INVALID_COMBINATION"
+            ? "invalid"
+            : "missing";
+      pushValidationEvidenceEntry(entries, tone, validationLabel(status));
+    }
+    if (sourcePresence.manufacturerVerified || validation.verifiedPart) {
+      pushValidationEvidenceEntry(entries, "manufacturer", T("val.badgeManufacturer", "Manufacturer verified"));
+    }
+    if (sourcePresence.qplQualified || sourcePresence.qpl) {
+      pushValidationEvidenceEntry(entries, "qpl", T("val.badgeQpl", "QPL qualified"));
+    }
+    if (status !== "VALID_FORMAT_BUT_NOT_CONFIRMED" && (sourcePresence.catalogExample || validation.supportingRows?.length)) {
+      pushValidationEvidenceEntry(entries, "format", T("val.badgeCatalogExample", "Catalog example"));
+    }
+    if (sourcePresence.federalConnectorsExact || sourcePresence.federalConnectorsImportable || validation.secondaryPart) {
+      pushValidationEvidenceEntry(entries, "secondary", T("val.badgeSecondary", "Secondary source"));
+    }
+    if (Number.isFinite(options.confidence)) {
+      pushValidationEvidenceEntry(entries, "confidence", Tf("val.confidence", { pct: (options.confidence * 100).toFixed(0) }));
+    }
+    return entries;
+  }
+
+  function validationEvidenceBadgesHtml(validation, options = {}) {
+    const entries = validationEvidenceEntries(validation, options);
+    if (!entries.length) return "";
+    return `<div class="validation-badge-row">${entries.map((entry) => `
+      <span class="validation-pill is-${escapeHtml(entry.tone)}">${escapeHtml(entry.label)}</span>
+    `).join("")}</div>`;
+  }
+
   function validationSummaryHtml(validation, options = {}) {
     if (!validation?.status) return "";
     if (isExactValidationStatus(validation.status)) {
       return exactCatalogHitHtml(validation, options.partNumber || "", { hidePartNumber: options.hidePartNumber !== false });
     }
-    const bits = [validationLabel(validation.status)];
-    if (Number.isFinite(options.confidence)) bits.push(Tf("val.confidence", { pct: (options.confidence * 100).toFixed(0) }));
-    return validationBadgeHtml(validation.status, bits.join(" | "));
+    const summary = validationBadgeHtml(validation.status, validationLabel(validation.status));
+    const evidence = validationEvidenceBadgesHtml(validation, { includeStatus: false, confidence: options.confidence });
+    return evidence ? `<div class="validation-stack">${summary}${evidence}</div>` : summary;
   }
 
   function summarizedValidPartSources(part) {
@@ -957,6 +1060,7 @@
     return `<div class="exact-catalog-hit">
       <div class="exact-catalog-hit-title">${escapeHtml(title)}</div>
       ${hidePartNumber ? "" : `<div class="exact-catalog-hit-part mono">${escapeHtml(partNumberOverride || exactPart?.partNumber || verified?.partNumber || secondary?.partNumber || "")}</div>`}
+      ${validationEvidenceBadgesHtml(validation, { includeStatus: false })}
       ${exactPart ? environmentBadgesHtml(exactPart) : ""}
       ${exactPart ? environmentNotesHtml(exactPart) : ""}
     </div>`;
@@ -1061,6 +1165,7 @@
     renderDecoded(state.decoded);
     renderPartNumberGuide(state.decoded);
     renderComparison();
+    if (state.launcherOpen) renderLauncherMenu(els.globalSearch?.value || "");
     if (state.activeTab === "catalog") renderCatalog();
     if (state.activeTab === "io") renderIoCatalog();
     if (state.activeTab === "mating") renderMatingPanel();
@@ -1070,8 +1175,14 @@
   }
 
   function populateFilters() {
-    const slashSheets = Object.keys(defs.slash_sheets || {}).sort(naturalCompare);
-    fillSelect(els.slashSheetFilter, [["", T("filter.allInsert")], ...slashSheets.map((value) => [value, `D38999${value}`])]);
+    const slashSheets = [...styleEntriesBySlashSheet.values()]
+      .map((entry) => entry.catalogCode)
+      .filter((value) => /^\/\d+$/.test(value || ""))
+      .sort(naturalCompare);
+    fillSelect(
+      els.slashSheetFilter,
+      [["", T("filter.allInsert")], ...slashSheets.map((value) => [value, `D38999${value} - ${getShellStyleLabel(value)}`])]
+    );
 
     const shellSizes = unique(arrangements.map((arr) => arr.shell_size)).sort((a, b) => Number(a) - Number(b));
     fillSelect(els.shellFilter, [["", T("common.all")], ...shellSizes.map((value) => [value, value])]);
@@ -1422,40 +1533,513 @@
     form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
   }
 
+  function focusGlobalSearch(selectText = false) {
+    if (!els.globalSearch) return;
+    els.globalSearch.focus();
+    if (selectText && typeof els.globalSearch.select === "function") {
+      els.globalSearch.select();
+    }
+  }
+
+  function openArrangementWorkspace(arrangementId) {
+    if (!arrangementId) return;
+    els.arrangementFilter.value = arrangementId;
+    renderCatalog();
+    const arrangement = arrangementById(arrangementId);
+    if (arrangement) selectArrangement(arrangement, true);
+    selectTab("catalog");
+  }
+
+  function openIoSearch(query = "") {
+    if (els.ioSearch) els.ioSearch.value = query;
+    renderIoCatalog();
+    selectTab("io");
+  }
+
+  function openDecodedWorkflow(partNumber, tabName = "decoder") {
+    const normalized = normalizePartNumber(partNumber);
+    if (!normalized || normalized === "D38999/") return;
+    els.partNumberInput.value = normalized;
+    decodeFromInput();
+    selectTab(tabName);
+  }
+
+  function openDecodedReport(partNumber) {
+    if (partNumber) {
+      const normalized = normalizePartNumber(partNumber);
+      if (normalized && normalized !== "D38999/") {
+        els.partNumberInput.value = normalized;
+        decodeFromInput();
+      }
+    }
+    const target = getReportTarget();
+    if (!target) return;
+    exportReportHtml(target.decoded, {
+      viaInput: target.viaInput,
+      vendor: target.vendor,
+    });
+  }
+
+  function launcherIntent(raw) {
+    const value = String(raw || "").trim();
+    if (!value) return null;
+    const patterns = [
+      { type: "mate", regex: /^(mate|mating|match)\s+(.+)$/i },
+      { type: "convert", regex: /^(convert|xref|cross(?:[- ]?reference)?)\s+(.+)$/i },
+      { type: "decode", regex: /^(decode|validate)\s+(.+)$/i },
+      { type: "arrangement", regex: /^(arr|arrangement|catalog|browse)\s+(.+)$/i },
+      { type: "io", regex: /^(io|rugged)\s+(.+)$/i },
+      { type: "build", regex: /^(build|create)\s+(.+)$/i },
+      { type: "report", regex: /^(report|print)\s+(.+)$/i },
+      { type: "manual", regex: /^(manual|help)$/i },
+      { type: "datasources", regex: /^(data|datasources|sources)$/i },
+    ];
+    for (const pattern of patterns) {
+      const match = value.match(pattern.regex);
+      if (match) {
+        return {
+          type: pattern.type,
+          payload: String(match[2] || "").trim(),
+        };
+      }
+    }
+    return null;
+  }
+
+  function launcherStaticCommands() {
+    return [
+      {
+        id: "nav-decode",
+        section: T("launcher.section.workflows", "Workflows"),
+        title: T("launcher.decodeTitle", "Decode a part number"),
+        description: T("launcher.decodeDesc", "Validate a D38999 or rugged-I/O part number and open the drawing."),
+        keywords: "decode validate part number pin pn d38999",
+        run: () => {
+          selectTab("decoder");
+          els.partNumberInput.focus();
+        },
+      },
+      {
+        id: "nav-mating",
+        section: T("launcher.section.workflows", "Workflows"),
+        title: T("launcher.mateTitle", "Find a mating connector"),
+        description: T("launcher.mateDesc", "Open the mating workflow for the currently decoded connector."),
+        keywords: "mate mating reciprocal paired connector",
+        run: () => selectTab("mating"),
+      },
+      {
+        id: "nav-converter",
+        section: T("launcher.section.workflows", "Workflows"),
+        title: T("launcher.convertTitle", "Convert a part number"),
+        description: T("launcher.convertDesc", "Cross-reference between D38999 and manufacturer part numbers."),
+        keywords: "convert cross reference xref manufacturer vendor pn",
+        run: () => {
+          selectTab("converter");
+          document.getElementById("pnInput")?.focus();
+        },
+      },
+      {
+        id: "nav-arrangements",
+        section: T("launcher.section.browse", "Browse"),
+        title: T("launcher.arrangementsTitle", "Browse insert arrangements"),
+        description: T("launcher.arrangementsDesc", "Open the arrangement catalog and compare cavity layouts."),
+        keywords: "arrangement insert catalog compare shell contact",
+        run: () => selectTab("catalog"),
+      },
+      {
+        id: "nav-io",
+        section: T("launcher.section.browse", "Browse"),
+        title: T("launcher.ioTitle", "Browse rugged I/O connectors"),
+        description: T("launcher.ioDesc", "Open rugged RJ45, USB, HDMI, and DisplayPort families."),
+        keywords: "io rugged ethernet rj45 usb hdmi displayport",
+        run: () => selectTab("io"),
+      },
+      {
+        id: "nav-build",
+        section: T("launcher.section.workflows", "Workflows"),
+        title: T("launcher.buildTitle", "Build a valid connector"),
+        description: T("launcher.buildDesc", "Step through shell, class, insert, contacts, and keying."),
+        keywords: "build create valid connector choose shell class insert keying",
+        run: () => selectTab("build"),
+      },
+      {
+        id: "nav-manual",
+        section: T("launcher.section.reference", "Reference"),
+        title: T("launcher.manualTitle", "Open the manual"),
+        description: T("launcher.manualDesc", "Read the part-number guide and shell-style reference."),
+        keywords: "manual help guide learn shell style",
+        run: () => selectTab("manual"),
+      },
+      {
+        id: "nav-data",
+        section: T("launcher.section.reference", "Reference"),
+        title: T("launcher.dataTitle", "Open data sources"),
+        description: T("launcher.dataDesc", "See the standards, catalogs, QPL, and datasets behind the app."),
+        keywords: "data sources provenance qpl standards catalogs",
+        run: () => selectTab("datasources"),
+      },
+    ];
+  }
+
+  function pushLauncherItem(items, item) {
+    if (!item?.id || !item.title || typeof item.run !== "function") return;
+    if (items.some((existing) => existing.id === item.id)) return;
+    items.push(item);
+  }
+
+  function launcherStaticMatches(query) {
+    const commands = launcherStaticCommands();
+    const needle = String(query || "").trim().toLowerCase();
+    if (!needle) return commands;
+    return commands
+      .map((item) => {
+        const haystack = `${item.title} ${item.description} ${item.keywords || ""}`.toLowerCase();
+        let score = 0;
+        if (item.title.toLowerCase().startsWith(needle)) score += 6;
+        if (item.title.toLowerCase().includes(needle)) score += 3;
+        if (haystack.includes(needle)) score += 1;
+        return { item, score };
+      })
+      .filter((entry) => entry.score > 0)
+      .sort((a, b) => b.score - a.score || naturalCompare(a.item.title, b.item.title))
+      .map((entry) => entry.item);
+  }
+
+  function arrangementLauncherMatches(query) {
+    const needle = String(query || "").trim().toLowerCase();
+    if (!needle) return [];
+    return arrangements
+      .filter((arr) => arr.id.toLowerCase().includes(needle) || String(arr.arrangement_number || "").toLowerCase() === needle)
+      .sort((a, b) => naturalCompare(a.id, b.id))
+      .slice(0, 5)
+      .map((arr) => ({
+        id: `arr-${arr.id}`,
+        section: T("launcher.section.detected", "Detected from input"),
+        title: Tf("launcher.arrangementOpen", { id: arr.id }),
+        description: Tf("launcher.arrangementDesc", { count: arr.contact_count }),
+        run: () => openArrangementWorkspace(arr.id),
+      }));
+  }
+
+  function ioLauncherMatches(query) {
+    const needle = String(query || "").trim().toLowerCase();
+    if (!needle) return [];
+    return ruggedIoCatalogEntries()
+      .filter((entry) => {
+        const hay = `${entry.family} ${entry.interface} ${entry.vendor} ${entry.relation}`.toLowerCase();
+        return hay.includes(needle);
+      })
+      .slice(0, 4)
+      .map((entry) => ({
+        id: `io-${ioNormToken(entry.family)}`,
+        section: T("launcher.section.detected", "Detected from input"),
+        title: Tf("launcher.ioOpen", { family: entry.family }),
+        description: `${entry.interface} • ${entry.vendor}`,
+        run: () => openIoSearch(entry.family),
+      }));
+  }
+
+  function buildLauncherItems(raw) {
+    const query = String(raw || "").trim();
+    const items = [];
+    const intent = launcherIntent(query);
+    if (intent) {
+      if (intent.type === "manual") {
+        pushLauncherItem(items, {
+          id: "intent-manual",
+          section: T("launcher.section.commands", "Commands"),
+          title: T("launcher.manualTitle", "Open the manual"),
+          description: T("launcher.manualDesc", "Read the part-number guide and shell-style reference."),
+          run: () => selectTab("manual"),
+        });
+      } else if (intent.type === "datasources") {
+        pushLauncherItem(items, {
+          id: "intent-datasources",
+          section: T("launcher.section.commands", "Commands"),
+          title: T("launcher.dataTitle", "Open data sources"),
+          description: T("launcher.dataDesc", "See the standards, catalogs, QPL, and datasets behind the app."),
+          run: () => selectTab("datasources"),
+        });
+      } else if (intent.payload) {
+        const normalized = normalizePartNumber(intent.payload);
+        const decoded = decodePartNumber(normalized);
+        if (intent.type === "convert") {
+          pushLauncherItem(items, {
+            id: `intent-convert-${normalized}`,
+            section: T("launcher.section.commands", "Commands"),
+            title: Tf("launcher.convertInput", { value: intent.payload }),
+            description: T("launcher.convertInputDesc", "Send this input to the part-number converter."),
+            run: () => sendToConverter(intent.payload),
+          });
+        } else if (intent.type === "arrangement") {
+          arrangementLauncherMatches(intent.payload).forEach((item) => pushLauncherItem(items, item));
+          pushLauncherItem(items, {
+            id: `intent-arr-search-${intent.payload}`,
+            section: T("launcher.section.commands", "Commands"),
+            title: Tf("launcher.arrangementSearch", { value: intent.payload }),
+            description: T("launcher.arrangementSearchDesc", "Open the arrangement catalog with this filter."),
+            run: () => {
+              els.arrangementFilter.value = intent.payload;
+              renderCatalog();
+              selectTab("catalog");
+            },
+          });
+        } else if (intent.type === "io") {
+          pushLauncherItem(items, {
+            id: `intent-io-${intent.payload}`,
+            section: T("launcher.section.commands", "Commands"),
+            title: Tf("launcher.ioSearch", { value: intent.payload }),
+            description: T("launcher.ioSearchDesc", "Open rugged I/O families filtered by this search."),
+            run: () => openIoSearch(intent.payload),
+          });
+          ioLauncherMatches(intent.payload).forEach((item) => pushLauncherItem(items, item));
+        } else if (intent.type === "build" && decoded.ok && !decoded.rugged_io) {
+          pushLauncherItem(items, {
+            id: `intent-build-${decoded.part_number}`,
+            section: T("launcher.section.commands", "Commands"),
+            title: Tf("launcher.buildInput", { value: decoded.part_number }),
+            description: T("launcher.buildInputDesc", "Decode this part number, then open the guided builder."),
+            run: () => {
+              openDecodedWorkflow(decoded.part_number, "decoder");
+              state.manualSelector = blankSelectorSelection();
+              state.buildStep = currentBuildStepFromSelection(state.manualSelector);
+              state.buildEnvironmentFilter = "";
+              state.buildCurrentFilter = 0;
+              renderBuildConnector();
+              selectTab("build");
+            },
+          });
+        } else if (intent.type === "report" && decoded.ok && !decoded.rugged_io) {
+          pushLauncherItem(items, {
+            id: `intent-report-${decoded.part_number}`,
+            section: T("launcher.section.commands", "Commands"),
+            title: Tf("launcher.reportInput", { value: decoded.part_number }),
+            description: T("launcher.reportInputDesc", "Generate the printable cross-reference and mating report."),
+            run: () => openDecodedReport(decoded.part_number),
+          });
+        } else if (decoded.ok) {
+          const workflowTabs = {
+            decode: "decoder",
+            mate: "mating",
+          };
+          const intentTitles = {
+            decode: T("launcher.decodeIntent", "Decode {value}"),
+            mate: T("launcher.mateIntent", "Find mate for {value}"),
+          };
+          pushLauncherItem(items, {
+            id: `intent-${intent.type}-${decoded.part_number}`,
+            section: T("launcher.section.commands", "Commands"),
+            title: intentTitles[intent.type].replace("{value}", decoded.part_number),
+            description: intent.type === "mate"
+              ? T("launcher.mateIntentDesc", "Open the mating workflow for this decoded connector.")
+              : T("launcher.decodeIntentDesc", "Open the decoder with this part number."),
+            run: () => openDecodedWorkflow(decoded.part_number, workflowTabs[intent.type] || "decoder"),
+          });
+        }
+      }
+    }
+
+    if (query) {
+      const normalized = normalizePartNumber(query);
+      const decoded = decodePartNumber(normalized);
+      if (decoded.ok) {
+        pushLauncherItem(items, {
+          id: `decode-${decoded.part_number}`,
+          section: T("launcher.section.detected", "Detected from input"),
+          title: Tf("launcher.decodePn", { value: decoded.part_number }),
+          description: T("launcher.decodePnDesc", "Open the decoder and show the connector details."),
+          run: () => openDecodedWorkflow(decoded.part_number, "decoder"),
+        });
+        if (!decoded.rugged_io) {
+          pushLauncherItem(items, {
+            id: `mate-${decoded.part_number}`,
+            section: T("launcher.section.detected", "Detected from input"),
+            title: Tf("launcher.findMatePn", { value: decoded.part_number }),
+            description: T("launcher.findMateDesc", "Open the mating workflow and compute reciprocal candidates."),
+            run: () => openDecodedWorkflow(decoded.part_number, "mating"),
+          });
+          pushLauncherItem(items, {
+            id: `report-${decoded.part_number}`,
+            section: T("launcher.section.detected", "Detected from input"),
+            title: Tf("launcher.reportPn", { value: decoded.part_number }),
+            description: T("launcher.reportPnDesc", "Generate the printable report with cross-references and mates."),
+            run: () => openDecodedReport(decoded.part_number),
+          });
+        } else {
+          pushLauncherItem(items, {
+            id: `io-family-${ioNormToken(decoded.family)}`,
+            section: T("launcher.section.detected", "Detected from input"),
+            title: Tf("launcher.ioFamilyPn", { family: decoded.family }),
+            description: T("launcher.ioFamilyPnDesc", "Open the rugged I/O catalog for this family."),
+            run: () => openIoSearch(decoded.family),
+          });
+        }
+        pushLauncherItem(items, {
+          id: `convert-${normalized}`,
+          section: T("launcher.section.detected", "Detected from input"),
+          title: Tf("launcher.convertPn", { value: query }),
+          description: T("launcher.convertPnDesc", "Send this input to the part-number converter."),
+          run: () => sendToConverter(query),
+        });
+      } else {
+        pushLauncherItem(items, {
+          id: `convert-free-${query}`,
+          section: T("launcher.section.detected", "Detected from input"),
+          title: Tf("launcher.convertPn", { value: query }),
+          description: T("launcher.convertPnDesc", "Send this input to the part-number converter."),
+          run: () => sendToConverter(query),
+        });
+      }
+      arrangementLauncherMatches(query).forEach((item) => pushLauncherItem(items, item));
+      ioLauncherMatches(query).forEach((item) => pushLauncherItem(items, item));
+    }
+
+    launcherStaticMatches(query)
+      .slice(0, query ? 5 : 8)
+      .forEach((item) => pushLauncherItem(items, item));
+    return items;
+  }
+
+  function setLauncherExpanded(expanded) {
+    if (!els.globalSearch) return;
+    els.globalSearch.setAttribute("aria-expanded", expanded ? "true" : "false");
+    if (expanded && state.launcherItems[state.launcherIndex]) {
+      els.globalSearch.setAttribute("aria-activedescendant", `launcherOption${state.launcherIndex}`);
+    } else {
+      els.globalSearch.removeAttribute("aria-activedescendant");
+    }
+    const root = els.globalSearch.closest(".header-search");
+    if (root) root.dataset.launcherOpen = expanded ? "true" : "false";
+  }
+
+  function closeLauncherMenu() {
+    if (!els.launcherMenu || !state.launcherOpen) return false;
+    state.launcherOpen = false;
+    state.launcherItems = [];
+    state.launcherIndex = 0;
+    els.launcherMenu.hidden = true;
+    els.launcherMenu.innerHTML = "";
+    setLauncherExpanded(false);
+    return true;
+  }
+
+  function renderLauncherMenu(raw) {
+    if (!els.globalSearch || !els.launcherMenu) return;
+    const items = buildLauncherItems(raw);
+    state.launcherItems = items;
+    if (!items.length || document.activeElement !== els.globalSearch) {
+      closeLauncherMenu();
+      return;
+    }
+    state.launcherIndex = Math.max(0, Math.min(state.launcherIndex, items.length - 1));
+    let lastSection = "";
+    els.launcherMenu.innerHTML = items.map((item, index) => {
+      const sectionHtml = item.section !== lastSection
+        ? `<div class="launcher-section">${escapeHtml(item.section)}</div>`
+        : "";
+      lastSection = item.section;
+      const active = index === state.launcherIndex;
+      return `${sectionHtml}<button type="button" id="launcherOption${index}" class="launcher-option${active ? " active" : ""}" role="option" aria-selected="${active ? "true" : "false"}" data-launcher-index="${index}">
+        <span class="launcher-option-title">${escapeHtml(item.title)}</span>
+        ${item.description ? `<span class="launcher-option-desc">${escapeHtml(item.description)}</span>` : ""}
+      </button>`;
+    }).join("");
+    state.launcherOpen = true;
+    els.launcherMenu.hidden = false;
+    setLauncherExpanded(true);
+  }
+
+  function executeLauncherItem(item) {
+    if (!item || typeof item.run !== "function") return;
+    if (els.globalSearch) {
+      els.globalSearch.value = "";
+      els.globalSearch.blur();
+    }
+    closeLauncherMenu();
+    item.run();
+  }
+
+  function executeLauncherSelection(index) {
+    const item = state.launcherItems[index];
+    if (!item) return;
+    executeLauncherItem(item);
+  }
+
   function bindGlobalSearch() {
-    const input = document.getElementById("globalSearch");
-    if (!input) return;
+    const input = els.globalSearch;
+    const menu = els.launcherMenu;
+    if (!input || !menu) return;
+    const root = input.closest(".header-search");
+    if (root) root.setAttribute("data-shortcut-hint", SEARCH_SHORTCUT_HINT);
+    input.setAttribute("role", "combobox");
+    input.setAttribute("aria-autocomplete", "list");
+    input.setAttribute("aria-controls", "launcherMenu");
+    menu.setAttribute("role", "listbox");
+    menu.addEventListener("mousedown", (event) => event.preventDefault());
+    menu.addEventListener("mousemove", (event) => {
+      const option = event.target.closest("[data-launcher-index]");
+      if (!option) return;
+      state.launcherIndex = Number(option.dataset.launcherIndex) || 0;
+      renderLauncherMenu(input.value);
+    });
+    menu.addEventListener("click", (event) => {
+      const option = event.target.closest("[data-launcher-index]");
+      if (!option) return;
+      executeLauncherSelection(Number(option.dataset.launcherIndex) || 0);
+    });
+    input.addEventListener("focus", () => {
+      state.launcherIndex = 0;
+      renderLauncherMenu(input.value);
+    });
+    input.addEventListener("input", () => {
+      state.launcherIndex = 0;
+      renderLauncherMenu(input.value);
+    });
+    input.addEventListener("blur", () => {
+      setTimeout(() => {
+        const active = document.activeElement;
+        if (!root || !active || !root.contains(active)) closeLauncherMenu();
+      }, 100);
+    });
     input.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        if (!state.launcherOpen) {
+          renderLauncherMenu(input.value);
+          return;
+        }
+        state.launcherIndex = Math.min(state.launcherItems.length - 1, state.launcherIndex + 1);
+        renderLauncherMenu(input.value);
+        return;
+      }
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        if (!state.launcherOpen) {
+          renderLauncherMenu(input.value);
+          return;
+        }
+        state.launcherIndex = Math.max(0, state.launcherIndex - 1);
+        renderLauncherMenu(input.value);
+        return;
+      }
       if (event.key === "Enter") {
         event.preventDefault();
         routeGlobalSearch(input.value);
+        return;
+      }
+      if (event.key === "Escape" && state.launcherOpen) {
+        event.preventDefault();
+        event.stopPropagation();
+        closeLauncherMenu();
       }
     });
   }
 
   function routeGlobalSearch(raw) {
-    const q = String(raw || "").trim();
-    if (!q) return;
-    // Arrangement id like 17-26
-    if (/^\d{1,2}-\d{1,3}$/.test(q)) {
-      const arr = arrangementById(q);
-      els.arrangementFilter.value = q;
-      renderCatalog();
-      if (arr) selectArrangement(arr, true);
-      selectTab("catalog");
-      return;
-    }
-    // D38999 or shorthand recognized by the decoder
-    const norm = normalizePartNumber(q);
-    const decoded = decodePartNumber(norm);
-    if (decoded.ok) {
-      els.partNumberInput.value = norm;
-      decodeFromInput();
-      selectTab("decoder");
-      return;
-    }
-    // Otherwise treat as a manufacturer part number
-    sendToConverter(q);
+    const items = buildLauncherItems(raw);
+    const item = items[state.launcherOpen ? state.launcherIndex : 0] || null;
+    if (!item) return;
+    executeLauncherItem(item);
   }
 
   function computeRouteHash() {
@@ -1553,6 +2137,7 @@
   function openShortcutsOverlay() {
     if (document.getElementById("shortcutsOverlay")) return;
     const rows = [
+      [SEARCH_SHORTCUT_HINT, T("sc.command")],
       ["/", T("sc.search")],
       ["?", T("sc.toggle")],
       ["1 – 9", T("sc.tabs")],
@@ -1592,6 +2177,11 @@
   function bindKeyboardShortcuts() {
     document.getElementById("shortcutsButton")?.addEventListener("click", toggleShortcutsOverlay);
     document.addEventListener("keydown", (event) => {
+      if ((event.metaKey || event.ctrlKey) && !event.altKey && String(event.key || "").toLowerCase() === "k") {
+        event.preventDefault();
+        focusGlobalSearch(true);
+        return;
+      }
       const target = event.target;
       const typing =
         target &&
@@ -1601,6 +2191,7 @@
           target.isContentEditable);
       if (event.key === "Escape") {
         if (closeShortcutsOverlay()) return;
+        if (closeLauncherMenu()) return;
         const sm = document.getElementById("decodeSmartSuggestion");
         if (sm && !sm.hidden) { clearSmartSuggestion(); return; }
         if (typing && typeof target.blur === "function") target.blur();
@@ -1609,7 +2200,7 @@
       if (typing || event.metaKey || event.ctrlKey || event.altKey) return;
       if (event.key === "/") {
         event.preventDefault();
-        document.getElementById("globalSearch")?.focus();
+        focusGlobalSearch();
         return;
       }
       if (event.key === "?") {
@@ -1659,7 +2250,8 @@
       if (event.key === "Enter") decodeFromInput();
     });
 
-    // Example chips in the decoder sidebar
+    // Example chips in the decoder sidebar — only keep valid-source examples.
+    filterExampleChipsToValidSource();
     document.querySelectorAll(".example-chip").forEach((chip) => {
       chip.addEventListener("click", () => {
         els.partNumberInput.value = chip.dataset.example;
@@ -2014,6 +2606,10 @@
       sendToConverter(state.decoded.part_number);
       return;
     }
+    if (action === "report") {
+      openDecodedReport(state.decoded.part_number);
+      return;
+    }
     if (action === "csv") {
       exportDecodedCsv(state.decoded);
       return;
@@ -2046,6 +2642,82 @@
     syncRouteHash();
   }
 
+  function contactGenderForStyleCode(contactStyle) {
+    const style = String(contactStyle || "").toUpperCase();
+    const gender = normalizeDisplayKey(defs.contact_styles?.[style]?.contact_gender || "");
+    if (gender === "pin" || gender === "socket") return gender;
+    if (style === "P") return "pin";
+    if (style === "S") return "socket";
+    return "";
+  }
+
+  let _arrangementCatalogContextIndex = null;
+  function arrangementCatalogContexts(arrangementId) {
+    if (!_arrangementCatalogContextIndex) {
+      const index = new Map();
+      validPartNumbers.forEach((item) => {
+        const decoded = item?.decoded || {};
+        const slashSheet = String(decoded.slashSheet || "").trim();
+        const shellCode = String(decoded.shellSizeCode || "").trim().toUpperCase();
+        const insertText = String(decoded.insertArrangement || "").trim();
+        if (!slashSheet || !shellCode || !/^\d{1,3}$/.test(insertText)) return;
+        const shellSize = shellSizeForShellCode(shellCode);
+        if (!shellSize) return;
+        const arrangementKey = `${shellSize}-${String(Number(insertText))}`;
+        if (!arrangementById(arrangementKey)) return;
+        const shellStyle = styleEntryForSlashSheet(slashSheet)?.matingRole || "";
+        const keying = String(decoded.keying || "").trim().toUpperCase();
+        // Drop stray/typo keying letters that are illegal for the connector series
+        // so they never appear as a catalog filter context.
+        if (keying && !keyingLetterValidForSlash(slashSheet, keying)) return;
+        const context = {
+          slashSheet,
+          shellStyle: shellStyle === "plug" || shellStyle === "receptacle" ? shellStyle : "",
+          gender: contactGenderForStyleCode(decoded.contactStyle),
+          keying,
+        };
+        const dedupeKey = [context.slashSheet, context.shellStyle, context.gender, context.keying].join("|");
+        if (!index.has(arrangementKey)) index.set(arrangementKey, new Map());
+        index.get(arrangementKey).set(dedupeKey, context);
+      });
+      _arrangementCatalogContextIndex = new Map(
+        [...index.entries()].map(([key, bucket]) => [key, [...bucket.values()]])
+      );
+    }
+    return _arrangementCatalogContextIndex.get(arrangementId) || [];
+  }
+
+  function arrangementMatchesCatalogContext(arrangement, filters) {
+    const wantsContext = Boolean(filters.slashSheet || filters.shellStyle || filters.gender || filters.keying);
+    if (!wantsContext) return true;
+    const contexts = arrangementCatalogContexts(arrangement.id);
+    if (!contexts.length) {
+      if (filters.slashSheet || filters.keying) return false;
+      if (filters.shellStyle && filters.shellStyle !== "unknown") return false;
+      if (filters.gender && filters.gender !== "unknown") return false;
+      return Boolean(filters.shellStyle === "unknown" || filters.gender === "unknown");
+    }
+    return contexts.some((context) => {
+      if (filters.slashSheet && context.slashSheet !== filters.slashSheet) return false;
+      if (filters.shellStyle) {
+        if (filters.shellStyle === "unknown") {
+          if (context.shellStyle) return false;
+        } else if (context.shellStyle !== filters.shellStyle) {
+          return false;
+        }
+      }
+      if (filters.gender) {
+        if (filters.gender === "unknown") {
+          if (context.gender) return false;
+        } else if (context.gender !== filters.gender) {
+          return false;
+        }
+      }
+      if (filters.keying && context.keying !== filters.keying) return false;
+      return true;
+    });
+  }
+
   function filteredArrangements() {
     const shell = els.shellFilter.value;
     const arrangementText = els.arrangementFilter.value.trim().toLowerCase();
@@ -2062,11 +2734,7 @@
       if (count && String(arr.contact_count) !== count) return false;
       if (size && !(arr.contact_size_notes || []).some((note) => note.size === size)) return false;
       if (type && !(arr.contacts || []).some((contact) => contact.type === type)) return false;
-      if (slashSheet || shellStyle || gender || keying) {
-        // Insert arrangements are independent from connector shell style,
-        // contact gender, and polarization. These controls document the
-        // connector-choice context while the card list remains arrangement-based.
-      }
+      if (!arrangementMatchesCatalogContext(arr, { slashSheet, shellStyle, gender, keying })) return false;
       if (arrangementText) {
         const hay = `${arr.id} ${arr.arrangement_number}`.toLowerCase();
         if (!hay.includes(arrangementText)) return false;
@@ -2848,7 +3516,7 @@
     state.selectedContactIndex = null;
     state.pinMatches.clear();
     if (resetViewport) {
-      state.baseViewBox = connectorBaseViewBox(arrangement);
+      state.baseViewBox = connectorBaseViewBox(arrangement, state.decoded);
       state.viewBox = state.baseViewBox.slice();
     }
     renderViewer();
@@ -2879,7 +3547,7 @@
 
   function resetView() {
     if (!state.selectedArrangement) return;
-    state.baseViewBox = connectorBaseViewBox(state.selectedArrangement);
+    state.baseViewBox = connectorBaseViewBox(state.selectedArrangement, state.decoded);
     state.viewBox = state.baseViewBox.slice();
     applyViewBox();
   }
@@ -2889,12 +3557,30 @@
     els.connectorSvg.setAttribute("viewBox", state.viewBox.map((value) => Number(value).toFixed(3)).join(" "));
   }
 
-  function connectorBaseViewBox(arrangement) {
+  function connectorExtentForProfile(profileType) {
+    return {
+      wall_receptacle: 1.52,
+      box_receptacle: 1.42,
+      jamnut_receptacle: 1.42,
+      inline_receptacle: 1.28,
+      cover: 1.26,
+    }[profileType] || 1.2;
+  }
+
+  function shellFaceTypeForArrangement(arrangement, decodedOverride = null) {
+    const decoded = decodedOverride?.ok ? decodedOverride : null;
+    if (!decoded?.ok || !arrangement || decoded.arrangement_id !== arrangement.id) return "";
+    return SHELL_PROFILE_TYPE[decoded.slash_sheet] || "";
+  }
+
+  function connectorBaseViewBox(arrangement, decodedOverride = null) {
     const outline = arrangement.outline;
     if (!outline) return [0, 0, arrangement.viewBox.width, arrangement.viewBox.height];
-    const margin = Math.max(outline.radius * 0.2, 4);
-    const size = outline.radius * 2 + margin * 2;
-    return [outline.center_x - size / 2, outline.center_y - size / 2, size, size];
+    const defaultHalf = outline.radius + Math.max(outline.radius * 0.2, 4);
+    const profileType = shellFaceTypeForArrangement(arrangement, decodedOverride);
+    const hardwareHalf = outline.radius * connectorExtentForProfile(profileType);
+    const halfExtent = Math.max(defaultHalf, hardwareHalf);
+    return [outline.center_x - halfExtent, outline.center_y - halfExtent, halfExtent * 2, halfExtent * 2];
   }
 
   // Fit a viewBox to the *rendered* connector content (geometry bounds via
@@ -2915,15 +3601,19 @@
 
   // Maps a MIL-DTL-38999 class/finish letter to a shell-color key consumed by
   // [data-finish] in styles.css. Defaults to olive drab (the signature finish).
+  // Classes T and Z are the two "nonreflective" finishes per table II: Z
+  // (zinc-nickel type D black) is the blackest → "gun"; T (nickel-PTFE) is a
+  // dark non-reflective slate → "zinc". Both read matte (low sheen) in CSS.
   const FINISH_KEY_BY_CLASS = {
     W: "od", B: "od", J: "od",
     Z: "gun",
-    T: "grey",
+    T: "zinc",
     C: "anod",
     A: "cad", U: "cad",
-    F: "nik", G: "nik", N: "nik", S: "nik", L: "nik", R: "nik", M: "nik",
-    H: "nik", K: "nik", Y: "nik", E: "nik", P: "nik", D: "nik", V: "nik",
-    AA: "nik", AB: "nik",
+    D: "tin",
+    V: "tinz", AB: "tinz",
+    F: "nik", G: "nik", N: "nik", S: "nik", L: "nik", R: "nik", M: "nik", AA: "nik",
+    H: "steel", K: "steel", Y: "steel", E: "steel",
   };
 
   function finishKeyFromClass(classField) {
@@ -3016,7 +3706,7 @@
       : null;
     svg.dataset.finish = finishKeyFromClass(decodedFinish);
     svg.dataset.view = state.viewMode;
-    svg.setAttribute("viewBox", (state.viewBox || connectorBaseViewBox(arr)).join(" "));
+    svg.setAttribute("viewBox", (state.viewBox || connectorBaseViewBox(arr, decodedForArr)).join(" "));
 
     // Sprint B: subtle radial gradient for the shell fill. Inlined as <defs>
     // so it survives cloning into the printable report popup. The real-view
@@ -3156,7 +3846,12 @@
       if (interactive) {
         group.addEventListener("mouseenter", () => showPinTooltip(contact));
         group.addEventListener("mouseleave", hidePinTooltip);
-        group.addEventListener("click", () => selectContact(contact._index, true));
+        group.addEventListener("click", () => {
+          // Clicking the already-selected pin toggles it off, dismissing its
+          // floating label; any other pin becomes the new selection.
+          if (state.selectedContactIndex === contact._index) clearContactSelection();
+          else selectContact(contact._index, true);
+        });
       }
       faceGroup.appendChild(group);
     });
@@ -3166,8 +3861,7 @@
 
   function currentShellFaceType(arr, decodedOverride) {
     const decoded = decodedOverride !== undefined ? decodedOverride : state.decoded;
-    if (!decoded?.ok || decoded.arrangement_id !== arr.id) return "";
-    return SHELL_PROFILE_TYPE[decoded.slash_sheet] || "";
+    return shellFaceTypeForArrangement(arr, decoded);
   }
 
   // Resolves the contact gender ("pin" male / "socket" female / "" unknown) for
@@ -3235,17 +3929,6 @@
             width: plateWidth,
             height: plateHeight,
             rx: radius * (profileType === "wall_receptacle" ? 0.2 : 0.14),
-          },
-        },
-        {
-          tag: "rect",
-          attrs: {
-            class: "mount-flange-inner",
-            x: cx - plateWidth * 0.38,
-            y: cy - plateHeight * 0.34,
-            width: plateWidth * 0.76,
-            height: plateHeight * 0.68,
-            rx: radius * 0.12,
           },
         },
       ];
@@ -3446,12 +4129,31 @@
   function initViewMode() {
     let saved = null;
     try { saved = localStorage.getItem("d38999.viewMode"); } catch (e) { /* ignore */ }
-    state.viewMode = (saved === "real" || saved === "side") ? saved : "engineering";
+    if (saved === "real" || saved === "side" || saved === "engineering") {
+      // A previously saved explicit choice is honoured and suppresses the
+      // post-decode auto-switch to the real view.
+      state.viewMode = saved;
+      state.viewModeUserChosen = true;
+    } else {
+      state.viewMode = "engineering";
+    }
+    reflectViewModeButtons();
+  }
+
+  // After a part number is decoded we surface the true-colour "real" view so the
+  // connector shows its finish immediately (matching the exported report). A
+  // deliberate side view is left alone, and once the user explicitly picks a
+  // view this session we stop auto-switching so we don't fight their choice.
+  function preferRealViewForDecode() {
+    if (state.viewModeUserChosen) return;
+    if (state.viewMode === "side" || state.viewMode === "real") return;
+    state.viewMode = "real";
     reflectViewModeButtons();
   }
 
   function setViewMode(mode) {
     const next = (mode === "real" || mode === "side") ? mode : "engineering";
+    state.viewModeUserChosen = true;
     if (state.viewMode === next) return;
     state.viewMode = next;
     try { localStorage.setItem("d38999.viewMode", next); } catch (e) { /* storage unavailable */ }
@@ -3555,6 +4257,15 @@
     return Math.max(0.5, base * scale);
   }
 
+  function pinHighlightCircle(contact, radius, token) {
+    const isSize8Power = token === "8";
+    return {
+      cx: contact.x - radius * (isSize8Power ? 0.26 : 0.3),
+      cy: contact.y - radius * (isSize8Power ? 0.28 : 0.32),
+      r: radius * (isSize8Power ? 0.4 : 0.34),
+    };
+  }
+
   function appendContactSymbol(group, contact, radius, gender, viewMode) {
     const token = gaugeToken(contact);
     const shielded = shieldedBoreCount(contactTypeToken(contact));
@@ -3576,10 +4287,11 @@
         const boreR = radius * (token === "8" ? 0.7 : 0.66);
         group.appendChild(svgEl("circle", { class: "pin-contact-socket-bore", cx: contact.x, cy: contact.y, r: boreR }));
         group.appendChild(svgEl("circle", { class: "pin-contact-socket-rim", cx: contact.x, cy: contact.y, r: boreR }));
-      } else if (token === "8") {
-        group.appendChild(svgEl("circle", { class: "pin-contact-bore", cx: contact.x, cy: contact.y, r: radius * 0.42 }));
       } else if (gender === "pin") {
-        group.appendChild(svgEl("circle", { class: "pin-contact-highlight", cx: contact.x - radius * 0.3, cy: contact.y - radius * 0.32, r: radius * 0.34 }));
+        // Ordinary size-8 power contacts are still solid male pins / female
+        // sockets. Only shielded size-8 coax/twinax contacts get center bores.
+        const highlight = pinHighlightCircle(contact, radius, token);
+        group.appendChild(svgEl("circle", { class: "pin-contact-highlight", cx: highlight.cx, cy: highlight.cy, r: highlight.r }));
       }
       return;
     }
@@ -3652,11 +4364,13 @@
   }
 
   function keyWidthFactors(decoded) {
+    if (connectorSeries(decoded?.slash_sheet_definition) !== "IV") {
+      return { minorFactor: 1, mainFactor: 1, kFactor: 1 };
+    }
     // Real key/keyway widths come from the FIGURE 7 width tables
     // (standardDefinitions.definitions.key_geometry.series_iv.derived_render_ratios).
     // Minor polarizing keys share one nominal width; the K polarization key is wider
-    // (note 16); the main/master key/keyway is modestly wider than a minor key. Each
-    // factor falls back to 1 (uniform width) when the data is unavailable.
+    // (note 16); the main key/keyway family is modestly wider than a minor key.
     const ratios = defs.key_geometry?.series_iv?.derived_render_ratios || {};
     const kFactor = Number(ratios.k_polarization_keyway_width_factor) || 1;
     const mainFactor = Number(ratios.main_keyway_to_minor_keyway_width_factor) || 1;
@@ -3673,6 +4387,7 @@
       ? (decodedOverride?.ok && decodedOverride.arrangement_id === arr.id ? decodedOverride : null)
       : (state.decoded?.ok && state.decoded.arrangement_id === arr.id ? state.decoded : null);
     const role = shellRoleForDecoded(decoded);
+    const series = connectorSeries(decoded?.slash_sheet_definition);
 
     // The master key/keyway lives at 12 o'clock (0deg). The engineering view
     // shows it as the orange orientation triangle; the real view swaps in a
@@ -3680,6 +4395,7 @@
     // style as the minor polarizing features (see keyingDrawing + styles.css).
     const group = svgEl("g", { class: "orientation-group" });
     group.dataset.role = role || "unknown";
+    if (series === "IV") return group;
     const mainFactor = keyWidthFactors(decoded).mainFactor;
 
     const markerWidth = radius * 0.18;
@@ -3728,21 +4444,33 @@
     const cy = outline.center_y;
     const radius = outline.radius;
     const markerRadius = radius * 0.98;
+    const series = connectorSeries(decoded.slash_sheet_definition);
     // Real hardware: a plug carries raised polarizing KEYS, a receptacle carries
     // recessed KEYWAYS — same angular positions, opposite relief. Tag the group
     // so the real view can render the matching feature (CSS in styles.css).
     const role = shellRoleForDecoded(decoded);
     group.dataset.role = role || "unknown";
-    const widthFactor = keyWidthFactors(decoded).minorFactor;
+    const { minorFactor, mainFactor } = keyWidthFactors(decoded);
     const featureWord = role === "plug" ? "keys" : role === "receptacle" ? "keyways" : "key/keyway";
-    const markers = [
-      ["A", pol.AR_or_AP_deg],
-      ["B", pol.BR_or_BP_deg],
-      ["C", pol.CR_or_CP_deg],
-      ["D", pol.DR_or_DP_deg],
-    ].filter(([, angle]) => Number.isFinite(Number(angle)));
+    const markers = series === "IV"
+      ? [
+          ["P", pol.main_key_angles?.P_deg, mainFactor],
+          ["Q", pol.main_key_angles?.Q_deg, mainFactor],
+          ["R", pol.main_key_angles?.R_deg, mainFactor],
+          ["S", pol.main_key_angles?.S_deg, mainFactor],
+          ["X", pol.X_or_XX_deg, minorFactor],
+          ["Y", pol.Y_or_YY_deg, minorFactor],
+        ]
+      : [
+          ["A", pol.AR_or_AP_deg, minorFactor],
+          ["B", pol.BR_or_BP_deg, minorFactor],
+          ["C", pol.CR_or_CP_deg, minorFactor],
+          ["D", pol.DR_or_DP_deg, minorFactor],
+          ["E", pol.ER_or_EP_deg, minorFactor],
+        ];
+    const validMarkers = markers.filter(([, angle]) => Number.isFinite(Number(angle)));
 
-    group.appendChild(svgEl("title", {}, `Series III ${featureWord} ${decoded.polarization}: ${pol.description || "selected polarization"}`));
+    group.appendChild(svgEl("title", {}, `Series ${series} ${featureWord} ${decoded.polarization}: ${pol.description || "selected polarization"}`));
     group.appendChild(svgEl("circle", {
       class: "keying-reference-ring",
       cx,
@@ -3750,7 +4478,7 @@
       r: markerRadius,
     }));
 
-    markers.forEach(([label, angle]) => {
+    validMarkers.forEach(([label, angle, widthFactor]) => {
       const point = polarPoint(cx, cy, markerRadius, angle);
       const outer = polarPoint(cx, cy, radius * 1.035, angle);
       const inner = polarPoint(cx, cy, radius * 0.87, angle);
@@ -4031,7 +4759,7 @@
     const lr = radius * scale;
     const width = Math.max(text.length * lr * 1.2, lr * 7.2);
     const height = lr * 4.1;
-    const viewBox = state.viewBox || connectorBaseViewBox(arr);
+    const viewBox = state.viewBox || connectorBaseViewBox(arr, state.decoded);
     const [viewX, viewY, viewWidth, viewHeight] = viewBox;
     const padding = Math.max(lr * 1.2, 1.8);
     let x = contactX + radius * 2.3;
@@ -4087,6 +4815,13 @@
     if (!contact) return;
     state.selectedContactIndex = index;
     if (center) centerOnContact(contact);
+    renderViewer();
+    renderPinDetail();
+  }
+
+  function clearContactSelection() {
+    if (state.selectedContactIndex === null) return;
+    state.selectedContactIndex = null;
     renderViewer();
     renderPinDetail();
   }
@@ -4206,6 +4941,7 @@
       : "";
     const arr = arrangementById(decoded.arrangement_id);
     if (arr) {
+      preferRealViewForDecode();
       selectArrangement(arr, true);
       setMessage(els.decodeMessage, Tf("decode.decoded", { pn: decoded.part_number }) + defaultNote);
     } else {
@@ -4337,10 +5073,52 @@
     };
   }
 
+  function connectorSeries(slashDef) {
+    const series = String(slashDef?.series_inferred_from_source_text || "").toUpperCase();
+    if (series === "III" || series === "IV") return series;
+    return "III";
+  }
+
+  function keyingLettersForDecoded(decoded) {
+    if (!decoded?.ok) return ["N", "A", "B", "C", "D", "E"];
+    const series = connectorSeries(decoded.slash_sheet_definition);
+    const current = String(decoded.polarization || "N").toUpperCase();
+    let letters = [];
+    if (series === "IV") {
+      letters = Object.keys(defs.polarization?.series_iv?.minor_key_polarity_arrangements?.arrangements || {});
+    } else {
+      letters = Object.keys(defs.polarization?.series_iii?.rotations_by_shell_size?.[decoded.shell_size] || {});
+    }
+    if (!letters.includes(current)) letters.push(current);
+    // Only suggest keying letters whose resulting part number complies with a
+    // valid (QPL-qualified / manufacturer-verified) source. The currently
+    // decoded letter is always kept — it is the user's own input, not a
+    // suggestion.
+    const pn = decoded.part_number || "";
+    const canVary = /[A-Za-z]$/.test(pn);
+    const sourced = letters.filter((letter) => {
+      if (letter === current) return true;
+      if (!canVary) return false;
+      return partNumberHasValidSource(pn.slice(0, -1) + letter);
+    });
+    return (sourced.length ? sourced : [current]).sort(naturalCompare);
+  }
+
   function polarizationDefinition(shellSize, letter, slashDef) {
-    const series = slashDef?.series_inferred_from_source_text || "III";
-    if (series !== "III") return null;
-    return defs.polarization?.series_iii?.rotations_by_shell_size?.[shellSize]?.[letter] || null;
+    const series = connectorSeries(slashDef);
+    if (series === "III") {
+      const def = defs.polarization?.series_iii?.rotations_by_shell_size?.[shellSize]?.[letter] || null;
+      return def ? { ...def, series: "III" } : null;
+    }
+    const minor = defs.polarization?.series_iv?.minor_key_polarity_arrangements?.arrangements?.[letter] || null;
+    const main = defs.polarization?.series_iv?.main_key_by_shell_size?.shell_sizes?.[shellSize] || null;
+    if (!minor || !main) return null;
+    return {
+      ...minor,
+      series: "IV",
+      shell_size: shellSize,
+      main_key_angles: main,
+    };
   }
 
   function selectorRuleFinishes(rule) {
@@ -4402,7 +5180,7 @@
               keyCodes.forEach((polarization) => {
                 const shellSizeDef = shellCodeDefs[arr.shell_size_code] || null;
                 const polDef = polarizationDefinition(arr.shell_size, polarization, slashDef);
-                if ((slashDef?.series_inferred_from_source_text || "III") === "III" && !polDef) return;
+                if ((connectorSeries(slashDef) === "III" || connectorSeries(slashDef) === "IV") && !polDef) return;
 
                 const candidate = {
                   ok: true,
@@ -4954,6 +5732,13 @@
 
     const decoded = state.decoded?.ok && state.decoded.arrangement_id === arr.id ? state.decoded : null;
     const slashSheet = decoded?.slash_sheet || "";
+    // Surface the decoded class/finish on the side profile. The external <img>
+    // profile SVGs are sandboxed (no fetch, offline-first), so they can't be
+    // recolored by document CSS; instead we tag the figure with [data-finish]
+    // and show a finish swatch in the caption (reads on any theme).
+    const finishKey = decoded?.class_field ? finishKeyFromClass(decoded.class_field) : "";
+    const finishClassLetter = decoded?.class_field ? String(decoded.class_field).replace(/-$/, "") : "";
+    const finishDesc = decoded?.class_definition?.description || "";
     const profileType = SHELL_PROFILE_TYPE[slashSheet] || "";
     const styleLabel = getShellStyleLabel(decoded || slashSheet);
     const assetPath = profileAssetForSlashSheet(slashSheet);
@@ -4970,12 +5755,19 @@
     }
 
     const sheetLabel = `D38999${slashSheet}`;
+    const finishChip = finishClassLetter
+      ? `<span class="side-view-finish"${finishDesc ? ` title="${escapeHtml(finishDesc)}"` : ""}>
+            <span class="side-view-finish-swatch" aria-hidden="true"></span>
+            ${escapeHtml(T("viewer.finishLabel", "Finish"))} · ${escapeHtml(T("viewer.finishClass", "class"))} ${escapeHtml(finishClassLetter)}
+          </span>`
+      : "";
     layer.innerHTML = `
-      <figure class="side-view-figure">
+      <figure class="side-view-figure"${finishKey ? ` data-finish="${escapeHtml(finishKey)}"` : ""}>
         <div class="side-view-art">${artHtml}</div>
         <figcaption class="side-view-caption">
           ${styleLabel ? `<span class="side-view-style">${escapeHtml(styleLabel)}</span>` : ""}
           <span class="side-view-sheet mono">${escapeHtml(sheetLabel)}</span>
+          ${finishChip}
         </figcaption>
       </figure>`;
     els.viewerTitle.textContent = Tf("viewer.insertArrangementTitle", { id: arr.id });
@@ -5077,7 +5869,7 @@
   function keyingChipStrip(decoded) {
     if (!decoded?.ok) return "";
     const current = String(decoded.polarization || "N").toUpperCase();
-    const letters = ["N", "A", "B", "C", "D"];
+    const letters = keyingLettersForDecoded(decoded);
     const chips = letters.map((l) => {
       const active = (l === current) ? " active" : "";
       const title = (l === "N") ? T("decoded.keying.normal") : "";
@@ -5124,20 +5916,19 @@
         ${validationSummaryHtml(validation, { partNumber: decoded.part_number })}
         <div class="decoded-status-note">${escapeHtml(validationEvidence || T("decoded.fallbackEvidence"))}</div>
         ${keyingChipStrip(decoded)}
-        <div class="decoded-action-row">
-          <button type="button" class="primary-action decoded-action-btn" data-decoded-action="mating">${escapeHtml(T("decoded.action.mate"))}</button>
-          <button type="button" class="decoded-action-btn" data-decoded-action="build">${escapeHtml(T("decoded.action.build"))}</button>
-          <details class="decoded-more">
-            <summary class="decoded-action-btn decoded-more-summary" aria-label="${escapeHtml(T("decoded.action.more"))}">
-              ${escapeHtml(T("decoded.action.more"))} <span aria-hidden="true">▾</span>
-            </summary>
-            <div class="decoded-more-menu" role="menu">
-              <button type="button" class="decoded-action-btn" role="menuitem" data-decoded-action="catalog">${escapeHtml(T("decoded.action.browse"))}</button>
-              <button type="button" class="decoded-action-btn" role="menuitem" data-decoded-action="converter">${escapeHtml(T("converter.convert"))}</button>
-              <button type="button" class="decoded-action-btn" role="menuitem" data-decoded-action="csv" title="${escapeHtml(T("decoded.action.csvTitle"))}">${escapeHtml(T("decoded.action.csv"))}</button>
-              <button type="button" class="decoded-action-btn" role="menuitem" data-decoded-action="print" title="${escapeHtml(T("decoded.action.printTitle"))}">${escapeHtml(T("decoded.action.print"))}</button>
-            </div>
-          </details>
+        <div class="decoded-workflow-card">
+          <div class="decoded-workflow-head">
+            <div class="decoded-workflow-title">${escapeHtml(T("decoded.workflowTitle", "Continue with"))}</div>
+            <div class="decoded-workflow-body">${escapeHtml(T("decoded.workflowBody", "Move from this validated part number into mating, conversion, arrangement review, or export."))}</div>
+          </div>
+          <div class="decoded-action-grid">
+            <button type="button" class="primary-action decoded-action-btn" data-decoded-action="mating">${escapeHtml(T("decoded.action.mate"))}</button>
+            <button type="button" class="primary-action decoded-action-btn decoded-action-btn-secondary" data-decoded-action="converter">${escapeHtml(T("decoded.action.convertPn", "Convert PN"))}</button>
+            <button type="button" class="decoded-action-btn" data-decoded-action="catalog">${escapeHtml(T("decoded.action.browseArrangement", "Browse arrangement"))}</button>
+            <button type="button" class="decoded-action-btn" data-decoded-action="build">${escapeHtml(T("decoded.action.build"))}</button>
+            <button type="button" class="decoded-action-btn" data-decoded-action="report" title="${escapeHtml(T("decoded.action.reportTitle"))}">${escapeHtml(T("decoded.action.report"))}</button>
+            <button type="button" class="decoded-action-btn" data-decoded-action="csv" title="${escapeHtml(T("decoded.action.csvTitle"))}">${escapeHtml(T("decoded.action.csv"))}</button>
+          </div>
         </div>
         <div class="manual-stat-grid">
           ${items.map((item) => decodedFieldChip(item)).join("")}
@@ -5177,16 +5968,26 @@
     if (!els.manualContent) return;
     const preview = activeDecodedOrExample(state.decoded);
     const sections = [
-      [T("manual.section.interactive", "Interactive PN Decoder"), interactivePnGuide(preview, "manual")],
-      [T("manual.section.series", "Connector Series"), manualSeriesExplainer()],
-      [T("manual.section.parts", "PN Parts And Options"), manualPnPartSections(preview)],
-      [T("manual.section.quickRef", "Quick Reference"), manualQuickReference()],
-      [T("manual.section.coverage", "Source Coverage"), manualCoverage()],
+      {
+        title: T("manual.section.interactive", "Interactive PN Decoder"),
+        body: interactivePnGuide(preview, "manual"),
+        className: "manual-section--feature manual-section--wide",
+      },
+      {
+        title: T("manual.section.parts", "PN Parts And Options"),
+        body: manualPnPartSections(preview),
+        className: "manual-section--wide",
+      },
+      {
+        title: T("manual.section.reference", "Reference & rules"),
+        body: manualReferenceSection(),
+        className: "manual-section--wide",
+      },
     ];
-    els.manualContent.innerHTML = sections.map(([title, body]) => `
-      <section class="manual-section">
-        <h3>${escapeHtml(title)}</h3>
-        ${body}
+    els.manualContent.innerHTML = sections.map((section) => `
+      <section class="manual-section ${section.className || ""}">
+        <h3>${escapeHtml(section.title)}</h3>
+        ${section.body}
       </section>
     `).join("");
     state.manualRendered = true;
@@ -5727,36 +6528,24 @@
         <span class="pn-token-label">${escapeHtml(item.label)}</span>
       </button>
     `).join("");
-    const miniCards = items.map((item, index) => `
-      <button class="pn-mini-card ${item.key === active.key ? "active" : ""}" type="button" data-manual-field="${escapeHtml(item.key)}" style="--step:${index}">
-        <b>${escapeHtml(item.icon)}</b>
-        <span>${escapeHtml(item.label)}</span>
-      </button>
-    `).join("");
     const compactClass = mode === "compact" ? " compact" : "";
     return `
       <div class="pn-guide${compactClass}">
         <div class="pn-hero">
-          <div>
-            <div class="pn-eyebrow">Click any part of the PN</div>
-            <div class="pn-big mono">${escapeHtml(pnText)}</div>
-            <p>Read left to right. Each colored block answers one connector-selection question.</p>
-          </div>
-          <div class="pn-orbit" aria-hidden="true">
-            <span></span><span></span><span></span>
-          </div>
+          <div class="pn-eyebrow">${escapeHtml(T("manual.guide.kicker", "Select a code block"))}</div>
+          <div class="pn-big mono">${escapeHtml(pnText)}</div>
+          <p>${escapeHtml(T("manual.guide.body", "Read left to right. Pick any block to see what it controls in the connector."))}</p>
         </div>
         <div class="pn-token-rail">${tokenButtons}</div>
         <div class="pn-explain-card">
           <div class="pn-icon">${escapeHtml(active.icon)}</div>
           <div>
             <div class="pn-explain-kicker">${escapeHtml(active.label)}</div>
-            <h4>${escapeHtml(active.token)} means ${escapeHtml(active.summary)}</h4>
+            <h4><span class="mono">${escapeHtml(active.token)}</span> — ${escapeHtml(active.summary)}</h4>
             <p>${escapeHtml(active.use)}</p>
             <em>${escapeHtml(active.source || "Source: generated beginner guide from parsed MIL-DTL-38999 data.")}</em>
           </div>
         </div>
-        <div class="pn-mini-flow">${miniCards}</div>
       </div>
     `;
   }
@@ -6147,7 +6936,7 @@
     // plug coupling marks — isn't clipped outside the frame the way the fixed
     // base viewBox can clip it. Fall back to the base outline viewBox.
     const arr = state.selectedArrangement;
-    const fitViewBox = connectorContentViewBox(live, arr ? connectorBaseViewBox(arr) : null);
+    const fitViewBox = connectorContentViewBox(live, arr ? connectorBaseViewBox(arr, state.decoded) : null);
     if (fitViewBox) {
       clone.setAttribute("viewBox", fitViewBox.map((value) => Number(value).toFixed(3)).join(" "));
     }
@@ -6544,7 +7333,7 @@
     const prevBaseViewBox = state.baseViewBox;
     try {
       state.selectedArrangement = arr;
-      state.baseViewBox = connectorBaseViewBox(arr);
+      state.baseViewBox = connectorBaseViewBox(arr, state.decoded);
       state.viewBox = state.baseViewBox.slice();
       renderViewer();
       return cloneLiveConnectorSvg();
@@ -6970,7 +7759,7 @@
   // framing; receptacles get extra room so their mount flanges / jam-nut ring
   // stay inside the preview frame instead of spilling over adjacent content.
   function manualPreviewViewBox(arr, decoded) {
-    const base = connectorBaseViewBox(arr);
+    const base = connectorBaseViewBox(arr, decoded);
     const o = arr.outline;
     if (!o) return base;
     const extentByProfile = {
@@ -7048,12 +7837,15 @@
   }
 
   function keyingOptions(active) {
-    const rotations = active.ok
-      ? defs.polarization?.series_iii?.rotations_by_shell_size?.[active.shell_size] || {}
-      : defs.polarization?.series_iii?.rotations_by_shell_size?.["17"] || {};
-    const chips = Object.entries(rotations)
-      .sort(([a], [b]) => naturalCompare(a, b))
-      .map(([code, value]) => optionChip(code, value.description || "keying option", "changes shell key teeth, not pin layout", active.ok && active.polarization === code))
+    const fallback = active.ok
+      ? active
+      : decodePartNumber("D38999/26WE35PN");
+    const letters = keyingLettersForDecoded(fallback);
+    const chips = letters
+      .map((code) => {
+        const value = polarizationDefinition(fallback.shell_size, code, fallback.slash_sheet_definition) || {};
+        return optionChip(code, value.description || "keying option", "changes shell key teeth, not pin layout", active.ok && active.polarization === code);
+      })
       .join("");
     return `
       ${manualArrangementPreview(active, { showBoundary: true, showKeying: true })}
@@ -7089,7 +7881,7 @@
         </div>
         <div class="manual-series-card">
           <h4>Series IV <span>Breech-lock</span></h4>
-          <p>Uses a <strong>breech-lock</strong> (ratchet/breech) coupling that mates with very little rotation — useful in tight quarters and high-vibration mounts. Less common than Series III; polarization isn't yet tabulated in this data set.</p>
+          <p>Uses a <strong>breech-lock</strong> (ratchet/breech) coupling that mates with very little rotation — useful in tight quarters and high-vibration mounts. Less common than Series III; this decoder now applies the tabulated Series IV polarization geometry as well.</p>
         </div>
       </div>
       <div class="manual-note"><strong>Reading the part number:</strong> the series isn't a single letter in the D38999 number — it's implied by the slash sheet (shell-type) family. Coupling style and shell profile come from that shell type, while the shell size, insert arrangement, contact style, and keying are decoded separately in the fields below.</div>
@@ -7106,12 +7898,12 @@
     `;
   }
 
-  function manualCoverage() {
+  function manualReferenceSection() {
     return `
-      <div class="manual-note">Strong coverage: Series III/IV part-number field order, shell-size codes, contact styles, class/finish text, and Series III polarization table.</div>
-      <div class="manual-note">The manual answers three practical questions: the shell style, the physical shell size, and the insert/pin arrangement inside the shell.</div>
-      <div class="manual-note">DLA document pass: ${escapeHtml(dlaDocs.downloaded_count || 0)} official PDFs parsed from the MIL-DTL-38999 list, including approved shell-type source documents and initial drafts.</div>
-      <div class="manual-note">Limited coverage: Series IV polarization isn't tabulated yet in this data set.</div>
+      ${manualSeriesExplainer()}
+      ${manualQuickReference()}
+      <div class="manual-note">${escapeHtml(T("manual.reference.coverage",
+        "Coverage and document provenance live in Data sources; the manual stays focused on how to read the part number."))}</div>
     `;
   }
 
@@ -7245,12 +8037,13 @@
 
   function polarizationSummary() {
     const seriesIII = defs.polarization?.series_iii;
+    const seriesIV = defs.polarization?.series_iv;
     const shellSizes = Object.keys(seriesIII?.rotations_by_shell_size || {}).sort((a, b) => Number(a) - Number(b));
     return `
       <div class="manual-note">${escapeHtml(seriesIII?.description || "Series III polarization table is available from the supplied standard data.")}</div>
       <div class="manual-note">The connector drawing overlays the selected Series III keying angles from Figure 6. The contact insert stays in the same position; the key/keyway markers move for N, A, B, C, D, or E.</div>
       <div class="manual-note">Shell sizes covered: <span class="mono">${escapeHtml(shellSizes.join(", ") || "none")}</span></div>
-      <div class="manual-note">${escapeHtml(defs.polarization?.series_iv?.description || "Series IV polarization is not tabulated in this data set.")}</div>
+      <div class="manual-note">${escapeHtml(seriesIV?.description || "Series IV polarization is not tabulated in this data set.")}</div>
     `;
   }
 
@@ -7364,10 +8157,9 @@
         const boreR = radius * (token === "8" ? 0.7 : 0.66);
         markup += `<circle class="pin-contact-socket-bore" cx="${contact.x}" cy="${contact.y}" r="${boreR}"></circle>`;
         markup += `<circle class="pin-contact-socket-rim" cx="${contact.x}" cy="${contact.y}" r="${boreR}"></circle>`;
-      } else if (token === "8") {
-        markup += `<circle class="pin-contact-bore" cx="${contact.x}" cy="${contact.y}" r="${radius * 0.42}"></circle>`;
       } else if (gender === "pin") {
-        markup += `<circle class="pin-contact-highlight" cx="${contact.x - radius * 0.3}" cy="${contact.y - radius * 0.32}" r="${radius * 0.34}"></circle>`;
+        const highlight = pinHighlightCircle(contact, radius, token);
+        markup += `<circle class="pin-contact-highlight" cx="${highlight.cx}" cy="${highlight.cy}" r="${highlight.r}"></circle>`;
       }
       return markup;
     }
@@ -7423,6 +8215,7 @@
       // click would never reach a pin's handler (which opens the detail window).
       state.isPanning = false;
       state.panPending = true;
+      state.didPan = false;
       state.panPointerId = event.pointerId;
       state.panStart = { x: event.clientX, y: event.clientY };
       state.panViewBox = state.viewBox?.slice();
@@ -7435,6 +8228,7 @@
         // Promote to a drag: now capture so the gesture keeps tracking even when
         // the pointer leaves the SVG bounds.
         state.isPanning = true;
+        state.didPan = true;
         try { svg.setPointerCapture(event.pointerId); } catch (e) { /* capture is best-effort */ }
       }
       if (!state.isPanning) return;
@@ -7464,6 +8258,24 @@
       // rebuilds the SVG DOM, so guard the lingering bubble here.
       if (state.hoveredContactIndex != null) hidePinTooltip();
     });
+
+    // Dismiss the floating selected-pin label when the click lands off the pins:
+    // on the connector background, on the viewer canvas, or anywhere else on the
+    // page. Runs in the capture phase so the original event target is inspected
+    // before a pin's own click handler can re-render (and detach) the SVG DOM.
+    // A pin's handler owns toggling its own selection, viewer controls and the
+    // pin detail panel keep the selection, and a pan gesture's trailing click is
+    // ignored so dragging the view never deselects.
+    document.addEventListener("click", (event) => {
+      if (state.selectedContactIndex === null) return;
+      if (state.didPan) { state.didPan = false; return; }
+      const target = event.target;
+      if (!target || !target.closest) return;
+      if (target.closest("#connectorSvg .pin")) return;
+      const insideViewerControls = target.closest(".viewer-panel") && !target.closest("#connectorSvg");
+      if (insideViewerControls || target.closest("#pinDetailHeader")) return;
+      clearContactSelection();
+    }, true);
   }
 
   function clientToSvg(clientX, clientY) {

@@ -25,6 +25,8 @@ from typing import Any
 import fitz  # PyMuPDF
 from PIL import ImageDraw
 
+from dataset_io import data_path
+
 
 ARRANGEMENT_ID_RE = re.compile(r"\b(?:9|11|13|15|17|19|21|23|25)-\d{1,3}\b")
 CONTACT_COUNT_RE = re.compile(
@@ -68,7 +70,7 @@ def sha256(path: Path) -> str:
 
 
 def now_iso() -> str:
-    return dt.datetime.now(dt.UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    return dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
 def round2(value: float | None) -> float | None:
@@ -128,6 +130,24 @@ def parse_contact_size_notes(title_text: str) -> list[dict[str, Any]]:
 def parse_standard_number(line: str) -> float | None:
     match = STANDARD_TABLE_NUMBER_RE.match(line.strip())
     return float(match.group(0)) if match else None
+
+
+def disambiguate_duplicate_standard_label(
+    label: str, existing: dict[str, dict[str, Any]]
+) -> str:
+    """
+    The MIL-STD-1560 text extraction occasionally confuses a repeated label with
+    its opposite-case counterpart (for example lowercase ``j`` -> uppercase
+    ``J``). Preserve the first occurrence and flip the duplicate's case when the
+    opposite case is still unused so the reference count stays intact.
+    """
+    if label not in existing:
+        return label
+    if len(label) == 1 and label.isalpha():
+        alternate = label.swapcase()
+        if alternate not in existing:
+            return alternate
+    return label
 
 
 def standard_reference_candidates(project_root: Path) -> list[Path]:  # noqa: D401
@@ -192,7 +212,8 @@ def load_standard_contact_reference(project_root: Path) -> dict[str, list[dict[s
             for arrangement_id in arrangement_ids:
                 bucket = references.setdefault(arrangement_id, {})
                 for entry in entries:
-                    bucket[entry["label"]] = entry
+                    label = disambiguate_duplicate_standard_label(entry["label"], bucket)
+                    bucket[label] = {**entry, "label": label}
     finally:
         doc.close()
 
@@ -581,33 +602,82 @@ def extract_label_tokens(
         )
         if not duplicate:
             unique_tokens.append(token)
-    return unique_tokens
+    return merge_repeated_single_letter_tokens(unique_tokens)
+
+
+def merge_repeated_single_letter_tokens(tokens: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """
+    Some pages emit doubled cavity labels as two adjacent one-letter tokens
+    (``C`` + ``C`` instead of ``CC``). Merge those OCR-split fragments before
+    contact matching so they do not create false review flags.
+    """
+    ordered = sorted(tokens, key=lambda item: (item["y"], item["x"]))
+    merged: list[dict[str, Any]] = []
+    consumed = [False] * len(ordered)
+    for index, token in enumerate(ordered):
+        if consumed[index]:
+            continue
+        text = token["text"]
+        if len(text) == 1 and text.isalpha() and text.isupper():
+            cluster = [index]
+            for candidate_index in range(index + 1, len(ordered)):
+                if consumed[candidate_index]:
+                    continue
+                candidate = ordered[candidate_index]
+                if candidate["text"] != text:
+                    continue
+                if abs(candidate["y"] - token["y"]) <= 0.75 and abs(candidate["x"] - token["x"]) <= 3.5:
+                    cluster.append(candidate_index)
+            if len(cluster) > 1:
+                bbox = fitz.Rect(ordered[cluster[0]]["bbox"])
+                for cluster_index in cluster[1:]:
+                    bbox |= ordered[cluster_index]["bbox"]
+                merged.append(
+                    {
+                        "text": text * len(cluster),
+                        "bbox": bbox,
+                        "x": (bbox.x0 + bbox.x1) / 2.0,
+                        "y": (bbox.y0 + bbox.y1) / 2.0,
+                    }
+                )
+                for cluster_index in cluster:
+                    consumed[cluster_index] = True
+                continue
+        merged.append(token)
+        consumed[index] = True
+    return merged
 
 
 def map_labels_to_contacts(
     contacts: list[dict[str, Any]], tokens: list[dict[str, Any]], outer_diameter: float
 ) -> dict[int, dict[str, Any]]:
-    pairs: list[tuple[float, int, int]] = []
-    for token_index, token in enumerate(tokens):
-        for contact_index, contact in enumerate(contacts):
+    if not contacts or not tokens:
+        return {}
+
+    cost: list[list[float]] = []
+    impossible_cost = 1e9
+    for token in tokens:
+        row: list[float] = []
+        max_threshold = 0.0
+        for contact in contacts:
             distance = math.hypot(token["x"] - contact["x"], token["y"] - contact["y"])
             threshold = max(6.0, min(18.0, outer_diameter * 0.24), contact["diameter"] * 3.5)
-            if distance <= threshold:
-                pairs.append((distance, token_index, contact_index))
+            max_threshold = max(max_threshold, threshold)
+            row.append(distance * distance if distance <= threshold else impossible_cost)
+        dummy_cost = (max_threshold + 0.25) ** 2 if max_threshold else 1e6
+        row.extend([dummy_cost] * len(tokens))
+        cost.append(row)
 
-    pairs.sort()
-    used_tokens: set[int] = set()
-    used_contacts: set[int] = set()
+    assignment = hungarian_assignment(cost)
     mapped: dict[int, dict[str, Any]] = {}
-    for distance, token_index, contact_index in pairs:
-        if token_index in used_tokens or contact_index in used_contacts:
+    for token_index, contact_index in enumerate(assignment):
+        if contact_index >= len(contacts):
             continue
-        used_tokens.add(token_index)
-        used_contacts.add(contact_index)
         token = tokens[token_index]
+        contact = contacts[contact_index]
         mapped[contact_index] = {
             "label": token["text"],
-            "distance": round2(distance),
+            "distance": round2(math.hypot(token["x"] - contact["x"], token["y"] - contact["y"])),
             "label_bbox": rect_tuple(token["bbox"]),
         }
     return mapped
@@ -992,12 +1062,21 @@ def extract(project_root: Path, pdf_name: str = "d38999-contact-arrangements.pdf
         if not pdf_path.exists():
             raise FileNotFoundError(pdf_path)
 
-    # The web app is the source of truth for runtime data; extraction outputs
-    # land directly inside app/.
-    data_dir = project_root / "app" / "data"
-    svg_dir = project_root / "app" / "assets" / "svg"
+    # Canonical extracted outputs live under data/ and assets/; build_app.py
+    # bakes them into app/app-data.js and app/assets/svg/.
+    data_dir = project_root / "data"
+    insert_arrangements_path = data_path("insert_arrangements.json", data_dir)
+    review_needed_path = data_path("review_needed.json", data_dir)
+    contacts_csv_path = data_path("insert_arrangements_contacts.csv", data_dir)
+    svg_dir = project_root / "assets" / "svg"
     debug_dir = project_root / "output" / "debug"
-    for directory in (svg_dir, data_dir, debug_dir):
+    for directory in (
+        svg_dir,
+        insert_arrangements_path.parent,
+        review_needed_path.parent,
+        contacts_csv_path.parent,
+        debug_dir,
+    ):
         directory.mkdir(parents=True, exist_ok=True)
 
     source_doc = fitz.open(pdf_path)
@@ -1241,13 +1320,13 @@ def extract(project_root: Path, pdf_name: str = "d38999-contact-arrangements.pdf
         "items": review,
     }
 
-    (data_dir / "insert_arrangements.json").write_text(
+    insert_arrangements_path.write_text(
         json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8"
     )
-    (data_dir / "review_needed.json").write_text(
+    review_needed_path.write_text(
         json.dumps(review_data, indent=2, ensure_ascii=False), encoding="utf-8"
     )
-    write_contact_csv(data_dir / "insert_arrangements_contacts.csv", arrangements)
+    write_contact_csv(contacts_csv_path, arrangements)
     source_doc.close()
     return data
 
@@ -1298,12 +1377,12 @@ def write_contact_csv(path: Path, arrangements: list[dict[str, Any]]) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--project-root", default=".", help="Project root containing the source PDFs")
-    parser.add_argument("--pdf", default="d38999-contact-arrangements.pdf")
+    parser.add_argument("--pdf", default="reference/d38999-contact-arrangements.pdf")
     args = parser.parse_args()
     data = extract(Path(args.project_root).resolve(), args.pdf)
     print(
         f"Extracted {data['arrangement_count']} arrangements from {args.pdf} "
-        "into output/assets/svg and output/data."
+        "into data/reference, data/rules, and assets/svg."
     )
 
 

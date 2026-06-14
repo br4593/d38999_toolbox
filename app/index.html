@@ -56,6 +56,7 @@
     <div class="header-search">
       <svg class="header-search-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.4"/><path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" d="M10.5 10.5l3 3"/></svg>
       <input id="globalSearch" type="search" placeholder="Search part no., arrangement (17-26), or manufacturer P/N" autocomplete="off" aria-label="Global search" data-i18n-ph="header.searchPlaceholder" data-i18n-aria="header.searchAria">
+      <div id="launcherMenu" class="launcher-menu" hidden></div>
     </div>
     <div class="header-status">
       <button id="shortcutsButton" class="header-theme-button" type="button" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (press ?)" data-i18n-aria="header.shortcutsAria" data-i18n-title="header.shortcutsTitle">
@@ -237,10 +238,15 @@
             <span class="decoder-disclosure-caret" aria-hidden="true">▾</span>
           </summary>
           <div class="example-chips">
-            <button type="button" class="example-chip" data-example="D38999/26WA35PN">26WA35PN</button>
-            <button type="button" class="example-chip" data-example="D38999/26FB99PN">26FB99PN</button>
-            <button type="button" class="example-chip" data-example="D38999/26WJ90PN">26WJ90PN</button>
-            <button type="button" class="example-chip" data-example="D38999/24WD18SA">24WD18SA</button>
+            <button type="button" class="example-chip" data-example="D38999/20TA35PA">20TA35PA</button>
+            <button type="button" class="example-chip" data-example="D38999/42FB35SN">42FB35SN</button>
+            <button type="button" class="example-chip" data-example="D38999/44WC35SN">44WC35SN</button>
+            <button type="button" class="example-chip" data-example="D38999/24ZC35SN">24ZC35SN</button>
+            <button type="button" class="example-chip" data-example="D38999/26WE35PN">26WE35PN</button>
+            <button type="button" class="example-chip" data-example="D38999/20FF11BN">20FF11BN</button>
+            <button type="button" class="example-chip" data-example="D38999/24WG41PN">24WG41PN</button>
+            <button type="button" class="example-chip" data-example="D38999/49WH21PN">49WH21PN</button>
+            <button type="button" class="example-chip" data-example="D38999/20WJ29SN">20WJ29SN</button>
           </div>
           <p class="decoder-hint"><span data-i18n="decoder.hintPre">Enter a D38999 P/N or </span><a href="#" id="openCatalogLink" data-i18n="decoder.hintLink">browse arrangements</a><span data-i18n="decoder.hintPost">.</span></p>
         </details>
@@ -398,6 +404,10 @@
             <option value="C" data-i18n="catalog.key.C">C - alternate</option>
             <option value="D" data-i18n="catalog.key.D">D - alternate</option>
             <option value="E" data-i18n="catalog.key.E">E - alternate</option>
+            <option value="K" data-i18n="catalog.key.K">K - alternate (Series IV)</option>
+            <option value="L" data-i18n="catalog.key.L">L - alternate (Series IV)</option>
+            <option value="M" data-i18n="catalog.key.M">M - alternate (Series IV)</option>
+            <option value="R" data-i18n="catalog.key.R">R - alternate (Series IV)</option>
           </select>
         </details>
 

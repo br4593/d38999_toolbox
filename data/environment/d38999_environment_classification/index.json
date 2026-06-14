@@ -58,7 +58,7 @@
   ],
   "_sharding": {
     "array_key": "connector_records",
-    "record_count": 37030,
+    "record_count": 37026,
     "shard_count": 6,
     "max_shard_bytes": 44040192,
     "shards": [

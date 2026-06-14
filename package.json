@@ -6,6 +6,7 @@
   "scripts": {
     "validate": "node tests/validate_app.js",
     "validate:data": "python3 scripts/validate_dataset_consistency.py",
+    "validate:keying": "python3 scripts/keying_smoke_test.py",
     "validate:svg": "python3 scripts/io_svg_smoke_test.py"
   },
   "engines": {
