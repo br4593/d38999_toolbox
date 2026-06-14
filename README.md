@@ -40,6 +40,16 @@ The site will be served at `https://<your-user>.github.io/<repo-name>/` (or your
 
 If you'd rather not use Actions, you can instead point Pages directly at a branch + folder. Make a `gh-pages` branch whose contents are the files in `app/`, or change Pages **Source** to your default branch / `/ (root)` after copying `app/` to the repo root. The Actions workflow is the recommended route because it rebuilds `app/` from sources from the exact commit that passed CI, then deploys that artifact.
 
+## Host on GitLab Pages
+
+This repo also ships `.gitlab-ci.yml`. On GitLab, the `data_sanity`, `dataset_consistency`, and `build_sanity` jobs run automatically for pushes and merge requests, and the `pages` job deploys the built `app/` artifact from the default branch to GitLab Pages.
+
+1. Push the repo to GitLab.
+2. Make sure GitLab Pages is enabled for your GitLab instance and that project runners can execute CI jobs.
+3. Push to your default branch and let the pipeline pass.
+
+On GitLab.com, the site is typically served at `https://<namespace>.gitlab.io/<project>/`. On self-managed GitLab, use the Pages host configured for your instance. As with GitHub Pages, all app asset paths are relative, so the site works correctly under a project sub-path.
+
 ## Project Layout
 
 The `app/` directory is the single source of truth for everything the browser
@@ -84,9 +94,10 @@ d38999-toolbox/
 |   |-- D38999_manufacturer_guide.md  # plus other research / guide .md files
 |   |-- notebooklm/               # NotebookLM source notes
 |   `-- pdfs/                     # source MIL-DTL-38999 / DLA / manufacturer PDFs
-`-- .github/workflows/
-    |-- ci.yml                    # JSON parse, build, CLI converter smoke test
-    `-- pages.yml                 # deploy app/ to GitHub Pages
+|-- .github/workflows/
+|   |-- ci.yml                        # GitHub Actions CI
+|   `-- pages.yml                     # GitHub Pages deploy after CI
+`-- .gitlab-ci.yml                    # GitLab CI + GitLab Pages deploy
 ```
 
 ### Large datasets are stored as shards

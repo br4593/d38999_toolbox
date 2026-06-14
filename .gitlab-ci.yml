@@ -1,0 +1,144 @@
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+    - when: never
+
+stages:
+  - test
+  - deploy
+
+variables:
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  PIP_ROOT_USER_ACTION: ignore
+  NPM_CONFIG_AUDIT: "false"
+  NPM_CONFIG_FUND: "false"
+
+default:
+  image: python:3.12-bookworm
+  interruptible: true
+
+data_sanity:
+  stage: test
+  before_script:
+    - apt-get update
+    - apt-get install -y --no-install-recommends git
+  script:
+    - |
+      python - <<'PY'
+      import json, sys
+      from pathlib import Path
+      sys.path.insert(0, "scripts")
+      from dataset_io import data_path
+      required = [
+          "insert_arrangements.json",
+          "part_number_rules.json",
+          "standard_definitions.json",
+          "dla_documents.json",
+          "review_needed.json",
+      ]
+      for name in required:
+          path = data_path(name)
+          if not path.exists():
+              print(f"missing {name} (expected {path})", file=sys.stderr)
+              sys.exit(1)
+          json.loads(path.read_text(encoding="utf-8"))
+          print(f"ok    {path}")
+      PY
+    - |
+      python - <<'PY'
+      import sys
+      sys.path.insert(0, "scripts")
+      from dataset_io import load_dataset, data_path
+      datasets = {
+          "d38999_valid_part_numbers.json": "partNumbers",
+          "d38999_environment_classification.json": "connector_records",
+      }
+      for name, array_key in datasets.items():
+          logical = data_path(name)
+          obj = load_dataset(logical)
+          assert array_key in obj and obj[array_key], f"{logical}: missing {array_key}"
+          assert "_sharding" not in obj, f"{logical}: shard meta leaked"
+          print(f"ok    {logical} -> {len(obj[array_key])} {array_key}")
+      PY
+    - |
+      limit=$((50 * 1024 * 1024))
+      fail=0
+      while IFS= read -r f; do
+          [ -f "$f" ] || continue
+          size=$(stat -c%s "$f")
+          if [ "$size" -gt "$limit" ]; then
+              echo "TOO BIG ($size bytes): $f"
+              fail=1
+          fi
+      done < <(git ls-files)
+      test "$fail" -eq 0 && echo "ok    all tracked files <= 50 MiB"
+    - |
+      python - <<'PY'
+      import importlib.util, sys
+      spec = importlib.util.spec_from_file_location('d38999_rules', 'scripts/d38999_rules.py')
+      module = importlib.util.module_from_spec(spec)
+      sys.modules['d38999_rules'] = module
+      spec.loader.exec_module(module)
+      assert module.RULES, 'converter rules empty'
+      assert module.SHELL_SIZE_NUMBERS, 'shell-size lookup empty'
+      print(f'rules: {len(module.RULES)} manufacturer rule blocks')
+      PY
+    - |
+      python scripts/convert_d38999.py D38999/26WD35PN | tee /tmp/out.txt
+      grep -qi "amphenol" /tmp/out.txt
+    - python scripts/keying_smoke_test.py --full
+
+dataset_consistency:
+  stage: test
+  before_script:
+    - apt-get update
+    - apt-get install -y --no-install-recommends nodejs npm
+    - node --version
+    - npm --version
+  script:
+    - python scripts/build_app.py
+    - python scripts/validate_dataset_consistency.py
+    - python scripts/io_svg_smoke_test.py
+
+build_sanity:
+  stage: test
+  script:
+    - python scripts/build_valid_d38999_pns.py
+    - python scripts/build_app.py
+    - |
+      test -f app/index.html
+      test -f app/app-data.js
+      test -f app/app.js
+      test -f app/converter.js
+      test -f app/styles.css
+      test -d app/assets/svg
+      count=$(ls app/assets/svg/*.svg | wc -l)
+      echo "svg count: $count"
+      test "$count" -ge 50
+  artifacts:
+    paths:
+      - app/
+    expire_in: 1 week
+
+pages:
+  stage: deploy
+  dependencies:
+    - build_sanity
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE != "merge_request_event"'
+    - when: never
+  script:
+    - |
+      test -f app/index.html
+      test -f app/app-data.js
+      test -f app/app.js
+      test -f app/converter.js
+      test -f app/styles.css
+      test -d app/assets/svg
+    - mkdir -p public
+    - cp -a app/. public/
+  artifacts:
+    paths:
+      - public
